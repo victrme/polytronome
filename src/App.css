@@ -3,7 +3,7 @@
 }
 
 .App-logo {
-  height: 30vmin;
+  height: 20vmin;
   pointer-events: none;
 }
 
@@ -13,7 +13,7 @@
   }
 }
 
-.App-header {
+.App {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -35,4 +35,53 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+
+
+
+
+
+
+h3 {
+  display: inline-block;
+  margin: 1em;
+}
+
+.clicks-wrap {
+  display: flex;
+}
+
+.click {
+  margin: 5px;
+  width: 20px;
+  height: 20px;
+  background-color: transparent;
+  border: 2px solid #fff;
+  border-radius: 20px;
+}
+
+.click.on {
+  background-color: white;
+}
+
+.setting {
+  display: flex;
+  align-items: center;
+}
+
+.setting input[type='number'] {
+  width: 80px;
+  margin: 10px;
+  padding: 5px;
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-weight: bolder;
+  font-size: 16px;
+  text-align: center;
+}
+
+.setting input[type='range'] {
+  width: 80px;
 }
