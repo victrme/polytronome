@@ -1,73 +1,82 @@
 import React, { useRef, useState } from 'react'
 import './App.css'
 
-type Testouille = {
-	habitation: number
-	estHabite: boolean
-}
-
 function App() {
 	const [metronome, setMetronome] = useState({
-		time: 0,
 		numer: 4,
 		layers: [
 			{
-				tID: 0,
-				time: 0,
+				time: 1,
 				beats: 4,
 			},
 			{
-				tID: 0,
-				time: 0,
+				time: 1,
 				beats: 5,
 			},
 		],
-		timeoutID: 0,
 		startTime: 0,
 		isRunning: false,
 		tempo: 120,
 	})
 
-	// time [3, 2]
-	// sig  [4, 5]
+	const BPMtoMs = (bpm: number) => Math.floor(60000 / bpm)
 
 	//utiliser ref pour les settimeout async
 	const metronomeRef = useRef(metronome)
 	metronomeRef.current = metronome
 
-	function metronomeInterval(nextDelay?: number) {
+	function metronomeInterval(nextDelay: number, index: number) {
 		const current = metronomeRef.current
 
 		//timeout delay control
 		//prevent 0 BPM from looping too fast
-		const BPMtoMs = (bpm: number) => Math.floor(60000 / bpm)
-		const tempoMs = current.tempo < 1 ? 1800 : BPMtoMs(current.tempo)
+
+		const ratioedBPM =
+			(current.layers[index].beats / current.numer) * current.tempo
+		const tempoMs = ratioedBPM < 1 ? 1800 : BPMtoMs(ratioedBPM)
 		const timeoutDelay = nextDelay ? nextDelay : tempoMs
 
-		const tID = window.setTimeout(() => {
-			//update numerateur
+		console.log(ratioedBPM, index)
+
+		window.setTimeout(() => {
+			// "t_" for timeout
+			// because current is now too old
+			const t_current = metronomeRef.current
+
+			//update layers
+			let array = t_current.layers
+			const that = array[index]
+
+			//if more than beats, start over
+			array[index].time = that.time >= that.beats ? 1 : that.time + 1
+
 			setMetronome((args) => ({
 				...args,
-				timeoutID: tID + 1, //saves next timeout
-				time: current.time >= current.numer ? 1 : current.time + 1,
+				layers: array,
 			}))
 
 			//calculate latency
 			const latencyOffset =
-				current.startTime > 0
-					? (Date.now() - current.startTime) % tempoMs
+				t_current.startTime > 0
+					? (Date.now() - t_current.startTime) % tempoMs
 					: 0
 
-			//console.log(latencyOffset)
-
 			//recursion
-			metronomeInterval(tempoMs - latencyOffset)
+			if (t_current.isRunning === false) return
+			else metronomeInterval(tempoMs - latencyOffset, index)
 		}, timeoutDelay)
 	}
 
 	function startMetronome() {
 		if (metronome.isRunning === false) {
-			metronomeInterval()
+			//start a metronome for each layer
+			metronome.layers
+				.map(
+					(layer) => (layer.beats / metronome.numer) * metronome.tempo
+				)
+				.forEach((delay, i) => metronomeInterval(BPMtoMs(delay), i))
+
+			//update to start state
 			setMetronome((args) => ({
 				...args,
 				isRunning: true,
@@ -76,21 +85,42 @@ function App() {
 		}
 	}
 
-	function LayerClicks() {
-		let listClicks: JSX.Element[] = []
+	function stopMetronome() {
+		if (metronome.isRunning === true) {
+			setMetronome((args) => ({
+				...args,
+				isRunning: false,
+				startTime: 0,
+			}))
+		}
+	}
 
-		for (let index = 0; index < metronome.numer; index++) {
-			listClicks.push(
-				<div
-					key={index}
-					className={
-						index <= metronome.time - 1 ? 'click on' : 'click'
-					}
-				/>
+	function LayerClicks() {
+		let parent: JSX.Element[] = []
+
+		//loop for each time signatures
+		for (let k in metronome.layers) {
+			//
+			//add clicks for each layers
+			let children: JSX.Element[] = []
+			const currLayer = metronome.layers[+k]
+
+			for (let j = 0; j < currLayer.beats; j++) {
+				//
+				//update click when time changes
+				const onOff = j <= currLayer.time - 1 ? 'click on' : 'click'
+				children.push(<div key={j} className={onOff} />)
+			}
+
+			//wrap in rows & return
+			parent.push(
+				<div key={+k} className="clicks-wrap">
+					{children}
+				</div>
 			)
 		}
 
-		return <div className="clicks-wrap">{listClicks}</div>
+		return <div>{parent}</div>
 	}
 
 	function LayerSettings() {
@@ -134,16 +164,6 @@ function App() {
 		return <div className="setting">{inputs}</div>
 	}
 
-	function stopMetronome() {
-		if (metronome.isRunning === true) {
-			clearTimeout(metronome.timeoutID)
-			setMetronome((args) => ({
-				...args,
-				isRunning: false,
-			}))
-		}
-	}
-
 	return (
 		<div className="App">
 			<div className="layer">
@@ -165,7 +185,6 @@ function App() {
 						}))
 					}
 				/>
-				,
 				<input
 					type="range"
 					name="numer-range"
@@ -179,46 +198,47 @@ function App() {
 						}))
 					}
 				/>
-				<input
-					type="number"
-					name="tempo-num"
-					id="tempo-num"
-					min="33"
-					max="333"
-					value={metronome.tempo}
-					onChange={(e) =>
-						setMetronome((args) => ({
-							...args,
-							tempo: +e.target.value,
-						}))
-					}
-				/>
-				<input
-					type="range"
-					name="tempo-range"
-					id="tempo-range"
-					min="33"
-					max="333"
-					value={metronome.tempo}
-					onChange={(e) =>
-						setMetronome((args) => ({
-							...args,
-							tempo: +e.target.value,
-						}))
-					}
-				/>
 			</div>
 
-			<br />
-			<br />
-			<br />
+			<div className="global-settings">
+				<div className="setting">
+					<input
+						type="number"
+						name="tempo-num"
+						id="tempo-num"
+						min="33"
+						max="333"
+						value={metronome.tempo}
+						onChange={(e) =>
+							setMetronome((args) => ({
+								...args,
+								tempo: +e.target.value,
+							}))
+						}
+					/>
+					<input
+						type="range"
+						name="tempo-range"
+						id="tempo-range"
+						min="33"
+						max="333"
+						value={metronome.tempo}
+						onChange={(e) =>
+							setMetronome((args) => ({
+								...args,
+								tempo: +e.target.value,
+							}))
+						}
+					/>
+				</div>
 
-			<div>
-				<button onClick={startMetronome}>start</button>
-				<button onClick={stopMetronome}>stop</button>
-				<button onClick={(e) => console.log(metronome)}>
-					show stats
-				</button>
+				<div>
+					<button onMouseDown={startMetronome}>start</button>
+					<button onMouseDown={stopMetronome}>stop</button>
+					<button onClick={(e) => console.log(metronome)}>
+						show stats
+					</button>
+				</div>
 			</div>
 		</div>
 	)

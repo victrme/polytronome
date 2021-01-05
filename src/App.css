@@ -1,87 +1,88 @@
 .App {
-  text-align: center;
+	text-align: center;
 }
 
 .App-logo {
-  height: 20vmin;
-  pointer-events: none;
+	height: 20vmin;
+	pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+	.App-logo {
+		animation: App-logo-spin infinite 20s linear;
+	}
 }
 
 .App {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+	background-color: #282c34;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	font-size: calc(10px + 2vmin);
+	color: white;
 }
 
 .App-link {
-  color: #61dafb;
+	color: #61dafb;
 }
 
 @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
 }
 
-
-
-
-
-
-
 h3 {
-  display: inline-block;
-  margin: 1em;
+	display: inline-block;
+	margin: 1em;
 }
 
 .clicks-wrap {
-  display: flex;
+	display: flex;
+	justify-content: space-between;
 }
 
 .click {
-  margin: 5px;
-  width: 20px;
-  height: 20px;
-  background-color: transparent;
-  border: 2px solid #fff;
-  border-radius: 20px;
+	margin: 5px;
+	width: 20px;
+	height: 20px;
+	background-color: transparent;
+	border: 2px solid #fff;
+	border-radius: 20px;
 }
 
 .click.on {
-  background-color: white;
+	background-color: white;
 }
 
 .setting {
-  display: flex;
-  align-items: center;
+	display: flex;
+	align-items: center;
 }
 
 .setting input[type='number'] {
-  width: 80px;
-  margin: 10px;
-  padding: 5px;
-  background-color: transparent;
-  border: none;
-  color: white;
-  font-weight: bolder;
-  font-size: 16px;
-  text-align: center;
+	width: 60px;
+	margin: 10px;
+	padding: 5px;
+	background-color: transparent;
+	border: none;
+	color: white;
+	font-weight: bolder;
+	font-size: 16px;
+	text-align: center;
 }
 
 .setting input[type='range'] {
-  width: 80px;
+	width: 80px;
+}
+
+.global-settings {
+	margin: 2em 0;
+	display: flex;
+	flex-direction: column;
 }
