@@ -11,7 +11,11 @@ function App() {
 			},
 			{
 				time: 1,
-				beats: 5,
+				beats: 6,
+			},
+			{
+				time: 1,
+				beats: 9,
 			},
 		],
 		startTime: 0,
@@ -35,8 +39,6 @@ function App() {
 			(current.layers[index].beats / current.numer) * current.tempo
 		const tempoMs = ratioedBPM < 1 ? 1800 : BPMtoMs(ratioedBPM)
 		const timeoutDelay = nextDelay ? nextDelay : tempoMs
-
-		console.log(ratioedBPM, index)
 
 		window.setTimeout(() => {
 			// "t_" for timeout
@@ -87,8 +89,22 @@ function App() {
 
 	function stopMetronome() {
 		if (metronome.isRunning === true) {
+			//travail en cours
+
+			type Layers = {
+				beats: number
+				time: number
+			}[]
+
+			let newlayers: Layers = []
+			metronome.layers.forEach((l) => {
+				l.time = 0
+				newlayers.push(l)
+			})
+
 			setMetronome((args) => ({
 				...args,
+				layers: newlayers,
 				isRunning: false,
 				startTime: 0,
 			}))
@@ -123,81 +139,47 @@ function App() {
 		return <div>{parent}</div>
 	}
 
-	function LayerSettings() {
-		const change = (e: any, i: number) => {
-			let tempLayers = metronome.layers
-			tempLayers[i].beats = +e.target.value
+	const changeLayerSettings = (e: any, i: number) => {
+		let array = metronome.layers
+		array[i].beats = +e.target.value
 
-			setMetronome((a) => ({
-				...a,
-				layers: tempLayers,
-			}))
-		}
-
-		let inputs: JSX.Element[] = []
-
-		for (let index = 0; index < metronome.layers.length; index++) {
-			let layer = metronome.layers[index]
-
-			console.log(layer)
-
-			inputs.push(
-				<input
-					type="number"
-					name="numer-num"
-					min="2"
-					max="16"
-					value={layer.beats}
-					onChange={(e) => change(e, index)}
-				/>,
-				<input
-					type="range"
-					name="numer-range"
-					min="2"
-					max="16"
-					value={layer.beats}
-					onChange={(e) => change(e, index)}
-				/>
-			)
-		}
-
-		return <div className="setting">{inputs}</div>
+		setMetronome((prev) => ({
+			...prev,
+			layers: array,
+		}))
 	}
 
 	return (
 		<div className="App">
-			<div className="layer">
+			<div className="layers">
 				<LayerClicks />
-				{/* <LayerSettings /> */}
 			</div>
 
-			<div className="setting">
-				<input
-					type="number"
-					name="numer-num"
-					min="2"
-					max="16"
-					value={metronome.numer}
-					onChange={(e) =>
-						setMetronome((args) => ({
-							...args,
-							numer: +e.target.value,
-						}))
-					}
-				/>
-				<input
-					type="range"
-					name="numer-range"
-					min="2"
-					max="16"
-					value={metronome.numer}
-					onChange={(e) =>
-						setMetronome((args) => ({
-							...args,
-							numer: +e.target.value,
-						}))
-					}
-				/>
+			<div className="layers-settings">
+				{metronome.layers.map((layer, i) => {
+					return (
+						<div className="setting" key={i}>
+							<input
+								type="number"
+								name="numer-num"
+								min="2"
+								max="16"
+								value={layer.beats}
+								key={'number-' + i}
+								onChange={(e) => changeLayerSettings(e, i)}
+							/>
+							<input
+								type="range"
+								name="numer-range"
+								min="2"
+								max="16"
+								value={layer.beats}
+								key={'range-' + i}
+								onChange={(e) => changeLayerSettings(e, i)}
+							/>
+						</div>
+					)
+				})}
 			</div>
 
 			<div className="global-settings">
