@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react'
+import Pizzicato from 'pizzicato'
 import './App.css'
 
 function App() {
@@ -12,10 +13,6 @@ function App() {
 			{
 				time: 1,
 				beats: 6,
-			},
-			{
-				time: 1,
-				beats: 9,
 			},
 		],
 		startTime: 0,
@@ -56,6 +53,18 @@ function App() {
 				...args,
 				layers: array,
 			}))
+
+			//play sound for 20ms
+			const sineWave = new Pizzicato.Sound({
+				source: 'wave',
+				options: {
+					attack: 0,
+					frequency: 50 + 50 * index,
+				},
+			})
+
+			sineWave.play()
+			setTimeout(() => sineWave.stop(), 20)
 
 			//calculate latency
 			const latencyOffset =
