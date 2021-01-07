@@ -149,9 +149,32 @@ function App() {
 	}
 
 	const changeLayerSettings = (e: any, i: number) => {
+		const val = +e.target.value
 		let array = metronome.layers
-		array[i].beats = +e.target.value
 
+		array[i].beats = val > 1 ? val : 2
+
+		setMetronome((prev) => ({
+			...prev,
+			layers: array,
+		}))
+	}
+
+	const removeLayer = (index: number) => {
+		let array = metronome.layers
+
+		if (array.length > 1) {
+			array.splice(index, 1)
+			setMetronome((prev) => ({
+				...prev,
+				layers: array,
+			}))
+		}
+	}
+
+	const addLayer = () => {
+		let array = metronome.layers
+		array.push({ beats: 4, time: 1 })
 		setMetronome((prev) => ({
 			...prev,
 			layers: array,
@@ -160,75 +183,93 @@ function App() {
 
 	return (
 		<div className="App">
+			<div className="title">
+				<h1>Poly-tronome</h1>
+				<p>Train your polyrythms</p>
+			</div>
+
 			<div className="layers">
 				<LayerClicks />
 			</div>
 
-			<div className="layers-settings">
-				{metronome.layers.map((layer, i) => {
-					return (
-						<div className="setting" key={i}>
-							<input
-								type="number"
-								name="numer-num"
-								min="2"
-								max="16"
-								value={layer.beats}
-								key={'number-' + i}
-								onChange={(e) => changeLayerSettings(e, i)}
-							/>
-							<input
-								type="range"
-								name="numer-range"
-								min="2"
-								max="16"
-								value={layer.beats}
-								key={'range-' + i}
-								onChange={(e) => changeLayerSettings(e, i)}
-							/>
-						</div>
-					)
-				})}
-			</div>
+			<div className="settings-wrap">
+				<div className="layers-settings">
+					{metronome.layers.map((layer, i) => {
+						return (
+							<div className="setting" key={i}>
+								<input
+									type="number"
+									name="numer-num"
+									min="2"
+									max="16"
+									value={layer.beats}
+									key={'number-' + i}
+									onChange={(e) => changeLayerSettings(e, i)}
+								/>
+								<input
+									type="range"
+									name="numer-range"
+									min="2"
+									max="16"
+									value={layer.beats}
+									key={'range-' + i}
+									onChange={(e) => changeLayerSettings(e, i)}
+								/>
 
-			<div className="global-settings">
-				<div className="setting">
-					<input
-						type="number"
-						name="tempo-num"
-						id="tempo-num"
-						min="33"
-						max="333"
-						value={metronome.tempo}
-						onChange={(e) =>
-							setMetronome((args) => ({
-								...args,
-								tempo: +e.target.value,
-							}))
-						}
-					/>
-					<input
-						type="range"
-						name="tempo-range"
-						id="tempo-range"
-						min="33"
-						max="333"
-						value={metronome.tempo}
-						onChange={(e) =>
-							setMetronome((args) => ({
-								...args,
-								tempo: +e.target.value,
-							}))
-						}
-					/>
+								<button
+									className="suppr-btn"
+									onClick={(e) => removeLayer(i)}
+								>
+									&times;
+								</button>
+							</div>
+						)
+					})}
+
+					<div className="add-layer">
+						<button onClick={addLayer}>+</button>
+					</div>
 				</div>
 
-				<div>
-					<button onMouseDown={startMetronome}>start</button>
-					<button onMouseDown={stopMetronome}>stop</button>
-					<button onClick={(e) => console.log(metronome)}>
-						show stats
-					</button>
+				<div className="global-settings">
+					<div className="setting">
+						<input
+							type="number"
+							name="tempo-num"
+							id="tempo-num"
+							min="33"
+							max="333"
+							value={metronome.tempo}
+							onChange={(e) =>
+								setMetronome((args) => ({
+									...args,
+									tempo: +e.target.value,
+								}))
+							}
+						/>
+						<input
+							type="range"
+							name="tempo-range"
+							id="tempo-range"
+							min="33"
+							max="333"
+							value={metronome.tempo}
+							onChange={(e) =>
+								setMetronome((args) => ({
+									...args,
+									tempo: +e.target.value,
+								}))
+							}
+						/>
+					</div>
+
+					<div>
+						<button onMouseDown={startMetronome}>start</button>
+						<button onMouseDown={stopMetronome}>stop</button>
+						<button onClick={(e) => console.log(metronome)}>
+							show stats
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>
