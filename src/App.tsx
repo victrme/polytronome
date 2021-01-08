@@ -2,16 +2,26 @@ import React, { useRef, useState } from 'react'
 import Pizzicato from 'pizzicato'
 import './App.css'
 
+// type Metronome = {
+// 	layers: {
+// 		time: number
+// 		beats: number
+// 	}[]
+// 	numer: number
+// 	startTime: number
+// 	isRunning: boolean
+// 	tempo: number
+// }
+
 function App() {
 	const [metronome, setMetronome] = useState({
-		numer: 4,
 		layers: [
 			{
-				time: 1,
+				time: 0,
 				beats: 4,
 			},
 			{
-				time: 1,
+				time: 0,
 				beats: 6,
 			},
 		],
@@ -32,26 +42,29 @@ function App() {
 		//timeout delay control
 		//prevent 0 BPM from looping too fast
 
-		const ratioedBPM =
-			(current.layers[index].beats / current.numer) * current.tempo
+		const ratioedBPM = (current.layers[index].beats / 4) * current.tempo
 		const tempoMs = ratioedBPM < 1 ? 1800 : BPMtoMs(ratioedBPM)
 		const timeoutDelay = nextDelay ? nextDelay : tempoMs
 
-		window.setTimeout(() => {
+		const timeoutID = window.setTimeout(() => {
 			// "t_" for timeout
 			// because current is now too old
 			const t_current = metronomeRef.current
 
-			//update layers
-			let array = t_current.layers
-			const that = array[index]
+			//quit recursion if stopped or removed
+			if (!t_current.isRunning || t_current.layers[index] === undefined) {
+				clearTimeout(timeoutID)
+				return
+			}
 
-			//if more than beats, start over
-			array[index].time = that.time >= that.beats ? 1 : that.time + 1
-
-			setMetronome((args) => ({
-				...args,
-				layers: array,
+			setMetronome((prev) => ({
+				...prev,
+				//return to 1 if 'time' above 'beats'
+				layers: prev.layers.map((x, i) =>
+					i === index
+						? { ...x, time: x.time >= x.beats ? 1 : x.time + 1 }
+						: x
+				),
 			}))
 
 			//play sound for 20ms
@@ -73,33 +86,13 @@ function App() {
 					: 0
 
 			//recursion
-			if (t_current.isRunning === false) return
-			else metronomeInterval(tempoMs - latencyOffset, index)
+			metronomeInterval(tempoMs - latencyOffset, index)
 		}, timeoutDelay)
 	}
 
-	function startMetronome() {
-		if (metronome.isRunning === false) {
-			//start a metronome for each layer
-			metronome.layers
-				.map(
-					(layer) => (layer.beats / metronome.numer) * metronome.tempo
-				)
-				.forEach((delay, i) => metronomeInterval(BPMtoMs(delay), i))
-
-			//update to start state
-			setMetronome((args) => ({
-				...args,
-				isRunning: true,
-				startTime: Date.now(),
-			}))
-		}
-	}
-
-	function stopMetronome() {
-		if (metronome.isRunning === true) {
-			//travail en cours
-
+	function launchMetronome() {
+		//stops
+		if (metronome.isRunning) {
 			type Layers = {
 				beats: number
 				time: number
@@ -116,6 +109,19 @@ function App() {
 				layers: newlayers,
 				isRunning: false,
 				startTime: 0,
+			}))
+
+			//starts
+		} else {
+			metronome.layers
+				.map((layer) => (layer.beats / 4) * metronome.tempo)
+				.forEach((delay, i) => metronomeInterval(BPMtoMs(delay), i))
+
+			//update to start state
+			setMetronome((args) => ({
+				...args,
+				isRunning: true,
+				startTime: Date.now(),
 			}))
 		}
 	}
@@ -174,11 +180,14 @@ function App() {
 
 	const addLayer = () => {
 		let array = metronome.layers
-		array.push({ beats: 4, time: 1 })
-		setMetronome((prev) => ({
-			...prev,
-			layers: array,
-		}))
+
+		if (array.length < 4) {
+			array.push({ beats: 4, time: 1 })
+			setMetronome((prev) => ({
+				...prev,
+				layers: array,
+			}))
+		}
 	}
 
 	return (
@@ -237,8 +246,8 @@ function App() {
 							type="number"
 							name="tempo-num"
 							id="tempo-num"
-							min="33"
-							max="333"
+							min="20"
+							max="600"
 							value={metronome.tempo}
 							onChange={(e) =>
 								setMetronome((args) => ({
@@ -251,8 +260,8 @@ function App() {
 							type="range"
 							name="tempo-range"
 							id="tempo-range"
-							min="33"
-							max="333"
+							min="20"
+							max="600"
 							value={metronome.tempo}
 							onChange={(e) =>
 								setMetronome((args) => ({
@@ -264,10 +273,8 @@ function App() {
 					</div>
 
 					<div>
-						<button onMouseDown={startMetronome}>start</button>
-						<button onMouseDown={stopMetronome}>stop</button>
-						<button onClick={(e) => console.log(metronome)}>
-							show stats
+						<button onMouseDown={launchMetronome}>
+							{metronome.isRunning ? 'Stop' : 'Start'}
 						</button>
 					</div>
 				</div>
