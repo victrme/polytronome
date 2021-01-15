@@ -3,14 +3,14 @@ import Pizzicato from 'pizzicato'
 import './App.css'
 
 // type Metronome = {
-// 	layers: {
-// 		time: number
-// 		beats: number
-// 	}[]
-// 	numer: number
-// 	startTime: number
-// 	isRunning: boolean
-// 	tempo: number
+// layers: {
+// time: number
+// beats: number
+// }[]
+// numer: number
+// startTime: number
+// isRunning: boolean
+// tempo: number
 // }
 
 function App(): JSX.Element {
@@ -113,10 +113,9 @@ function App(): JSX.Element {
 
 			//starts
 		} else {
-
 			metronome.layers
 				.map((layer) => BPMtoMs((layer.beats / 4) * metronome.tempo))
-				.forEach((d, i) => metronomeInterval(d, i))	
+				.forEach((d, i) => metronomeInterval(d, i))
 
 			//update to start state
 			setMetronome((args) => ({
@@ -125,34 +124,6 @@ function App(): JSX.Element {
 				startTime: Date.now(),
 			}))
 		}
-	}
-
-	function LayerClicks() {
-		let parent: JSX.Element[] = []
-
-		//loop for each time signatures
-		for (let k in metronome.layers) {
-			//
-			//add clicks for each layers
-			let children: JSX.Element[] = []
-			const currLayer = metronome.layers[+k]
-
-			for (let j = 0; j < currLayer.beats; j++) {
-				//
-				//update click when time changes
-				const onOff = j <= currLayer.time - 1 ? 'click on' : 'click'
-				children.push(<div key={j} className={onOff} />)
-			}
-
-			//wrap in rows & return
-			parent.push(
-				<div key={+k} className="clicks-wrap">
-					{children}
-				</div>
-			)
-		}
-
-		return <div>{parent}</div>
 	}
 
 	const changeLayerSettings = (e: any, i: number) => {
@@ -199,7 +170,28 @@ function App(): JSX.Element {
 			</div>
 
 			<div className="layers">
-				<LayerClicks />
+				{metronome.layers.map((layer, jj) => {
+					//add clicks for each layers
+
+					const children: JSX.Element[] = []
+					for (let kk = 0; kk < layer.beats; kk++)
+					
+						children.push(<div
+							key={kk}
+							className={
+								+kk <= layer.time - 1
+									? 'click on'
+									: 'click'
+							}
+						/>)
+
+					//wrap in rows & return
+					return (
+						<div key={jj} className="clicks-wrap">
+							{children}
+						</div>
+					)
+				})}
 			</div>
 
 			<div className="settings-wrap">
