@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import Pizzicato from 'pizzicato'
 import './App.css'
 
@@ -13,15 +13,15 @@ import './App.css'
 // 	tempo: number
 // }
 
-function App() {
+function App(): JSX.Element {
 	const [metronome, setMetronome] = useState({
 		layers: [
 			{
-				time: 0,
+				time: 1,
 				beats: 4,
 			},
 			{
-				time: 0,
+				time: 1,
 				beats: 6,
 			},
 		],
@@ -30,7 +30,7 @@ function App() {
 		tempo: 120,
 	})
 
-	const BPMtoMs = (bpm: number) => Math.floor(60000 / bpm)
+	const BPMtoMs = (bpm: number) => 60000 / bpm
 
 	//utiliser ref pour les settimeout async
 	const metronomeRef = useRef(metronome)
@@ -100,7 +100,7 @@ function App() {
 
 			let newlayers: Layers = []
 			metronome.layers.forEach((l) => {
-				l.time = 0
+				l.time = 1
 				newlayers.push(l)
 			})
 
@@ -113,9 +113,10 @@ function App() {
 
 			//starts
 		} else {
+
 			metronome.layers
-				.map((layer) => (layer.beats / 4) * metronome.tempo)
-				.forEach((delay, i) => metronomeInterval(BPMtoMs(delay), i))
+				.map((layer) => BPMtoMs((layer.beats / 4) * metronome.tempo))
+				.forEach((d, i) => metronomeInterval(d, i))	
 
 			//update to start state
 			setMetronome((args) => ({
