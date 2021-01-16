@@ -13,6 +13,11 @@ import './App.css'
 // tempo: number
 // }
 
+type Layers = {
+	beats: number
+	time: number
+}[]
+
 function App(): JSX.Element {
 	const [metronome, setMetronome] = useState({
 		layers: [
@@ -22,33 +27,34 @@ function App(): JSX.Element {
 			},
 			{
 				time: 1,
-				beats: 6,
+				beats: 5,
 			},
 		],
 		startTime: 0,
 		isRunning: false,
-		tempo: 120,
+		tempo: 80,
+		tap: [
+			{
+				date: 0,
+				wait: 0,
+			},
+		],
 	})
-
-	const BPMtoMs = (bpm: number) => 60000 / bpm
 
 	//utiliser ref pour les settimeout async
 	const metronomeRef = useRef(metronome)
 	metronomeRef.current = metronome
 
+	const calculateTempoMs = (beats: number, tempo: number) =>
+		60000 / ((beats / 4) * tempo)
+
 	function metronomeInterval(nextDelay: number, index: number) {
-		const current = metronomeRef.current
-
-		//timeout delay control
-		//prevent 0 BPM from looping too fast
-
-		const ratioedBPM = (current.layers[index].beats / 4) * current.tempo
-		const tempoMs = ratioedBPM < 1 ? 1800 : BPMtoMs(ratioedBPM)
-		const timeoutDelay = nextDelay ? nextDelay : tempoMs
+		const tempoMs = calculateTempoMs(
+			metronomeRef.current.layers[index].beats,
+			metronomeRef.current.tempo
+		)
 
 		const timeoutID = window.setTimeout(() => {
-			// "t_" for timeout
-			// because current is now too old
 			const t_current = metronomeRef.current
 
 			//quit recursion if stopped or removed
@@ -57,9 +63,9 @@ function App(): JSX.Element {
 				return
 			}
 
-			setMetronome((prev) => ({
+			//return to 1 if 'time' above 'beats'
+			setMetronome(prev => ({
 				...prev,
-				//return to 1 if 'time' above 'beats'
 				layers: prev.layers.map((x, i) =>
 					i === index
 						? { ...x, time: x.time >= x.beats ? 1 : x.time + 1 }
@@ -67,17 +73,20 @@ function App(): JSX.Element {
 				),
 			}))
 
-			//play sound for 20ms
-			const sineWave = new Pizzicato.Sound({
+			//play sound
+			const wave = new Pizzicato.Sound({
 				source: 'wave',
 				options: {
-					attack: 0,
-					frequency: 50 + 50 * index,
+					attack: 0.01,
+					release: 0.2,
+					frequency: 100 + 50 * index,
 				},
 			})
-
-			sineWave.play()
-			setTimeout(() => sineWave.stop(), 20)
+			wave.play()
+			wave.on(
+				'play',
+				setTimeout(() => wave.stop(), 20)
+			)
 
 			//calculate latency
 			const latencyOffset =
@@ -87,38 +96,30 @@ function App(): JSX.Element {
 
 			//recursion
 			metronomeInterval(tempoMs - latencyOffset, index)
-		}, timeoutDelay)
+		}, nextDelay)
 	}
 
-	function launchMetronome() {
-		//stops
-		if (metronome.isRunning) {
-			type Layers = {
-				beats: number
-				time: number
-			}[]
-
-			let newlayers: Layers = []
-			metronome.layers.forEach((l) => {
+	function stopMetronome(stops: boolean) {
+		if (stops) {
+			const newlayers: Layers = []
+			metronome.layers.forEach(l => {
 				l.time = 1
 				newlayers.push(l)
 			})
 
-			setMetronome((args) => ({
+			setMetronome(args => ({
 				...args,
 				layers: newlayers,
 				isRunning: false,
 				startTime: 0,
 			}))
-
-			//starts
 		} else {
 			metronome.layers
-				.map((layer) => BPMtoMs((layer.beats / 4) * metronome.tempo))
+				.map(layer => calculateTempoMs(layer.beats, metronome.tempo))
 				.forEach((d, i) => metronomeInterval(d, i))
 
 			//update to start state
-			setMetronome((args) => ({
+			setMetronome(args => ({
 				...args,
 				isRunning: true,
 				startTime: Date.now(),
@@ -126,13 +127,28 @@ function App(): JSX.Element {
 		}
 	}
 
-	const changeLayerSettings = (e: any, i: number) => {
+	const changeTempo = (e: any) => {
+		let newlayers: Layers = []
+		metronome.layers.forEach(l => {
+			l.time = 1
+			newlayers.push(l)
+		})
+
+		setMetronome(args => ({
+			...args,
+			tempo: +e.target.value,
+			layers: newlayers,
+		}))
+	}
+
+	const changeLayerBeats = (e: any, i: number) => {
 		const val = +e.target.value
 		let array = metronome.layers
 
+		// minimum 2 beats
 		array[i].beats = val > 1 ? val : 2
 
-		setMetronome((prev) => ({
+		setMetronome(prev => ({
 			...prev,
 			layers: array,
 		}))
@@ -143,10 +159,14 @@ function App(): JSX.Element {
 
 		if (array.length > 1) {
 			array.splice(index, 1)
-			setMetronome((prev) => ({
+			setMetronome(prev => ({
 				...prev,
 				layers: array,
 			}))
+
+			if (index === array.length - 1) {
+				stopMetronome(true)
+			}
 		}
 	}
 
@@ -155,11 +175,58 @@ function App(): JSX.Element {
 
 		if (array.length < 4) {
 			array.push({ beats: 4, time: 1 })
-			setMetronome((prev) => ({
+			setMetronome(prev => ({
 				...prev,
 				layers: array,
 			}))
 		}
+	}
+
+	const tapTempo = () => {
+		const tap = metronome.tap
+
+		// Reset tap after 2s
+		if (Date.now() - tap[0].date > 2000) {
+			setMetronome(prev => ({
+				...prev,
+				tap: [
+					{
+						date: Date.now(),
+						wait: 0,
+					},
+				],
+			}))
+		} else {
+			//
+			// Wait is offset between two taps
+			tap.unshift({
+				date: Date.now(),
+				wait: Date.now() - metronome.tap[0].date,
+			})
+
+			// Array of tap offsets
+			const cumul: number[] = []
+
+			// Removes first, only keeps 6 at a time
+			tap.forEach((each, i) => {
+				if (each.wait > 0) cumul.push(each.wait)
+				if (each.wait === 0 || i === 6) tap.pop()
+			})
+
+			setMetronome(prev => ({
+				...prev,
+				tap,
+
+				// Get average tempo
+				tempo: Math.floor(
+					60000 /
+						(cumul.reduce((a: number, b: number) => a + b) /
+							cumul.length)
+				),
+			}))
+		}
+
+		console.log(tap)
 	}
 
 	return (
@@ -175,15 +242,14 @@ function App(): JSX.Element {
 
 					const children: JSX.Element[] = []
 					for (let kk = 0; kk < layer.beats; kk++)
-					
-						children.push(<div
-							key={kk}
-							className={
-								+kk <= layer.time - 1
-									? 'click on'
-									: 'click'
-							}
-						/>)
+						children.push(
+							<div
+								key={kk}
+								className={
+									+kk <= layer.time - 1 ? 'click on' : 'click'
+								}
+							/>
+						)
 
 					//wrap in rows & return
 					return (
@@ -206,7 +272,7 @@ function App(): JSX.Element {
 									max="16"
 									value={layer.beats}
 									key={'number-' + i}
-									onChange={(e) => changeLayerSettings(e, i)}
+									onChange={e => changeLayerBeats(e, i)}
 								/>
 								<input
 									type="range"
@@ -215,12 +281,12 @@ function App(): JSX.Element {
 									max="16"
 									value={layer.beats}
 									key={'range-' + i}
-									onChange={(e) => changeLayerSettings(e, i)}
+									onChange={e => changeLayerBeats(e, i)}
 								/>
 
 								<button
 									className="suppr-btn"
-									onClick={(e) => removeLayer(i)}
+									onClick={e => removeLayer(i)}
 								>
 									&times;
 								</button>
@@ -240,10 +306,10 @@ function App(): JSX.Element {
 							name="tempo-num"
 							id="tempo-num"
 							min="20"
-							max="600"
+							max="300"
 							value={metronome.tempo}
-							onChange={(e) =>
-								setMetronome((args) => ({
+							onChange={e =>
+								setMetronome(args => ({
 									...args,
 									tempo: +e.target.value,
 								}))
@@ -254,20 +320,23 @@ function App(): JSX.Element {
 							name="tempo-range"
 							id="tempo-range"
 							min="20"
-							max="600"
+							max="300"
 							value={metronome.tempo}
-							onChange={(e) =>
-								setMetronome((args) => ({
-									...args,
-									tempo: +e.target.value,
-								}))
-							}
+							onChange={e => changeTempo(e)}
 						/>
+						<button onClick={tapTempo}>tap</button>
 					</div>
 
 					<div>
-						<button onMouseDown={launchMetronome}>
+						<button
+							onMouseDown={() =>
+								stopMetronome(metronome.isRunning)
+							}
+						>
 							{metronome.isRunning ? 'Stop' : 'Start'}
+						</button>
+						<button onClick={() => console.log(metronome)}>
+							state data
 						</button>
 					</div>
 				</div>
