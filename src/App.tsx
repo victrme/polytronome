@@ -115,14 +115,11 @@ function App(): JSX.Element {
 					release: 0.01,
 
 					// WTF
-					frequency: 100 + id.charCodeAt(0) / 2,
+					frequency: -200 + id.charCodeAt(0) * 3,
 				},
 			})
 			wave.play()
-			wave.on(
-				'play',
-				setTimeout(() => wave.stop(), 20)
-			)
+			setTimeout(() => wave.stop(), 20)
 
 			// Calculate latency
 			const latencyOffset =
@@ -140,6 +137,7 @@ function App(): JSX.Element {
 			const newlayers: Layers = []
 			metronome.layers.forEach(l => {
 				l.time = 1
+				l.id = setRandomID()
 				newlayers.push(l)
 			})
 
