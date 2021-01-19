@@ -128,3 +128,9 @@ button.suppr-btn {
 	color: white;
 	font-size: 1em;
 }
+
+.note {
+	font-size: 16px;
+	width: 50px;
+	font-weight: bold;
+}
