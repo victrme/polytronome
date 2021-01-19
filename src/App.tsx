@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import Pizzicato from 'pizzicato'
+import MoreSettings from './MoreSettings'
 import './App.css'
 
 function App(): JSX.Element {
@@ -30,19 +31,26 @@ function App(): JSX.Element {
 		frequency: 0,
 	}
 
+	const [soundOptions, setSoundOptions] = useState({
+		type: 'sine',
+		attack: 0.01,
+		release: 1,
+		volume: 0.6,
+	})
+
 	const [metronome, setMetronome] = useState({
 		layers: [
 			{
 				id: setRandomID(),
 				beats: 4,
 				time: 1,
-				frequency: 0,
+				frequency: 1,
 			},
 			{
 				id: setRandomID(),
 				beats: 5,
 				time: 1,
-				frequency: 1,
+				frequency: 5,
 			},
 		],
 		startTime: 0,
@@ -99,6 +107,14 @@ function App(): JSX.Element {
 		return xx
 	}
 
+	function changeSoundOptions(e: any, which: string) {
+		const opt = soundOptions
+		const val = e.target.value
+		opt[which] = which === 'type' ? val : +val
+
+		setSoundOptions(opt)
+	}
+
 	/**
 	 *
 	 * Main functions
@@ -133,9 +149,7 @@ function App(): JSX.Element {
 			const wave = new Pizzicato.Sound({
 				source: 'wave',
 				options: {
-					type: 'sine',
-					attack: 0.001,
-					release: 0.01,
+					...soundOptions,
 					frequency: Notes[layer.frequency][1],
 				},
 			})
@@ -335,6 +349,7 @@ function App(): JSX.Element {
 									key={'freq-range-' + i}
 									min="0"
 									max="10"
+									value={layer.frequency}
 									onChange={e => changeFrequency(e, i)}
 								/>
 
@@ -354,6 +369,11 @@ function App(): JSX.Element {
 				</div>
 
 				<div className="global-settings">
+					<MoreSettings
+						state={soundOptions}
+						change={changeSoundOptions}
+					/>
+
 					<div className="setting">
 						<input
 							type="number"
