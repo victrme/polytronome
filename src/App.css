@@ -1,3 +1,4 @@
+
 .App {
 	text-align: center;
 }
@@ -50,7 +51,9 @@ h1 {
 }
 
 .layers {
-	margin: 4em;
+	margin: 2em;
+	width: 80vw;
+	max-width: 700px;
 }
 
 .clicks-wrap {
@@ -60,15 +63,35 @@ h1 {
 
 .click {
 	margin: 5px;
-	width: 20px;
+	width: 100%;
 	height: 20px;
 	background-color: rgba(0, 0, 0, 0.2);
-	border-radius: 20px;
+	border-radius: 5px;
 }
 
 .click.on {
 	background-color: white;
 }
+
+
+
+.segment {
+	display: flex;
+	margin: 2em;
+}
+
+.segment-child {
+	background-color: rgba(12,12,12,.2);
+	margin: 5px;
+	height: 20px;
+
+}
+
+
+
+
+
+
 
 .setting {
 	display: flex;
@@ -76,29 +99,29 @@ h1 {
 }
 
 button {
-	border: none;
-	background: transparent;
-	padding: 10px 20px;
+	padding: 10px 40px;
 	margin: 0 20px;
+	border: none;
+	background: #455A64;
+	border-radius: 2em;
+	font-size: 16px;
+	font-weight: bold;
 	color: white;
-	font-size: 20px;
 	transition: all 0.2s;
+	cursor: pointer;
 }
 
 button:hover {
-	background: rgba(12, 12, 12, 0.2);
+	background: #35464e;
 }
 
 button:active {
-	background: rgba(12, 12, 12, 0.4);
-	outline: transparent;
+	background:#222c31;
+	color: #fffa;
 }
 
-button:focus {
-	outline: transparent;
-}
 
-.setting input[type='number'] {
+.setting input {
 	width: 60px;
 	margin: 10px;
 	padding: 5px;
@@ -116,8 +139,49 @@ button:focus {
 	padding: 5px;
 }
 
+.setting select {
+	padding: 5px;
+	margin: 10px;
+}
+
+.layers-settings {
+	border-radius: 1em;
+	background-color: darkslategray;
+	padding: 1em 0;
+}
+
+.layers-settings button {
+	background-color: rgba(0, 0, 0, .2);
+}
+
+.layers-settings input:not(input[type="range"]) {
+	font-size: 40px;
+	width: 100px;
+}
+
+.layers-settings .add-layer {
+	padding-top: 1em;
+}
+
+.setting.tempo {
+	border-radius: 1em;
+	background-color: darkslategrey;
+	justify-content: space-around;
+	align-items: center;
+	padding-bottom: 1em;
+	margin: 2em;
+}
+
+.setting.tempo button {
+	background-color: rgba(0, 0, 0, .2);
+}
+
+.setting.tempo input[type="number"] {
+	font-size: 40px;
+	width: 100px;
+}
+
 .global-settings {
-	margin: 2em 0;
 	display: flex;
 	flex-direction: column;
 }

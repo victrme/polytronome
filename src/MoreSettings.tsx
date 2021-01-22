@@ -1,6 +1,8 @@
 const moreSettings = ({ state, change }) => {
 	return (
 		<div className="setting">
+			<h3>Click Sound</h3>
+
 			<label htmlFor="wavetype">
 				<span>Waveform</span>
 				<select

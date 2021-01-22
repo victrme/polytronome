@@ -32,10 +32,10 @@ function App(): JSX.Element {
 	}
 
 	const [soundOptions, setSoundOptions] = useState({
-		type: 'sine',
+		type: 'sawtooth',
 		attack: 0.01,
 		release: 1,
-		volume: 0.6,
+		volume: 0.1,
 	})
 
 	const [metronome, setMetronome] = useState({
@@ -68,26 +68,6 @@ function App(): JSX.Element {
 	const metronomeRef = useRef(metronome)
 	metronomeRef.current = metronome
 
-	// const [moreSettings, setMoreSettings] = useState({
-	// 	theme: {
-	// 		current: 0,
-	// 		name: ['dark', 'light', 'coffee', 'contrast'],
-	// 	},
-	// 	sound: {
-	// 		layersDiff: true,
-	// 		options: {
-	// 			type: 'sine',
-	// 			attack: 0.001,
-	// 			release: 0.01,
-	// 			frequency: 150,
-	// 		},
-	// 	},
-	// 	fullscreen: false,
-	// 	unlimited: false,
-	// })
-	// const moreSettingsRef = useRef(moreSettings)
-	// moreSettingsRef.current = moreSettings
-
 	/**
 	 *
 	 * Small functions
@@ -114,6 +94,63 @@ function App(): JSX.Element {
 
 		setSoundOptions(opt)
 	}
+
+	function CreateSegment() {
+		function getSegmentCuts() {
+			let division: number[] = []
+
+			metronome.layers.forEach(lay => {
+				for (let k = 1; k < lay.beats; k++) {
+					division.push(k / lay.beats)
+				}
+			})
+
+			return [...new Set(division)].sort()
+		}
+
+		let spans: JSX.Element[] = []
+		const division = getSegmentCuts()
+		const width = 300
+
+		for (let i = 0; i < division.length; i++) {
+			let size = 0
+
+			if (i === 0) {
+				size = division[i] * width
+			} else if (i === division.length) {
+				size = (1 - division[i]) * width
+			} else {
+				size = (division[i + 1] - division[i]) * width
+			}
+
+			spans.push(
+				<span
+					key={spans.length + 1}
+					className="segment-child"
+					style={{ width: size }}
+				/>
+			)
+		}
+
+		return <div className="segment">{spans}</div>
+	}
+
+	// let monworker: Worker
+
+	// function changeWorkerTest(which: 'start' | 'stop') {
+	// 	if (which === 'start') {
+	// 		monworker = new Worker(`${process.env.PUBLIC_URL}/worker.js`)
+	// 		monworker.postMessage(calculateTempoMs(4, metronome.tempo))
+
+	// 		monworker.onmessage = function (e) {
+	// 			console.log('timeoutID: ', e.data)
+	// 		}
+	// 	}
+
+	// 	if (which === 'stop' && monworker !== undefined) {
+	// 		monworker.terminate()
+	// 	}
+	// }
 
 	/**
 	 *
@@ -291,6 +328,8 @@ function App(): JSX.Element {
 				<p>Train your polyrythms</p>
 			</div>
 
+			<CreateSegment />
+
 			<div className="layers">
 				{metronome.layers.map((layer, jj) => {
 					// Add clicks for each layers
@@ -364,31 +403,24 @@ function App(): JSX.Element {
 					})}
 
 					<div className="add-layer">
-						<button onClick={() => updateLayer('add')}>+</button>
+						<button onClick={() => updateLayer('add')}>
+							add layer
+						</button>
 					</div>
 				</div>
 
 				<div className="global-settings">
-					<MoreSettings
+					{/* <MoreSettings
 						state={soundOptions}
 						change={changeSoundOptions}
-					/>
+					/> */}
 
-					<div className="setting">
-						<input
-							type="number"
-							name="tempo-num"
-							id="tempo-num"
-							min="20"
-							max="300"
-							value={metronome.tempo}
-							onChange={e =>
-								setMetronome(args => ({
-									...args,
-									tempo: +e.target.value,
-								}))
-							}
-						/>
+					<div className="setting tempo">
+						<div>
+							<h3>Tempo</h3>
+							<button onClick={tapTempo}>tap</button>
+						</div>
+
 						<input
 							type="range"
 							name="tempo-range"
@@ -403,16 +435,36 @@ function App(): JSX.Element {
 								}))
 							}
 						/>
-						<button onClick={tapTempo}>tap</button>
+						<input
+							type="number"
+							name="tempo-num"
+							id="tempo-num"
+							min="20"
+							max="300"
+							value={metronome.tempo}
+							onChange={e =>
+								setMetronome(args => ({
+									...args,
+									tempo: +e.target.value,
+								}))
+							}
+						/>
 					</div>
 
 					<div>
 						<button onMouseDown={launchMetronome}>
 							{metronome.isRunning ? 'Stop' : 'Start'}
 						</button>
-						<button onClick={() => console.log(metronome)}>
+
+						{/* <button onClick={() => console.log(metronome)}>
 							state data
+						</button> */
+						/* <button onClick={() => changeWorkerTest('start')}>
+							start Worker Test
 						</button>
+						<button onClick={() => changeWorkerTest('stop')}>
+							stop Worker Test
+						</button> */}
 					</div>
 				</div>
 			</div>
