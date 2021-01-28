@@ -41,6 +41,15 @@ function App(): JSX.Element {
 
 	const [segmentCount, setSegmentCount] = useState(0)
 
+	const [moreSettings, setMoreSettings] = useState({
+		theme: {
+			current: 0,
+			list: ['lightgreen', 'dark', 'deep dark', 'coffee'],
+		},
+
+		segment: false,
+	})
+
 	const [metronome, setMetronome] = useState({
 		layers: [
 			{
@@ -73,6 +82,9 @@ function App(): JSX.Element {
 
 	const segmentCountRef = useRef(segmentCount)
 	segmentCountRef.current = segmentCount
+
+	const moreSettingsRef = useRef(moreSettings)
+	moreSettingsRef.current = moreSettings
 
 	/**
 	 *
@@ -130,23 +142,6 @@ function App(): JSX.Element {
 		})
 	}, [])
 
-	// let monworker: Worker
-
-	// function changeWorkerTest(which: 'start' | 'stop') {
-	// 	if (which === 'start') {
-	// 		monworker = new Worker(`${process.env.PUBLIC_URL}/worker.js`)
-	// 		monworker.postMessage(calculateTempoMs(4, metronome.tempo))
-
-	// 		monworker.onmessage = function (e) {
-	// 			console.log('timeoutID: ', e.data)
-	// 		}
-	// 	}
-
-	// 	if (which === 'stop' && monworker !== undefined) {
-	// 		monworker.terminate()
-	// 	}
-	// }
-
 	//
 	//
 	// Main functions
@@ -177,24 +172,16 @@ function App(): JSX.Element {
 				),
 			}))
 
-			//
-			//
-			//
-
-			let count = 0
-			const allAtOneBeat = metronome.layers.every(l => l.time === 1)
-			const oneAtLastBeat = layer.time === layer.beats
-
-			if (allAtOneBeat) count = 1
-			else if (oneAtLastBeat) count = 0
-			else count = segmentCountRef.current + 1
-			console.log(count)
-
-			setSegmentCount(count)
-
-			//
-			//
-			//
+			// Update Segment Count
+			if (moreSettingsRef.current.segment) {
+				setSegmentCount(
+					current.layers.every(l => l.time === 1) // All at one beat
+						? 1
+						: layer.time === layer.beats // At least one at max beat
+						? 0
+						: segmentCountRef.current + 1 // Default just add
+				)
+			}
 
 			// Play sound
 			const wave = new Pizzicato.Sound({
@@ -223,6 +210,7 @@ function App(): JSX.Element {
 			//
 			// Stops
 			//
+			setSegmentCount(0)
 			setMetronome(args => ({
 				...args,
 
@@ -336,20 +324,16 @@ function App(): JSX.Element {
 				<p>Train your polyrythms</p>
 			</div>
 
-			<div className="segment-wrap">
-				{getSegmentRatios().map((ratio, i) => {
-					const width = 300
-
-					return (
-						<span
-							key={i}
-							className={'segment-child' + (segmentCount === i ? ' on' : '')}
-							style={{
-								width: `calc(${ratio * 100}% - 10px)`,
-							}}
-						/>
-					)
-				})}
+			<div className={'segment-wrap' + moreSettings.segment ? '' : ' hidden'}>
+				{getSegmentRatios().map((ratio, i) => (
+					<span
+						key={i}
+						className={'segment-child' + (segmentCount === i ? ' on' : '')}
+						style={{
+							width: `calc(${ratio * 100}% - 10px)`,
+						}}
+					/>
+				))}
 			</div>
 
 			<div className="layers">

@@ -97,6 +97,10 @@ h1 {
 	max-width: 700px;
 }
 
+.segment-wrap.hidden {
+	display: none;
+}
+
 .segment-child {
 	background-color: rgba(0,0,0,.2);
 	margin: 5px;
