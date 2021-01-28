@@ -75,20 +75,40 @@ h1 {
 
 
 
-.segment {
-	display: flex;
+
+
+
+
+
+
+
+
+@keyframes FillSegment {
+	from {
+		
+	}
+}
+
+
+.segment-wrap {
 	margin: 2em;
+	display: flex;
+	width: 80vw;
+	max-width: 700px;
 }
 
 .segment-child {
-	background-color: rgba(12,12,12,.2);
+	background-color: rgba(0,0,0,.2);
 	margin: 5px;
 	height: 20px;
-
+	border-radius: 5px;
+	transition: all .1s;
 }
 
-
-
+.segment-child.on {
+	/* transform: scale(1.05); */
+	background-color: white;
+}
 
 
 

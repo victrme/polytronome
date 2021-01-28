@@ -1,5 +1,6 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import Pizzicato from 'pizzicato'
+// eslint-disable-next-line
 import MoreSettings from './MoreSettings'
 import './App.css'
 
@@ -33,10 +34,12 @@ function App(): JSX.Element {
 
 	const [soundOptions, setSoundOptions] = useState({
 		type: 'sawtooth',
-		attack: 0.01,
-		release: 1,
+		attack: 0.0,
+		release: 0.1,
 		volume: 0.1,
 	})
+
+	const [segmentCount, setSegmentCount] = useState(0)
 
 	const [metronome, setMetronome] = useState({
 		layers: [
@@ -68,6 +71,9 @@ function App(): JSX.Element {
 	const metronomeRef = useRef(metronome)
 	metronomeRef.current = metronome
 
+	const segmentCountRef = useRef(segmentCount)
+	segmentCountRef.current = segmentCount
+
 	/**
 	 *
 	 * Small functions
@@ -77,16 +83,15 @@ function App(): JSX.Element {
 	const getLayerFromId = (id: string) =>
 		metronomeRef.current.layers.filter(ll => ll.id === id)[0]
 
-	const calculateTempoMs = (beats: number, tempo: number) =>
-		60000 / ((beats / 4) * tempo)
+	const calculateTempoMs = (beats: number, tempo: number) => 60000 / ((beats / 4) * tempo)
 
 	function setRandomID() {
 		let xx = ''
-		while (xx.length < 8)
-			xx += String.fromCharCode(Math.random() * (122 - 97) + 97)
+		while (xx.length < 8) xx += String.fromCharCode(Math.random() * (122 - 97) + 97)
 		return xx
 	}
 
+	// eslint-disable-next-line
 	function changeSoundOptions(e: any, which: string) {
 		const opt = soundOptions
 		const val = e.target.value
@@ -95,45 +100,35 @@ function App(): JSX.Element {
 		setSoundOptions(opt)
 	}
 
-	function CreateSegment() {
-		function getSegmentCuts() {
-			let division: number[] = []
+	function getSegmentRatios() {
+		let division: number[] = []
+		const ratios: number[] = []
 
-			metronome.layers.forEach(lay => {
-				for (let k = 1; k < lay.beats; k++) {
-					division.push(k / lay.beats)
-				}
-			})
-
-			return [...new Set(division)].sort()
-		}
-
-		let spans: JSX.Element[] = []
-		const division = getSegmentCuts()
-		const width = 300
-
-		for (let i = 0; i < division.length; i++) {
-			let size = 0
-
-			if (i === 0) {
-				size = division[i] * width
-			} else if (i === division.length) {
-				size = (1 - division[i]) * width
-			} else {
-				size = (division[i + 1] - division[i]) * width
+		metronome.layers.forEach(lay => {
+			for (let k = 1; k < lay.beats; k++) {
+				division.push(k / lay.beats)
 			}
+		})
 
-			spans.push(
-				<span
-					key={spans.length + 1}
-					className="segment-child"
-					style={{ width: size }}
-				/>
-			)
+		division = [0, ...new Set(division), 1].sort()
+
+		for (let i = 0; i < division.length - 1; i++) {
+			ratios.push(division[i + 1] - division[i])
 		}
 
-		return <div className="segment">{spans}</div>
+		return ratios
 	}
+
+	useEffect(() => {
+		document.addEventListener('keydown', (e: any) => {
+			if (e.keyCode === 32) {
+				launchMetronome(metronomeRef.current.isRunning)
+				console.log(metronomeRef.current)
+			} else {
+				console.log(e.key)
+			}
+		})
+	}, [])
 
 	// let monworker: Worker
 
@@ -152,11 +147,11 @@ function App(): JSX.Element {
 	// 	}
 	// }
 
-	/**
-	 *
-	 * Main functions
-	 *
-	 */
+	//
+	//
+	// Main functions
+	//
+	//
 
 	function metronomeInterval(nextDelay: number, id: string) {
 		//
@@ -175,12 +170,31 @@ function App(): JSX.Element {
 			// Return to 1 if 'time' above 'beats'
 			setMetronome(prev => ({
 				...prev,
-				layers: prev.layers.map(aa =>
-					aa.id === id
-						? { ...aa, time: aa.time >= aa.beats ? 1 : aa.time + 1 }
-						: aa
+				layers: prev.layers.map(layer =>
+					layer.id === id
+						? { ...layer, time: layer.time >= layer.beats ? 1 : layer.time + 1 }
+						: layer
 				),
 			}))
+
+			//
+			//
+			//
+
+			let count = 0
+			const allAtOneBeat = metronome.layers.every(l => l.time === 1)
+			const oneAtLastBeat = layer.time === layer.beats
+
+			if (allAtOneBeat) count = 1
+			else if (oneAtLastBeat) count = 0
+			else count = segmentCountRef.current + 1
+			console.log(count)
+
+			setSegmentCount(count)
+
+			//
+			//
+			//
 
 			// Play sound
 			const wave = new Pizzicato.Sound({
@@ -195,17 +209,17 @@ function App(): JSX.Element {
 
 			// Calculate latency
 			const latencyOffset =
-				current.startTime > 0
-					? (Date.now() - current.startTime) % tempoMs
-					: 0
+				current.startTime > 0 ? (Date.now() - current.startTime) % tempoMs : 0
 
 			// Recursion
 			metronomeInterval(tempoMs - latencyOffset, id)
 		}, nextDelay)
 	}
 
-	function launchMetronome() {
-		if (metronome.isRunning) {
+	function launchMetronome(runs: boolean) {
+		const current = metronomeRef.current
+
+		if (runs) {
 			//
 			// Stops
 			//
@@ -213,7 +227,7 @@ function App(): JSX.Element {
 				...args,
 
 				// Each set to new defaults
-				layers: metronome.layers.map(l => ({
+				layers: current.layers.map(l => ({
 					...l,
 					time: 1,
 					id: setRandomID(),
@@ -226,13 +240,9 @@ function App(): JSX.Element {
 			//
 			// Starts
 			//
-			metronome.layers.forEach(layer =>
-				metronomeInterval(
-					calculateTempoMs(layer.beats, metronome.tempo),
-					layer.id
-				)
+			current.layers.forEach(layer =>
+				metronomeInterval(calculateTempoMs(layer.beats, current.tempo), layer.id)
 			)
-
 			// Update to start state
 			setMetronome(args => ({
 				...args,
@@ -313,9 +323,7 @@ function App(): JSX.Element {
 
 				// Get average tempo
 				tempo: Math.floor(
-					60000 /
-						(cumul.reduce((a: number, b: number) => a + b) /
-							cumul.length)
+					60000 / (cumul.reduce((a: number, b: number) => a + b) / cumul.length)
 				),
 			}))
 		}
@@ -328,7 +336,21 @@ function App(): JSX.Element {
 				<p>Train your polyrythms</p>
 			</div>
 
-			<CreateSegment />
+			<div className="segment-wrap">
+				{getSegmentRatios().map((ratio, i) => {
+					const width = 300
+
+					return (
+						<span
+							key={i}
+							className={'segment-child' + (segmentCount === i ? ' on' : '')}
+							style={{
+								width: `calc(${ratio * 100}% - 10px)`,
+							}}
+						/>
+					)
+				})}
+			</div>
 
 			<div className="layers">
 				{metronome.layers.map((layer, jj) => {
@@ -339,9 +361,7 @@ function App(): JSX.Element {
 						children.push(
 							<div
 								key={kk}
-								className={
-									+kk <= layer.time - 1 ? 'click on' : 'click'
-								}
+								className={+kk <= layer.time - 1 ? 'click on' : 'click'}
 							/>
 						)
 
@@ -378,9 +398,7 @@ function App(): JSX.Element {
 									onChange={e => changeLayerBeats(e, i)}
 								/>
 
-								<span className="note">
-									{Notes[layer.frequency][0]}
-								</span>
+								<span className="note">{Notes[layer.frequency][0]}</span>
 
 								<input
 									type="range"
@@ -403,9 +421,7 @@ function App(): JSX.Element {
 					})}
 
 					<div className="add-layer">
-						<button onClick={() => updateLayer('add')}>
-							add layer
-						</button>
+						<button onClick={() => updateLayer('add')}>add layer</button>
 					</div>
 				</div>
 
@@ -452,7 +468,7 @@ function App(): JSX.Element {
 					</div>
 
 					<div>
-						<button onMouseDown={launchMetronome}>
+						<button onMouseDown={() => launchMetronome(metronome.isRunning)}>
 							{metronome.isRunning ? 'Stop' : 'Start'}
 						</button>
 
