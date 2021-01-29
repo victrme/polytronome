@@ -23,6 +23,11 @@
 	justify-content: center;
 	font-size: calc(10px + 2vmin);
 	color: white;
+	transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.App.deepdark {
+	background-color: #000;
 }
 
 .App-link {

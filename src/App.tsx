@@ -32,22 +32,20 @@ function App(): JSX.Element {
 		frequency: 0,
 	}
 
-	const [soundOptions, setSoundOptions] = useState({
-		type: 'sawtooth',
-		attack: 0.0,
-		release: 0.1,
-		volume: 0.1,
-	})
-
-	const [segmentCount, setSegmentCount] = useState(0)
-
 	const [moreSettings, setMoreSettings] = useState({
-		theme: {
-			current: 0,
-			list: ['lightgreen', 'dark', 'deep dark', 'coffee'],
+		theme: 'lightgreen',
+		sound: {
+			type: 'sawtooth',
+			attack: 0.0,
+			release: 0.1,
+			volume: 0.1,
+		},
+		segment: {
+			on: true,
+			count: 0,
 		},
 
-		segment: false,
+		unlimitedMode: false,
 	})
 
 	const [metronome, setMetronome] = useState({
@@ -80,9 +78,6 @@ function App(): JSX.Element {
 	const metronomeRef = useRef(metronome)
 	metronomeRef.current = metronome
 
-	const segmentCountRef = useRef(segmentCount)
-	segmentCountRef.current = segmentCount
-
 	const moreSettingsRef = useRef(moreSettings)
 	moreSettingsRef.current = moreSettings
 
@@ -105,11 +100,14 @@ function App(): JSX.Element {
 
 	// eslint-disable-next-line
 	function changeSoundOptions(e: any, which: string) {
-		const opt = soundOptions
+		const opt = moreSettings.sound
 		const val = e.target.value
 		opt[which] = which === 'type' ? val : +val
 
-		setSoundOptions(opt)
+		setMoreSettings(prev => ({
+			...prev,
+			sound: opt,
+		}))
 	}
 
 	function getSegmentRatios() {
@@ -140,6 +138,7 @@ function App(): JSX.Element {
 				console.log(e.key)
 			}
 		})
+		// eslint-disable-next-line
 	}, [])
 
 	//
@@ -172,22 +171,31 @@ function App(): JSX.Element {
 				),
 			}))
 
+			//
 			// Update Segment Count
-			if (moreSettingsRef.current.segment) {
-				setSegmentCount(
-					current.layers.every(l => l.time === 1) // All at one beat
-						? 1
-						: layer.time === layer.beats // At least one at max beat
-						? 0
-						: segmentCountRef.current + 1 // Default just add
-				)
+			//
+			if (moreSettingsRef.current.segment.on) {
+				//
+				// Conditions for [0 ... n]
+				const countTemp = moreSettingsRef.current.segment.count
+				const allAtOne = current.layers.every(l => l.time === 1)
+				const oneAtMax = layer.time === layer.beats
+
+				const newCount = allAtOne ? 1 : oneAtMax ? 0 : countTemp + 1
+
+				setMoreSettings(prev => ({
+					...prev,
+					segment: { ...prev.segment, count: newCount },
+				}))
 			}
 
+			//
 			// Play sound
+			//
 			const wave = new Pizzicato.Sound({
 				source: 'wave',
 				options: {
-					...soundOptions,
+					...moreSettingsRef.current.sound,
 					frequency: Notes[layer.frequency][1],
 				},
 			})
@@ -210,7 +218,13 @@ function App(): JSX.Element {
 			//
 			// Stops
 			//
-			setSegmentCount(0)
+			setMoreSettings(prev => ({
+				...prev,
+				segment: {
+					...prev.segment,
+					count: 0,
+				},
+			}))
 			setMetronome(args => ({
 				...args,
 
@@ -318,17 +332,19 @@ function App(): JSX.Element {
 	}
 
 	return (
-		<div className="App">
+		<div className={'App ' + moreSettings.theme}>
 			<div className="title">
 				<h1>Poly-tronome</h1>
 				<p>Train your polyrythms</p>
 			</div>
 
-			<div className={'segment-wrap' + moreSettings.segment ? '' : ' hidden'}>
+			<div className={moreSettings.segment.on ? 'segment-wrap' : 'segment-wrap hidden'}>
 				{getSegmentRatios().map((ratio, i) => (
 					<span
 						key={i}
-						className={'segment-child' + (segmentCount === i ? ' on' : '')}
+						className={
+							'segment-child' + (moreSettings.segment.count === i ? ' on' : '')
+						}
 						style={{
 							width: `calc(${ratio * 100}% - 10px)`,
 						}}
@@ -356,6 +372,22 @@ function App(): JSX.Element {
 						</div>
 					)
 				})}
+			</div>
+
+			<div>
+				<button onMouseDown={() => launchMetronome(metronome.isRunning)}>
+					{metronome.isRunning ? 'Stop' : 'Start'}
+				</button>
+
+				{/* <button onClick={() => console.log(metronome)}>
+							state data
+						</button> */
+				/* <button onClick={() => changeWorkerTest('start')}>
+							start Worker Test
+						</button>
+						<button onClick={() => changeWorkerTest('stop')}>
+							stop Worker Test
+						</button> */}
 			</div>
 
 			<div className="settings-wrap">
@@ -451,20 +483,24 @@ function App(): JSX.Element {
 						/>
 					</div>
 
-					<div>
-						<button onMouseDown={() => launchMetronome(metronome.isRunning)}>
-							{metronome.isRunning ? 'Stop' : 'Start'}
-						</button>
+					<div className="setting theme">
+						<h3>Theme</h3>
 
-						{/* <button onClick={() => console.log(metronome)}>
-							state data
-						</button> */
-						/* <button onClick={() => changeWorkerTest('start')}>
-							start Worker Test
-						</button>
-						<button onClick={() => changeWorkerTest('stop')}>
-							stop Worker Test
-						</button> */}
+						<select
+							name="theme"
+							id="theme"
+							onChange={e =>
+								setMoreSettings(prev => ({
+									...prev,
+									theme: e.target.value,
+								}))
+							}
+						>
+							<option value="lightgreen">lightgreen</option>
+							<option value="dark">dark</option>
+							<option value="deepdark">deepdark</option>
+							<option value="coffee">coffee</option>
+						</select>
 					</div>
 				</div>
 			</div>
