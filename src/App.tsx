@@ -3,6 +3,7 @@ import Pizzicato from 'pizzicato'
 // eslint-disable-next-line
 import MoreSettings from './MoreSettings'
 import './App.css'
+import { isConditionalExpression } from 'typescript'
 
 function App(): JSX.Element {
 	/**
@@ -52,13 +53,13 @@ function App(): JSX.Element {
 		layers: [
 			{
 				id: setRandomID(),
-				beats: 4,
+				beats: 2,
 				time: 1,
 				frequency: 1,
 			},
 			{
 				id: setRandomID(),
-				beats: 5,
+				beats: 4,
 				time: 1,
 				frequency: 5,
 			},
@@ -80,6 +81,9 @@ function App(): JSX.Element {
 
 	const moreSettingsRef = useRef(moreSettings)
 	moreSettingsRef.current = moreSettings
+
+	let GlobalDuplicates: number[] = []
+	let GlobalDupCount = 1
 
 	/**
 	 *
@@ -110,20 +114,33 @@ function App(): JSX.Element {
 		}))
 	}
 
-	function getSegmentRatios() {
-		let division: number[] = []
+	const getSegmentRatios = () => {
 		const ratios: number[] = []
+		let division: number[] = []
 
 		metronome.layers.forEach(lay => {
-			for (let k = 1; k < lay.beats; k++) {
-				division.push(k / lay.beats)
-			}
+			for (let k = 1; k < lay.beats; k++) division.push(k / lay.beats)
 		})
 
-		division = [0, ...new Set(division), 1].sort()
+		division.sort()
 
-		for (let i = 0; i < division.length - 1; i++) {
-			ratios.push(division[i + 1] - division[i])
+		// Duplicate control
+		const duplicates: number[] = []
+
+		// Creates table with same values
+
+		division.forEach((elem, index) =>
+			division[index] !== division[index - 1]
+				? duplicates.push(1)
+				: duplicates[duplicates.length - 1]++
+		)
+
+		GlobalDuplicates = duplicates
+
+		division = [0, ...new Set(division), 1]
+
+		for (const i in division) {
+			ratios.push(division[+i + 1] - division[+i])
 		}
 
 		return ratios
@@ -131,12 +148,7 @@ function App(): JSX.Element {
 
 	useEffect(() => {
 		document.addEventListener('keydown', (e: any) => {
-			if (e.keyCode === 32) {
-				launchMetronome(metronomeRef.current.isRunning)
-				console.log(metronomeRef.current)
-			} else {
-				console.log(e.key)
-			}
+			if (e.keyCode === 32) launchMetronome(metronomeRef.current.isRunning)
 		})
 		// eslint-disable-next-line
 	}, [])
@@ -181,12 +193,19 @@ function App(): JSX.Element {
 				const allAtOne = current.layers.every(l => l.time === 1)
 				const oneAtMax = layer.time === layer.beats
 
-				const newCount = allAtOne ? 1 : oneAtMax ? 0 : countTemp + 1
+				console.log(GlobalDupCount, GlobalDuplicates[countTemp])
 
-				setMoreSettings(prev => ({
-					...prev,
-					segment: { ...prev.segment, count: newCount },
-				}))
+				if (GlobalDupCount < GlobalDuplicates[countTemp]) {
+					GlobalDupCount++
+				} else {
+					GlobalDupCount = 1
+					const newCount = allAtOne ? 1 : oneAtMax ? 0 : countTemp + 1
+
+					setMoreSettings(prev => ({
+						...prev,
+						segment: { ...prev.segment, count: newCount },
+					}))
+				}
 			}
 
 			//
