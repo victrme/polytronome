@@ -55,7 +55,7 @@ h1 {
 	margin-bottom: 0;
 }
 
-.layers {
+.layers-wrap {
 	margin: 2em;
 	width: 80vw;
 	max-width: 700px;
@@ -64,6 +64,14 @@ h1 {
 .clicks-wrap {
 	display: flex;
 	justify-content: space-between;
+}
+
+.clicks-wrap.segment .layers-wrap {
+	display: none;
+} 
+
+.clicks-wrap.layers .segment-wrap {
+	display: none;
 }
 
 .click {

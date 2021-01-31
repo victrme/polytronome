@@ -3,7 +3,6 @@ import Pizzicato from 'pizzicato'
 // eslint-disable-next-line
 import MoreSettings from './MoreSettings'
 import './App.css'
-import { isConditionalExpression } from 'typescript'
 
 function App(): JSX.Element {
 	/**
@@ -44,6 +43,9 @@ function App(): JSX.Element {
 		segment: {
 			on: true,
 			count: 0,
+			ratios: [0],
+			duplicates: [0],
+			dupCount: 1,
 		},
 
 		unlimitedMode: false,
@@ -82,9 +84,6 @@ function App(): JSX.Element {
 	const moreSettingsRef = useRef(moreSettings)
 	moreSettingsRef.current = moreSettings
 
-	let GlobalDuplicates: number[] = []
-	let GlobalDupCount = 1
-
 	/**
 	 *
 	 * Small functions
@@ -114,42 +113,61 @@ function App(): JSX.Element {
 		}))
 	}
 
-	const getSegmentRatios = () => {
-		const ratios: number[] = []
-		let division: number[] = []
+	const initSegment = () => {
+		function getDuplicates(list: number[]) {
+			// Creates list of duplicates per division
+			// [1, 3, 1 ...]
 
-		metronome.layers.forEach(lay => {
-			for (let k = 1; k < lay.beats; k++) division.push(k / lay.beats)
-		})
+			const duplicates: number[] = []
 
-		division.sort()
+			list.forEach((elem, index) =>
+				list[index] !== list[index - 1]
+					? duplicates.push(1)
+					: duplicates[duplicates.length - 1]++
+			)
 
-		// Duplicate control
-		const duplicates: number[] = []
-
-		// Creates table with same values
-
-		division.forEach((elem, index) =>
-			division[index] !== division[index - 1]
-				? duplicates.push(1)
-				: duplicates[duplicates.length - 1]++
-		)
-
-		GlobalDuplicates = duplicates
-
-		division = [0, ...new Set(division), 1]
-
-		for (const i in division) {
-			ratios.push(division[+i + 1] - division[+i])
+			return duplicates
 		}
 
-		return ratios
+		function getRatios(list: number[]) {
+			// Removes duplicates
+			// segment ratio [next - current]
+
+			list = [0, ...new Set(list), 1]
+			const ratios: number[] = []
+
+			for (const i in list) ratios.push(list[+i + 1] - list[+i])
+			return ratios
+		}
+
+		const division: number[] = []
+
+		// Fill with all layers divisions & sort
+		metronome.layers.forEach(layer => {
+			for (let k = 1; k < layer.beats; k++) division.push(k / layer.beats)
+		})
+		division.sort()
+
+		// Apply functions
+		setMoreSettings(prev => ({
+			...prev,
+			segment: {
+				...prev.segment,
+				ratios: getRatios(division),
+				duplicates: getDuplicates(division),
+			},
+		}))
 	}
 
 	useEffect(() => {
+		// Add Spacebar to control metronome
 		document.addEventListener('keydown', (e: any) => {
 			if (e.keyCode === 32) launchMetronome(metronomeRef.current.isRunning)
 		})
+
+		// Init segment with ratios
+		initSegment()
+
 		// eslint-disable-next-line
 	}, [])
 
@@ -173,6 +191,7 @@ function App(): JSX.Element {
 
 			const tempoMs = calculateTempoMs(layer.beats, current.tempo)
 
+			// Update beat time
 			// Return to 1 if 'time' above 'beats'
 			setMetronome(prev => ({
 				...prev,
@@ -183,29 +202,29 @@ function App(): JSX.Element {
 				),
 			}))
 
-			//
-			// Update Segment Count
-			//
-			if (moreSettingsRef.current.segment.on) {
+			// Update Segment Count, if its on
+			const segment = moreSettingsRef.current.segment
+			if (segment.on) {
 				//
-				// Conditions for [0 ... n]
-				const countTemp = moreSettingsRef.current.segment.count
-				const allAtOne = current.layers.every(l => l.time === 1)
-				const oneAtMax = layer.time === layer.beats
+				let segmentTemp = segment
 
-				console.log(GlobalDupCount, GlobalDuplicates[countTemp])
-
-				if (GlobalDupCount < GlobalDuplicates[countTemp]) {
-					GlobalDupCount++
+				if (segment.dupCount < segment.duplicates[segment.count]) {
+					// If duplicates, don't move count
+					segmentTemp.dupCount++
 				} else {
-					GlobalDupCount = 1
-					const newCount = allAtOne ? 1 : oneAtMax ? 0 : countTemp + 1
+					segmentTemp.dupCount = 1
 
-					setMoreSettings(prev => ({
-						...prev,
-						segment: { ...prev.segment, count: newCount },
-					}))
+					// Control count interval edges
+					// Conditions for [0 ... n]
+					const allAtOne = current.layers.every(l => l.time === 1)
+					const oneAtMax = layer.time === layer.beats
+					segmentTemp.count = allAtOne ? 1 : oneAtMax ? 0 : segment.count + 1
 				}
+
+				setMoreSettings(prev => ({
+					...prev,
+					segment: segmentTemp,
+				}))
 			}
 
 			//
@@ -275,15 +294,14 @@ function App(): JSX.Element {
 
 	const changeLayerBeats = (e: any, i: number) => {
 		const val = +e.target.value
-		let array = metronome.layers
+		let layers = metronome.layers
 
 		// Minimum 2 beats
-		array[i].beats = val > 1 ? val : 2
+		layers[i].beats = val > 1 ? val : 2
 
-		setMetronome(prev => ({
-			...prev,
-			layers: array,
-		}))
+		//Update
+		setMetronome(prev => ({ ...prev, layers }))
+		if (moreSettings.segment.on) initSegment()
 	}
 
 	const changeFrequency = (e: any, i: number) => {
@@ -305,6 +323,7 @@ function App(): JSX.Element {
 
 		// Update
 		setMetronome(prev => ({ ...prev, layers }))
+		if (moreSettings.segment.on) initSegment()
 	}
 
 	const tapTempo = () => {
@@ -357,40 +376,47 @@ function App(): JSX.Element {
 				<p>Train your polyrythms</p>
 			</div>
 
-			<div className={moreSettings.segment.on ? 'segment-wrap' : 'segment-wrap hidden'}>
-				{getSegmentRatios().map((ratio, i) => (
-					<span
-						key={i}
-						className={
-							'segment-child' + (moreSettings.segment.count === i ? ' on' : '')
-						}
-						style={{
-							width: `calc(${ratio * 100}% - 10px)`,
-						}}
-					/>
-				))}
-			</div>
+			<div
+				className={
+					'clicks-wrap ' + (moreSettingsRef.current.segment.on ? 'segment' : 'layers')
+				}
+			>
+				<div className="segment-wrap">
+					{moreSettings.segment.ratios.map((ratio, i) => (
+						<span
+							key={i}
+							className={
+								'segment-child' +
+								(moreSettings.segment.count === i ? ' on' : '')
+							}
+							style={{
+								width: `calc(${ratio * 100}% - 10px)`,
+							}}
+						/>
+					))}
+				</div>
 
-			<div className="layers">
-				{metronome.layers.map((layer, jj) => {
-					// Add clicks for each layers
+				<div className="layers-wrap">
+					{metronome.layers.map((layer, jj) => {
+						// Add clicks for each layers
 
-					const children: JSX.Element[] = []
-					for (let kk = 0; kk < layer.beats; kk++)
-						children.push(
-							<div
-								key={kk}
-								className={+kk <= layer.time - 1 ? 'click on' : 'click'}
-							/>
+						const children: JSX.Element[] = []
+						for (let kk = 0; kk < layer.beats; kk++)
+							children.push(
+								<div
+									key={kk}
+									className={+kk <= layer.time - 1 ? 'click on' : 'click'}
+								/>
+							)
+
+						// Wrap in rows & return
+						return (
+							<div key={jj} className="clicks-wrap">
+								{children}
+							</div>
 						)
-
-					// Wrap in rows & return
-					return (
-						<div key={jj} className="clicks-wrap">
-							{children}
-						</div>
-					)
-				})}
+					})}
+				</div>
 			</div>
 
 			<div>
@@ -520,6 +546,26 @@ function App(): JSX.Element {
 							<option value="deepdark">deepdark</option>
 							<option value="coffee">coffee</option>
 						</select>
+					</div>
+
+					<div className="setting display">
+						<h3>Click display</h3>
+
+						<button
+							name="display"
+							id="display"
+							onClick={e =>
+								setMoreSettings(prev => ({
+									...prev,
+									segment: {
+										...prev.segment,
+										on: moreSettings.segment.on ? false : true,
+									},
+								}))
+							}
+						>
+							{moreSettings.segment.on ? 'segment' : 'layers'}
+						</button>
 					</div>
 				</div>
 			</div>
