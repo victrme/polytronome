@@ -136,7 +136,10 @@ function App(): JSX.Element {
 			list = [0, ...new Set(list), 1]
 			const ratios: number[] = []
 
-			for (const i in list) ratios.push(list[+i + 1] - list[+i])
+			list.forEach((elem, i) => {
+				if (list[i + 1]) ratios.push(list[i + 1] - elem)
+			})
+
 			return ratios
 		}
 
