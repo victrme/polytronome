@@ -1,7 +1,5 @@
 import { useRef, useState, useEffect } from 'react'
 import Pizzicato from 'pizzicato'
-// eslint-disable-next-line
-import MoreSettings from './MoreSettings'
 import './App.css'
 
 function App(): JSX.Element {
@@ -48,20 +46,20 @@ function App(): JSX.Element {
 			dupCount: 1,
 		},
 
-		unlimitedMode: false,
+		unlimited: false,
 	})
 
 	const [metronome, setMetronome] = useState({
 		layers: [
 			{
 				id: setRandomID(),
-				beats: 2,
+				beats: 4,
 				time: 1,
 				frequency: 1,
 			},
 			{
 				id: setRandomID(),
-				beats: 4,
+				beats: 5,
 				time: 1,
 				frequency: 5,
 			},
@@ -89,6 +87,10 @@ function App(): JSX.Element {
 	 * Small functions
 	 *
 	 */
+
+	const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+		navigator.userAgent
+	)
 
 	const getLayerFromId = (id: string) =>
 		metronomeRef.current.layers.filter(ll => ll.id === id)[0]
@@ -314,19 +316,25 @@ function App(): JSX.Element {
 		setMetronome(prev => ({ ...prev, layers }))
 	}
 
-	const updateLayer = (which: 'remove' | 'add', index?: number) => {
+	const updateLayer = (add: boolean, index: number = 0) => {
 		const layers = metronome.layers
+		const Remove = !add && layers.length > 1
+		const Add = add && !moreSettings.unlimited && layers.length < 3
 
-		// Remove
-		if (which === 'remove' && layers.length > 1 && index !== undefined)
-			layers.splice(index, 1)
-
-		// Add
-		if (which === 'add' && layers.length < 4) layers.push(defaultLayer)
+		if (Remove) layers.splice(index, 1)
+		if (Add) layers.push(defaultLayer)
 
 		// Update
 		setMetronome(prev => ({ ...prev, layers }))
 		if (moreSettings.segment.on) initSegment()
+	}
+
+	const updateTempo = (tempo: number) => {
+		const aboveMax = !moreSettings.unlimited && tempo > 250
+		const belowMin = tempo < 33
+
+		if (isNaN(tempo) || aboveMax || belowMin) return
+		else setMetronome(args => ({ ...args, tempo }))
 	}
 
 	const tapTempo = () => {
@@ -476,7 +484,7 @@ function App(): JSX.Element {
 
 								<button
 									className="suppr-btn"
-									onClick={e => updateLayer('remove', i)}
+									onClick={e => updateLayer(false, i)}
 								>
 									&times;
 								</button>
@@ -485,7 +493,16 @@ function App(): JSX.Element {
 					})}
 
 					<div className="add-layer">
-						<button onClick={() => updateLayer('add')}>add layer</button>
+						<button
+							className={
+								!moreSettings.unlimited && metronome.layers.length === 3
+									? 'off'
+									: ''
+							}
+							onClick={() => updateLayer(true)}
+						>
+							add layer
+						</button>
 					</div>
 				</div>
 
@@ -505,29 +522,17 @@ function App(): JSX.Element {
 							type="range"
 							name="tempo-range"
 							id="tempo-range"
-							min="20"
-							max="300"
+							min="33"
+							max="250"
 							value={metronome.tempo}
-							onChange={e =>
-								setMetronome(args => ({
-									...args,
-									tempo: +e.target.value,
-								}))
-							}
+							onChange={e => updateTempo(+e.target.value)}
 						/>
 						<input
-							type="number"
-							name="tempo-num"
-							id="tempo-num"
-							min="20"
-							max="300"
+							type="text"
+							name="tempo-text"
+							id="tempo-text"
 							value={metronome.tempo}
-							onChange={e =>
-								setMetronome(args => ({
-									...args,
-									tempo: +e.target.value,
-								}))
-							}
+							onChange={e => updateTempo(+e.target.value)}
 						/>
 					</div>
 
@@ -568,6 +573,31 @@ function App(): JSX.Element {
 							}
 						>
 							{moreSettings.segment.on ? 'segment' : 'layers'}
+						</button>
+					</div>
+
+					<div className="setting display">
+						<div>
+							<h3>Unlimited Mode</h3>
+							<small>
+								⚠️ This can slow down your {isMobile ? 'phone' : 'computer'}
+							</small>
+						</div>
+
+						<button
+							name="display"
+							id="display"
+							onClick={e => {
+								const old = moreSettings.unlimited
+								console.log(old)
+
+								setMoreSettings(prev => ({
+									...prev,
+									unlimited: moreSettings.unlimited ? false : true,
+								}))
+							}}
+						>
+							{moreSettingsRef.current.unlimited ? 'on' : 'off'}
 						</button>
 					</div>
 				</div>

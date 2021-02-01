@@ -157,6 +157,11 @@ button:active {
 	color: #fffa;
 }
 
+button.off {
+	filter: contrast(0);
+}
+
+
 
 .setting input {
 	width: 60px;
@@ -213,7 +218,7 @@ button:active {
 	background-color: rgba(0, 0, 0, .2);
 }
 
-.setting.tempo input[type="number"] {
+.setting.tempo input[type="text"] {
 	font-size: 40px;
 	width: 100px;
 }
@@ -230,20 +235,13 @@ button.suppr-btn {
 	font-size: 1em;
 }
 
+
 .note {
 	font-size: 16px;
 	width: 50px;
 	font-weight: bold;
 }
 
-label {
-	display: flex;
-	flex-direction: column;
-	max-width: 120px;
-	padding: 1em;
-}
-
-label span {
-	font-size: 16px;
-	font-weight: bold;
+small {
+	font-size: .5em;
 }
