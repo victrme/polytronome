@@ -30,6 +30,8 @@ function App(): JSX.Element {
 		frequency: 0,
 	}
 
+	const [tempoInput, setTempoInput] = useState(80)
+
 	const [moreSettings, setMoreSettings] = useState({
 		theme: 'lightgreen',
 		sound: {
@@ -76,10 +78,12 @@ function App(): JSX.Element {
 	})
 
 	// Use Refs for async timeouts
-	const metronomeRef = useRef(metronome)
-	metronomeRef.current = metronome
-
 	const moreSettingsRef = useRef(moreSettings)
+	const tempoInputRef = useRef(tempoInput)
+	const metronomeRef = useRef(metronome)
+
+	metronomeRef.current = metronome
+	tempoInputRef.current = tempoInput
 	moreSettingsRef.current = moreSettings
 
 	/**
@@ -95,7 +99,32 @@ function App(): JSX.Element {
 	const getLayerFromId = (id: string) =>
 		metronomeRef.current.layers.filter(ll => ll.id === id)[0]
 
-	const calculateTempoMs = (beats: number, tempo: number) => 60000 / ((beats / 4) * tempo)
+	const calculateTempoMs = (beats: number, tempo: number) => {
+		const outTempoAnimation = (goal: number, direction: number) => {
+			const interval = setInterval(() => {
+				// Cool story bruv
+				// const step = 10 ** (val.toString().length - 2)
+
+				const val = tempoInputRef.current < 300 ? tempoInputRef.current : 300
+				val === goal ? clearInterval(interval) : setTempoInput(val + direction)
+			}, 20)
+		}
+
+		const aboveMax = !moreSettings.unlimited && tempo > 250
+		const belowMin = tempo < 33
+
+		if (belowMin) {
+			outTempoAnimation(33, 1)
+			tempo = 33
+		}
+
+		if (aboveMax) {
+			outTempoAnimation(250, -1)
+			tempo = 250
+		}
+
+		return 60000 / ((beats / 4) * tempo)
+	}
 
 	function setRandomID() {
 		let xx = ''
@@ -330,11 +359,11 @@ function App(): JSX.Element {
 	}
 
 	const updateTempo = (tempo: number) => {
-		const aboveMax = !moreSettings.unlimited && tempo > 250
-		const belowMin = tempo < 33
-
-		if (isNaN(tempo) || aboveMax || belowMin) return
-		else setMetronome(args => ({ ...args, tempo }))
+		if (isNaN(tempo) || tempo.toString().length > 6) return
+		else {
+			setTempoInput(tempo)
+			setMetronome(args => ({ ...args, tempo }))
+		}
 	}
 
 	const tapTempo = () => {
@@ -368,15 +397,12 @@ function App(): JSX.Element {
 				if (each.wait === 0 || i === 6) tap.pop()
 			})
 
-			setMetronome(prev => ({
-				...prev,
-				tap,
+			const averageTempo = Math.floor(
+				60000 / (cumul.reduce((a: number, b: number) => a + b) / cumul.length)
+			)
 
-				// Get average tempo
-				tempo: Math.floor(
-					60000 / (cumul.reduce((a: number, b: number) => a + b) / cumul.length)
-				),
-			}))
+			setTempoInput(averageTempo)
+			setMetronome(prev => ({ ...prev, tap, tempo: averageTempo }))
 		}
 	}
 
@@ -531,7 +557,7 @@ function App(): JSX.Element {
 							type="text"
 							name="tempo-text"
 							id="tempo-text"
-							value={metronome.tempo}
+							value={tempoInput}
 							onChange={e => updateTempo(+e.target.value)}
 						/>
 					</div>
@@ -587,15 +613,12 @@ function App(): JSX.Element {
 						<button
 							name="display"
 							id="display"
-							onClick={e => {
-								const old = moreSettings.unlimited
-								console.log(old)
-
+							onClick={() =>
 								setMoreSettings(prev => ({
 									...prev,
 									unlimited: moreSettings.unlimited ? false : true,
 								}))
-							}}
+							}
 						>
 							{moreSettingsRef.current.unlimited ? 'on' : 'off'}
 						</button>
