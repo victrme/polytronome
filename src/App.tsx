@@ -110,15 +110,12 @@ function App(): JSX.Element {
 			}, 20)
 		}
 
-		const aboveMax = !moreSettings.unlimited && tempo > 250
-		const belowMin = tempo < 33
-
-		if (belowMin) {
+		if (tempo < 33) {
 			outTempoAnimation(33, 1)
 			tempo = 33
 		}
 
-		if (aboveMax) {
+		if (!moreSettingsRef.current.unlimited && tempo > 250) {
 			outTempoAnimation(250, -1)
 			tempo = 250
 		}
