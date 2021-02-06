@@ -460,23 +460,13 @@ function App(): JSX.Element {
 				<button onMouseDown={() => launchMetronome(metronome.isRunning)}>
 					{metronome.isRunning ? 'Stop' : 'Start'}
 				</button>
-
-				{/* <button onClick={() => console.log(metronome)}>
-							state data
-						</button> */
-				/* <button onClick={() => changeWorkerTest('start')}>
-							start Worker Test
-						</button>
-						<button onClick={() => changeWorkerTest('stop')}>
-							stop Worker Test
-						</button> */}
 			</div>
 
 			<div className="settings-wrap">
-				<div className="layers-settings">
+				<div className="boxed">
 					{metronome.layers.map((layer, i) => {
 						return (
-							<div className="setting" key={i}>
+							<div className="setting layer" key={i}>
 								<input
 									type="number"
 									name="numer-num"
@@ -532,97 +522,172 @@ function App(): JSX.Element {
 					</div>
 				</div>
 
-				<div className="global-settings">
-					{/* <MoreSettings
-						state={soundOptions}
-						change={changeSoundOptions}
-					/> */}
-
-					<div className="setting tempo">
-						<div>
-							<h3>Tempo</h3>
-							<button onClick={tapTempo}>tap</button>
-						</div>
-
-						<input
-							type="range"
-							name="tempo-range"
-							id="tempo-range"
-							min="33"
-							max="250"
-							value={metronome.tempo}
-							onChange={e => updateTempo(+e.target.value)}
-						/>
-						<input
-							type="text"
-							name="tempo-text"
-							id="tempo-text"
-							value={tempoInput}
-							onChange={e => updateTempo(+e.target.value)}
-						/>
+				<div className="setting boxed tempo">
+					<div>
+						<h3>Tempo</h3>
+						<button onClick={tapTempo}>tap</button>
 					</div>
 
-					<div className="setting theme">
-						<h3>Theme</h3>
+					<input
+						type="range"
+						name="tempo-range"
+						id="tempo-range"
+						min="33"
+						max="250"
+						value={metronome.tempo}
+						onChange={e => updateTempo(+e.target.value)}
+					/>
+					<input
+						type="text"
+						name="tempo-text"
+						id="tempo-text"
+						value={tempoInput}
+						onChange={e => updateTempo(+e.target.value)}
+					/>
+				</div>
 
+				<div className="setting boxed sound">
+					<h3>Click Sound</h3>
+
+					<div className="sliders">
+						<label>
+							<input
+								type="range"
+								name="attack-range"
+								key={'attack-range'}
+								min="0"
+								max=".1"
+								step="0.01"
+								value={moreSettings.sound.attack}
+								onChange={e =>
+									setMoreSettings(prev => ({
+										...prev,
+										sound: { ...prev.sound, attack: +e.target.value },
+									}))
+								}
+							/>
+							<p>Attack</p>
+						</label>
+
+						<label>
+							<input
+								type="range"
+								name="release-range"
+								key={'release-range'}
+								min="0"
+								max="1"
+								step="0.01"
+								value={moreSettings.sound.release}
+								onChange={e =>
+									setMoreSettings(prev => ({
+										...prev,
+										sound: { ...prev.sound, release: +e.target.value },
+									}))
+								}
+							/>
+							<p>Release</p>
+						</label>
+
+						<label>
+							<input
+								type="range"
+								name="volume-range"
+								key={'volume-range'}
+								min="0.01"
+								max="1"
+								step="0.01"
+								value={moreSettings.sound.volume}
+								onChange={e =>
+									setMoreSettings(prev => ({
+										...prev,
+										sound: { ...prev.sound, volume: +e.target.value },
+									}))
+								}
+							/>
+							<p>volume</p>
+						</label>
+					</div>
+					<div>
+						<h5>Waveform</h5>
 						<select
-							name="theme"
-							id="theme"
+							id="wavetype"
+							name="wavetype"
+							value={moreSettings.sound.type}
 							onChange={e =>
 								setMoreSettings(prev => ({
 									...prev,
-									theme: e.target.value,
+									sound: { ...prev.sound, type: e.target.value },
 								}))
 							}
 						>
-							<option value="lightgreen">lightgreen</option>
-							<option value="dark">dark</option>
-							<option value="deepdark">deepdark</option>
-							<option value="coffee">coffee</option>
+							<option value="sine">sine</option>
+							<option value="square">square</option>
+							<option value="triangle">triangle</option>
+							<option value="sawtooth">sawtooth</option>
 						</select>
 					</div>
+				</div>
 
-					<div className="setting display">
-						<h3>Click display</h3>
+				<div className="setting theme">
+					<h3>Theme</h3>
 
-						<button
-							name="display"
-							id="display"
-							onClick={e =>
-								setMoreSettings(prev => ({
-									...prev,
-									segment: {
-										...prev.segment,
-										on: moreSettings.segment.on ? false : true,
-									},
-								}))
-							}
-						>
-							{moreSettings.segment.on ? 'segment' : 'layers'}
-						</button>
+					<select
+						name="theme"
+						id="theme"
+						onChange={e =>
+							setMoreSettings(prev => ({
+								...prev,
+								theme: e.target.value,
+							}))
+						}
+					>
+						<option value="lightgreen">lightgreen</option>
+						<option value="dark">dark</option>
+						<option value="deepdark">deepdark</option>
+						<option value="coffee">coffee</option>
+					</select>
+				</div>
+
+				<div className="setting display">
+					<h3>Click display</h3>
+
+					<button
+						name="display"
+						id="display"
+						onClick={e =>
+							setMoreSettings(prev => ({
+								...prev,
+								segment: {
+									...prev.segment,
+									on: moreSettings.segment.on ? false : true,
+								},
+							}))
+						}
+					>
+						{moreSettings.segment.on ? 'segment' : 'layers'}
+					</button>
+				</div>
+
+				<div className="setting unlimited">
+					<div>
+						<h3>Unlimited Mode</h3>
+						<small>
+							⚠️ This can slow down your {isMobile ? 'phone' : 'computer'}
+						</small>
 					</div>
 
-					<div className="setting display">
-						<div>
-							<h3>Unlimited Mode</h3>
-							<small>
-								⚠️ This can slow down your {isMobile ? 'phone' : 'computer'}
-							</small>
-						</div>
-
-						<button
-							name="display"
-							id="display"
-							onClick={() =>
-								setMoreSettings(prev => ({
-									...prev,
-									unlimited: moreSettings.unlimited ? false : true,
-								}))
-							}
-						>
-							{moreSettingsRef.current.unlimited ? 'on' : 'off'}
-						</button>
-					</div>
+					<button
+						name="unlimited"
+						id="unlimited"
+						onClick={() =>
+							setMoreSettings(prev => ({
+								...prev,
+								unlimited: moreSettings.unlimited ? false : true,
+							}))
+						}
+					>
+						{moreSettingsRef.current.unlimited ? 'on' : 'off'}
+					</button>
 				</div>
 			</div>
 		</div>

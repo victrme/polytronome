@@ -1,6 +1,7 @@
 
 .App {
 	text-align: center;
+	padding-bottom: 5em;
 }
 
 .App-logo {
@@ -123,7 +124,6 @@ h1 {
 }
 
 .segment-child.on {
-	/* transform: scale(1.05); */
 	background-color: white;
 }
 
@@ -161,7 +161,11 @@ button.off {
 	filter: contrast(0);
 }
 
-
+.settings-wrap {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
 
 .setting input {
 	width: 60px;
@@ -179,6 +183,20 @@ button.off {
 	width: 80px;
 	margin: 10px;
 	padding: 5px;
+	
+}
+
+.setting.sound {
+	flex-direction: column;
+}
+
+.setting.sound .sliders input[type='range'] {
+-webkit-appearance: slider-vertical;
+}
+
+.setting.sound .sliders {
+	display: flex;
+	flex-direction: row;
 }
 
 .setting select {
@@ -186,10 +204,12 @@ button.off {
 	margin: 10px;
 }
 
-.layers-settings {
+.boxed {
 	border-radius: 1em;
 	background-color: darkslategray;
-	padding: 1em 0;
+	padding: 1em;
+	margin: 1em;
+	max-width: 900px;
 }
 
 .layers-settings button {
@@ -206,12 +226,8 @@ button.off {
 }
 
 .setting.tempo {
-	border-radius: 1em;
-	background-color: darkslategrey;
 	justify-content: space-around;
 	align-items: center;
-	padding-bottom: 1em;
-	margin: 2em;
 }
 
 .setting.tempo button {
@@ -240,6 +256,10 @@ button.suppr-btn {
 	font-size: 16px;
 	width: 50px;
 	font-weight: bold;
+}
+
+.setting.unlimited h3 {
+	margin-bottom: 0;
 }
 
 small {
