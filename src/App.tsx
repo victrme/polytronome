@@ -41,7 +41,7 @@ function App(): JSX.Element {
 			volume: 0.1,
 		},
 		segment: {
-			on: true,
+			on: false,
 			count: 0,
 			ratios: [0],
 			duplicates: [0],
@@ -344,11 +344,17 @@ function App(): JSX.Element {
 
 	const updateLayer = (add: boolean, index: number = 0) => {
 		const layers = metronome.layers
-		const Remove = !add && layers.length > 1
-		const Add = add && !moreSettings.unlimited && layers.length < 3
 
-		if (Remove) layers.splice(index, 1)
-		if (Add) layers.push(defaultLayer)
+		// Remove
+		if (!add && layers.length > 1) layers.splice(index, 1)
+
+		// Add Unlimited
+		// Add limited
+		if (
+			(add && moreSettings.unlimited) ||
+			(add && !moreSettings.unlimited && layers.length < 3)
+		)
+			layers.push(defaultLayer)
 
 		// Update
 		setMetronome(prev => ({ ...prev, layers }))
@@ -525,6 +531,7 @@ function App(): JSX.Element {
 						<button onClick={tapTempo}>tap</button>
 					</div>
 
+					<button onClick={e => updateTempo(metronome.tempo - 1)}>-</button>
 					<input
 						type="range"
 						name="tempo-range"
@@ -534,6 +541,7 @@ function App(): JSX.Element {
 						value={metronome.tempo}
 						onChange={e => updateTempo(+e.target.value)}
 					/>
+					<button onClick={e => updateTempo(metronome.tempo + 1)}>+</button>
 					<input
 						type="text"
 						name="tempo-text"
