@@ -9,25 +9,15 @@ function App(): JSX.Element {
 	 *
 	 */
 
-	const Notes = [
-		['a', 220.0],
-		['a#', 233.08],
-		['b', 246.94],
-		['c', 261.63],
-		['c#', 277.18],
-		['d', 293.66],
-		['e', 311.13],
-		['f', 349.23],
-		['f#', 369.99],
-		['g', 392.0],
-		['g#', 415.3],
-	]
+	// One based for formulas simplicity
+	const Notes = ['', 'a', 'a#', 'b', 'c', 'c#', 'd', 'e', 'f', 'f#', 'g', 'g#']
 
 	const defaultLayer = {
 		id: setRandomID(),
 		beats: 4,
 		time: 1,
-		frequency: 0,
+		frequency: 1,
+		octave: 1,
 	}
 
 	const [tempoInput, setTempoInput] = useState(80)
@@ -58,12 +48,14 @@ function App(): JSX.Element {
 				beats: 4,
 				time: 1,
 				frequency: 1,
+				octave: 1,
 			},
 			{
 				id: setRandomID(),
 				beats: 5,
 				time: 1,
-				frequency: 5,
+				frequency: 1,
+				octave: 0,
 			},
 		],
 		startTime: 0,
@@ -261,15 +253,17 @@ function App(): JSX.Element {
 			//
 			// Play sound
 			//
+			const freq = layer.frequency + 8 * layer.octave
 			const wave = new Pizzicato.Sound({
 				source: 'wave',
 				options: {
 					...moreSettingsRef.current.sound,
-					frequency: Notes[layer.frequency][1],
+					frequency: 110 * 2 ** (freq / 12),
 				},
 			})
 			wave.play()
 			setTimeout(() => wave.stop(), 20)
+			console.log(freq)
 
 			// Calculate latency
 			const latencyOffset =
@@ -338,6 +332,13 @@ function App(): JSX.Element {
 	const changeFrequency = (e: any, i: number) => {
 		const layers = metronome.layers
 		layers[i].frequency = +e.target.value
+
+		setMetronome(prev => ({ ...prev, layers }))
+	}
+
+	const changeOctave = (e: any, i: number) => {
+		const layers = metronome.layers
+		layers[i].octave = +e.target.value
 
 		setMetronome(prev => ({ ...prev, layers }))
 	}
@@ -489,16 +490,27 @@ function App(): JSX.Element {
 									onChange={e => changeLayerBeats(e, i)}
 								/>
 
-								<span className="note">{Notes[layer.frequency][0]}</span>
+								<span className="note">{Notes[layer.frequency]}</span>
+								<span className="note">{layer.octave}</span>
 
 								<input
 									type="range"
 									name="freq-range"
 									key={'freq-range-' + i}
-									min="0"
-									max="10"
+									min="1"
+									max="11"
 									value={layer.frequency}
 									onChange={e => changeFrequency(e, i)}
+								/>
+
+								<input
+									type="range"
+									name="octave-range"
+									key={'octave-range-' + i}
+									min="-1"
+									max="6"
+									value={layer.octave}
+									onChange={e => changeOctave(e, i)}
 								/>
 
 								<button
