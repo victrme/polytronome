@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from 'react'
+import { useDrag } from 'react-use-gesture'
 import Pizzicato from 'pizzicato'
 import './App.css'
 
@@ -11,13 +12,14 @@ function App(): JSX.Element {
 
 	// One based for formulas simplicity
 	const Notes = ['', 'a', 'a#', 'b', 'c', 'c#', 'd', 'e', 'f', 'f#', 'g', 'g#']
+	const Octaves = [-1, 0, 1, 2, 3, 4, 5, 6]
 
 	const defaultLayer = {
 		id: setRandomID(),
 		beats: 4,
 		time: 1,
 		frequency: 1,
-		octave: 1,
+		octave: 0,
 	}
 
 	const [tempoInput, setTempoInput] = useState(80)
@@ -48,7 +50,7 @@ function App(): JSX.Element {
 				beats: 4,
 				time: 1,
 				frequency: 1,
-				octave: 1,
+				octave: 0,
 			},
 			{
 				id: setRandomID(),
@@ -263,7 +265,6 @@ function App(): JSX.Element {
 			})
 			wave.play()
 			setTimeout(() => wave.stop(), 20)
-			console.log(freq)
 
 			// Calculate latency
 			const latencyOffset =
@@ -410,6 +411,25 @@ function App(): JSX.Element {
 		}
 	}
 
+	function WheelSpin() {
+		const bind = useDrag(state => {
+			console.log(state.offset[1])
+			const offset = state.offset[1]
+			const spacer = document.querySelector('.wheel-spacer')!
+
+			if (offset > 0) spacer.setAttribute('style', 'margin-top: -' + offset + 'px')
+		})
+
+		return (
+			<div {...bind()} className="wheel octave">
+				<div className="wheel-spacer"></div>
+				{Octaves.map((oct, i) => (
+					<div key={'octavewheel' + i}>{oct}</div>
+				))}
+			</div>
+		)
+	}
+
 	return (
 		<div className={'App ' + moreSettings.theme}>
 			<div className="title">
@@ -512,6 +532,8 @@ function App(): JSX.Element {
 									value={layer.octave}
 									onChange={e => changeOctave(e, i)}
 								/>
+
+								<WheelSpin />
 
 								<button
 									className="suppr-btn"

@@ -265,3 +265,24 @@ button.suppr-btn {
 small {
 	font-size: .5em;
 }
+
+
+
+
+
+
+
+
+
+
+
+.wheel {
+	height: 30px;
+	line-height: 30px;
+	overflow: hidden;
+	cursor: ns-resize;
+}
+
+.wheel div {
+	user-select: none;
+}
