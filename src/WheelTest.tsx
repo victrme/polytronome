@@ -1,15 +1,9 @@
 import { useDrag } from 'react-use-gesture'
 import { useState, useRef } from 'react'
 
-function Wheel(): JSX.Element {
+function Wheel({ data, update, what }): JSX.Element {
 	const wheelRef = useRef(document.createElement('div'))
 	const [wheelY, setWheelY] = useState(0)
-	const [octaveSelection, setOctaveSelection] = useState({
-		init: [-1, 0, 1, 2, 3, 4, 5, 6],
-		on: 0,
-	})
-
-	// console.log(testage)
 
 	const moveWheel = (y: number, isSnap?: boolean) =>
 		wheelRef.current.setAttribute(
@@ -26,11 +20,13 @@ function Wheel(): JSX.Element {
 				setWheelY(y)
 			} else {
 				const box = wheelRef.current.getBoundingClientRect()
-				const height = box.height / octaveSelection.init.length
+				const height = box.height / data.length
 				const mod = y % height
 				const isAboveHalfHeight = -mod >= height / 2
 				const maxMovement = -box.height + height
 				let toTranslate = y
+
+				console.log(height)
 
 				// Snap to Element
 				toTranslate -= isAboveHalfHeight ? height + mod : mod
@@ -40,10 +36,7 @@ function Wheel(): JSX.Element {
 				if (toTranslate < maxMovement) toTranslate = maxMovement
 
 				// Save element position
-				setOctaveSelection(prev => ({
-					...prev,
-					on: +(Math.abs(toTranslate) / height),
-				}))
+				update(+(Math.abs(toTranslate) / height) - 1)
 
 				moveWheel(toTranslate, true)
 				setWheelY(toTranslate)
@@ -54,9 +47,9 @@ function Wheel(): JSX.Element {
 
 	return (
 		<div className="immovable_wheel">
-			<div {...bind()} ref={wheelRef} className="wheel octave">
-				{octaveSelection.init.map((oct, i) => (
-					<div key={'octavewheel' + i}>{oct}</div>
+			<div {...bind()} ref={wheelRef} className={what + ' wheel'}>
+				{data.map((oct, i) => (
+					<div key={'wheel_child' + i}>{oct}</div>
 				))}
 			</div>
 		</div>

@@ -10,9 +10,9 @@ function App(): JSX.Element {
 	 *
 	 */
 
-	// One based for formulas simplicity
-	const Notes = ['', 'a', 'a#', 'b', 'c', 'c#', 'd', 'e', 'f', 'f#', 'g', 'g#']
-
+	const Beats = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+	const Notes = ['A', 'A#', 'B', 'C', 'C#', 'D', 'E', 'F', 'F#', 'G', 'G#']
+	const Octaves = [-1, 0, 1, 2, 3, 4, 5, 6]
 	const defaultLayer = {
 		id: setRandomID(),
 		beats: 4,
@@ -254,7 +254,7 @@ function App(): JSX.Element {
 			//
 			// Play sound
 			//
-			const freq = layer.frequency + 8 * layer.octave
+			const freq = layer.frequency + 9 * layer.octave
 			const wave = new Pizzicato.Sound({
 				source: 'wave',
 				options: {
@@ -336,9 +336,11 @@ function App(): JSX.Element {
 		setMetronome(prev => ({ ...prev, layers }))
 	}
 
-	const changeOctave = (e: any, i: number) => {
+	const wheelUpdate = (index: number, el: number, what: string) => {
+		if (what === 'beats') el += 3
+
 		const layers = metronome.layers
-		layers[i].octave = +e.target.value
+		layers[index][what] = el
 
 		setMetronome(prev => ({ ...prev, layers }))
 	}
@@ -417,8 +419,6 @@ function App(): JSX.Element {
 				<p>Train your polyrythms</p>
 			</div>
 
-			<Wheel></Wheel>
-
 			<div
 				className={
 					'clicks-wrap ' + (moreSettingsRef.current.segment.on ? 'segment' : 'layers')
@@ -473,47 +473,23 @@ function App(): JSX.Element {
 					{metronome.layers.map((layer, i) => {
 						return (
 							<div className="setting layer" key={i}>
-								<input
-									type="number"
-									name="numer-num"
-									min="2"
-									max="16"
-									value={layer.beats}
-									key={'number-' + i}
-									onChange={e => changeLayerBeats(e, i)}
-								/>
-								<input
-									type="range"
-									name="numer-range"
-									min="2"
-									max="16"
-									value={layer.beats}
-									key={'numer-range-' + i}
-									onChange={e => changeLayerBeats(e, i)}
-								/>
+								<Wheel
+									what="beats"
+									data={Beats}
+									update={result => wheelUpdate(i, result, 'beats')}
+								></Wheel>
 
-								<span className="note">{Notes[layer.frequency]}</span>
-								<span className="note">{layer.octave}</span>
+								<Wheel
+									what="frequency"
+									data={Notes}
+									update={result => wheelUpdate(i, result, 'frequency')}
+								></Wheel>
 
-								<input
-									type="range"
-									name="freq-range"
-									key={'freq-range-' + i}
-									min="1"
-									max="11"
-									value={layer.frequency}
-									onChange={e => changeFrequency(e, i)}
-								/>
-
-								<input
-									type="range"
-									name="octave-range"
-									key={'octave-range-' + i}
-									min="-1"
-									max="6"
-									value={layer.octave}
-									onChange={e => changeOctave(e, i)}
-								/>
+								<Wheel
+									what="octave"
+									data={Octaves}
+									update={result => wheelUpdate(i, result, 'octave')}
+								></Wheel>
 
 								<button
 									className="suppr-btn"
