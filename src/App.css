@@ -2,6 +2,7 @@
 .App {
 	text-align: center;
 	padding-bottom: 5em;
+	user-select: none;
 }
 
 .App-logo {
@@ -277,9 +278,10 @@ small {
 
 
 .immovable_wheel {
-	height: 30px;
-	line-height: 30px;
 	overflow: hidden;
+	user-select: none;
+	font-size: 40px;
+	height: 40px;
 }
 
 .wheel {

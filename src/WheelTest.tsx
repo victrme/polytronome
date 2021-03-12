@@ -1,54 +1,61 @@
 import { useDrag } from 'react-use-gesture'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 function Wheel(): JSX.Element {
-
-	const dom = document.querySelector('.wheel')!
+	const wheelRef = useRef(document.createElement('div'))
 	const [wheelY, setWheelY] = useState(0)
+	const [octaveSelection, setOctaveSelection] = useState({
+		init: [-1, 0, 1, 2, 3, 4, 5, 6],
+		on: 0,
+	})
+
+	// console.log(testage)
+
+	const moveWheel = (y: number, isSnap?: boolean) =>
+		wheelRef.current.setAttribute(
+			'style',
+			`transform: translateY(${y}px); transition: transform ${isSnap ? '.2s' : '0s'}`
+		)
 
 	const bind = useDrag(
-		({ dragging, movement: [x, y]}) => {
+		state => {
+			const y = state.movement[1]
 
-
-			if (dragging) {
-				//set({ y: y * 2 })
-
-				dom.setAttribute('style', `transform: translateY(${y}px)`)
+			if (state.dragging) {
+				moveWheel(y)
 				setWheelY(y)
-
 			} else {
-
-				const height = 30
-				let mod = y % height
+				const box = wheelRef.current.getBoundingClientRect()
+				const height = box.height / octaveSelection.init.length
+				const mod = y % height
+				const isAboveHalfHeight = -mod >= height / 2
+				const maxMovement = -box.height + height
 				let toTranslate = y
 
-				if (Math.abs(mod) >= height / 2) {
-					toTranslate -= height +mod
-					console.log('up')
-				} else {
-					toTranslate -= mod
-					console.log('down')
-				}
+				// Snap to Element
+				toTranslate -= isAboveHalfHeight ? height + mod : mod
 
+				// Lower - Upper bounds
 				if (toTranslate > 0) toTranslate = 0
+				if (toTranslate < maxMovement) toTranslate = maxMovement
 
-				const number = +(Math.abs(toTranslate) / height)
-				console.log(number)
+				// Save element position
+				setOctaveSelection(prev => ({
+					...prev,
+					on: +(Math.abs(toTranslate) / height),
+				}))
 
-				dom.setAttribute('style', `transform: translateY(${toTranslate}px); transition: transform .2s`)
+				moveWheel(toTranslate, true)
 				setWheelY(toTranslate)
 			}
 		},
-		{
-			axis: 'y',
-			initial: () => [0, wheelY]
-		}
+		{ axis: 'y', initial: () => [0, wheelY] }
 	)
 
 	return (
 		<div className="immovable_wheel">
-			<div {...bind()} className="wheel octave">
-				{[-1, 0, 1, 2, 3, 4, 5, 6].map((oct, i) => (
+			<div {...bind()} ref={wheelRef} className="wheel octave">
+				{octaveSelection.init.map((oct, i) => (
 					<div key={'octavewheel' + i}>{oct}</div>
 				))}
 			</div>
