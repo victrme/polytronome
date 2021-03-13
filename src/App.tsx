@@ -11,7 +11,7 @@ function App(): JSX.Element {
 	 */
 
 	const Beats = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
-	const Notes = ['A', 'A#', 'B', 'C', 'C#', 'D', 'E', 'F', 'F#', 'G', 'G#']
+	const Notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 	const Octaves = [-1, 0, 1, 2, 3, 4, 5, 6]
 	const defaultLayer = {
 		id: setRandomID(),
@@ -48,15 +48,15 @@ function App(): JSX.Element {
 				id: setRandomID(),
 				beats: 4,
 				time: 1,
-				frequency: 1,
-				octave: 0,
+				frequency: 0,
+				octave: 3,
 			},
 			{
 				id: setRandomID(),
 				beats: 5,
 				time: 1,
-				frequency: 1,
-				octave: 0,
+				frequency: 7,
+				octave: 3,
 			},
 		],
 		startTime: 0,
@@ -122,18 +122,6 @@ function App(): JSX.Element {
 		return xx
 	}
 
-	// eslint-disable-next-line
-	function changeSoundOptions(e: any, which: string) {
-		const opt = moreSettings.sound
-		const val = e.target.value
-		opt[which] = which === 'type' ? val : +val
-
-		setMoreSettings(prev => ({
-			...prev,
-			sound: opt,
-		}))
-	}
-
 	const initSegment = () => {
 		function getDuplicates(list: number[]) {
 			// Creates list of duplicates per division
@@ -185,8 +173,12 @@ function App(): JSX.Element {
 
 	useEffect(() => {
 		// Add Spacebar to control metronome
-		document.addEventListener('keydown', (e: any) => {
-			if (e.keyCode === 32) launchMetronome(metronomeRef.current.isRunning)
+		document.addEventListener('keydown', (e: KeyboardEvent) => {
+			if (e.keyCode === 32) {
+				launchMetronome(metronomeRef.current.isRunning)
+				e.preventDefault()
+				return false
+			}
 		})
 
 		// Init segment with ratios
@@ -254,12 +246,13 @@ function App(): JSX.Element {
 			//
 			// Play sound
 			//
-			const freq = layer.frequency + 9 * layer.octave
+			const note = layer.frequency + 12 * (layer.octave)
+			const freq = 16.35 * 2 ** (note / 12)
 			const wave = new Pizzicato.Sound({
 				source: 'wave',
 				options: {
 					...moreSettingsRef.current.sound,
-					frequency: 110 * 2 ** (freq / 12),
+					frequency: freq,
 				},
 			})
 			wave.play()
@@ -317,27 +310,8 @@ function App(): JSX.Element {
 		}
 	}
 
-	const changeLayerBeats = (e: any, i: number) => {
-		const val = +e.target.value
-		let layers = metronome.layers
-
-		// Minimum 2 beats
-		layers[i].beats = val > 1 ? val : 2
-
-		//Update
-		setMetronome(prev => ({ ...prev, layers }))
-		if (moreSettings.segment.on) initSegment()
-	}
-
-	const changeFrequency = (e: any, i: number) => {
-		const layers = metronome.layers
-		layers[i].frequency = +e.target.value
-
-		setMetronome(prev => ({ ...prev, layers }))
-	}
-
-	const wheelUpdate = (index: number, el: number, what: string) => {
-		if (what === 'beats') el += 3
+	const wheelUpdate = (what: string, el: any, index: number) => {
+		if (what === 'beats') el += 2
 
 		const layers = metronome.layers
 		layers[index][what] = el
@@ -470,36 +444,34 @@ function App(): JSX.Element {
 
 			<div className="settings-wrap">
 				<div className="boxed">
-					{metronome.layers.map((layer, i) => {
-						return (
-							<div className="setting layer" key={i}>
-								<Wheel
-									what="beats"
-									data={Beats}
-									update={result => wheelUpdate(i, result, 'beats')}
-								></Wheel>
+					{metronome.layers.map((layer, i) => (
+						<div className="setting layer" key={i}>
+							<Wheel
+								what="beats"
+								list={Beats}
+								init={layer.beats - 2}
+								update={result => wheelUpdate('beats', result, i)}
+							></Wheel>
 
-								<Wheel
-									what="frequency"
-									data={Notes}
-									update={result => wheelUpdate(i, result, 'frequency')}
-								></Wheel>
+							<Wheel
+								what="frequency"
+								list={Notes}
+								init={layer.frequency}
+								update={result => wheelUpdate('frequency', result, i)}
+							></Wheel>
 
-								<Wheel
-									what="octave"
-									data={Octaves}
-									update={result => wheelUpdate(i, result, 'octave')}
-								></Wheel>
+							<Wheel
+								what="octave"
+								list={Octaves}
+								init={layer.octave}
+								update={result => wheelUpdate('octave', result, i)}
+							></Wheel>
 
-								<button
-									className="suppr-btn"
-									onClick={e => updateLayer(false, i)}
-								>
-									&times;
-								</button>
-							</div>
-						)
-					})}
+							<button className="suppr-btn" onClick={() => updateLayer(false, i)}>
+								&times;
+							</button>
+						</div>
+					))}
 
 					<div className="add-layer">
 						<button
@@ -521,7 +493,7 @@ function App(): JSX.Element {
 						<button onClick={tapTempo}>tap</button>
 					</div>
 
-					<button onClick={e => updateTempo(metronome.tempo - 1)}>-</button>
+					<button onClick={() => updateTempo(metronome.tempo - 1)}>-</button>
 					<input
 						type="range"
 						name="tempo-range"
@@ -531,7 +503,7 @@ function App(): JSX.Element {
 						value={metronome.tempo}
 						onChange={e => updateTempo(+e.target.value)}
 					/>
-					<button onClick={e => updateTempo(metronome.tempo + 1)}>+</button>
+					<button onClick={() => updateTempo(metronome.tempo + 1)}>+</button>
 					<input
 						type="text"
 						name="tempo-text"
@@ -649,7 +621,7 @@ function App(): JSX.Element {
 					<button
 						name="display"
 						id="display"
-						onClick={e =>
+						onClick={() =>
 							setMoreSettings(prev => ({
 								...prev,
 								segment: {
