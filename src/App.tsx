@@ -27,7 +27,6 @@ function App(): JSX.Element {
 		theme: 'lightgreen',
 		sound: {
 			type: 'sawtooth',
-			attack: 0.0,
 			release: 0.1,
 			volume: 0.1,
 		},
@@ -181,6 +180,18 @@ function App(): JSX.Element {
 			}
 		})
 
+		const wheels = document.querySelectorAll('wheel')
+
+		if (wheels) {
+			wheels.forEach(wh => wh.addEventListener('scroll', e => {
+				console.log(e)
+				e.preventDefault()
+				return false
+			}))
+		} else {
+			console.log('bite')
+		}
+
 		// Init segment with ratios
 		initSegment()
 
@@ -253,6 +264,7 @@ function App(): JSX.Element {
 				options: {
 					...moreSettingsRef.current.sound,
 					frequency: freq,
+					attack: 0
 				},
 			})
 			wave.play()
@@ -517,24 +529,6 @@ function App(): JSX.Element {
 					<h3>Click Sound</h3>
 
 					<div className="sliders">
-						<label>
-							<input
-								type="range"
-								name="attack-range"
-								key={'attack-range'}
-								min="0"
-								max=".1"
-								step="0.01"
-								value={moreSettings.sound.attack}
-								onChange={e =>
-									setMoreSettings(prev => ({
-										...prev,
-										sound: { ...prev.sound, attack: +e.target.value },
-									}))
-								}
-							/>
-							<p>Attack</p>
-						</label>
 
 						<label>
 							<input

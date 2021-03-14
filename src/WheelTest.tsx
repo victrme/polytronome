@@ -1,44 +1,61 @@
-import { useDrag } from 'react-use-gesture'
+import { useGesture } from 'react-use-gesture'
 import { useState, useRef } from 'react'
 
 function Wheel({ what, list, init, update }): JSX.Element {
 	const wheelRef = useRef(document.createElement('div'))
-	const box = wheelRef.current.getBoundingClientRect()
-	const height = box.height / list.length
 
-	// LE MOINS QUARANTE EST PAS BEAU DU TOUT
-	const [wheelY, setWheelY] = useState(init * -40)
+	// Need to figure better way to get wheel height
+	// const box = wheelRef.current.getBoundingClientRect()
+	// const height = box.height / list.length
+	const height = 40
+	const maxMovement = -height * list.length + height
+
+	const [wheelY, setWheelY] = useState(init * -height)
 	const [wheelSnap, setWheelSnap] = useState(true)
 
-	const bind = useDrag(
-		state => {
-			const y = state.movement[1]
+	const movingAction = (state: any) => {
+		// console.log(state)
+		const y = state.movement[1]
+		const userMoves = state.dragging || state.wheeling || state.scrolling
 
-			if (state.dragging) {
-				setWheelY(y)
-				setWheelSnap(false)
-			} else {
-				const mod = y % height
-				const isAboveHalfHeight = -mod >= height / 2
-				const maxMovement = -box.height + height
-				let toTranslate = y
+		if (userMoves) {
+			if (state.wheeling) document.body.style.overflow = 'hidden'
+			setWheelY(y)
+			setWheelSnap(false)
+		} else {
+			const surplus = y % height
+			const isAboveHalfHeight = -surplus >= height / 2
+			let toTranslate = y
 
-				// Snap to Element
-				toTranslate -= isAboveHalfHeight ? height + mod : mod
+			// Snap to Element
+			toTranslate -= isAboveHalfHeight ? height + surplus : surplus
 
-				// Lower - Upper bounds
-				if (toTranslate > 0) toTranslate = 0
-				if (toTranslate < maxMovement) toTranslate = maxMovement
+			// Lower - Upper bounds
+			if (toTranslate > 0) toTranslate = 0
+			if (toTranslate < maxMovement) toTranslate = maxMovement
 
-				// Save element position
-				update(+(Math.abs(toTranslate) / height))
+			// Save element position
+			update(+(Math.abs(toTranslate) / height))
 
-				// moveWheel(toTranslate, true)
-				setWheelY(toTranslate)
-				setWheelSnap(true)
-			}
+			setWheelY(toTranslate)
+			setWheelSnap(true)
+
+			// Enable body scrolling again
+			document.body.style.overflow = 'auto'
+		}
+	}
+	const options: any = {
+		axis: 'y',
+		rubberband: 0.1,
+		initial: () => [0, wheelY],
+		bounds: { bottom: 0, top: maxMovement },
+	}
+	const bind = useGesture(
+		{
+			onDrag: state => movingAction(state),
+			onWheel: state => movingAction(state),
 		},
-		{ axis: 'y', initial: () => [0, wheelY] }
+		{ drag: options, wheel: options }
 	)
 
 	return (
