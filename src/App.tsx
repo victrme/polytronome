@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react'
 import Pizzicato from 'pizzicato'
 import Wheel from './WheelTest'
-import './App.css'
+import './App.scss'
 
 function App(): JSX.Element {
 	/**
@@ -17,12 +17,11 @@ function App(): JSX.Element {
 		id: setRandomID(),
 		beats: 4,
 		time: 1,
-		frequency: 1,
-		octave: 0,
+		frequency: 0,
+		octave: 3,
 	}
 
 	const [tempoInput, setTempoInput] = useState(80)
-
 	const [moreSettings, setMoreSettings] = useState({
 		theme: 'lightgreen',
 		sound: {
@@ -115,10 +114,24 @@ function App(): JSX.Element {
 		return 60000 / ((beats / 4) * tempo)
 	}
 
+	function randInInterval(a: number, b: number) {
+		return Math.random() * (b - a) + a
+	}
+
 	function setRandomID() {
 		let xx = ''
-		while (xx.length < 8) xx += String.fromCharCode(Math.random() * (122 - 97) + 97)
+		while (xx.length < 8) xx += String.fromCharCode(randInInterval(97, 122))
 		return xx
+	}
+
+	const randomizeLayers = () => {
+		const layers: any[] = []
+
+		metronomeRef.current.layers.forEach(layer => {
+			layers.push({ ...layer, beats: randInInterval(2, 16) })
+		})
+
+		setMetronome(prev => ({ ...prev, layers }))
 	}
 
 	const initSegment = () => {
@@ -389,58 +402,65 @@ function App(): JSX.Element {
 
 	return (
 		<div className={'App ' + moreSettings.theme}>
-			<div className="title">
-				<h1>Poly-tronome</h1>
-				<p>Train your polyrythms</p>
-			</div>
+			<div className="principal">
+				<div className="sticky">
+					<div className="title">
+						<p>Train your polyrythms</p>
+						<h1>Polytronome</h1>
+					</div>
 
-			<div
-				className={
-					'clicks-wrap ' + (moreSettingsRef.current.segment.on ? 'segment' : 'layers')
-				}
-			>
-				<div className="segment-wrap">
-					{moreSettings.segment.ratios.map((ratio, i) => (
-						<span
-							key={i}
-							className={
-								'segment-child' +
-								(moreSettings.segment.count === i ? ' on' : '')
-							}
-							style={{
-								width: `calc(${ratio * 100}% - 10px)`,
-							}}
-						/>
-					))}
-				</div>
-
-				<div className="layers-wrap">
-					{metronome.layers.map((layer, jj) => {
-						// Add clicks for each layers
-
-						const children: JSX.Element[] = []
-						for (let kk = 0; kk < layer.beats; kk++)
-							children.push(
-								<div
-									key={kk}
-									className={+kk <= layer.time - 1 ? 'click on' : 'click'}
+					<div
+						className={
+							'clicks-wrap ' +
+							(moreSettingsRef.current.segment.on ? 'segment' : 'layers')
+						}
+					>
+						<div className="segment-wrap">
+							{moreSettings.segment.ratios.map((ratio, i) => (
+								<span
+									key={i}
+									className={
+										'segment-child' +
+										(moreSettings.segment.count === i ? ' on' : '')
+									}
+									style={{
+										width: `calc(${ratio * 100}% - 10px)`,
+									}}
 								/>
-							)
+							))}
+						</div>
 
-						// Wrap in rows & return
-						return (
-							<div key={jj} className="clicks-wrap">
-								{children}
-							</div>
-						)
-					})}
+						<div className="layers-wrap">
+							{metronome.layers.map((layer, jj) => {
+								// Add clicks for each layers
+
+								const children: JSX.Element[] = []
+								for (let kk = 0; kk < layer.beats; kk++)
+									children.push(
+										<div
+											key={kk}
+											className={
+												+kk <= layer.time - 1 ? 'click on' : 'click'
+											}
+										/>
+									)
+
+								// Wrap in rows & return
+								return (
+									<div key={jj} className="clicks-wrap">
+										{children}
+									</div>
+								)
+							})}
+						</div>
+					</div>
+
+					<div className="start-button">
+						<button onMouseDown={() => launchMetronome(metronome.isRunning)}>
+							{metronome.isRunning ? 'Stop' : 'Start'}
+						</button>
+					</div>
 				</div>
-			</div>
-
-			<div>
-				<button onMouseDown={() => launchMetronome(metronome.isRunning)}>
-					{metronome.isRunning ? 'Stop' : 'Start'}
-				</button>
 			</div>
 
 			<div className="settings-wrap">
@@ -595,6 +615,14 @@ function App(): JSX.Element {
 						<option value="deepdark">deepdark</option>
 						<option value="coffee">coffee</option>
 					</select>
+				</div>
+
+				<div className="setting randomize">
+					<h3>Randomize</h3>
+
+					<button name="display" id="display" onClick={randomizeLayers}>
+						randomiezzzz
+					</button>
 				</div>
 
 				<div className="setting display">
