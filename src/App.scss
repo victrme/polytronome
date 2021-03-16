@@ -1,0 +1,282 @@
+
+.App {
+	background-color: #282c34;
+	min-height: 100vh;
+	display: grid;
+	grid-template-columns: 60% 40%;
+	font-size: calc(10px + 2vmin);
+	color: white;
+	transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+	user-select: none;
+
+	.principal {
+
+		.sticky {
+			position: sticky;
+			top: 20vh;
+			margin: 20vh 5vh;
+		}
+
+		.title {
+			margin: 1em 0;
+			font-size: 30px;
+
+			h1 {
+				margin-top: 0;
+				line-height: 1em;
+			}
+
+			p {
+				margin: 0;
+				font-weight: bold;
+				font-size: 0.6em;
+				opacity: .4;
+			}
+		}
+
+		.clicks-wrap {
+			display: flex;
+			justify-content: space-between;
+
+			// Hide one when the other is showing
+			&.segment .layers-wrap,
+			&.layers .segment-wrap {
+				display: none;
+			}
+
+			.click {
+				margin: 5px;
+				width: 100%;
+				height: 20px;
+				background-color: rgba(0, 0, 0, 0.2);
+				border-radius: 5px;
+
+				&.on {
+					background-color: white;
+				}
+			}
+
+			.segment-wrap,
+			.layers-wrap {
+				width: 100%;
+
+				&.hidden {
+					display: none;
+				}
+			}
+
+			.segment-child {
+				background-color: rgba(0, 0, 0, .2);
+				margin: 5px;
+				height: 20px;
+				border-radius: 5px;
+				transition: all .1s;
+			}
+
+		}
+
+		.start-button {
+			text-align: center;
+			
+			button {
+				width: 300px;
+				margin-top: 10vh;
+			}
+		}
+	}
+
+
+
+
+
+
+
+	.setting {
+		display: flex;
+		align-items: center;
+
+		&.tempo {
+			
+			justify-content: space-around;
+			align-items: center;
+
+			button {
+				padding: 0;
+				margin: 0;
+				background-color: transparent;
+			}
+
+			input[type="text"] {
+				font-size: 40px;
+				width: 100px;
+			}
+		}
+	}
+
+	button {
+		padding: 10px 40px;
+		margin: 0 20px;
+		border: none;
+		background: #455A64;
+		border-radius: 2em;
+		font-size: 16px;
+		font-weight: bold;
+		color: white;
+		transition: all 0.2s;
+		cursor: pointer;
+	}
+
+	button:hover {
+		background: #35464e;
+	}
+
+	button:active {
+		background: #222c31;
+		color: #fffa;
+	}
+
+	button.off {
+		filter: contrast(0);
+	}
+
+	.settings-wrap {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.setting input {
+		width: 60px;
+		margin: 10px;
+		padding: 5px;
+		background-color: transparent;
+		border: none;
+		color: white;
+		font-weight: bolder;
+		font-size: 16px;
+		text-align: center;
+	}
+
+	.setting input[type='range'] {
+		width: 80px;
+		margin: 10px;
+		padding: 5px;
+
+	}
+
+	.setting.sound {
+		flex-direction: column;
+	}
+
+	.setting.sound .sliders input[type='range'] {
+		-webkit-appearance: slider-vertical;
+	}
+
+	.setting.sound .sliders {
+		display: flex;
+		flex-direction: row;
+	}
+
+	.setting select {
+		padding: 5px;
+		margin: 10px;
+	}
+
+	.boxed {
+		margin: 2em;
+		width: calc(100% - 4em);
+	}
+
+	.layers-settings button {
+		background-color: rgba(0, 0, 0, .2);
+	}
+
+	.layers-settings input:not(input[type="range"]) {
+		font-size: 40px;
+		width: 100px;
+	}
+
+	.layers-settings .add-layer {
+		padding-top: 1em;
+	}
+
+	
+
+	.global-settings {
+		display: flex;
+		flex-direction: column;
+	}
+
+	button.suppr-btn {
+		background: 0;
+		border: 0;
+		color: white;
+		font-size: 1em;
+		padding: 10px;
+	}
+
+
+	.note {
+		font-size: 16px;
+		width: 50px;
+		font-weight: bold;
+	}
+
+	.setting.unlimited h3 {
+		margin-bottom: 0;
+	}
+
+	small {
+		font-size: .5em;
+	}
+
+
+
+
+
+
+
+
+
+
+
+	.immovable_wheel {
+		overflow: hidden;
+		user-select: none;
+		line-height: 40px;
+		font-size: 40px;
+		height: 40px;
+	}
+
+	.wheel {
+		cursor: grab;
+		touch-action: none;
+	}
+
+	.wheel.frequency {
+		text-align: right;
+	}
+
+	.wheel:active {
+		cursor: grabbing;
+	}
+
+	.wheel div {
+		user-select: none;
+	}
+
+
+
+
+
+
+
+
+
+	// Themes
+
+	&.deepdark {
+		background-color: #000;
+	}
+}
+
