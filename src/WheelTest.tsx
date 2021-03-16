@@ -13,6 +13,12 @@ function Wheel({ what, list, init, update }): JSX.Element {
 	const [wheelY, setWheelY] = useState(init * -height)
 	const [wheelSnap, setWheelSnap] = useState(true)
 
+	const scrollPrevent = (no: boolean) =>
+		(document.body.style.overflow = no ? 'hidden' : 'auto')
+
+	wheelRef.current.addEventListener('mouseenter', () => scrollPrevent(true))
+	wheelRef.current.addEventListener('mouseleave', () => scrollPrevent(false))
+
 	const movingAction = (state: any) => {
 		// console.log(state)
 		const y = state.movement[1]
@@ -39,9 +45,6 @@ function Wheel({ what, list, init, update }): JSX.Element {
 
 			setWheelY(toTranslate)
 			setWheelSnap(true)
-
-			// Enable body scrolling again
-			document.body.style.overflow = 'auto'
 		}
 	}
 	const options: any = {

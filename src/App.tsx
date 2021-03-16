@@ -139,11 +139,10 @@ function App(): JSX.Element {
 
 		function getRatios(list: number[]) {
 			// Removes duplicates
-			// segment ratio [next - current]
-
 			list = [0, ...new Set(list), 1]
 			const ratios: number[] = []
 
+			// segment ratio [next - current]
 			list.forEach((elem, i) => {
 				if (list[i + 1]) ratios.push(list[i + 1] - elem)
 			})
@@ -173,24 +172,12 @@ function App(): JSX.Element {
 	useEffect(() => {
 		// Add Spacebar to control metronome
 		document.addEventListener('keydown', (e: KeyboardEvent) => {
-			if (e.keyCode === 32) {
+			if (e.code === 'Space') {
 				launchMetronome(metronomeRef.current.isRunning)
 				e.preventDefault()
 				return false
 			}
 		})
-
-		const wheels = document.querySelectorAll('wheel')
-
-		if (wheels) {
-			wheels.forEach(wh => wh.addEventListener('scroll', e => {
-				console.log(e)
-				e.preventDefault()
-				return false
-			}))
-		} else {
-			console.log('bite')
-		}
 
 		// Init segment with ratios
 		initSegment()
@@ -257,14 +244,14 @@ function App(): JSX.Element {
 			//
 			// Play sound
 			//
-			const note = layer.frequency + 12 * (layer.octave)
+			const note = layer.frequency + 12 * layer.octave
 			const freq = 16.35 * 2 ** (note / 12)
 			const wave = new Pizzicato.Sound({
 				source: 'wave',
 				options: {
 					...moreSettingsRef.current.sound,
 					frequency: freq,
-					attack: 0
+					attack: 0,
 				},
 			})
 			wave.play()
@@ -323,12 +310,14 @@ function App(): JSX.Element {
 	}
 
 	const wheelUpdate = (what: string, el: any, index: number) => {
-		if (what === 'beats') el += 2
-
 		const layers = metronome.layers
-		layers[index][what] = el
+		layers[index][what] = what === 'beats' ? el + 2 : el
 
 		setMetronome(prev => ({ ...prev, layers }))
+
+		if (what === 'beats' && moreSettingsRef.current.segment.on === true) {
+			initSegment()
+		}
 	}
 
 	const updateLayer = (add: boolean, index: number = 0) => {
@@ -529,7 +518,6 @@ function App(): JSX.Element {
 					<h3>Click Sound</h3>
 
 					<div className="sliders">
-
 						<label>
 							<input
 								type="range"
@@ -615,7 +603,7 @@ function App(): JSX.Element {
 					<button
 						name="display"
 						id="display"
-						onClick={() =>
+						onClick={() => {
 							setMoreSettings(prev => ({
 								...prev,
 								segment: {
@@ -623,7 +611,9 @@ function App(): JSX.Element {
 									on: moreSettings.segment.on ? false : true,
 								},
 							}))
-						}
+
+							if (!moreSettings.segment.on) initSegment()
+						}}
 					>
 						{moreSettings.segment.on ? 'segment' : 'layers'}
 					</button>
