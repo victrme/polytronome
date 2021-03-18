@@ -452,8 +452,7 @@ function App(): JSX.Element {
 			<div className="settings-wrap">
 				<div className="boxed">
 					<div className="layer-titles">
-						<h3>Beats</h3>
-						<h3>Notes</h3>
+						<h3>Beats & Notes</h3>
 					</div>
 
 					{metronome.layers.map((l, i) => (
@@ -530,8 +529,9 @@ function App(): JSX.Element {
 				<div className="setting boxed sound">
 					<h3>Click Sound</h3>
 
-					<div className="sliders">
+					<div className="release">
 						<label>
+							<p>Release</p>
 							<input
 								type="range"
 								name="release-range"
@@ -547,10 +547,12 @@ function App(): JSX.Element {
 									}))
 								}
 							/>
-							<p>Release</p>
 						</label>
+					</div>
 
+					<div className="volume">
 						<label>
+							<p>volume</p>
 							<input
 								type="range"
 								name="volume-range"
@@ -566,10 +568,10 @@ function App(): JSX.Element {
 									}))
 								}
 							/>
-							<p>volume</p>
 						</label>
 					</div>
-					<div>
+
+					<div className="waveform">
 						<h5>Waveform</h5>
 						<select
 							id="wavetype"
@@ -611,10 +613,14 @@ function App(): JSX.Element {
 				</div>
 
 				<div className="setting randomize">
-					<h3>Randomize</h3>
-
 					<button name="display" id="display" onClick={randomizeLayers}>
-						randomiezzzz
+						Randomize beats
+					</button>
+				</div>
+
+				<div className="setting fullscreen">
+					<button name="display" id="display" onClick={() => alert('soon')}>
+						fullscreen
 					</button>
 				</div>
 
