@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
 import Pizzicato from 'pizzicato'
-import Wheel from './WheelTest'
+import Wheel from './Wheel'
 import './App.scss'
 
 function App(): JSX.Element {
@@ -10,9 +10,6 @@ function App(): JSX.Element {
 	 *
 	 */
 
-	const Beats = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
-	const Notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
-	const Octaves = [-1, 0, 1, 2, 3, 4, 5, 6]
 	const defaultLayer = {
 		id: setRandomID(),
 		beats: 4,
@@ -91,25 +88,14 @@ function App(): JSX.Element {
 		metronomeRef.current.layers.filter(ll => ll.id === id)[0]
 
 	const calculateTempoMs = (beats: number, tempo: number) => {
-		const outTempoAnimation = (goal: number, direction: number) => {
-			const interval = setInterval(() => {
-				// Cool story bruv
-				// const step = 10 ** (val.toString().length - 2)
-
-				const val = tempoInputRef.current < 300 ? tempoInputRef.current : 300
-				val === goal ? clearInterval(interval) : setTempoInput(val + direction)
-			}, 20)
+		const crazy = moreSettingsRef.current.unlimited
+		const change = (n: number) => {
+			setTempoInput(n)
+			tempo = n
 		}
 
-		if (tempo < 33) {
-			outTempoAnimation(33, 1)
-			tempo = 33
-		}
-
-		if (!moreSettingsRef.current.unlimited && tempo > 250) {
-			outTempoAnimation(250, -1)
-			tempo = 250
-		}
+		if (!crazy && tempo < 33) change(33)
+		if (!crazy && tempo > 250) change(250)
 
 		return 60000 / ((beats / 4) * tempo)
 	}
@@ -128,7 +114,7 @@ function App(): JSX.Element {
 		const layers: any[] = []
 
 		metronomeRef.current.layers.forEach(layer => {
-			layers.push({ ...layer, beats: randInInterval(2, 16) })
+			layers.push({ ...layer, beats: +randInInterval(2, 16).toFixed(0) })
 		})
 
 		setMetronome(prev => ({ ...prev, layers }))
@@ -465,28 +451,35 @@ function App(): JSX.Element {
 
 			<div className="settings-wrap">
 				<div className="boxed">
-					{metronome.layers.map((layer, i) => (
+					<div className="layer-titles">
+						<h3>Beats</h3>
+						<h3>Notes</h3>
+					</div>
+
+					{metronome.layers.map((l, i) => (
 						<div className="setting layer" key={i}>
 							<Wheel
-								what="beats"
-								list={Beats}
-								init={layer.beats - 2}
+								index={i}
+								what={'beats'}
+								metronome={metronome}
 								update={result => wheelUpdate('beats', result, i)}
 							></Wheel>
 
-							<Wheel
-								what="frequency"
-								list={Notes}
-								init={layer.frequency}
-								update={result => wheelUpdate('frequency', result, i)}
-							></Wheel>
+							<div className="notes-wrap">
+								<Wheel
+									index={i}
+									what={'frequency'}
+									metronome={metronome}
+									update={result => wheelUpdate('frequency', result, i)}
+								></Wheel>
 
-							<Wheel
-								what="octave"
-								list={Octaves}
-								init={layer.octave}
-								update={result => wheelUpdate('octave', result, i)}
-							></Wheel>
+								<Wheel
+									index={i}
+									what={'octave'}
+									metronome={metronome}
+									update={result => wheelUpdate('octave', result, i)}
+								></Wheel>
+							</div>
 
 							<button className="suppr-btn" onClick={() => updateLayer(false, i)}>
 								&times;
@@ -590,9 +583,9 @@ function App(): JSX.Element {
 							}
 						>
 							<option value="sine">sine</option>
-							<option value="square">square</option>
 							<option value="triangle">triangle</option>
 							<option value="sawtooth">sawtooth</option>
+							<option value="square">square</option>
 						</select>
 					</div>
 				</div>
