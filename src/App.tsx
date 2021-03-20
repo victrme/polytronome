@@ -111,16 +111,6 @@ function App(): JSX.Element {
 		return xx
 	}
 
-	const randomizeLayers = () => {
-		const layers: any[] = []
-
-		metronomeRef.current.layers.forEach(layer => {
-			layers.push({ ...layer, beats: +randInInterval(2, 16).toFixed(0) })
-		})
-
-		setMetronome(prev => ({ ...prev, layers }))
-	}
-
 	const initSegment = useCallback(() => {
 		function getDuplicates(list: number[]) {
 			// Creates list of duplicates per division
@@ -195,8 +185,8 @@ function App(): JSX.Element {
 	function metronomeInterval(nextDelay: number, id: string) {
 		//
 		const timeoutID = window.setTimeout(() => {
-			const current = metronomeRef.current
-			const layer = getLayerFromId(id)
+			const current = { ...metronomeRef.current }
+			const layer = { ...getLayerFromId(id) }
 
 			// Quit recursion if stopped or removed
 			if (!current.isRunning || layer === undefined) {
@@ -217,7 +207,8 @@ function App(): JSX.Element {
 			}))
 
 			// Update Segment Count, if its on
-			const segment = moreSettingsRef.current.segment
+			const segment = { ...moreSettingsRef.current.segment }
+
 			if (segment.on) {
 				//
 				let segmentTemp = segment
@@ -267,7 +258,7 @@ function App(): JSX.Element {
 	}
 
 	function launchMetronome(runs: boolean) {
-		const current = metronomeRef.current
+		const current = { ...metronomeRef.current }
 
 		if (runs) {
 			//
@@ -309,29 +300,39 @@ function App(): JSX.Element {
 		}
 	}
 
-	const wheelUpdate = (what: string, el: any, index: number) => {
-		const layers = metronome.layers
-		layers[index][what] = what === 'beats' ? el + 2 : el
+	const randomizeLayers = () => {
+		const layers: any[] = []
+
+		metronomeRef.current.layers.forEach(layer => {
+			layers.push({ ...layer, beats: +randInInterval(2, 16).toFixed(0) })
+		})
 
 		setMetronome(prev => ({ ...prev, layers }))
 	}
 
+	const wheelUpdate = (what: string, el: any, index: number) => {
+		const newLayers = [...metronome.layers]
+		newLayers[index][what] = what === 'beats' ? el + 2 : el
+
+		setMetronome(prev => ({ ...prev, layers: newLayers }))
+	}
+
 	const updateLayer = (add: boolean, index: number = 0) => {
-		const layers = metronome.layers
+		const newLayers = [...metronome.layers]
 
 		// Remove
-		if (!add && layers.length > 1) layers.splice(index, 1)
+		if (!add && newLayers.length > 1) newLayers.splice(index, 1)
 
 		// Add Unlimited
 		// Add limited
 		if (
 			(add && moreSettings.unlimited) ||
-			(add && !moreSettings.unlimited && layers.length < 3)
+			(add && !moreSettings.unlimited && newLayers.length < 3)
 		)
-			layers.push(defaultLayer)
+			newLayers.push(defaultLayer)
 
 		// Update
-		setMetronome(prev => ({ ...prev, layers }))
+		setMetronome(prev => ({ ...prev, layers: newLayers }))
 	}
 
 	const updateTempo = (tempo: number) => {
@@ -392,27 +393,28 @@ function App(): JSX.Element {
 					</div>
 
 					<div
-						className={
-							'clicks-wrap ' +
-							(moreSettingsRef.current.segment.on ? 'segment' : 'layers')
-						}
+						className={`clicks ${
+							moreSettingsRef.current.segment.on ? 'isSegment' : 'isLayers'
+						}`}
 					>
-						<div className="segment-wrap">
-							{moreSettings.segment.ratios.map((ratio, i) => (
-								<span
-									key={i}
-									className={
-										'segment-child' +
-										(moreSettings.segment.count === i ? ' on' : '')
-									}
-									style={{
-										width: `calc(${ratio * 100}% - 10px)`,
-									}}
-								/>
-							))}
+						<div className="segment">
+							<div className="click-row">
+								{moreSettings.segment.ratios.map((ratio, i) => (
+									<span
+										key={i}
+										className={
+											'click' +
+											(moreSettings.segment.count === i ? ' on' : '')
+										}
+										style={{
+											width: `calc(${ratio * 100}% - 10px)`,
+										}}
+									/>
+								))}
+							</div>
 						</div>
 
-						<div className="layers-wrap">
+						<div className="layers">
 							{metronome.layers.map((layer, jj) => {
 								// Add clicks for each layers
 
@@ -429,7 +431,7 @@ function App(): JSX.Element {
 
 								// Wrap in rows & return
 								return (
-									<div key={jj} className="clicks-wrap">
+									<div key={jj} className="click-row">
 										{children}
 									</div>
 								)
@@ -488,6 +490,22 @@ function App(): JSX.Element {
 								update={result => wheelUpdate('beats', result, i)}
 							></Wheel>
 
+							<div className="notes-wrap">
+								<Wheel
+									index={i}
+									what={'frequency'}
+									metronome={metronome}
+									update={result => wheelUpdate('frequency', result, i)}
+								></Wheel>
+
+								<Wheel
+									index={i}
+									what={'octave'}
+									metronome={metronome}
+									update={result => wheelUpdate('octave', result, i)}
+								></Wheel>
+							</div>
+
 							<button className="suppr-btn" onClick={() => updateLayer(false, i)}>
 								&times;
 							</button>
@@ -510,24 +528,6 @@ function App(): JSX.Element {
 
 				<div className="setting boxed sound">
 					<h3>Click Sound</h3>
-
-					{metronome.layers.map((l, i) => (
-						<div className="notes-wrap">
-							<Wheel
-								index={i}
-								what={'frequency'}
-								metronome={metronome}
-								update={result => wheelUpdate('frequency', result, i)}
-							></Wheel>
-
-							<Wheel
-								index={i}
-								what={'octave'}
-								metronome={metronome}
-								update={result => wheelUpdate('octave', result, i)}
-							></Wheel>
-						</div>
-					))}
 
 					<div className="sliders">
 						<div className="release">
@@ -641,15 +641,13 @@ function App(): JSX.Element {
 				</div>
 
 				<div className="setting randomize">
-					<h5>Randomize</h5>
-
 					<button name="display" id="display" onClick={randomizeLayers}>
-						Randomize beats
+						Randomize
 					</button>
 				</div>
 
 				<div className="setting fullscreen">
-					<button name="display" id="display" onClick={() => alert('soon')}>
+					<button name="display" id="display" onClick={() => console.log('soon')}>
 						fullscreen
 					</button>
 				</div>

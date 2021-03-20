@@ -32,18 +32,23 @@
     opacity: 0.4;
 }
 
-.App .principal .clicks-wrap {
+
+
+
+
+
+
+.App .principal .click-row {
     display: flex;
-    justify-content: space-between;
+    width: 100%;
 }
 
-.App .principal .clicks-wrap.segment .layers-wrap,
-.App .principal .clicks-wrap.layers .segment-wrap {
+.App .principal .clicks.isSegment .layers,
+.App .principal .clicks.isLayers .segment {
     display: none;
 }
 
-.App .principal .clicks-wrap .click,
-.App .principal .clicks-wrap .segment-child {
+.App .principal .click {
     margin: 5px;
     width: 100%;
     height: 20px;
@@ -51,20 +56,15 @@
     border-radius: 5px;
 }
 
-.App .principal .clicks-wrap .click.on,
-.App .principal .clicks-wrap .segment-child.on {
+.App .principal .click.on {
     background-color: white;
     transition: background-color .1s;
 }
 
-.App .principal .clicks-wrap .segment-wrap {
-    display: flex;
-    width: 100%;
-}
 
-.App .principal .clicks-wrap .layers-wrap {
-    width: 100%;
-}
+
+
+
 
 .App .principal .start-button {
     text-align: center;
@@ -344,8 +344,8 @@
 .theme-preview .tp-light .tp-mini-click {background-color: rgba(0, 0, 0, 0.2)}
 
 .theme-preview .tp-black {background-color: #000}
-.theme-preview .tp-black .tp-mini-click:first-child {background-color: #ccc}
-.theme-preview .tp-black .tp-mini-click {background-color: rgba(221, 221, 221, 0.2)}
+.theme-preview .tp-black .tp-mini-click:first-child {background-color: #bbb}
+.theme-preview .tp-black .tp-mini-click {background-color: rgba(221, 221, 221, 0.1)}
 
 .theme-preview .tp-coffee {background-color: #fbefdf}
 .theme-preview .tp-coffee .tp-mini-click:first-child {background-color: rgb(141, 104, 82)}
