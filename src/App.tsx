@@ -1,7 +1,8 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 import Pizzicato from 'pizzicato'
 import Wheel from './Wheel'
-import './App.scss'
+import Range from './Range'
+import './App.css'
 
 function App(): JSX.Element {
 	/**
@@ -120,7 +121,7 @@ function App(): JSX.Element {
 		setMetronome(prev => ({ ...prev, layers }))
 	}
 
-	const initSegment = () => {
+	const initSegment = useCallback(() => {
 		function getDuplicates(list: number[]) {
 			// Creates list of duplicates per division
 			// [1, 3, 1 ...]
@@ -166,7 +167,7 @@ function App(): JSX.Element {
 				duplicates: getDuplicates(division),
 			},
 		}))
-	}
+	}, [metronome.layers])
 
 	useEffect(() => {
 		// Add Spacebar to control metronome
@@ -178,11 +179,12 @@ function App(): JSX.Element {
 			}
 		})
 
-		// Init segment with ratios
-		initSegment()
-
 		// eslint-disable-next-line
 	}, [])
+
+	useEffect(() => {
+		if (!metronome.isRunning) initSegment()
+	}, [initSegment, metronome])
 
 	//
 	//
@@ -203,15 +205,14 @@ function App(): JSX.Element {
 			}
 
 			const tempoMs = calculateTempoMs(layer.beats, current.tempo)
+			const time = layer.time >= layer.beats ? 1 : layer.time + 1
 
 			// Update beat time
 			// Return to 1 if 'time' above 'beats'
 			setMetronome(prev => ({
 				...prev,
 				layers: prev.layers.map(layer =>
-					layer.id === id
-						? { ...layer, time: layer.time >= layer.beats ? 1 : layer.time + 1 }
-						: layer
+					layer.id === id ? { ...layer, time } : layer
 				),
 			}))
 
@@ -313,10 +314,6 @@ function App(): JSX.Element {
 		layers[index][what] = what === 'beats' ? el + 2 : el
 
 		setMetronome(prev => ({ ...prev, layers }))
-
-		if (what === 'beats' && moreSettingsRef.current.segment.on === true) {
-			initSegment()
-		}
 	}
 
 	const updateLayer = (add: boolean, index: number = 0) => {
@@ -335,7 +332,6 @@ function App(): JSX.Element {
 
 		// Update
 		setMetronome(prev => ({ ...prev, layers }))
-		if (moreSettings.segment.on) initSegment()
 	}
 
 	const updateTempo = (tempo: number) => {
@@ -450,11 +446,38 @@ function App(): JSX.Element {
 			</div>
 
 			<div className="settings-wrap">
-				<div className="boxed">
-					<div className="layer-titles">
-						<h3>Beats</h3>
-						<h3>Notes</h3>
+				<div className="setting boxed tempo">
+					<div>
+						<h3>Tempo</h3>
+						<button onClick={tapTempo}>tap</button>
 					</div>
+
+					<Range></Range>
+
+					{/* <div>
+						<button onClick={() => updateTempo(metronome.tempo - 1)}>-</button>
+						<input
+							type="range"
+							name="tempo-range"
+							id="tempo-range"
+							min="33"
+							max="250"
+							value={metronome.tempo}
+							onChange={e => updateTempo(+e.target.value)}
+						/>
+						<button onClick={() => updateTempo(metronome.tempo + 1)}>+</button>
+						<input
+							type="text"
+							name="tempo-text"
+							id="tempo-text"
+							value={tempoInput}
+							onChange={e => updateTempo(+e.target.value)}
+						/>
+					</div> */}
+				</div>
+
+				<div className="boxed">
+					<h3>Beats & Notes</h3>
 
 					{metronome.layers.map((l, i) => (
 						<div className="setting layer" key={i}>
@@ -464,22 +487,6 @@ function App(): JSX.Element {
 								metronome={metronome}
 								update={result => wheelUpdate('beats', result, i)}
 							></Wheel>
-
-							<div className="notes-wrap">
-								<Wheel
-									index={i}
-									what={'frequency'}
-									metronome={metronome}
-									update={result => wheelUpdate('frequency', result, i)}
-								></Wheel>
-
-								<Wheel
-									index={i}
-									what={'octave'}
-									metronome={metronome}
-									update={result => wheelUpdate('octave', result, i)}
-								></Wheel>
-							</div>
 
 							<button className="suppr-btn" onClick={() => updateLayer(false, i)}>
 								&times;
@@ -496,42 +503,64 @@ function App(): JSX.Element {
 							}
 							onClick={() => updateLayer(true)}
 						>
-							add layer
+							add
 						</button>
 					</div>
-				</div>
-
-				<div className="setting boxed tempo">
-					<div>
-						<h3>Tempo</h3>
-						<button onClick={tapTempo}>tap</button>
-					</div>
-
-					<button onClick={() => updateTempo(metronome.tempo - 1)}>-</button>
-					<input
-						type="range"
-						name="tempo-range"
-						id="tempo-range"
-						min="33"
-						max="250"
-						value={metronome.tempo}
-						onChange={e => updateTempo(+e.target.value)}
-					/>
-					<button onClick={() => updateTempo(metronome.tempo + 1)}>+</button>
-					<input
-						type="text"
-						name="tempo-text"
-						id="tempo-text"
-						value={tempoInput}
-						onChange={e => updateTempo(+e.target.value)}
-					/>
 				</div>
 
 				<div className="setting boxed sound">
 					<h3>Click Sound</h3>
 
+					{metronome.layers.map((l, i) => (
+						<div className="notes-wrap">
+							<Wheel
+								index={i}
+								what={'frequency'}
+								metronome={metronome}
+								update={result => wheelUpdate('frequency', result, i)}
+							></Wheel>
+
+							<Wheel
+								index={i}
+								what={'octave'}
+								metronome={metronome}
+								update={result => wheelUpdate('octave', result, i)}
+							></Wheel>
+						</div>
+					))}
+
 					<div className="sliders">
-						<label>
+						<div className="release">
+							<h5>Release</h5>
+							<Range></Range>
+						</div>
+
+						<div className="volume">
+							<h5>Volume</h5>
+							<Range></Range>
+						</div>
+
+						<div className="waveform">
+							<h5>Waveform</h5>
+							<select
+								id="waveform"
+								name="waveform"
+								value={moreSettings.sound.type}
+								onChange={e =>
+									setMoreSettings(prev => ({
+										...prev,
+										sound: { ...prev.sound, type: e.target.value },
+									}))
+								}
+							>
+								<option value="sine">sine</option>
+								<option value="triangle">triangle</option>
+								<option value="sawtooth">sawtooth</option>
+								<option value="square">square</option>
+							</select>
+						</div>
+
+						{/* <label>
 							<input
 								type="range"
 								name="release-range"
@@ -567,51 +596,50 @@ function App(): JSX.Element {
 								}
 							/>
 							<p>volume</p>
-						</label>
-					</div>
-					<div>
-						<h5>Waveform</h5>
-						<select
-							id="wavetype"
-							name="wavetype"
-							value={moreSettings.sound.type}
-							onChange={e =>
-								setMoreSettings(prev => ({
-									...prev,
-									sound: { ...prev.sound, type: e.target.value },
-								}))
-							}
-						>
-							<option value="sine">sine</option>
-							<option value="triangle">triangle</option>
-							<option value="sawtooth">sawtooth</option>
-							<option value="square">square</option>
-						</select>
+						</label> */}
 					</div>
 				</div>
 
 				<div className="setting theme">
-					<h3>Theme</h3>
+					<h5>Theme</h5>
+				</div>
 
-					<select
-						name="theme"
-						id="theme"
-						onChange={e =>
-							setMoreSettings(prev => ({
-								...prev,
-								theme: e.target.value,
-							}))
-						}
-					>
-						<option value="lightgreen">lightgreen</option>
-						<option value="dark">dark</option>
-						<option value="deepdark">deepdark</option>
-						<option value="coffee">coffee</option>
-					</select>
+				<div className="theme-preview">
+					<div className="tp-dark">
+						<div className="tp-mini-click"></div>
+						<div className="tp-mini-click"></div>
+						<div className="tp-mini-click"></div>
+					</div>
+					<div className="tp-light">
+						<div className="tp-mini-click"></div>
+						<div className="tp-mini-click"></div>
+						<div className="tp-mini-click"></div>
+					</div>
+					<div className="tp-black">
+						<div className="tp-mini-click"></div>
+						<div className="tp-mini-click"></div>
+						<div className="tp-mini-click"></div>
+					</div>
+					<div className="tp-coffee">
+						<div className="tp-mini-click"></div>
+						<div className="tp-mini-click"></div>
+						<div className="tp-mini-click"></div>
+					</div>
+					<div className="tp-pink">
+						<div className="tp-mini-click"></div>
+						<div className="tp-mini-click"></div>
+						<div className="tp-mini-click"></div>
+					</div>
+
+					<div className="tp-monokai">
+						<div className="tp-mini-click"></div>
+						<div className="tp-mini-click"></div>
+						<div className="tp-mini-click"></div>
+					</div>
 				</div>
 
 				<div className="setting randomize">
-					<h3>Randomize</h3>
+					<h5>Randomize</h5>
 
 					<button name="display" id="display" onClick={randomizeLayers}>
 						randomiezzzz
@@ -619,12 +647,12 @@ function App(): JSX.Element {
 				</div>
 
 				<div className="setting display">
-					<h3>Click display</h3>
+					<h5>Click display</h5>
 
 					<button
 						name="display"
 						id="display"
-						onClick={() => {
+						onClick={() =>
 							setMoreSettings(prev => ({
 								...prev,
 								segment: {
@@ -632,9 +660,7 @@ function App(): JSX.Element {
 									on: moreSettings.segment.on ? false : true,
 								},
 							}))
-
-							if (!moreSettings.segment.on) initSegment()
-						}}
+						}
 					>
 						{moreSettings.segment.on ? 'segment' : 'layers'}
 					</button>
@@ -642,7 +668,7 @@ function App(): JSX.Element {
 
 				<div className="setting unlimited">
 					<div>
-						<h3>Unlimited Mode</h3>
+						<h5>Unlimited Mode</h5>
 						<small>
 							⚠️ This can slow down your {isMobile ? 'phone' : 'computer'}
 						</small>

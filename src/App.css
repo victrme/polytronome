@@ -1,0 +1,403 @@
+.App {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 600px;
+    font-size: calc(10px + 2vmin);
+    color: white;
+    transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+    user-select: none;
+}
+
+.App .principal .sticky {
+    position: sticky;
+    top: 20vh;
+    margin: 20vh 5vh;
+}
+
+.App .principal .title {
+    margin: 1em 0;
+    font-size: 30px;
+}
+
+.App .principal .title h1 {
+    margin-top: 0;
+    line-height: 1em;
+}
+
+.App .principal .title p {
+    margin: 0;
+    font-weight: bold;
+    font-size: 0.6em;
+    opacity: 0.4;
+}
+
+.App .principal .clicks-wrap {
+    display: flex;
+    justify-content: space-between;
+}
+
+.App .principal .clicks-wrap.segment .layers-wrap,
+.App .principal .clicks-wrap.layers .segment-wrap {
+    display: none;
+}
+
+.App .principal .clicks-wrap .click,
+.App .principal .clicks-wrap .segment-child {
+    margin: 5px;
+    width: 100%;
+    height: 20px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+}
+
+.App .principal .clicks-wrap .click.on,
+.App .principal .clicks-wrap .segment-child.on {
+    background-color: white;
+    transition: background-color .1s;
+}
+
+.App .principal .clicks-wrap .segment-wrap {
+    display: flex;
+    width: 100%;
+}
+
+.App .principal .clicks-wrap .layers-wrap {
+    width: 100%;
+}
+
+.App .principal .start-button {
+    text-align: center;
+}
+
+.App .principal .start-button button {
+    width: 300px;
+    margin-top: 10vh;
+}
+
+.App .setting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: calc(100% - 4em);
+}
+
+.App .setting.tempo {
+    justify-content: space-around;
+    align-items: center;
+}
+
+.App .setting.tempo button {
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+}
+
+.App .setting.tempo input[type=text] {
+    font-size: 40px;
+    width: 100px;
+}
+
+
+
+
+
+
+
+.setting .range-wrap {
+    width: 100%;
+    height: 20px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    overflow: hidden;
+    cursor: grab;
+}
+
+.setting .range-wrap .inner-range {
+    background-color: white;
+    height: 20px;
+    cursor: grab;
+    transition: all .2s;
+}
+
+.setting .range-wrap .inner-range:active {
+    cursor: grabbing;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.App .setting.layer {
+    justify-content: space-between;
+    width: 100%;
+}
+
+.App .setting.layer .notes-wrap {
+    display: flex;
+}
+
+.App .setting.layer .notes-wrap> :first-child {
+    text-align: right;
+}
+
+.App .setting.layer .notes-wrap> :last-child {
+    text-align: left;
+}
+
+.App button {
+    padding: 10px 40px;
+    margin: 0 20px;
+    border: none;
+    background: #455A64;
+    border-radius: 2em;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.App button:hover {
+    background: #35464e;
+}
+
+.App button:active {
+    background: #222c31;
+    color: #fffa;
+}
+
+.App button.off {
+    opacity: 0;
+    cursor: initial;
+}
+
+.App .settings-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2em;
+}
+
+.App .setting input {
+    width: 60px;
+    margin: 10px;
+    padding: 5px;
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-weight: bolder;
+    font-size: 16px;
+    text-align: center;
+}
+
+.App .setting input[type=range] {
+    width: 80px;
+    margin: 10px;
+    padding: 5px;
+}
+
+.App .setting.sound {
+    flex-direction: column;
+}
+
+
+.App .setting.sound .sliders {
+    width: 100%;
+}
+
+.App .setting.sound h5 {
+    margin: 1em;
+    margin-right: 2em;
+}
+
+.App .setting.sound .release,
+.App .setting.sound .volume,
+    .App .setting.sound .waveform {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.App .setting select {
+    padding: 5px;
+    margin: 10px;
+}
+
+.App .boxed {
+    margin: 2em 0;
+    width: 100%;
+}
+
+.App .boxed .add-layer {
+    margin-top: 1em;
+    text-align: center;
+}
+
+.App .layers-settings button {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.App .layers-settings input:not(input[type=range]) {
+    font-size: 40px;
+    width: 100px;
+}
+
+.App .layers-settings .add-layer {
+    padding-top: 1em;
+}
+
+.App .global-settings {
+    display: flex;
+    flex-direction: column;
+}
+
+.App button.suppr-btn {
+    background: 0;
+    border: 0;
+    color: white;
+    font-size: 1em;
+    padding: 10px;
+}
+
+.App .note {
+    font-size: 16px;
+    width: 50px;
+    font-weight: bold;
+}
+
+.App .setting.unlimited h5 {
+    margin-bottom: 0;
+}
+
+.App small {
+    margin-top: -1em;
+    font-size: 0.4em;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.theme-preview {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.theme-preview > div {
+    display: flex;
+    padding: 2px 5px;
+    margin: 10px;
+    width: 100px;
+    height: 20px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all .2s;
+}
+
+.theme-preview>div:hover {
+    filter: brightness(.7);
+}
+
+.theme-preview>div:active {
+    filter: brightness(.5);
+}
+
+.theme-preview>div .tp-mini-click {
+    width: 100%;
+    margin: 5px 2px;
+    border-radius: 3px;
+}
+
+.theme-preview .tp-dark {background-color: #282c34}
+.theme-preview .tp-dark .tp-mini-click:first-child {background-color: white}
+.theme-preview .tp-dark .tp-mini-click {background-color: rgba(0, 0, 0, 0.2)}
+
+.theme-preview .tp-light { background-color: white}
+.theme-preview .tp-light .tp-mini-click:first-child {background-color: #222}
+.theme-preview .tp-light .tp-mini-click {background-color: rgba(0, 0, 0, 0.2)}
+
+.theme-preview .tp-black {background-color: #000}
+.theme-preview .tp-black .tp-mini-click:first-child {background-color: #ccc}
+.theme-preview .tp-black .tp-mini-click {background-color: rgba(221, 221, 221, 0.2)}
+
+.theme-preview .tp-coffee {background-color: #fbefdf}
+.theme-preview .tp-coffee .tp-mini-click:first-child {background-color: rgb(141, 104, 82)}
+.theme-preview .tp-coffee .tp-mini-click {background-color: rgba(141, 104, 82, 0.3)}
+
+.theme-preview .tp-pink {background-color: #f37f83}
+.theme-preview .tp-pink .tp-mini-click:first-child {background-color: rgb(229, 60, 88)}
+.theme-preview .tp-pink .tp-mini-click {background-color: rgba(229, 60, 88, 0.3)}
+
+.theme-preview .tp-monokai {background-color: rgb(39, 40, 34)}
+.theme-preview .tp-monokai .tp-mini-click:first-child {background-color: rgb(166, 226, 46)}
+.theme-preview .tp-monokai .tp-mini-click {background-color: rgba(253, 151, 31, 0.2)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.App .immovable_wheel {
+    overflow: hidden;
+    user-select: none;
+    line-height: 40px;
+    font-size: 40px;
+    height: 40px;
+}
+
+.App .wheel {
+    cursor: grab;
+    touch-action: none;
+}
+
+.App .wheel.frequency {
+    text-align: right;
+}
+
+.App .wheel:active {
+    cursor: grabbing;
+}
+
+.App .wheel div {
+    user-select: none;
+}
+
+.App.deepdark {
+    background-color: #000;
+}

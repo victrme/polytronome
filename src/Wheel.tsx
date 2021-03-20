@@ -20,8 +20,10 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 		snap: true,
 	})
 
-	const scrollPrevent = (no: boolean) =>
-		(document.body.style.overflow = no ? 'hidden' : 'auto')
+	const scrollPrevent = (no: boolean) => {
+		document.body.style.overflow = no ? 'hidden' : 'auto'
+		document.body.style.marginRight = no ? '17px' : '0'
+	}
 
 	wheelRef.current.addEventListener('mouseenter', () => scrollPrevent(true))
 	wheelRef.current.addEventListener('mouseleave', () => scrollPrevent(false))
