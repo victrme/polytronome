@@ -576,10 +576,12 @@ function App(): JSX.Element {
 									}))
 								}
 							/>
-							<p>Release</p>
 						</label>
+					</div>
 
+					<div className="volume">
 						<label>
+							<p>volume</p>
 							<input
 								type="range"
 								name="volume-range"
@@ -642,7 +644,13 @@ function App(): JSX.Element {
 					<h5>Randomize</h5>
 
 					<button name="display" id="display" onClick={randomizeLayers}>
-						randomiezzzz
+						Randomize beats
+					</button>
+				</div>
+
+				<div className="setting fullscreen">
+					<button name="display" id="display" onClick={() => alert('soon')}>
+						fullscreen
 					</button>
 				</div>
 

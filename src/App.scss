@@ -1,4 +1,3 @@
-
 .App {
 	background-color: #282c34;
 	min-height: 100vh;
@@ -10,7 +9,6 @@
 	user-select: none;
 
 	.principal {
-
 		.sticky {
 			position: sticky;
 			top: 20vh;
@@ -30,7 +28,7 @@
 				margin: 0;
 				font-weight: bold;
 				font-size: 0.6em;
-				opacity: .4;
+				opacity: 0.4;
 			}
 		}
 
@@ -57,7 +55,9 @@
 				}
 			}
 
-			.segment-wrap {display: flex;}
+			.segment-wrap {
+				display: flex;
+			}
 			.layers-wrap {
 				width: 100%;
 			}
@@ -65,7 +65,7 @@
 
 		.start-button {
 			text-align: center;
-			
+
 			button {
 				width: 300px;
 				margin-top: 10vh;
@@ -73,60 +73,44 @@
 		}
 	}
 
-
-
-
-
-
-
 	.setting {
 		display: flex;
-		align-items: center;
 		justify-content: space-between;
+		align-items: center;
 		width: calc(100% - 4em);
 
-
 		&.tempo {
-			
-			justify-content: space-around;
-			align-items: center;
-
 			button {
 				padding: 0;
 				margin: 0;
 				background-color: transparent;
 			}
 
-			input[type="text"] {
+			input[type='text'] {
 				font-size: 40px;
 				width: 100px;
 			}
 		}
 
 		&.layer {
-			justify-content: space-around;
+			justify-content: space-between;
 
 			.notes-wrap {
 				display: flex;
+				text-align: left;
 
 				> :first-child {
 					text-align: right;
 				}
-
-				> :last-child {
-					text-align: left;
-				}
 			}
 		}
-
-		
 	}
 
 	button {
 		padding: 10px 40px;
 		margin: 0 20px;
 		border: none;
-		background: #455A64;
+		background: #455a64;
 		border-radius: 2em;
 		font-size: 16px;
 		font-weight: bold;
@@ -167,18 +151,21 @@
 		text-align: center;
 	}
 
-	.setting input[type='range'] {
-		width: 80px;
-		margin: 10px;
-		padding: 5px;
-	}
-
 	.setting.sound {
 		flex-direction: column;
+
+		input[type='range'] {
+			width: 200px;
+		}
 	}
 
-	.setting.sound .sliders input[type='range'] {
-		-webkit-appearance: slider-vertical;
+	.setting.sound div,
+	.setting.sound div label {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+		width: 100%;
 	}
 
 	.setting.sound .sliders {
@@ -195,11 +182,6 @@
 		margin: 2em;
 		width: calc(100% - 4em);
 
-		.layer-titles h3 {
-			width: 40%;
-			display: inline-block;
-		}
-
 		.add-layer {
 			margin: 2em 0;
 			text-align: center;
@@ -207,10 +189,10 @@
 	}
 
 	.layers-settings button {
-		background-color: rgba(0, 0, 0, .2);
+		background-color: rgba(0, 0, 0, 0.2);
 	}
 
-	.layers-settings input:not(input[type="range"]) {
+	.layers-settings input:not(input[type='range']) {
 		font-size: 40px;
 		width: 100px;
 	}
@@ -218,8 +200,6 @@
 	.layers-settings .add-layer {
 		padding-top: 1em;
 	}
-
-	
 
 	.global-settings {
 		display: flex;
@@ -234,7 +214,6 @@
 		padding: 10px;
 	}
 
-
 	.note {
 		font-size: 16px;
 		width: 50px;
@@ -246,18 +225,8 @@
 	}
 
 	small {
-		font-size: .5em;
+		font-size: 0.5em;
 	}
-
-
-
-
-
-
-
-
-
-
 
 	.immovable_wheel {
 		overflow: hidden;
@@ -284,18 +253,9 @@
 		user-select: none;
 	}
 
-
-
-
-
-
-
-
-
 	// Themes
 
 	&.deepdark {
 		background-color: #000;
 	}
 }
-
