@@ -2,6 +2,7 @@ import { useRef, useState, useEffect, useCallback } from 'react'
 import Pizzicato from 'pizzicato'
 import Wheel from './Wheel'
 import Range from './Range'
+import Waveform from './Waveform'
 import './App.css'
 
 function App(): JSX.Element {
@@ -10,6 +11,12 @@ function App(): JSX.Element {
 	 * States & Values
 	 *
 	 */
+
+	const Themes = ['dark', 'light', 'black', 'coffee', 'pink', 'monokai']
+	const [themePreview, setThemePreview] = useState({
+		count: 1,
+		io: false,
+	})
 
 	const defaultLayer = {
 		id: setRandomID(),
@@ -23,7 +30,7 @@ function App(): JSX.Element {
 	const [moreSettings, setMoreSettings] = useState({
 		theme: 'lightgreen',
 		sound: {
-			type: 'sawtooth',
+			type: 'sine',
 			release: 0.1,
 			volume: 0.1,
 		},
@@ -383,6 +390,27 @@ function App(): JSX.Element {
 		}
 	}
 
+	const themeHover = e => {
+		console.log(e)
+	}
+
+	const changeWaveform = () => {
+		const type = moreSettings.sound.type
+		const waveformsList = ['sine', 'triangle', 'sawtooth', 'square']
+
+		waveformsList.forEach((x, i) => {
+			if (x === type) {
+				setMoreSettings(prev => ({
+					...prev,
+					sound: {
+						...prev.sound,
+						type: waveformsList[(i + 1) % 4],
+					},
+				}))
+			}
+		})
+	}
+
 	return (
 		<div className={'App ' + moreSettings.theme}>
 			<div className="principal">
@@ -534,30 +562,18 @@ function App(): JSX.Element {
 							<h5>Release</h5>
 							<Range></Range>
 						</div>
-
 						<div className="volume">
 							<h5>Volume</h5>
 							<Range></Range>
 						</div>
-
 						<div className="waveform">
 							<h5>Waveform</h5>
-							<select
-								id="waveform"
-								name="waveform"
-								value={moreSettings.sound.type}
-								onChange={e =>
-									setMoreSettings(prev => ({
-										...prev,
-										sound: { ...prev.sound, type: e.target.value },
-									}))
-								}
-							>
-								<option value="sine">sine</option>
-								<option value="triangle">triangle</option>
-								<option value="sawtooth">sawtooth</option>
-								<option value="square">square</option>
-							</select>
+
+							<Waveform
+								color="#fff"
+								type={moreSettings.sound.type}
+								change={changeWaveform}
+							></Waveform>
 						</div>
 
 						{/* <label>
@@ -602,41 +618,21 @@ function App(): JSX.Element {
 					</div>
 				</div>
 
-				<div className="setting theme">
-					<h5>Theme</h5>
-				</div>
+				<div className="setting boxed theme">
+					<h3>Themes</h3>
 
-				<div className="theme-preview">
-					<div className="tp-dark">
-						<div className="tp-mini-click"></div>
-						<div className="tp-mini-click"></div>
-						<div className="tp-mini-click"></div>
-					</div>
-					<div className="tp-light">
-						<div className="tp-mini-click"></div>
-						<div className="tp-mini-click"></div>
-						<div className="tp-mini-click"></div>
-					</div>
-					<div className="tp-black">
-						<div className="tp-mini-click"></div>
-						<div className="tp-mini-click"></div>
-						<div className="tp-mini-click"></div>
-					</div>
-					<div className="tp-coffee">
-						<div className="tp-mini-click"></div>
-						<div className="tp-mini-click"></div>
-						<div className="tp-mini-click"></div>
-					</div>
-					<div className="tp-pink">
-						<div className="tp-mini-click"></div>
-						<div className="tp-mini-click"></div>
-						<div className="tp-mini-click"></div>
-					</div>
-
-					<div className="tp-monokai">
-						<div className="tp-mini-click"></div>
-						<div className="tp-mini-click"></div>
-						<div className="tp-mini-click"></div>
+					<div className="theme-preview">
+						{Themes.map(theme => (
+							<div
+								className={'tp-' + theme}
+								onMouseEnter={e => themeHover(e)}
+								onMouseLeave={e => themeHover(e)}
+							>
+								<div className={'tp-mini-click on'}></div>
+								<div className={'tp-mini-click'}></div>
+								<div className={'tp-mini-click'}></div>
+							</div>
+						))}
 					</div>
 				</div>
 

@@ -228,10 +228,38 @@
     justify-content: space-between;
 }
 
+
 .App .setting select {
     padding: 5px;
     margin: 10px;
 }
+
+
+.App .setting.sound .css-waves {
+    position: relative;
+    width: 90px;
+    height: 45px;
+    cursor: pointer;
+}
+
+.App .setting.sound .css-waves svg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.App .setting.sound .css-waves svg path {
+    transition: all .3s;
+}
+
+
+
+
+
+
+
+
+
 
 .App .boxed {
     margin: 2em 0;
@@ -299,14 +327,15 @@
 
 
 
-
-
-
+.setting.theme {
+    flex-direction: column;
+}
 
 .theme-preview {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 .theme-preview > div {
@@ -321,42 +350,35 @@
     transition: all .2s;
 }
 
-.theme-preview>div:hover {
-    filter: brightness(.7);
-}
-
-.theme-preview>div:active {
-    filter: brightness(.5);
-}
-
 .theme-preview>div .tp-mini-click {
     width: 100%;
     margin: 5px 2px;
     border-radius: 3px;
+    transition: all .2s;
 }
 
 .theme-preview .tp-dark {background-color: #282c34}
-.theme-preview .tp-dark .tp-mini-click:first-child {background-color: white}
+.theme-preview .tp-dark .tp-mini-click.on {background-color: white}
 .theme-preview .tp-dark .tp-mini-click {background-color: rgba(0, 0, 0, 0.2)}
 
 .theme-preview .tp-light { background-color: white}
-.theme-preview .tp-light .tp-mini-click:first-child {background-color: #222}
+.theme-preview .tp-light .tp-mini-click.on {background-color: #222}
 .theme-preview .tp-light .tp-mini-click {background-color: rgba(0, 0, 0, 0.2)}
 
 .theme-preview .tp-black {background-color: #000}
-.theme-preview .tp-black .tp-mini-click:first-child {background-color: #bbb}
+.theme-preview .tp-black .tp-mini-click.on {background-color: #bbb}
 .theme-preview .tp-black .tp-mini-click {background-color: rgba(221, 221, 221, 0.1)}
 
 .theme-preview .tp-coffee {background-color: #fbefdf}
-.theme-preview .tp-coffee .tp-mini-click:first-child {background-color: rgb(141, 104, 82)}
+.theme-preview .tp-coffee .tp-mini-click.on {background-color: rgb(141, 104, 82)}
 .theme-preview .tp-coffee .tp-mini-click {background-color: rgba(141, 104, 82, 0.3)}
 
 .theme-preview .tp-pink {background-color: #f37f83}
-.theme-preview .tp-pink .tp-mini-click:first-child {background-color: rgb(229, 60, 88)}
+.theme-preview .tp-pink .tp-mini-click.on {background-color: rgb(229, 60, 88)}
 .theme-preview .tp-pink .tp-mini-click {background-color: rgba(229, 60, 88, 0.3)}
 
 .theme-preview .tp-monokai {background-color: rgb(39, 40, 34)}
-.theme-preview .tp-monokai .tp-mini-click:first-child {background-color: rgb(166, 226, 46)}
+.theme-preview .tp-monokai .tp-mini-click.on {background-color: rgb(166, 226, 46)}
 .theme-preview .tp-monokai .tp-mini-click {background-color: rgba(253, 151, 31, 0.2)}
 
 
