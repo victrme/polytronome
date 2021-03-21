@@ -624,6 +624,7 @@ function App(): JSX.Element {
 					<div className="theme-preview">
 						{Themes.map(theme => (
 							<div
+								key={theme}
 								className={'tp-' + theme}
 								onMouseEnter={e => themeHover(e)}
 								onMouseLeave={e => themeHover(e)}

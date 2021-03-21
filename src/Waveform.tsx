@@ -1,4 +1,4 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 
 function Waveforms({ color, type, change }) {
 	// const [hovered, setHovered] = useState(false)
@@ -22,8 +22,8 @@ function Waveforms({ color, type, change }) {
 					fill="none"
 					stroke={color}
 					opacity={type === 'sine' ? 1 : 0}
-					stroke-width="4"
-					stroke-linecap="round"
+					strokeWidth="4"
+					strokeLinecap="round"
 				/>
 			</svg>
 
@@ -39,8 +39,8 @@ function Waveforms({ color, type, change }) {
 					fill="none"
 					stroke={color}
 					opacity={type === 'triangle' ? 1 : 0}
-					stroke-width="4"
-					stroke-linecap="round"
+					strokeWidth="4"
+					strokeLinecap="round"
 				/>
 			</svg>
 
@@ -56,8 +56,8 @@ function Waveforms({ color, type, change }) {
 					fill="none"
 					stroke={color}
 					opacity={type === 'sawtooth' ? 1 : 0}
-					stroke-width="4"
-					stroke-linecap="round"
+					strokeWidth="4"
+					strokeLinecap="round"
 				/>
 			</svg>
 
@@ -73,8 +73,8 @@ function Waveforms({ color, type, change }) {
 					fill="none"
 					stroke={color}
 					opacity={type === 'square' ? 1 : 0}
-					stroke-width="4"
-					stroke-linecap="round"
+					strokeWidth="4"
+					strokeLinecap="round"
 				/>
 			</svg>
 		</div>
