@@ -1,7 +1,7 @@
 import { useGesture } from 'react-use-gesture'
 import { useState, useRef } from 'react'
 
-function Range(): JSX.Element {
+function Range({ update }): JSX.Element {
 	const rangeRef = useRef(document.createElement('div'))
 	const [range, setRange] = useState({
 		x: 80,
@@ -23,6 +23,8 @@ function Range(): JSX.Element {
 		const [x, y] = state.movement
 
 		setRange({ x, moving })
+
+		update(x / rangeWidth)
 	}
 
 	const bind = useGesture(

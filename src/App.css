@@ -1,13 +1,52 @@
+:root {
+    --accent: white;
+    --background: #282c34;
+    --dim: #00000033;
+}
+
+
 .App {
-    background-color: #282c34;
+    background-color: var(--background);
+    color: var(--accent);
     min-height: 100vh;
     display: grid;
     grid-template-columns: 1fr 600px;
     font-size: calc(10px + 2vmin);
-    color: white;
     transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
     user-select: none;
 }
+
+.App button {
+    color: var(--accent);
+    background: var(--dim);
+    padding: 10px 40px;
+    margin: 0 20px;
+    border: none;
+    border-radius: 2em;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.App button:hover {
+    filter: brightness(.8);
+}
+
+.App button:active {
+    filter: brightness(.6);
+}
+
+.App button.off {
+    opacity: 0;
+    cursor: initial;
+}
+
+
+
+
+
+
 
 .App .principal .sticky {
     position: sticky;
@@ -52,12 +91,12 @@
     margin: 5px;
     width: 100%;
     height: 20px;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: var(--dim);
     border-radius: 5px;
 }
 
 .App .principal .click.on {
-    background-color: white;
+    background-color: var(--accent);
     transition: background-color .1s;
 }
 
@@ -107,14 +146,14 @@
 .setting .range-wrap {
     width: 100%;
     height: 20px;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: var(--dim);
     border-radius: 5px;
     overflow: hidden;
     cursor: grab;
 }
 
 .setting .range-wrap .inner-range {
-    background-color: white;
+    background-color: var(--accent);
     height: 20px;
     cursor: grab;
     transition: all .2s;
@@ -152,33 +191,6 @@
 
 .App .setting.layer .notes-wrap> :last-child {
     text-align: left;
-}
-
-.App button {
-    padding: 10px 40px;
-    margin: 0 20px;
-    border: none;
-    background: #455A64;
-    border-radius: 2em;
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
-    transition: all 0.2s;
-    cursor: pointer;
-}
-
-.App button:hover {
-    background: #35464e;
-}
-
-.App button:active {
-    background: #222c31;
-    color: #fffa;
-}
-
-.App button.off {
-    opacity: 0;
-    cursor: initial;
 }
 
 .App .settings-wrap {
@@ -363,23 +375,23 @@
 
 .theme-preview .tp-light { background-color: white}
 .theme-preview .tp-light .tp-mini-click.on {background-color: #222}
-.theme-preview .tp-light .tp-mini-click {background-color: rgba(0, 0, 0, 0.2)}
+.theme-preview .tp-light .tp-mini-click {background-color: #00000033}
 
 .theme-preview .tp-black {background-color: #000}
 .theme-preview .tp-black .tp-mini-click.on {background-color: #bbb}
-.theme-preview .tp-black .tp-mini-click {background-color: rgba(221, 221, 221, 0.1)}
+.theme-preview .tp-black .tp-mini-click {background-color: #dddddd1a}
 
 .theme-preview .tp-coffee {background-color: #fbefdf}
-.theme-preview .tp-coffee .tp-mini-click.on {background-color: rgb(141, 104, 82)}
-.theme-preview .tp-coffee .tp-mini-click {background-color: rgba(141, 104, 82, 0.3)}
+.theme-preview .tp-coffee .tp-mini-click.on {background-color: #8d6852}
+.theme-preview .tp-coffee .tp-mini-click {background-color: #8d68524d}
 
 .theme-preview .tp-pink {background-color: #f37f83}
-.theme-preview .tp-pink .tp-mini-click.on {background-color: rgb(229, 60, 88)}
-.theme-preview .tp-pink .tp-mini-click {background-color: rgba(229, 60, 88, 0.3)}
+.theme-preview .tp-pink .tp-mini-click.on {background-color: #e53c58}
+.theme-preview .tp-pink .tp-mini-click {background-color: #e53c584d}
 
-.theme-preview .tp-monokai {background-color: rgb(39, 40, 34)}
-.theme-preview .tp-monokai .tp-mini-click.on {background-color: rgb(166, 226, 46)}
-.theme-preview .tp-monokai .tp-mini-click {background-color: rgba(253, 151, 31, 0.2)}
+.theme-preview .tp-monokai {background-color: #272822}
+.theme-preview .tp-monokai .tp-mini-click.on {background-color: #a6e22e}
+.theme-preview .tp-monokai .tp-mini-click {background-color: #fd971f33}
 
 
 

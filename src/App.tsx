@@ -12,7 +12,46 @@ function App(): JSX.Element {
 	 *
 	 */
 
+	const AppRef = useRef(document.createElement('div'))
 	const Themes = ['dark', 'light', 'black', 'coffee', 'pink', 'monokai']
+	const ThemeList = [
+		{
+			name: 'dark',
+			background: '#282c34',
+			accent: '#ffffff',
+			dim: '#00000033',
+		},
+		{
+			name: 'light',
+			background: '#ffffff',
+			accent: '#222222',
+			dim: '#00000033',
+		},
+		{
+			name: 'black',
+			background: '#000000',
+			accent: '#bbbbbb',
+			dim: '#dddddd1a',
+		},
+		{
+			name: 'coffee',
+			background: '#fbefdf',
+			accent: '#8d6852',
+			dim: '#8d68524d',
+		},
+		{
+			name: 'pink',
+			background: '#f37f83',
+			accent: '#e53c58',
+			dim: '#e53c584d',
+		},
+		{
+			name: 'monokai',
+			background: '#272822',
+			accent: '#a6e22e',
+			dim: '#fd971f33',
+		},
+	]
 	const [themePreview, setThemePreview] = useState({
 		count: 1,
 		io: false,
@@ -41,7 +80,7 @@ function App(): JSX.Element {
 			duplicates: [0],
 			dupCount: 1,
 		},
-
+		fullscreen: false,
 		unlimited: false,
 	})
 
@@ -317,13 +356,6 @@ function App(): JSX.Element {
 		setMetronome(prev => ({ ...prev, layers }))
 	}
 
-	const wheelUpdate = (what: string, el: any, index: number) => {
-		const newLayers = [...metronome.layers]
-		newLayers[index][what] = what === 'beats' ? el + 2 : el
-
-		setMetronome(prev => ({ ...prev, layers: newLayers }))
-	}
-
 	const updateLayer = (add: boolean, index: number = 0) => {
 		const newLayers = [...metronome.layers]
 
@@ -390,8 +422,18 @@ function App(): JSX.Element {
 		}
 	}
 
-	const themeHover = e => {
-		console.log(e)
+	const themeHover = (e, theme) => {}
+
+	const changeTheme = (theme: string) => {
+		const root = document.querySelector(':root')! as HTMLBodyElement
+
+		ThemeList.forEach(t => {
+			if (t.name === theme) {
+				root.style.setProperty('--background', t.background)
+				root.style.setProperty('--accent', t.accent)
+				root.style.setProperty('--dim', t.dim)
+			}
+		})
 	}
 
 	const changeWaveform = () => {
@@ -409,6 +451,30 @@ function App(): JSX.Element {
 				}))
 			}
 		})
+	}
+
+	const setFullscreen = (state: boolean) => {
+		if (state) document.querySelector('.App')!.requestFullscreen()
+		else document.exitFullscreen()
+
+		setMoreSettings(prev => ({
+			...prev,
+			fullscreen: !state,
+		}))
+	}
+
+	const wheelUpdate = (what: string, el: any, index: number) => {
+		const newLayers = [...metronome.layers]
+		newLayers[index][what] = what === 'beats' ? el + 2 : el
+
+		setMetronome(prev => ({ ...prev, layers: newLayers }))
+	}
+
+	const rangeUpdate = (what: string, num: number) => {
+		const newSound = { ...moreSettings.sound }
+		newSound[what] = num
+
+		setMoreSettings(prev => ({ ...prev, sound: newSound }))
 	}
 
 	return (
@@ -482,9 +548,7 @@ function App(): JSX.Element {
 						<button onClick={tapTempo}>tap</button>
 					</div>
 
-					<Range></Range>
-
-					{/* <div>
+					<div>
 						<button onClick={() => updateTempo(metronome.tempo - 1)}>-</button>
 						<input
 							type="range"
@@ -503,7 +567,7 @@ function App(): JSX.Element {
 							value={tempoInput}
 							onChange={e => updateTempo(+e.target.value)}
 						/>
-					</div> */}
+					</div>
 				</div>
 
 				<div className="boxed">
@@ -560,11 +624,11 @@ function App(): JSX.Element {
 					<div className="sliders">
 						<div className="release">
 							<h5>Release</h5>
-							<Range></Range>
+							<Range update={result => rangeUpdate('release', result)}></Range>
 						</div>
 						<div className="volume">
 							<h5>Volume</h5>
-							<Range></Range>
+							<Range update={result => rangeUpdate('volume', result)}></Range>
 						</div>
 						<div className="waveform">
 							<h5>Waveform</h5>
@@ -626,8 +690,9 @@ function App(): JSX.Element {
 							<div
 								key={theme}
 								className={'tp-' + theme}
-								onMouseEnter={e => themeHover(e)}
-								onMouseLeave={e => themeHover(e)}
+								onMouseEnter={e => themeHover(e, theme)}
+								onMouseLeave={e => themeHover(e, theme)}
+								onClick={() => changeTheme(theme)}
 							>
 								<div className={'tp-mini-click on'}></div>
 								<div className={'tp-mini-click'}></div>
@@ -644,7 +709,11 @@ function App(): JSX.Element {
 				</div>
 
 				<div className="setting fullscreen">
-					<button name="display" id="display" onClick={() => console.log('soon')}>
+					<button
+						name="display"
+						id="display"
+						onClick={() => setFullscreen(moreSettings.fullscreen)}
+					>
 						fullscreen
 					</button>
 				</div>

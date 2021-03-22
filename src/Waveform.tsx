@@ -20,7 +20,7 @@ function Waveforms({ color, type, change }) {
 				<path
 					d="M1.254 27.124s27.149-58.251 51.774 0c24.438 55.681 51.774 0 51.774 0"
 					fill="none"
-					stroke={color}
+					stroke="var(--accent)"
 					opacity={type === 'sine' ? 1 : 0}
 					strokeWidth="4"
 					strokeLinecap="round"
@@ -37,7 +37,7 @@ function Waveforms({ color, type, change }) {
 				<path
 					d="M1.254 27.116L28.745 1.759l24.551 25.847 23.976 23.769 27.53-24.258"
 					fill="none"
-					stroke={color}
+					stroke="var(--accent)"
 					opacity={type === 'triangle' ? 1 : 0}
 					strokeWidth="4"
 					strokeLinecap="round"
@@ -54,7 +54,7 @@ function Waveforms({ color, type, change }) {
 				<path
 					d="M1.254 27.098l51.99-25.099-.074 49.171 51.631-24.072"
 					fill="none"
-					stroke={color}
+					stroke="var(--accent)"
 					opacity={type === 'sawtooth' ? 1 : 0}
 					strokeWidth="4"
 					strokeLinecap="round"
@@ -71,7 +71,7 @@ function Waveforms({ color, type, change }) {
 				<path
 					d="M1.254 1.253h51.91l-.106 50.66 51.627-.013"
 					fill="none"
-					stroke={color}
+					stroke="var(--accent)"
 					opacity={type === 'square' ? 1 : 0}
 					strokeWidth="4"
 					strokeLinecap="round"
