@@ -12,8 +12,6 @@ function App(): JSX.Element {
 	 *
 	 */
 
-	const AppRef = useRef(document.createElement('div'))
-	const Themes = ['dark', 'light', 'black', 'coffee', 'pink', 'monokai']
 	const ThemeList = [
 		{
 			name: 'dark',
@@ -52,10 +50,7 @@ function App(): JSX.Element {
 			dim: '#fd971f33',
 		},
 	]
-	const [themePreview, setThemePreview] = useState({
-		count: 1,
-		io: false,
-	})
+	const previewInterval = useRef(setTimeout(() => {}, 0))
 
 	const defaultLayer = {
 		id: setRandomID(),
@@ -422,7 +417,36 @@ function App(): JSX.Element {
 		}
 	}
 
-	const themeHover = (e, theme) => {}
+	const themeHover = (e: any, theme: any) => {
+		const children = e.target.childNodes
+
+		// DOM is sometimes undefined (to fix ?)
+		const backgroundColor = (dom: HTMLDivElement, color: string) => {
+			if (dom !== undefined) dom.style.backgroundColor = color
+		}
+
+		if (e.type === 'mouseenter') {
+			let count = 0
+
+			// Don't wait for Interval
+			backgroundColor(children[1], theme.accent)
+			backgroundColor(children[0], theme.dim)
+			count++
+
+			// Mod to loop after last child
+			previewInterval.current = setInterval(() => {
+				backgroundColor(children[(count + 1) % children.length], theme.accent)
+				backgroundColor(children[count % children.length], theme.dim)
+				count++
+			}, 700)
+		} else {
+			// Every child to dimmed except first one
+			children.forEach((child: HTMLDivElement, i: number) => {
+				backgroundColor(child, i === 0 ? theme.accent : theme.dim)
+			})
+			clearInterval(previewInterval.current)
+		}
+	}
 
 	const changeTheme = (theme: string) => {
 		const root = document.querySelector(':root')! as HTMLBodyElement
@@ -639,46 +663,6 @@ function App(): JSX.Element {
 								change={changeWaveform}
 							></Waveform>
 						</div>
-
-						{/* <label>
-							<input
-								type="range"
-								name="release-range"
-								key={'release-range'}
-								min="0"
-								max="1"
-								step="0.01"
-								value={moreSettings.sound.release}
-								onChange={e =>
-									setMoreSettings(prev => ({
-										...prev,
-										sound: { ...prev.sound, release: +e.target.value },
-									}))
-								}
-							/>
-						</label>
-					</div>
-
-					<div className="volume">
-						<label>
-							<p>volume</p>
-							<input
-								type="range"
-								name="volume-range"
-								key={'volume-range'}
-								min="0.01"
-								max="1"
-								step="0.01"
-								value={moreSettings.sound.volume}
-								onChange={e =>
-									setMoreSettings(prev => ({
-										...prev,
-										sound: { ...prev.sound, volume: +e.target.value },
-									}))
-								}
-							/>
-							<p>volume</p>
-						</label> */}
 					</div>
 				</div>
 
@@ -686,17 +670,27 @@ function App(): JSX.Element {
 					<h3>Themes</h3>
 
 					<div className="theme-preview">
-						{Themes.map(theme => (
+						{ThemeList.map(theme => (
 							<div
-								key={theme}
-								className={'tp-' + theme}
+								key={theme.name}
+								className={'tp-' + theme.name}
 								onMouseEnter={e => themeHover(e, theme)}
 								onMouseLeave={e => themeHover(e, theme)}
-								onClick={() => changeTheme(theme)}
+								onClick={() => changeTheme(theme.name)}
+								style={{ backgroundColor: theme.background }}
 							>
-								<div className={'tp-mini-click on'}></div>
-								<div className={'tp-mini-click'}></div>
-								<div className={'tp-mini-click'}></div>
+								<div
+									className="tp-mini-click"
+									style={{ backgroundColor: theme.accent }}
+								></div>
+								<div
+									className="tp-mini-click"
+									style={{ backgroundColor: theme.dim }}
+								></div>
+								<div
+									className="tp-mini-click"
+									style={{ backgroundColor: theme.dim }}
+								></div>
 							</div>
 						))}
 					</div>

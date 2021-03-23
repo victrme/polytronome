@@ -20,7 +20,7 @@ function Range({ update }): JSX.Element {
 
 	const movingAction = state => {
 		const moving = state.dragging || state.wheeling
-		const [x, y] = state.movement
+		const x = state.movement[0]
 
 		setRange({ x, moving })
 

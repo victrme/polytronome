@@ -369,30 +369,6 @@
     transition: all .2s;
 }
 
-.theme-preview .tp-dark {background-color: #282c34}
-.theme-preview .tp-dark .tp-mini-click.on {background-color: white}
-.theme-preview .tp-dark .tp-mini-click {background-color: rgba(0, 0, 0, 0.2)}
-
-.theme-preview .tp-light { background-color: white}
-.theme-preview .tp-light .tp-mini-click.on {background-color: #222}
-.theme-preview .tp-light .tp-mini-click {background-color: #00000033}
-
-.theme-preview .tp-black {background-color: #000}
-.theme-preview .tp-black .tp-mini-click.on {background-color: #bbb}
-.theme-preview .tp-black .tp-mini-click {background-color: #dddddd1a}
-
-.theme-preview .tp-coffee {background-color: #fbefdf}
-.theme-preview .tp-coffee .tp-mini-click.on {background-color: #8d6852}
-.theme-preview .tp-coffee .tp-mini-click {background-color: #8d68524d}
-
-.theme-preview .tp-pink {background-color: #f37f83}
-.theme-preview .tp-pink .tp-mini-click.on {background-color: #e53c58}
-.theme-preview .tp-pink .tp-mini-click {background-color: #e53c584d}
-
-.theme-preview .tp-monokai {background-color: #272822}
-.theme-preview .tp-monokai .tp-mini-click.on {background-color: #a6e22e}
-.theme-preview .tp-monokai .tp-mini-click {background-color: #fd971f33}
-
 
 
 
