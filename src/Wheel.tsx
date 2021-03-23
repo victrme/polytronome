@@ -4,6 +4,11 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 const Beats = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
 const Notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 const Octaves = [-1, 0, 1, 2, 3, 4, 5, 6]
+const Tempo: number[] = []
+
+for (let index = 30; index < 300; index++) {
+	Tempo.push(index)
+}
 
 function Wheel({ index, what, metronome, update }): JSX.Element {
 	const wheelRef = useRef(document.createElement('div'))
@@ -11,7 +16,30 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 	// Need to figure better way to get wheel height
 	// const box = wheelRef.current.getBoundingClientRect()
 	// const height = box.height / list.length
-	const list = what === 'beats' ? Beats : what === 'frequency' ? Notes : Octaves
+
+	let list: any[] = []
+
+	switch (what) {
+		case 'beats':
+			list = Beats
+			break
+
+		case 'frequency':
+			list = Notes
+			break
+
+		case 'octave':
+			list = Octaves
+			break
+
+		case 'tempo':
+			list = Tempo
+			break
+
+		default:
+			break
+	}
+
 	const height = 40
 	const maxMovement = -height * list.length + height
 	const currentWhat = metronome.layers[index][what]
@@ -41,6 +69,8 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 			if (toTranslate > 0) toTranslate = 0
 			if (toTranslate < maxMovement) toTranslate = maxMovement
 
+			console.log(toTranslate)
+
 			setWheel({ y: toTranslate, snap: true })
 
 			return toTranslate
@@ -49,14 +79,22 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 	)
 
 	const movingAction = (state: any) => {
-		const y = state.movement[1]
+		const y = state.offset[1]
 		const userMoves = state.dragging || state.wheeling || state.scrolling
 
 		if (userMoves) {
 			setWheel({ y, snap: false })
 		} else {
 			// Save element position
+			console.log(y)
 			update(+(Math.abs(wheelSnapping(y)) / height))
+		}
+	}
+
+	const tempoClick = state => {
+		if (what === 'tempo') {
+			setWheel({ y: wheel.y + 10 * -height, snap: false })
+			// To be continued
 		}
 	}
 
@@ -64,6 +102,7 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 		{
 			onDrag: state => movingAction(state),
 			onWheel: state => movingAction(state),
+			onClick: state => tempoClick(state),
 		},
 		{
 			drag: {

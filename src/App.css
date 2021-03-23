@@ -127,9 +127,6 @@
 }
 
 .App .setting.tempo button {
-    padding: 0;
-    margin: 0;
-    background-color: transparent;
 }
 
 .App .setting.tempo input[type=text] {

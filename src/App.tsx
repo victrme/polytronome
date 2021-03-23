@@ -369,14 +369,6 @@ function App(): JSX.Element {
 		setMetronome(prev => ({ ...prev, layers: newLayers }))
 	}
 
-	const updateTempo = (tempo: number) => {
-		if (isNaN(tempo) || tempo.toString().length > 6) return
-		else {
-			setTempoInput(tempo)
-			setMetronome(args => ({ ...args, tempo }))
-		}
-	}
-
 	const tapTempo = () => {
 		const tap = metronome.tap
 
@@ -488,10 +480,19 @@ function App(): JSX.Element {
 	}
 
 	const wheelUpdate = (what: string, el: any, index: number) => {
-		const newLayers = [...metronome.layers]
-		newLayers[index][what] = what === 'beats' ? el + 2 : el
+		// For Beats & Notes
+		const beatsAndNotes = ['beats', 'frequency', 'octave']
 
-		setMetronome(prev => ({ ...prev, layers: newLayers }))
+		if (beatsAndNotes.indexOf(what) !== -1) {
+			// Update with Layers
+
+			const newLayers = [...metronome.layers]
+			newLayers[index][what] = what === 'beats' ? el + 2 : el
+			setMetronome(prev => ({ ...prev, layers: newLayers }))
+		} else if (what === 'tempo') {
+			// For Tempo, update directly
+			setMetronome(prev => ({ ...prev, tempo: +el + 30 }))
+		}
 	}
 
 	const rangeUpdate = (what: string, num: number) => {
@@ -573,24 +574,12 @@ function App(): JSX.Element {
 					</div>
 
 					<div>
-						<button onClick={() => updateTempo(metronome.tempo - 1)}>-</button>
-						<input
-							type="range"
-							name="tempo-range"
-							id="tempo-range"
-							min="33"
-							max="250"
-							value={metronome.tempo}
-							onChange={e => updateTempo(+e.target.value)}
-						/>
-						<button onClick={() => updateTempo(metronome.tempo + 1)}>+</button>
-						<input
-							type="text"
-							name="tempo-text"
-							id="tempo-text"
-							value={tempoInput}
-							onChange={e => updateTempo(+e.target.value)}
-						/>
+						<Wheel
+							index="0"
+							what="tempo"
+							metronome={metronome}
+							update={result => wheelUpdate('tempo', result, 0)}
+						></Wheel>
 					</div>
 				</div>
 
