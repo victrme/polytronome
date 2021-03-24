@@ -6,7 +6,7 @@ const Notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 const Octaves = [-1, 0, 1, 2, 3, 4, 5, 6]
 const Tempo: number[] = []
 
-for (let index = 30; index < 300; index++) {
+for (let index = 30; index <= 300; index++) {
 	Tempo.push(index)
 }
 
@@ -42,7 +42,7 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 
 	const height = 40
 	const maxMovement = -height * list.length + height
-	const currentWhat = metronome.layers[index][what]
+	const currentWhat = what === 'tempo' ? metronome.tempo : metronome.layers[index][what]
 	const [wheel, setWheel] = useState({
 		y: currentWhat * -height,
 		snap: true,
@@ -50,7 +50,7 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 
 	const scrollPrevent = (no: boolean) => {
 		document.body.style.overflow = no ? 'hidden' : 'auto'
-		document.body.style.marginRight = no ? '17px' : '0'
+		// document.body.style.marginRight = no ? '17px' : '0'
 	}
 
 	wheelRef.current.addEventListener('mouseenter', () => scrollPrevent(true))
@@ -70,7 +70,6 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 			if (toTranslate < maxMovement) toTranslate = maxMovement
 
 			console.log(toTranslate)
-
 			setWheel({ y: toTranslate, snap: true })
 
 			return toTranslate
@@ -79,22 +78,44 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 	)
 
 	const movingAction = (state: any) => {
-		const y = state.offset[1]
+		const y = state.movement[1]
 		const userMoves = state.dragging || state.wheeling || state.scrolling
 
 		if (userMoves) {
 			setWheel({ y, snap: false })
 		} else {
 			// Save element position
-			console.log(y)
-			update(+(Math.abs(wheelSnapping(y)) / height))
+			const number = +(Math.abs(wheelSnapping(y)) / height)
+			update(what === 'tempo' ? number + 30 : number)
 		}
 	}
 
 	const tempoClick = state => {
+		//
+		// Uses same key combinations as chrome devTools
+		// Might need to change this
 		if (what === 'tempo') {
-			setWheel({ y: wheel.y + 10 * -height, snap: false })
-			// To be continued
+			if (state.shiftKey && state.altKey) boundControl(-1)
+			else if (state.shiftKey) boundControl(-10)
+			else if (state.altKey) boundControl(1)
+			else boundControl(10)
+		}
+
+		function boundControl(more: number) {
+			//
+			// Stupidly update tempo
+			const number = metronome.tempo + more
+			const move = wheel.y + more * -height
+
+			// Calc bounds depending directions
+			const tMax = more < 0 ? 30 : 300
+			const wMax = more < 0 ? 0 : maxMovement
+			const tempoBound = more < 0 ? number < tMax : number > tMax
+			const wheelBound = more < 0 ? move > wMax : move < wMax
+
+			// Set Changes
+			update(tempoBound ? tMax : number)
+			setWheel({ y: wheelBound ? wMax : move, snap: false })
 		}
 	}
 
@@ -121,7 +142,7 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 	)
 
 	useEffect(() => {
-		if (!metronome.isRunning && what === 'beats') wheelSnapping((currentWhat - 2) * -height)
+		// if (!metronome.isRunning && what === 'beats') wheelSnapping((currentWhat - 2) * -height)
 	}, [currentWhat, metronome, what, wheelSnapping])
 
 	return (
@@ -135,8 +156,8 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 					transition: `transform ${wheel.snap ? '.2s' : '0s'}`,
 				}}
 			>
-				{list.map((oct, i) => (
-					<div key={'wheel_child' + i}>{oct}</div>
+				{list.map((elem, i) => (
+					<div key={'wheel_child' + i}>{elem}</div>
 				))}
 			</div>
 		</div>

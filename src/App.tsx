@@ -204,6 +204,8 @@ function App(): JSX.Element {
 		// Add Spacebar to control metronome
 		document.addEventListener('keydown', (e: KeyboardEvent) => {
 			if (e.code === 'Space') {
+				console.log('???')
+
 				launchMetronome(metronomeRef.current.isRunning)
 				e.preventDefault()
 				return false
@@ -361,7 +363,7 @@ function App(): JSX.Element {
 		// Add limited
 		if (
 			(add && moreSettings.unlimited) ||
-			(add && !moreSettings.unlimited && newLayers.length < 3)
+			(add && !moreSettings.unlimited && newLayers.length < 4)
 		)
 			newLayers.push(defaultLayer)
 
@@ -491,7 +493,7 @@ function App(): JSX.Element {
 			setMetronome(prev => ({ ...prev, layers: newLayers }))
 		} else if (what === 'tempo') {
 			// For Tempo, update directly
-			setMetronome(prev => ({ ...prev, tempo: +el + 30 }))
+			setMetronome(prev => ({ ...prev, tempo: +el }))
 		}
 	}
 
@@ -567,13 +569,13 @@ function App(): JSX.Element {
 			</div>
 
 			<div className="settings-wrap">
-				<div className="setting boxed tempo">
-					<div>
+				<div className="boxed tempo">
+					<div className="settings-title">
 						<h3>Tempo</h3>
 						<button onClick={tapTempo}>tap</button>
 					</div>
 
-					<div>
+					<div className="setting">
 						<Wheel
 							index="0"
 							what="tempo"
@@ -584,7 +586,19 @@ function App(): JSX.Element {
 				</div>
 
 				<div className="boxed">
-					<h3>Beats & Notes</h3>
+					<div className="settings-title">
+						<h3>Beats & Notes</h3>
+						<button
+							className={
+								!moreSettings.unlimited && metronome.layers.length === 3
+									? 'off'
+									: ''
+							}
+							onClick={() => updateLayer(true)}
+						>
+							add
+						</button>
+					</div>
 
 					{metronome.layers.map((l, i) => (
 						<div className="setting layer" key={i}>
@@ -616,19 +630,6 @@ function App(): JSX.Element {
 							</button>
 						</div>
 					))}
-
-					<div className="add-layer">
-						<button
-							className={
-								!moreSettings.unlimited && metronome.layers.length === 3
-									? 'off'
-									: ''
-							}
-							onClick={() => updateLayer(true)}
-						>
-							add
-						</button>
-					</div>
 				</div>
 
 				<div className="setting boxed sound">

@@ -121,12 +121,16 @@
     width: calc(100% - 4em);
 }
 
+.App .settings-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
 .App .setting.tempo {
     justify-content: space-around;
     align-items: center;
-}
-
-.App .setting.tempo button {
 }
 
 .App .setting.tempo input[type=text] {
@@ -195,6 +199,7 @@
     flex-direction: column;
     align-items: center;
     padding: 2em;
+    padding-left: 5em;
 }
 
 .App .setting input {
@@ -301,7 +306,7 @@
 .App button.suppr-btn {
     background: 0;
     border: 0;
-    color: white;
+    color: var(--accent);
     font-size: 1em;
     padding: 10px;
 }
