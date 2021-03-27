@@ -19,17 +19,20 @@ const allLists = {
 }
 
 function Wheel({ index, what, metronome, update }): JSX.Element {
+	const is = (cat: string) => what === cat
+
 	const height = 40
 	const list = allLists[what]
 	const maxMovement = -height * list.length + height
-	const currentWhat = what === 'tempo' ? metronome.tempo : metronome.layers[index][what]
+	const currentWhat = is('tempo') ? metronome.tempo : metronome.layers[index][what]
+	const initOffset = is('tempo') ? 30 : is('beats') ? 2 : 0
 
 	// States
 	const wheelRef = useRef(document.createElement('div'))
 	const [dontClick, setDontClick] = useState(false)
 	const [saved, setSaved] = useState(currentWhat)
 	const [wheel, setWheel] = useState({
-		y: currentWhat * -height,
+		y: (currentWhat - initOffset) * -height,
 		snap: true,
 	})
 

@@ -1,10 +1,11 @@
 import { useGesture } from 'react-use-gesture'
 import { useState, useRef } from 'react'
 
-function Range({ update }): JSX.Element {
+function Range({ sound, what, update }): JSX.Element {
 	const rangeRef = useRef(document.createElement('div'))
+	const init = what === 'volume' ? sound.volume : sound.release
 	const [range, setRange] = useState({
-		x: 80,
+		x: init * 100,
 		moving: false,
 	})
 
@@ -20,16 +21,29 @@ function Range({ update }): JSX.Element {
 
 	const movingAction = state => {
 		const moving = state.dragging || state.wheeling
-		const x = state.movement[0]
 
-		setRange({ x, moving })
+		if (moving) {
+			const percent = state.movement[0] / rangeWidth
+			setRange({ x: percent * 100, moving })
+			update(percent)
+		} else {
+			console.log(state)
+			const rangeBox = rangeRef.current.children[0].getBoundingClientRect()
+			const diff = state.event.clientX - rangeBox.x
 
-		update(x / rangeWidth)
+			// [-----|---------.-------]
+			// a     z         x       b
+
+			console.log(diff)
+
+			setRange({ x: (diff / rangeWidth) * 100, moving: true })
+		}
 	}
 
 	const bind = useGesture(
 		{
 			onDrag: state => movingAction(state),
+			onClick: state => movingAction(state),
 		},
 		{
 			drag: {
@@ -45,7 +59,7 @@ function Range({ update }): JSX.Element {
 			<div
 				className="inner-range"
 				style={{
-					width: (range.x / rangeWidth) * 100 + '%',
+					width: range.x + '%',
 					transition: `transform ${range.moving ? '0s' : '.2s'}`,
 				}}
 			></div>

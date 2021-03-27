@@ -65,8 +65,8 @@ function App(): JSX.Element {
 		theme: 'lightgreen',
 		sound: {
 			type: 'sine',
-			release: 0.1,
-			volume: 0.1,
+			release: 0.2,
+			volume: 0.4,
 		},
 		segment: {
 			on: false,
@@ -638,11 +638,19 @@ function App(): JSX.Element {
 					<div className="sliders">
 						<div className="release">
 							<h5>Release</h5>
-							<Range update={result => rangeUpdate('release', result)}></Range>
+							<Range
+								what="release"
+								sound={moreSettings.sound}
+								update={result => rangeUpdate('release', result)}
+							></Range>
 						</div>
 						<div className="volume">
 							<h5>Volume</h5>
-							<Range update={result => rangeUpdate('volume', result)}></Range>
+							<Range
+								what="volume"
+								sound={moreSettings.sound}
+								update={result => rangeUpdate('volume', result)}
+							></Range>
 						</div>
 						<div className="waveform">
 							<h5>Waveform</h5>
