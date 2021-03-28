@@ -1,5 +1,6 @@
 import { useGesture } from 'react-use-gesture'
 import { useState, useRef, useEffect, useCallback } from 'react'
+import scrollPrevent from './ScrollPrevent'
 
 // Wheels work by getting the index of an element with wheel height divided by children height
 // Up movement uses translateY(-px), incrementing is negative, so maths are weird
@@ -35,13 +36,6 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 		y: (currentWhat - initOffset) * -height,
 		snap: true,
 	})
-
-	// Need to detect if windows
-	// To set scrolling bar margin
-	const scrollPrevent = (no: boolean) => {
-		document.body.style.overflow = no ? 'hidden' : 'auto'
-		// document.body.style.marginRight = no ? '17px' : '0'
-	}
 
 	wheelRef.current.addEventListener('mouseenter', () => scrollPrevent(true))
 	wheelRef.current.addEventListener('mouseleave', () => scrollPrevent(false))

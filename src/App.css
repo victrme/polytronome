@@ -1,415 +1,330 @@
 :root {
-    --accent: white;
-    --background: #282c34;
-    --dim: #00000033;
+	--accent: white;
+	--background: #282c34;
+	--dim: #00000033;
 }
 
-
 .App {
-    background-color: var(--background);
-    color: var(--accent);
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 600px;
-    font-size: calc(10px + 2vmin);
-    transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
-    user-select: none;
+	background-color: var(--background);
+	color: var(--accent);
+	min-height: 100vh;
+	display: grid;
+	grid-template-columns: 1fr 600px;
+	font-size: calc(10px + 2vmin);
+	transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+	user-select: none;
 }
 
 .App button {
-    color: var(--accent);
-    background: var(--dim);
-    padding: 10px 40px;
-    margin: 0 20px;
-    border: none;
-    border-radius: 2em;
-    font-size: 16px;
-    font-weight: bold;
-    transition: all 0.2s;
-    cursor: pointer;
+	color: var(--accent);
+	background: var(--dim);
+	padding: 10px 40px;
+	margin: 0 20px;
+	border: none;
+	border-radius: 2em;
+	font-size: 16px;
+	font-weight: bold;
+	transition: all 0.2s;
+	cursor: pointer;
 }
 
 .App button:hover {
-    filter: brightness(.8);
+	filter: brightness(0.8);
 }
 
 .App button:active {
-    filter: brightness(.6);
+	filter: brightness(0.6);
 }
 
 .App button.off {
-    opacity: 0;
-    cursor: initial;
+	opacity: 0;
+	cursor: initial;
 }
 
-
-
-
-
-
-
 .App .principal .sticky {
-    position: sticky;
-    top: 20vh;
-    margin: 20vh 5vh;
+	position: sticky;
+	top: 20vh;
+	margin: 20vh 5vh;
 }
 
 .App .principal .title {
-    margin: 1em 0;
-    font-size: 30px;
+	margin: 1em 0;
+	font-size: 30px;
 }
 
 .App .principal .title h1 {
-    margin-top: 0;
-    line-height: 1em;
+	margin-top: 0;
+	line-height: 1em;
 }
 
 .App .principal .title p {
-    margin: 0;
-    font-weight: bold;
-    font-size: 0.6em;
-    opacity: 0.4;
+	margin: 0;
+	font-weight: bold;
+	font-size: 0.6em;
+	opacity: 0.4;
 }
 
-
-
-
-
-
-
 .App .principal .click-row {
-    display: flex;
-    width: 100%;
+	display: flex;
+	width: 100%;
 }
 
 .App .principal .clicks.isSegment .layers,
 .App .principal .clicks.isLayers .segment {
-    display: none;
+	display: none;
 }
 
 .App .principal .click {
-    margin: 5px;
-    width: 100%;
-    height: 20px;
-    background-color: var(--dim);
-    border-radius: 5px;
+	margin: 5px;
+	width: 100%;
+	height: 20px;
+	background-color: var(--dim);
+	border-radius: 5px;
 }
 
 .App .principal .click.on {
-    background-color: var(--accent);
-    transition: background-color .1s;
+	background-color: var(--accent);
+	transition: background-color 0.1s;
 }
 
-
-
-
-
-
 .App .principal .start-button {
-    text-align: center;
+	text-align: center;
 }
 
 .App .principal .start-button button {
-    width: 300px;
-    margin-top: 10vh;
+	width: 300px;
+	margin-top: 10vh;
 }
 
 .App .setting {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: calc(100% - 4em);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: calc(100% - 4em);
 }
 
 .App .settings-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
 }
 
 .App .setting.tempo {
-    justify-content: space-around;
-    align-items: center;
+	justify-content: space-around;
+	align-items: center;
 }
 
-.App .setting.tempo input[type=text] {
-    font-size: 40px;
-    width: 100px;
+.App .setting.tempo input[type='text'] {
+	font-size: 40px;
+	width: 100px;
 }
-
-
-
-
-
-
 
 .setting .range-wrap {
-    width: 100%;
-    height: 20px;
-    background-color: var(--dim);
-    border-radius: 5px;
-    overflow: hidden;
-    cursor: grab;
+	width: 100%;
+	height: 20px;
+	background-color: var(--dim);
+	border-radius: 5px;
+	overflow: hidden;
+	cursor: pointer;
 }
 
 .setting .range-wrap .inner-range {
-    background-color: var(--accent);
-    height: 20px;
-    cursor: grab;
-    transition: all .2s;
+	background-color: var(--accent);
+	/* border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px; */
+	height: 20px;
+	transition: all 0.2s;
 }
-
-.setting .range-wrap .inner-range:active {
-    cursor: grabbing;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 .App .setting.layer {
-    justify-content: space-between;
-    width: 100%;
+	justify-content: space-between;
+	width: 100%;
 }
 
 .App .setting.layer .notes-wrap {
-    display: flex;
+	display: flex;
 }
 
-.App .setting.layer .notes-wrap> :first-child {
-    text-align: right;
+.App .setting.layer .notes-wrap > :first-child {
+	text-align: right;
 }
 
-.App .setting.layer .notes-wrap> :last-child {
-    text-align: left;
+.App .setting.layer .notes-wrap > :last-child {
+	text-align: left;
 }
 
 .App .settings-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2em;
-    padding-left: 5em;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 2em;
+	padding-left: 5em;
 }
 
 .App .setting input {
-    width: 60px;
-    margin: 10px;
-    padding: 5px;
-    background-color: transparent;
-    border: none;
-    color: white;
-    font-weight: bolder;
-    font-size: 16px;
-    text-align: center;
+	width: 60px;
+	margin: 10px;
+	padding: 5px;
+	background-color: transparent;
+	border: none;
+	color: white;
+	font-weight: bolder;
+	font-size: 16px;
+	text-align: center;
 }
 
-.App .setting input[type=range] {
-    width: 80px;
-    margin: 10px;
-    padding: 5px;
+.App .setting input[type='range'] {
+	width: 80px;
+	margin: 10px;
+	padding: 5px;
 }
 
 .App .setting.sound {
-    flex-direction: column;
+	flex-direction: column;
 }
 
-
 .App .setting.sound .sliders {
-    width: 100%;
+	width: 100%;
 }
 
 .App .setting.sound h5 {
-    margin: 1em;
-    margin-right: 2em;
+	margin: 1em;
+	margin-right: 2em;
 }
 
 .App .setting.sound .release,
 .App .setting.sound .volume,
-    .App .setting.sound .waveform {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.App .setting.sound .waveform {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 }
-
 
 .App .setting select {
-    padding: 5px;
-    margin: 10px;
+	padding: 5px;
+	margin: 10px;
 }
 
-
 .App .setting.sound .css-waves {
-    position: relative;
-    width: 90px;
-    height: 45px;
-    cursor: pointer;
+	position: relative;
+	width: 90px;
+	height: 45px;
+	cursor: pointer;
 }
 
 .App .setting.sound .css-waves svg {
-    position: absolute;
-    width: 100%;
-    height: 100%;
+	position: absolute;
+	width: 100%;
+	height: 100%;
 }
 
 .App .setting.sound .css-waves svg path {
-    transition: all .3s;
+	transition: all 0.3s;
 }
 
-
-
-
-
-
-
-
-
-
 .App .boxed {
-    margin: 2em 0;
-    width: 100%;
+	margin: 2em 0;
+	width: 100%;
 }
 
 .App .boxed .add-layer {
-    margin-top: 1em;
-    text-align: center;
+	margin-top: 1em;
+	text-align: center;
 }
 
 .App .layers-settings button {
-    background-color: rgba(0, 0, 0, 0.2);
+	background-color: rgba(0, 0, 0, 0.2);
 }
 
-.App .layers-settings input:not(input[type=range]) {
-    font-size: 40px;
-    width: 100px;
+.App .layers-settings input:not(input[type='range']) {
+	font-size: 40px;
+	width: 100px;
 }
 
 .App .layers-settings .add-layer {
-    padding-top: 1em;
+	padding-top: 1em;
 }
 
 .App .global-settings {
-    display: flex;
-    flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 
 .App button.suppr-btn {
-    background: 0;
-    border: 0;
-    color: var(--accent);
-    font-size: 1em;
-    padding: 10px;
+	background: 0;
+	border: 0;
+	color: var(--accent);
+	font-size: 1em;
+	padding: 10px;
 }
 
 .App .note {
-    font-size: 16px;
-    width: 50px;
-    font-weight: bold;
+	font-size: 16px;
+	width: 50px;
+	font-weight: bold;
 }
 
 .App .setting.unlimited h5 {
-    margin-bottom: 0;
+	margin-bottom: 0;
 }
 
 .App small {
-    margin-top: -1em;
-    font-size: 0.4em;
+	margin-top: -1em;
+	font-size: 0.4em;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .setting.theme {
-    flex-direction: column;
+	flex-direction: column;
 }
 
 .theme-preview {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
 }
 
 .theme-preview > div {
-    display: flex;
-    padding: 2px 5px;
-    margin: 10px;
-    width: 100px;
-    height: 20px;
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all .2s;
+	display: flex;
+	padding: 2px 5px;
+	margin: 10px;
+	width: 100px;
+	height: 20px;
+	background-color: rgba(0, 0, 0, 0.2);
+	border-radius: 5px;
+	cursor: pointer;
+	transition: all 0.2s;
 }
 
-.theme-preview>div .tp-mini-click {
-    width: 100%;
-    margin: 5px 2px;
-    border-radius: 3px;
-    transition: all .2s;
+.theme-preview > div .tp-mini-click {
+	width: 100%;
+	margin: 5px 2px;
+	border-radius: 3px;
+	transition: all 0.2s;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 .App .immovable_wheel {
-    overflow: hidden;
-    user-select: none;
-    line-height: 40px;
-    font-size: 40px;
-    height: 40px;
+	overflow: hidden;
+	user-select: none;
+	line-height: 40px;
+	font-size: 40px;
+	height: 40px;
 }
 
 .App .wheel {
-    cursor: grab;
-    touch-action: none;
+	cursor: grab;
+	touch-action: none;
 }
 
 .App .wheel.frequency {
-    text-align: right;
+	text-align: right;
 }
 
 .App .wheel:active {
-    cursor: grabbing;
+	cursor: grabbing;
 }
 
 .App .wheel div {
-    user-select: none;
-}
-
-.App.deepdark {
-    background-color: #000;
+	user-select: none;
 }

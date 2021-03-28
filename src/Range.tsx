@@ -1,5 +1,6 @@
 import { useGesture } from 'react-use-gesture'
 import { useState, useRef, useEffect } from 'react'
+import scrollPrevent from './ScrollPrevent'
 
 // [-----|---------.-------]
 // a     z         x       b
@@ -15,11 +16,6 @@ function Range({ sound, what, update }): JSX.Element {
 		moving: false,
 	})
 
-	const scrollPrevent = (no: boolean) => {
-		document.body.style.overflow = no ? 'hidden' : 'auto'
-		document.body.style.marginRight = no ? '17px' : '0'
-	}
-
 	rangeRef.current.addEventListener('mouseenter', () => scrollPrevent(true))
 	rangeRef.current.addEventListener('mouseleave', () => scrollPrevent(false))
 
@@ -27,8 +23,6 @@ function Range({ sound, what, update }): JSX.Element {
 
 	const movingAction = state => {
 		const moving = state.dragging || state.wheeling
-
-		console.log(range.width)
 
 		if (moving) {
 			const percent = state.movement[0] / range.width
