@@ -11,10 +11,6 @@ function scrollPrevent(no: boolean) {
 		app.style.paddingRight = '0'
 		app.style.transition = 'all 0s'
 	}
-
-	// oh oh something is wrong
-	// too much call somehow
-	console.log('mac: ', isMacOs)
 }
 
 export default scrollPrevent

@@ -472,8 +472,9 @@ function App(): JSX.Element {
 	}
 
 	const setFullscreen = (state: boolean) => {
-		if (state) document.querySelector('.App')!.requestFullscreen()
-		else document.exitFullscreen()
+		if (!state) {
+			document.querySelector('.App')!.requestFullscreen()
+		} else document.exitFullscreen()
 
 		setMoreSettings(prev => ({
 			...prev,

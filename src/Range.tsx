@@ -16,8 +16,8 @@ function Range({ sound, what, update }): JSX.Element {
 		moving: false,
 	})
 
-	rangeRef.current.addEventListener('mouseenter', () => scrollPrevent(true))
-	rangeRef.current.addEventListener('mouseleave', () => scrollPrevent(false))
+	// rangeRef.current.addEventListener('mouseenter', () => scrollPrevent(true))
+	// rangeRef.current.addEventListener('mouseleave', () => scrollPrevent(false))
 
 	const stayPositive = (n: number) => (n > 0 ? n : 0)
 

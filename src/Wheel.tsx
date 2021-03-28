@@ -37,9 +37,6 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 		snap: true,
 	})
 
-	wheelRef.current.addEventListener('mouseenter', () => scrollPrevent(true))
-	wheelRef.current.addEventListener('mouseleave', () => scrollPrevent(false))
-
 	// Let go and wheel align with the nearest element
 	const wheelSnapping = useCallback(
 		(y: number) => {
@@ -150,6 +147,11 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 			wheelSnapping((currentWhat - 30) * -height)
 		}
 	}, [what, index, wheelSnapping, saved, currentWhat])
+
+	useEffect(() => {
+		wheelRef.current.addEventListener('mouseenter', () => scrollPrevent(true))
+		wheelRef.current.addEventListener('mouseleave', () => scrollPrevent(false))
+	}, [])
 
 	return (
 		<div className="immovable_wheel">
