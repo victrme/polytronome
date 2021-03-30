@@ -6,10 +6,10 @@ function scrollPrevent(no: boolean) {
 
 	if (no) {
 		app.style.paddingRight = isMacOs ? '0' : '17px'
-		app.style.transition = 'all 0s'
+		app.style.transition = 'padding 0s'
 	} else {
 		app.style.paddingRight = '0'
-		app.style.transition = 'all 0s'
+		app.style.transition = 'padding 0s'
 	}
 }
 

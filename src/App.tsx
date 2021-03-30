@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
+import { isMobileOnly } from 'react-device-detect'
 import Pizzicato from 'pizzicato'
 import Wheel from './Wheel'
 import Range from './Range'
@@ -6,11 +7,14 @@ import Waveform from './Waveform'
 import './App.css'
 
 function App(): JSX.Element {
-	/**
-	 *
-	 * States & Values
-	 *
-	 */
+	//
+	// States & Values
+	//
+
+	const [perfAvg, setPerfAvg] = useState({
+		total: 0,
+		count: 0,
+	})
 
 	const ThemeList = [
 		{
@@ -111,23 +115,42 @@ function App(): JSX.Element {
 	const moreSettingsRef = useRef(moreSettings)
 	const tempoInputRef = useRef(tempoInput)
 	const metronomeRef = useRef(metronome)
+	const perfAvgRef = useRef(perfAvg)
 
 	metronomeRef.current = metronome
 	tempoInputRef.current = tempoInput
 	moreSettingsRef.current = moreSettings
+	perfAvgRef.current = perfAvg
 
-	/**
-	 *
-	 * Small functions
-	 *
-	 */
+	//
+	// Small functions
+	//
 
-	const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-		navigator.userAgent
-	)
+	let performanceThen = 0
+	const benchmark = {
+		start: () => (performanceThen = performance.now()),
+		log: (type?: string) => {
+			//
+			// Save average
+			// Or just log difference
+			//
 
-	const getLayerFromId = (id: string) =>
-		metronomeRef.current.layers.filter(ll => ll.id === id)[0]
+			const now = performance.now()
+
+			if (type === 'average') {
+				const perf = perfAvgRef.current
+				setPerfAvg({
+					total: perf.total + (now - performanceThen),
+					count: perf.count + 1,
+				})
+
+				if (perfAvgRef.current.count > 20) console.log(perf.total / perf.count)
+				else console.log('Gathering data')
+			} else {
+				console.log(now - performanceThen)
+			}
+		},
+	}
 
 	const calculateTempoMs = (beats: number, tempo: number) => {
 		const crazy = moreSettingsRef.current.unlimited
@@ -204,9 +227,27 @@ function App(): JSX.Element {
 		// Add Spacebar to control metronome
 		document.addEventListener('keydown', (e: KeyboardEvent) => {
 			if (e.code === 'Space') {
-				console.log('???')
-
 				launchMetronome(metronomeRef.current.isRunning)
+				e.preventDefault()
+				return false
+			}
+
+			if (e.code === 'ArrowUp') {
+				setMetronome(prev => ({
+					...prev,
+					tempo: metronomeRef.current.tempo + 1,
+				}))
+
+				e.preventDefault()
+				return false
+			}
+
+			if (e.code === 'ArrowDown') {
+				setMetronome(prev => ({
+					...prev,
+					tempo: metronomeRef.current.tempo - 1,
+				}))
+
 				e.preventDefault()
 				return false
 			}
@@ -228,8 +269,11 @@ function App(): JSX.Element {
 	function metronomeInterval(nextDelay: number, id: string) {
 		//
 		const timeoutID = window.setTimeout(() => {
+			benchmark.start()
+
 			const current = { ...metronomeRef.current }
-			const layer = { ...getLayerFromId(id) }
+			const layerIndex = current.layers.findIndex(layer => layer.id === id)
+			const layer = current.layers[layerIndex]
 
 			// Quit recursion if stopped or removed
 			if (!current.isRunning || layer === undefined) {
@@ -238,22 +282,21 @@ function App(): JSX.Element {
 			}
 
 			const tempoMs = calculateTempoMs(layer.beats, current.tempo)
-			const time = layer.time >= layer.beats ? 1 : layer.time + 1
 
 			// Update beat time
 			// Return to 1 if 'time' above 'beats'
+			let newLayers = current.layers
+			newLayers[layerIndex].time = layer.time >= layer.beats ? 1 : layer.time + 1
+
 			setMetronome(prev => ({
 				...prev,
-				layers: prev.layers.map(layer =>
-					layer.id === id ? { ...layer, time } : layer
-				),
+				layers: newLayers,
 			}))
 
 			// Update Segment Count, if its on
-			const segment = { ...moreSettingsRef.current.segment }
-
-			if (segment.on) {
+			if (moreSettingsRef.current.segment.on) {
 				//
+				const segment = { ...moreSettingsRef.current.segment }
 				let segmentTemp = segment
 
 				if (segment.dupCount < segment.duplicates[segment.count]) {
@@ -278,6 +321,7 @@ function App(): JSX.Element {
 			//
 			// Play sound
 			//
+
 			const note = layer.frequency + 12 * layer.octave
 			const freq = 16.35 * 2 ** (note / 12)
 			const wave = new Pizzicato.Sound({
@@ -288,12 +332,17 @@ function App(): JSX.Element {
 					attack: 0,
 				},
 			})
+
 			wave.play()
-			setTimeout(() => wave.stop(), 20)
+			setTimeout(() => {
+				wave.stop()
+			}, 20)
 
 			// Calculate latency
 			const latencyOffset =
 				current.startTime > 0 ? (Date.now() - current.startTime) % tempoMs : 0
+
+			benchmark.log('average')
 
 			// Recursion
 			metronomeInterval(tempoMs - latencyOffset, id)
@@ -735,7 +784,7 @@ function App(): JSX.Element {
 					<div>
 						<h5>Unlimited Mode</h5>
 						<small>
-							⚠️ This can slow down your {isMobile ? 'phone' : 'computer'}
+							⚠️ This can slow down your {isMobileOnly ? 'phone' : 'computer'}
 						</small>
 					</div>
 

@@ -1,6 +1,5 @@
 import { useGesture } from 'react-use-gesture'
 import { useState, useRef, useEffect } from 'react'
-import scrollPrevent from './ScrollPrevent'
 
 // [-----|---------.-------]
 // a     z         x       b
