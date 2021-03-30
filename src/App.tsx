@@ -268,9 +268,10 @@ function App(): JSX.Element {
 
 	function metronomeInterval(nextDelay: number, id: string) {
 		//
+		//
 		const timeoutID = window.setTimeout(() => {
-			benchmark.start()
-
+			//
+			//
 			const current = { ...metronomeRef.current }
 			const layerIndex = current.layers.findIndex(layer => layer.id === id)
 			const layer = current.layers[layerIndex]
@@ -285,13 +286,11 @@ function App(): JSX.Element {
 
 			// Update beat time
 			// Return to 1 if 'time' above 'beats'
-			let newLayers = current.layers
-			newLayers[layerIndex].time = layer.time >= layer.beats ? 1 : layer.time + 1
+			let newMetronome = current
+			newMetronome.layers[layerIndex].time =
+				layer.time >= layer.beats ? 1 : layer.time + 1
 
-			setMetronome(prev => ({
-				...prev,
-				layers: newLayers,
-			}))
+			setMetronome(newMetronome)
 
 			// Update Segment Count, if its on
 			if (moreSettingsRef.current.segment.on) {
@@ -312,10 +311,9 @@ function App(): JSX.Element {
 					segmentTemp.count = allAtOne ? 1 : oneAtMax ? 0 : segment.count + 1
 				}
 
-				setMoreSettings(prev => ({
-					...prev,
-					segment: segmentTemp,
-				}))
+				let newMoreSettings = { ...moreSettingsRef.current }
+				newMoreSettings.segment = segmentTemp
+				setMoreSettings(newMoreSettings)
 			}
 
 			//
@@ -341,8 +339,6 @@ function App(): JSX.Element {
 			// Calculate latency
 			const latencyOffset =
 				current.startTime > 0 ? (Date.now() - current.startTime) % tempoMs : 0
-
-			benchmark.log('average')
 
 			// Recursion
 			metronomeInterval(tempoMs - latencyOffset, id)
