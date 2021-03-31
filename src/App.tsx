@@ -71,6 +71,7 @@ function App(): JSX.Element {
 			type: 'sine',
 			release: 0.2,
 			volume: 0.4,
+			duration: false,
 		},
 		segment: {
 			on: false,
@@ -325,9 +326,12 @@ function App(): JSX.Element {
 			})
 
 			wave.play()
-			setTimeout(() => {
-				wave.stop()
-			}, 20)
+			setTimeout(
+				() => {
+					wave.stop()
+				},
+				moreSett.sound.duration ? tempoMs * 0.3 : 50
+			)
 
 			//
 			// Update beat time
@@ -776,6 +780,26 @@ function App(): JSX.Element {
 						}
 					>
 						{moreSettings.segment.on ? 'segment' : 'layers'}
+					</button>
+				</div>
+
+				<div className="setting duration">
+					<h5>Click duration</h5>
+
+					<button
+						name="duration"
+						id="duration"
+						onClick={() =>
+							setMoreSettings(prev => ({
+								...prev,
+								sound: {
+									...prev.sound,
+									duration: moreSettings.sound.duration ? false : true,
+								},
+							}))
+						}
+					>
+						{moreSettings.sound.duration ? 'relative' : 'fixed'}
 					</button>
 				</div>
 
