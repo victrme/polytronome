@@ -1,4 +1,14 @@
-node_modules
-build
-/package-lock.json
 /.eslintcache
+
+logs
+*.log
+
+pids
+*.pid
+*.seed
+
+build
+node_modules
+npm-debug.log
+
+.DS_Store
