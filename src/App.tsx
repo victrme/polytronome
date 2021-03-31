@@ -54,7 +54,7 @@ function App(): JSX.Element {
 			dim: '#fd971f33',
 		},
 	]
-	const previewInterval = useRef(setTimeout(() => {}, 0))
+	const previewInterval = useRef(setTimeout(() => {}, 1))
 
 	const defaultLayer = {
 		id: setRandomID(),
@@ -127,6 +127,7 @@ function App(): JSX.Element {
 	//
 
 	let performanceThen = 0
+	// eslint-disable-next-line
 	const benchmark = {
 		start: () => (performanceThen = performance.now()),
 		log: (type?: string) => {
@@ -257,8 +258,8 @@ function App(): JSX.Element {
 	}, [])
 
 	useEffect(() => {
-		if (!metronome.isRunning) initSegment()
-	}, [initSegment, metronome])
+		initSegment()
+	}, [initSegment, metronome.layers])
 
 	//
 	//
@@ -267,53 +268,45 @@ function App(): JSX.Element {
 	//
 
 	function metronomeInterval(nextDelay: number, id: string) {
-		//
-		//
 		const timeoutID = window.setTimeout(() => {
 			//
-			//
-			const current = { ...metronomeRef.current }
-			const layerIndex = current.layers.findIndex(layer => layer.id === id)
-			const layer = current.layers[layerIndex]
+			// Short name for refs
+			const metro = { ...metronomeRef.current }
+			const moreSett = { ...moreSettingsRef.current }
+
+			// Find layer
+			const layerIndex = metro.layers.findIndex(layer => layer.id === id)
+			const layer = metro.layers[layerIndex]
 
 			// Quit recursion if stopped or removed
-			if (!current.isRunning || layer === undefined) {
+			if (!metro.isRunning || layer === undefined) {
 				clearTimeout(timeoutID)
 				return
 			}
 
-			const tempoMs = calculateTempoMs(layer.beats, current.tempo)
+			// Has to be after Quit
+			const tempoMs = calculateTempoMs(layer.beats, metro.tempo)
 
-			// Update beat time
-			// Return to 1 if 'time' above 'beats'
-			let newMetronome = current
-			newMetronome.layers[layerIndex].time =
-				layer.time >= layer.beats ? 1 : layer.time + 1
+			//
+			// Segment count, if on
+			//
 
-			setMetronome(newMetronome)
+			if (moreSett.segment.on) {
+				const segment = moreSett.segment
 
-			// Update Segment Count, if its on
-			if (moreSettingsRef.current.segment.on) {
-				//
-				const segment = { ...moreSettingsRef.current.segment }
-				let segmentTemp = segment
-
-				if (segment.dupCount < segment.duplicates[segment.count]) {
-					// If duplicates, don't move count
-					segmentTemp.dupCount++
-				} else {
-					segmentTemp.dupCount = 1
-
-					// Control count interval edges
-					// Conditions for [0 ... n]
-					const allAtOne = current.layers.every(l => l.time === 1)
+				// If there are duplicates, do nothing but count duplicates
+				if (segment.dupCount < segment.duplicates[segment.count]) segment.dupCount++
+				else {
+					// Reset duplicate count
+					// Check for layers.time to know what segment should do
+					segment.dupCount = 1
+					const allAtOne = metro.layers.every(l => l.time === 1)
 					const oneAtMax = layer.time === layer.beats
-					segmentTemp.count = allAtOne ? 1 : oneAtMax ? 0 : segment.count + 1
+					segment.count = allAtOne ? 1 : oneAtMax ? 0 : segment.count + 1
 				}
 
-				let newMoreSettings = { ...moreSettingsRef.current }
-				newMoreSettings.segment = segmentTemp
-				setMoreSettings(newMoreSettings)
+				moreSett.segment = segment
+				setMoreSettings(moreSett)
 			}
 
 			//
@@ -336,9 +329,17 @@ function App(): JSX.Element {
 				wave.stop()
 			}, 20)
 
+			//
+			// Update beat time
+			// Return to 1 if 'time' above 'beats'
+			//
+
+			metro.layers[layerIndex].time = layer.time >= layer.beats ? 1 : layer.time + 1
+			setMetronome(metro)
+
 			// Calculate latency
 			const latencyOffset =
-				current.startTime > 0 ? (Date.now() - current.startTime) % tempoMs : 0
+				metro.startTime > 0 ? (Date.now() - metro.startTime) % tempoMs : 0
 
 			// Recursion
 			metronomeInterval(tempoMs - latencyOffset, id)
@@ -518,7 +519,9 @@ function App(): JSX.Element {
 
 	const setFullscreen = (state: boolean) => {
 		if (!state) {
+			const wrap = document.querySelector('.settings-wrap') as HTMLDivElement
 			document.querySelector('.App')!.requestFullscreen()
+			wrap.style.overflowY = 'auto'
 		} else document.exitFullscreen()
 
 		setMoreSettings(prev => ({
@@ -741,15 +744,15 @@ function App(): JSX.Element {
 				</div>
 
 				<div className="setting randomize">
-					<button name="display" id="display" onClick={randomizeLayers}>
+					<button name="randomize" id="randomize" onClick={randomizeLayers}>
 						Randomize
 					</button>
 				</div>
 
 				<div className="setting fullscreen">
 					<button
-						name="display"
-						id="display"
+						name="fullscreen"
+						id="fullscreen"
 						onClick={() => setFullscreen(moreSettings.fullscreen)}
 					>
 						fullscreen
