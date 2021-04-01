@@ -9,7 +9,8 @@
 	color: var(--accent);
 	min-height: 100vh;
 	display: grid;
-	grid-template-columns: 1fr 0.6fr;
+	grid-template-columns: 65% 35%;
+	grid-template-rows: 60% 40%;
 	font-size: calc(10px + 2vmin);
 	transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
 	user-select: none;
@@ -18,14 +19,14 @@
 .App button {
 	color: var(--accent);
 	background: var(--dim);
-	padding: 10px 40px;
-	margin: 0 20px;
+	padding: 7px 30px;
 	border: none;
 	border-radius: 2em;
 	font-size: 16px;
 	font-weight: bold;
 	transition: all 0.2s;
 	cursor: pointer;
+	outline: none;
 }
 
 .App button:hover {
@@ -41,10 +42,14 @@
 	cursor: initial;
 }
 
+.App .principal {
+	display: flex;
+	align-items: center;
+	padding: 2em;
+}
+
 .App .principal .sticky {
-	position: sticky;
-	top: 20vh;
-	margin: 20vh 5vh;
+	width: calc(100% - 4em);
 }
 
 .App .principal .title {
@@ -93,31 +98,52 @@
 
 .App .principal .start-button button {
 	width: 300px;
-	margin-top: 10vh;
+	margin-top: 50px;
+}
+
+.App .settings-wrap {
+	display: flex;
+	align-items: center;
+}
+
+.App .settings-wrap.side {
+	flex-direction: column;
+	padding: 2em 2em 2em 4em;
+	padding-right: 2em;
+}
+
+.App .settings-wrap.bottom {
+	grid-column-start: 1;
+	grid-column-end: 3;
+	padding: 2em;
+	align-items: flex-end;
+	justify-content: space-between;
+}
+
+.App h3 {
+	margin-top: 0;
+	font-size: 30px;
+}
+
+.App h4 {
+	font-size: 20px;
+	margin: 10px 0;
 }
 
 .App .setting {
 	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	width: calc(100% - 4em);
+}
+
+.App .boxed {
+	width: 100%;
 }
 
 .App .settings-title {
 	display: flex;
 	justify-content: space-between;
-	align-items: center;
+	align-items: flex-start;
 	width: 100%;
-}
-
-.App .setting.tempo {
-	justify-content: space-around;
-	align-items: center;
-}
-
-.App .setting.tempo input[type='text'] {
-	font-size: 40px;
-	width: 100px;
+	margin-top: 2em;
 }
 
 .setting .range-wrap {
@@ -154,14 +180,6 @@
 	text-align: left;
 }
 
-.App .settings-wrap {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	padding: 2em;
-	padding-left: 5em;
-}
-
 .App .setting input {
 	width: 60px;
 	margin: 10px;
@@ -182,23 +200,23 @@
 
 .App .setting.sound {
 	flex-direction: column;
+	width: 500px;
+	margin-right: 2em;
 }
 
 .App .setting.sound .sliders {
 	width: 100%;
 }
 
-.App .setting.sound h5 {
-	margin: 1em;
-	margin-right: 2em;
+.App .setting.sound h4 {
+	margin: 0.7em 2em 0.7em 0;
 }
 
-.App .setting.sound .release,
-.App .setting.sound .volume,
-.App .setting.sound .waveform {
+.App .setting.sound > div {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	width: 100%;
 }
 
 .App .setting select {
@@ -223,9 +241,8 @@
 	transition: all 0.3s;
 }
 
-.App .boxed {
-	margin: 2em 0;
-	width: 100%;
+.App .setting.sound .display {
+	margin-top: 1em;
 }
 
 .App .boxed .add-layer {
@@ -265,24 +282,36 @@
 	font-weight: bold;
 }
 
-.App .setting.unlimited h5 {
+.App .other-settings {
+	width: 320px;
+	margin-right: 2em;
+}
+
+.App .other-settings .setting {
+	align-items: center;
+	justify-content: space-between;
+}
+
+.App .setting.unlimited h4 {
 	margin-bottom: 0;
 }
 
 .App small {
+	display: none;
 	margin-top: -1em;
 	font-size: 0.4em;
 }
 
 .setting.theme {
 	flex-direction: column;
+	width: 320px;
 }
 
 .theme-preview {
 	width: 100%;
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: center;
+	justify-content: flex-start;
 }
 
 .theme-preview > div {

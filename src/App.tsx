@@ -64,7 +64,6 @@ function App(): JSX.Element {
 		octave: 3,
 	}
 
-	const [tempoInput, setTempoInput] = useState(80)
 	const [moreSettings, setMoreSettings] = useState({
 		theme: 'lightgreen',
 		sound: {
@@ -114,12 +113,10 @@ function App(): JSX.Element {
 
 	// Use Refs for async timeouts
 	const moreSettingsRef = useRef(moreSettings)
-	const tempoInputRef = useRef(tempoInput)
 	const metronomeRef = useRef(metronome)
 	const perfAvgRef = useRef(perfAvg)
 
 	metronomeRef.current = metronome
-	tempoInputRef.current = tempoInput
 	moreSettingsRef.current = moreSettings
 	perfAvgRef.current = perfAvg
 
@@ -155,14 +152,10 @@ function App(): JSX.Element {
 	}
 
 	const calculateTempoMs = (beats: number, tempo: number) => {
-		const crazy = moreSettingsRef.current.unlimited
-		const change = (n: number) => {
-			setTempoInput(n)
-			tempo = n
-		}
-
-		if (!crazy && tempo < 33) change(33)
-		if (!crazy && tempo > 250) change(250)
+		//
+		// Set min / max if limited
+		if (!moreSettingsRef.current.unlimited)
+			tempo = tempo < 30 ? 30 : tempo > 300 ? 300 : tempo
 
 		return 60000 / ((beats / 4) * tempo)
 	}
@@ -330,7 +323,7 @@ function App(): JSX.Element {
 				() => {
 					wave.stop()
 				},
-				moreSett.sound.duration ? tempoMs * 0.3 : 50
+				moreSett.sound.duration ? tempoMs * 0.4 : 50
 			)
 
 			//
@@ -456,7 +449,6 @@ function App(): JSX.Element {
 				60000 / (cumul.reduce((a: number, b: number) => a + b) / cumul.length)
 			)
 
-			setTempoInput(averageTempo)
 			setMetronome(prev => ({ ...prev, tap, tempo: averageTempo }))
 		}
 	}
@@ -558,7 +550,7 @@ function App(): JSX.Element {
 	}
 
 	return (
-		<div className={'App ' + moreSettings.theme}>
+		<div className="App">
 			<div className="principal">
 				<div className="sticky">
 					<div className="title">
@@ -621,7 +613,7 @@ function App(): JSX.Element {
 				</div>
 			</div>
 
-			<div className="settings-wrap">
+			<div className="settings-wrap side">
 				<div className="boxed tempo">
 					<div className="settings-title">
 						<h3>Tempo</h3>
@@ -638,7 +630,7 @@ function App(): JSX.Element {
 					</div>
 				</div>
 
-				<div className="boxed">
+				<div className="boxed beats-notes">
 					<div className="settings-title">
 						<h3>Beats & Notes</h3>
 						<button
@@ -684,36 +676,120 @@ function App(): JSX.Element {
 						</div>
 					))}
 				</div>
+			</div>
 
+			<div className="settings-wrap bottom">
 				<div className="setting boxed sound">
-					<h3>Click Sound</h3>
+					<h3>Click sound</h3>
 
-					<div className="sliders">
-						<div className="release">
-							<h5>Release</h5>
-							<Range
-								what="release"
-								sound={moreSettings.sound}
-								update={result => rangeUpdate('release', result)}
-							></Range>
-						</div>
-						<div className="volume">
-							<h5>Volume</h5>
-							<Range
-								what="volume"
-								sound={moreSettings.sound}
-								update={result => rangeUpdate('volume', result)}
-							></Range>
-						</div>
-						<div className="waveform">
-							<h5>Waveform</h5>
+					<div className="volume">
+						<h4>Volume</h4>
+						<Range
+							what="volume"
+							sound={moreSettings.sound}
+							update={result => rangeUpdate('volume', result)}
+						></Range>
+					</div>
+					<div className="release">
+						<h4>Release</h4>
+						<Range
+							what="release"
+							sound={moreSettings.sound}
+							update={result => rangeUpdate('release', result)}
+						></Range>
+					</div>
+					<div className="waveform">
+						<h4>Waveform</h4>
 
-							<Waveform
-								color="#fff"
-								type={moreSettings.sound.type}
-								change={changeWaveform}
-							></Waveform>
+						<Waveform
+							color="#fff"
+							type={moreSettings.sound.type}
+							change={changeWaveform}
+						></Waveform>
+					</div>
+				</div>
+
+				<div className="other-settings">
+					<div className="setting randomize">
+						<h4>Randomize</h4>
+
+						<button name="randomize" id="randomize" onClick={randomizeLayers}>
+							go
+						</button>
+					</div>
+
+					<div className="setting fullscreen">
+						<h4>Fullscreen</h4>
+
+						<button
+							name="fullscreen"
+							id="fullscreen"
+							onClick={() => setFullscreen(moreSettings.fullscreen)}
+						>
+							{moreSettings.fullscreen ? 'on' : 'off'}
+						</button>
+					</div>
+
+					<div className="setting display">
+						<h4>Click display</h4>
+
+						<button
+							name="display"
+							id="display"
+							onClick={() =>
+								setMoreSettings(prev => ({
+									...prev,
+									segment: {
+										...prev.segment,
+										on: moreSettings.segment.on ? false : true,
+									},
+								}))
+							}
+						>
+							{moreSettings.segment.on ? 'segment' : 'layers'}
+						</button>
+					</div>
+
+					<div className="setting duration">
+						<h4>Click duration</h4>
+
+						<button
+							name="duration"
+							id="duration"
+							onClick={() =>
+								setMoreSettings(prev => ({
+									...prev,
+									sound: {
+										...prev.sound,
+										duration: moreSettings.sound.duration ? false : true,
+									},
+								}))
+							}
+						>
+							{moreSettings.sound.duration ? 'relative' : 'fixed'}
+						</button>
+					</div>
+
+					<div className="setting unlimited">
+						<div>
+							<h4>Unlimited Mode</h4>
+							<small>
+								⚠️ This can slow down your {isMobileOnly ? 'phone' : 'computer'}
+							</small>
 						</div>
+
+						<button
+							name="unlimited"
+							id="unlimited"
+							onClick={() =>
+								setMoreSettings(prev => ({
+									...prev,
+									unlimited: moreSettings.unlimited ? false : true,
+								}))
+							}
+						>
+							{moreSettingsRef.current.unlimited ? 'on' : 'off'}
+						</button>
 					</div>
 				</div>
 
@@ -745,84 +821,6 @@ function App(): JSX.Element {
 							</div>
 						))}
 					</div>
-				</div>
-
-				<div className="setting randomize">
-					<button name="randomize" id="randomize" onClick={randomizeLayers}>
-						Randomize
-					</button>
-				</div>
-
-				<div className="setting fullscreen">
-					<button
-						name="fullscreen"
-						id="fullscreen"
-						onClick={() => setFullscreen(moreSettings.fullscreen)}
-					>
-						fullscreen
-					</button>
-				</div>
-
-				<div className="setting display">
-					<h5>Click display</h5>
-
-					<button
-						name="display"
-						id="display"
-						onClick={() =>
-							setMoreSettings(prev => ({
-								...prev,
-								segment: {
-									...prev.segment,
-									on: moreSettings.segment.on ? false : true,
-								},
-							}))
-						}
-					>
-						{moreSettings.segment.on ? 'segment' : 'layers'}
-					</button>
-				</div>
-
-				<div className="setting duration">
-					<h5>Click duration</h5>
-
-					<button
-						name="duration"
-						id="duration"
-						onClick={() =>
-							setMoreSettings(prev => ({
-								...prev,
-								sound: {
-									...prev.sound,
-									duration: moreSettings.sound.duration ? false : true,
-								},
-							}))
-						}
-					>
-						{moreSettings.sound.duration ? 'relative' : 'fixed'}
-					</button>
-				</div>
-
-				<div className="setting unlimited">
-					<div>
-						<h5>Unlimited Mode</h5>
-						<small>
-							⚠️ This can slow down your {isMobileOnly ? 'phone' : 'computer'}
-						</small>
-					</div>
-
-					<button
-						name="unlimited"
-						id="unlimited"
-						onClick={() =>
-							setMoreSettings(prev => ({
-								...prev,
-								unlimited: moreSettings.unlimited ? false : true,
-							}))
-						}
-					>
-						{moreSettingsRef.current.unlimited ? 'on' : 'off'}
-					</button>
 				</div>
 			</div>
 		</div>
