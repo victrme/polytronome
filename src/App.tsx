@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
-import { isMobileOnly } from 'react-device-detect'
+import { isMobile, isMobileOnly } from 'react-device-detect'
 import Pizzicato from 'pizzicato'
 import Wheel from './Wheel'
 import Range from './Range'
@@ -217,43 +217,6 @@ function App(): JSX.Element {
 			},
 		}))
 	}, [metronome.layers])
-
-	useEffect(() => {
-		// Add Spacebar to control metronome
-		document.addEventListener('keydown', (e: KeyboardEvent) => {
-			if (e.code === 'Space') {
-				launchMetronome(metronomeRef.current.isRunning)
-				e.preventDefault()
-				return false
-			}
-
-			if (e.code === 'ArrowUp') {
-				setMetronome(prev => ({
-					...prev,
-					tempo: metronomeRef.current.tempo + 1,
-				}))
-
-				e.preventDefault()
-				return false
-			}
-
-			if (e.code === 'ArrowDown') {
-				setMetronome(prev => ({
-					...prev,
-					tempo: metronomeRef.current.tempo - 1,
-				}))
-
-				e.preventDefault()
-				return false
-			}
-		})
-
-		// eslint-disable-next-line
-	}, [])
-
-	useEffect(() => {
-		initSegment()
-	}, [initSegment, metronome.layers])
 
 	//
 	//
@@ -549,8 +512,51 @@ function App(): JSX.Element {
 		setMoreSettings(prev => ({ ...prev, sound: newSound }))
 	}
 
+	//
+	//
+	//	Effects
+	//
+	//
+
+	useEffect(() => {
+		// Add Spacebar to control metronome
+		document.addEventListener('keydown', (e: KeyboardEvent) => {
+			if (e.code === 'Space') {
+				launchMetronome(metronomeRef.current.isRunning)
+				e.preventDefault()
+				return false
+			}
+
+			if (e.code === 'ArrowUp') {
+				setMetronome(prev => ({
+					...prev,
+					tempo: metronomeRef.current.tempo + 1,
+				}))
+
+				e.preventDefault()
+				return false
+			}
+
+			if (e.code === 'ArrowDown') {
+				setMetronome(prev => ({
+					...prev,
+					tempo: metronomeRef.current.tempo - 1,
+				}))
+
+				e.preventDefault()
+				return false
+			}
+		})
+
+		// eslint-disable-next-line
+	}, [])
+
+	useEffect(() => {
+		initSegment()
+	}, [initSegment, metronome.layers])
+
 	return (
-		<div className="App">
+		<div className={'App ' + (isMobileOnly ? 'mobile' : '')}>
 			<div className="principal">
 				<div className="sticky">
 					<div className="title">
