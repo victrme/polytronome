@@ -357,3 +357,67 @@
 .App .wheel div {
 	user-select: none;
 }
+
+/*
+MOBILE
+*/
+
+.App.mobile {
+	display: flex;
+	flex-direction: column;
+}
+
+.App.mobile .principal .sticky,
+.App.mobile .other-settings,
+.App.mobile .setting.boxed.sound,
+.App.mobile .setting.theme {
+	width: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+.App.mobile .title h1 {
+	font-size: 40px;
+}
+
+.App.mobile .title p {
+	font-size: 16px;
+}
+
+.App.mobile .settings-wrap.side {
+	padding: 0 2em;
+}
+.App.mobile .settings-wrap.bottom {
+	flex-direction: column;
+}
+
+.App.mobile .settings-wrap h3 {
+	font-size: 22px;
+}
+
+.App.mobile .settings-wrap h4 {
+	font-size: 16px;
+}
+
+.App.mobile .boxed.beats-notes,
+.App.mobile .setting.boxed.sound {
+	margin-top: 1em;
+}
+
+.App.mobile .range-wrap {
+	height: 12px;
+}
+
+.App.mobile .other-settings,
+.App.mobile .setting.boxed.theme {
+	margin-top: 3em;
+}
+
+.App.mobile .theme-preview {
+	justify-content: space-between;
+}
+
+.App.mobile .setting.sound .css-waves {
+	width: 50px;
+	height: 30px;
+}
