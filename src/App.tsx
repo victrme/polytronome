@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useCallback } from 'react'
+import { useRef, useState, useEffect, useCallback, SyntheticEvent } from 'react'
 import { isMobileOnly } from 'react-device-detect'
 import Pizzicato from 'pizzicato'
 import Wheel from './Wheel'
@@ -55,6 +55,7 @@ function App(): JSX.Element {
 		},
 	]
 	const previewInterval = useRef(setTimeout(() => {}, 1))
+	const buttonsInterval = useRef(setTimeout(() => {}, 1))
 
 	const defaultLayer = {
 		id: setRandomID(),
@@ -81,7 +82,7 @@ function App(): JSX.Element {
 		},
 		fullscreen: false,
 		unlimited: false,
-		performance: false,
+		animations: true,
 	})
 
 	const [metronome, setMetronome] = useState({
@@ -421,6 +422,12 @@ function App(): JSX.Element {
 	}
 
 	const themeHover = (e: any, theme: any) => {
+		//
+		// Quit on Mobile since there's no hover
+		if (isMobileOnly) {
+			return false
+		}
+
 		const children = e.target.childNodes
 
 		// DOM is sometimes undefined (to fix ?)
@@ -493,18 +500,18 @@ function App(): JSX.Element {
 		}))
 	}
 
-	const changePerformance = () => {
+	const changeAnimations = () => {
 		const appDOM = document.querySelector('.App') as HTMLDivElement
 
-		if (moreSettings.performance) {
-			appDOM.classList.remove('performance')
-		} else {
+		if (moreSettings.animations) {
 			appDOM.classList.add('performance')
+		} else {
+			appDOM.classList.remove('performance')
 		}
 
 		setMoreSettings(prev => ({
 			...prev,
-			performance: moreSettings.performance ? false : true,
+			animations: moreSettings.animations ? false : true,
 		}))
 	}
 
@@ -540,6 +547,31 @@ function App(): JSX.Element {
 		setMoreSettings(prev => ({ ...prev, sound: newSound }))
 	}
 
+	const tempoButtons = (e: any, sign: number) => {
+		const update = () => wheelUpdate('tempo', metronomeRef.current.tempo + 1 * sign)
+
+		if (isMobileOnly && e.type === 'click') {
+			update()
+		}
+
+		if (e.type === 'mousedown') {
+			update()
+
+			buttonsInterval.current = setTimeout(
+				() => (buttonsInterval.current = setInterval(() => update(), 70)),
+				300
+			)
+		}
+
+		if (e.type === 'mouseup') {
+			clearTimeout(buttonsInterval.current)
+			clearInterval(buttonsInterval.current)
+		}
+
+		e.preventDefault()
+		return false
+	}
+
 	//
 	//
 	//	Effects
@@ -571,7 +603,7 @@ function App(): JSX.Element {
 	}, [initSegment, metronome.layers])
 
 	return (
-		<div className={'App ' + (isMobileOnly ? 'mobile' : '')}>
+		<div className={'App ' + (isMobileOnly ? 'mobile' : 'mobile')}>
 			<div className="principal">
 				<div className="sticky">
 					<div className="title">
@@ -648,6 +680,25 @@ function App(): JSX.Element {
 							metronome={metronome}
 							update={result => wheelUpdate('tempo', result)}
 						></Wheel>
+
+						<button
+							className="tempo-minus"
+							onClick={e => tempoButtons(e, -1)}
+							onContextMenu={e => tempoButtons(e, -1)}
+							onMouseUp={e => tempoButtons(e, -1)}
+							onMouseDown={e => tempoButtons(e, -1)}
+						>
+							-
+						</button>
+						<button
+							className="tempo-plus"
+							onClick={e => tempoButtons(e, 1)}
+							onContextMenu={e => tempoButtons(e, 1)}
+							onMouseUp={e => tempoButtons(e, 1)}
+							onMouseDown={e => tempoButtons(e, 1)}
+						>
+							+
+						</button>
 					</div>
 				</div>
 
@@ -791,13 +842,13 @@ function App(): JSX.Element {
 						</button>
 					</div>
 
-					<div className="setting performance">
+					<div className="setting animations">
 						<div>
-							<h4>Slow device</h4>
+							<h4>Animations</h4>
 						</div>
 
-						<button name="performance" id="performance" onClick={changePerformance}>
-							{moreSettingsRef.current.performance ? 'yes' : 'no'}
+						<button name="animations" id="animations" onClick={changeAnimations}>
+							{moreSettingsRef.current.animations ? 'on' : 'off'}
 						</button>
 					</div>
 

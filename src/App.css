@@ -138,6 +138,10 @@
 	width: 100%;
 }
 
+.App .boxed.tempo .setting {
+	align-items: center;
+}
+
 .App .settings-title {
 	display: flex;
 	justify-content: space-between;
