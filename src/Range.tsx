@@ -75,11 +75,8 @@ function Range({ sound, what, update }): JSX.Element {
 	return (
 		<div className="range-wrap" {...bind()} ref={rangeRef}>
 			<div
-				className="inner-range"
-				style={{
-					width: range.x + '%',
-					transition: `width ${range.moving ? '0s' : '.2s'}`,
-				}}
+				className={'inner-range' + (range.moving ? ' moving' : '')}
+				style={{ width: range.x + '%' }}
 			></div>
 		</div>
 	)

@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
-import { isMobile, isMobileOnly } from 'react-device-detect'
+import { isMobileOnly } from 'react-device-detect'
 import Pizzicato from 'pizzicato'
 import Wheel from './Wheel'
 import Range from './Range'
@@ -81,6 +81,7 @@ function App(): JSX.Element {
 		},
 		fullscreen: false,
 		unlimited: false,
+		performance: false,
 	})
 
 	const [metronome, setMetronome] = useState({
@@ -125,10 +126,13 @@ function App(): JSX.Element {
 	//
 
 	let performanceThen = 0
+	// const perfstart = performance.now()
+	// const perfend = performance.now()
+	// console.log(perfend - perfstart)
 	// eslint-disable-next-line
 	const benchmark = {
 		start: () => (performanceThen = performance.now()),
-		log: (type?: string) => {
+		end: (type?: string) => {
 			//
 			// Save average
 			// Or just log difference
@@ -489,19 +493,43 @@ function App(): JSX.Element {
 		}))
 	}
 
-	const wheelUpdate = (what: string, el: any, index: number) => {
+	const changePerformance = () => {
+		const appDOM = document.querySelector('.App') as HTMLDivElement
+
+		if (moreSettings.performance) {
+			appDOM.classList.remove('performance')
+		} else {
+			appDOM.classList.add('performance')
+		}
+
+		setMoreSettings(prev => ({
+			...prev,
+			performance: moreSettings.performance ? false : true,
+		}))
+	}
+
+	const wheelUpdate = (what: string, el: any, index = 0) => {
 		// For Beats & Notes
 		const beatsAndNotes = ['beats', 'frequency', 'octave']
 
 		if (beatsAndNotes.indexOf(what) !== -1) {
 			// Update with Layers
-
+			//
+			//
 			const newLayers = [...metronome.layers]
 			newLayers[index][what] = what === 'beats' ? el + 2 : el
 			setMetronome(prev => ({ ...prev, layers: newLayers }))
+			//
+			//
+			//
 		} else if (what === 'tempo') {
 			// For Tempo, update directly
-			setMetronome(prev => ({ ...prev, tempo: +el }))
+			// Check for bounds
+			const up = +el > metronome.tempo
+			const max = up ? 300 : 30
+			const outOfBound = up ? +el > max : +el < max
+
+			setMetronome(prev => ({ ...prev, tempo: outOfBound ? max : +el }))
 		}
 	}
 
@@ -519,33 +547,20 @@ function App(): JSX.Element {
 	//
 
 	useEffect(() => {
-		// Add Spacebar to control metronome
 		document.addEventListener('keydown', (e: KeyboardEvent) => {
-			if (e.code === 'Space') {
-				launchMetronome(metronomeRef.current.isRunning)
-				e.preventDefault()
-				return false
-			}
+			// Spacebar control metronome
+			if (e.code === 'Space') launchMetronome(metronomeRef.current.isRunning)
 
-			if (e.code === 'ArrowUp') {
-				setMetronome(prev => ({
-					...prev,
-					tempo: metronomeRef.current.tempo + 1,
-				}))
+			// Tempo up by 10 if shift
+			if (e.code === 'ArrowUp')
+				wheelUpdate('tempo', metronomeRef.current.tempo + (e.shiftKey ? 10 : 1))
 
-				e.preventDefault()
-				return false
-			}
+			// Tempo down by 10 if shift
+			if (e.code === 'ArrowDown')
+				wheelUpdate('tempo', metronomeRef.current.tempo - (e.shiftKey ? 10 : 1))
 
-			if (e.code === 'ArrowDown') {
-				setMetronome(prev => ({
-					...prev,
-					tempo: metronomeRef.current.tempo - 1,
-				}))
-
-				e.preventDefault()
-				return false
-			}
+			e.preventDefault()
+			return false
 		})
 
 		// eslint-disable-next-line
@@ -631,7 +646,7 @@ function App(): JSX.Element {
 							index="0"
 							what="tempo"
 							metronome={metronome}
-							update={result => wheelUpdate('tempo', result, 0)}
+							update={result => wheelUpdate('tempo', result)}
 						></Wheel>
 					</div>
 				</div>
@@ -641,7 +656,7 @@ function App(): JSX.Element {
 						<h3>Beats & Notes</h3>
 						<button
 							className={
-								!moreSettings.unlimited && metronome.layers.length === 3
+								!moreSettings.unlimited && metronome.layers.length === 4
 									? 'off'
 									: ''
 							}
@@ -776,9 +791,19 @@ function App(): JSX.Element {
 						</button>
 					</div>
 
+					<div className="setting performance">
+						<div>
+							<h4>Slow device</h4>
+						</div>
+
+						<button name="performance" id="performance" onClick={changePerformance}>
+							{moreSettingsRef.current.performance ? 'yes' : 'no'}
+						</button>
+					</div>
+
 					<div className="setting unlimited">
 						<div>
-							<h4>Unlimited Mode</h4>
+							<h4>Unlimited</h4>
 							<small>
 								⚠️ This can slow down your {isMobileOnly ? 'phone' : 'computer'}
 							</small>

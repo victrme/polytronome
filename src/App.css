@@ -160,7 +160,11 @@
 	/* border-top-right-radius: 5px;
 	border-bottom-right-radius: 5px; */
 	height: 20px;
-	transition: all 0.2s;
+	transition: width 0.2s;
+}
+
+.setting .range-wrap .inner-range.moving {
+	transition: width 0s;
 }
 
 .App .setting.layer {
@@ -341,9 +345,20 @@
 	height: 40px;
 }
 
+.App .boxed.tempo .immovable_wheel {
+	line-height: 80px;
+	font-size: 80px;
+	height: 80px;
+}
+
 .App .wheel {
 	cursor: grab;
 	touch-action: none;
+	transition: transform 0.2s;
+}
+
+.App .wheel.dragging {
+	transition: transform 0s;
 }
 
 .App .wheel.frequency {
@@ -356,6 +371,21 @@
 
 .App .wheel div {
 	user-select: none;
+}
+
+/*
+PERFORMANCE
+*/
+
+.App.performance,
+.App.performance button,
+.App.performance .theme-preview > div,
+.App.performance .theme-preview > div .tp-mini-click,
+.App.performance .setting.sound .css-waves svg path,
+.App.performance .setting .range-wrap .inner-range,
+.App.performance .principal .click.on,
+.App.performance .wheel {
+	transition: none;
 }
 
 /*
