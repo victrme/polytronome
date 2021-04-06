@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useCallback, SyntheticEvent } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 import { isMobileOnly } from 'react-device-detect'
 import Pizzicato from 'pizzicato'
 import Wheel from './Wheel'
@@ -287,12 +287,7 @@ function App(): JSX.Element {
 			})
 
 			wave.play()
-			setTimeout(
-				() => {
-					wave.stop()
-				},
-				moreSett.sound.duration ? tempoMs * 0.4 : 50
-			)
+			setTimeout(() => wave.stop(), moreSett.sound.duration ? tempoMs * 0.4 : 50)
 
 			//
 			// Update beat time
@@ -312,12 +307,21 @@ function App(): JSX.Element {
 	}
 
 	function launchMetronome(runs: boolean) {
-		const current = { ...metronomeRef.current }
+		const current = metronomeRef.current
 
-		if (runs) {
-			//
-			// Stops
-			//
+		function start() {
+			current.layers.forEach(layer =>
+				metronomeInterval(calculateTempoMs(layer.beats, current.tempo), layer.id)
+			)
+			// Update to start state
+			setMetronome(args => ({
+				...args,
+				isRunning: true,
+				startTime: Date.now(),
+			}))
+		}
+
+		function stop() {
 			setMoreSettings(prev => ({
 				...prev,
 				segment: {
@@ -338,30 +342,9 @@ function App(): JSX.Element {
 				isRunning: false,
 				startTime: 0,
 			}))
-		} else {
-			//
-			// Starts
-			//
-			current.layers.forEach(layer =>
-				metronomeInterval(calculateTempoMs(layer.beats, current.tempo), layer.id)
-			)
-			// Update to start state
-			setMetronome(args => ({
-				...args,
-				isRunning: true,
-				startTime: Date.now(),
-			}))
 		}
-	}
 
-	const randomizeLayers = () => {
-		const layers: any[] = []
-
-		metronomeRef.current.layers.forEach(layer => {
-			layers.push({ ...layer, beats: +randInInterval(2, 16).toFixed(0) })
-		})
-
-		setMetronome(prev => ({ ...prev, layers }))
+		runs ? stop() : start()
 	}
 
 	const updateLayer = (add: boolean, index: number = 0) => {
@@ -382,44 +365,11 @@ function App(): JSX.Element {
 		setMetronome(prev => ({ ...prev, layers: newLayers }))
 	}
 
-	const tapTempo = () => {
-		const tap = metronome.tap
-
-		// Reset tap after 2s
-		if (Date.now() - tap[0].date > 2000) {
-			setMetronome(prev => ({
-				...prev,
-				tap: [
-					{
-						date: Date.now(),
-						wait: 0,
-					},
-				],
-			}))
-		} else {
-			//
-			// Wait is offset between two taps
-			tap.unshift({
-				date: Date.now(),
-				wait: Date.now() - metronome.tap[0].date,
-			})
-
-			// Array of tap offsets
-			const cumul: number[] = []
-
-			// Removes first, only keeps 6 at a time
-			tap.forEach((each, i) => {
-				if (each.wait > 0) cumul.push(each.wait)
-				if (each.wait === 0 || i === 6) tap.pop()
-			})
-
-			const averageTempo = Math.floor(
-				60000 / (cumul.reduce((a: number, b: number) => a + b) / cumul.length)
-			)
-
-			setMetronome(prev => ({ ...prev, tap, tempo: averageTempo }))
-		}
-	}
+	//
+	//
+	// More Settings functions
+	//
+	//
 
 	const themeHover = (e: any, theme: any) => {
 		//
@@ -470,6 +420,16 @@ function App(): JSX.Element {
 		})
 	}
 
+	const randomizeLayers = () => {
+		const layers: any[] = []
+
+		metronomeRef.current.layers.forEach(layer => {
+			layers.push({ ...layer, beats: +randInInterval(2, 16).toFixed(0) })
+		})
+
+		setMetronome(prev => ({ ...prev, layers }))
+	}
+
 	const changeWaveform = () => {
 		const type = moreSettings.sound.type
 		const waveformsList = ['sine', 'triangle', 'sawtooth', 'square']
@@ -515,40 +475,22 @@ function App(): JSX.Element {
 		}))
 	}
 
-	const wheelUpdate = (what: string, el: any, index = 0) => {
-		// For Beats & Notes
-		const beatsAndNotes = ['beats', 'frequency', 'octave']
+	//
+	//
+	// Tempo
+	//
+	//
 
-		if (beatsAndNotes.indexOf(what) !== -1) {
-			// Update with Layers
-			//
-			//
-			const newLayers = [...metronome.layers]
-			newLayers[index][what] = what === 'beats' ? el + 2 : el
-			setMetronome(prev => ({ ...prev, layers: newLayers }))
-			//
-			//
-			//
-		} else if (what === 'tempo') {
-			// For Tempo, update directly
-			// Check for bounds
-			const up = +el > metronome.tempo
-			const max = up ? 300 : 30
-			const outOfBound = up ? +el > max : +el < max
+	const changeTempo = (amount: number) => {
+		const up = amount > metronome.tempo
+		const max = up ? 300 : 30
+		const outOfBound = up ? amount > max : amount < max
 
-			setMetronome(prev => ({ ...prev, tempo: outOfBound ? max : +el }))
-		}
-	}
-
-	const rangeUpdate = (what: string, num: number) => {
-		const newSound = { ...moreSettings.sound }
-		newSound[what] = num
-
-		setMoreSettings(prev => ({ ...prev, sound: newSound }))
+		setMetronome(prev => ({ ...prev, tempo: outOfBound ? max : amount }))
 	}
 
 	const tempoButtons = (e: any, sign: number) => {
-		const update = () => wheelUpdate('tempo', metronomeRef.current.tempo + 1 * sign)
+		const update = () => changeTempo(metronomeRef.current.tempo + 1 * sign)
 
 		if (isMobileOnly && e.type === 'click') {
 			update()
@@ -570,6 +512,72 @@ function App(): JSX.Element {
 
 		e.preventDefault()
 		return false
+	}
+
+	const tapTempo = () => {
+		const tap = metronome.tap
+
+		// Reset tap after 2s
+		if (Date.now() - tap[0].date > 2000) {
+			setMetronome(prev => ({
+				...prev,
+				tap: [
+					{
+						date: Date.now(),
+						wait: 0,
+					},
+				],
+			}))
+		} else {
+			//
+			// Wait is offset between two taps
+			tap.unshift({
+				date: Date.now(),
+				wait: Date.now() - metronome.tap[0].date,
+			})
+
+			// Array of tap offsets
+			const cumul: number[] = []
+
+			// Removes first, only keeps 6 at a time
+			tap.forEach((each, i) => {
+				if (each.wait > 0) cumul.push(each.wait)
+				if (each.wait === 0 || i === 6) tap.pop()
+			})
+
+			const averageTempo = Math.floor(
+				60000 / (cumul.reduce((a: number, b: number) => a + b) / cumul.length)
+			)
+
+			changeTempo(averageTempo)
+		}
+	}
+
+	//
+	//
+	// Wheel & Range
+	//
+	//
+
+	const wheelUpdate = (what: string, el: any, index = 0) => {
+		// For Beats & Notes
+		const beatsAndNotes = ['beats', 'frequency', 'octave']
+
+		if (beatsAndNotes.indexOf(what) !== -1) {
+			// Update with Layers
+			const newLayers = [...metronome.layers]
+			newLayers[index][what] = what === 'beats' ? el + 2 : el
+			setMetronome(prev => ({ ...prev, layers: newLayers }))
+		}
+
+		if (what === 'tempo') changeTempo(+el)
+	}
+
+	const rangeUpdate = (what: string, num: number) => {
+		const newSound = { ...moreSettings.sound }
+		newSound[what] = num
+
+		setMoreSettings(prev => ({ ...prev, sound: newSound }))
 	}
 
 	//
@@ -601,6 +609,12 @@ function App(): JSX.Element {
 	useEffect(() => {
 		initSegment()
 	}, [initSegment, metronome.layers])
+
+	//
+	//
+	//
+	//
+	//
 
 	return (
 		<div className={'App ' + (isMobileOnly ? 'mobile' : 'mobile')}>

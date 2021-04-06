@@ -1,6 +1,5 @@
 import { useGesture } from 'react-use-gesture'
-import { useState, useRef, useEffect, useCallback } from 'react'
-import scrollPrevent from './ScrollPrevent'
+import { useState, useRef, useEffect } from 'react'
 
 // Wheels work by getting the index of an element with wheel height divided by children height
 // Up movement uses translateY(-px), incrementing is negative, so maths are weird
@@ -37,25 +36,22 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 	})
 
 	// Let go and wheel align with the nearest element
-	const wheelSnapping = useCallback(
-		(y: number) => {
-			let toTranslate = y
-			const surplus = y % height
-			const isAboveHalfHeight = -surplus >= height / 2
+	const wheelSnapping = (y: number) => {
+		let toTranslate = y
+		const surplus = y % height
+		const isAboveHalfHeight = -surplus >= height / 2
 
-			// Snap to Element
-			toTranslate -= isAboveHalfHeight ? height + surplus : surplus
+		// Snap to Element
+		toTranslate -= isAboveHalfHeight ? height + surplus : surplus
 
-			// Lower - Upper bounds
-			if (toTranslate > 0) toTranslate = 0
-			if (toTranslate < maxMovement) toTranslate = maxMovement
+		// Lower - Upper bounds
+		if (toTranslate > 0) toTranslate = 0
+		if (toTranslate < maxMovement) toTranslate = maxMovement
 
-			setWheel({ y: toTranslate, snap: true })
+		setWheel({ y: toTranslate, snap: true })
 
-			return toTranslate
-		},
-		[setWheel, maxMovement, height]
-	)
+		return toTranslate
+	}
 
 	const movingAction = (state: any) => {
 		const y = state.movement[1]
@@ -71,6 +67,8 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 			setSaved(number)
 			update(number)
 		}
+
+		return false
 	}
 
 	const bind = useGesture(
@@ -97,22 +95,27 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 	// Listens for state changes outside of the component
 	// Only update affected wheel
 	useEffect(() => {
-		// Update Wheel when randomize beats
-		if (what === 'beats' && currentWhat !== saved) {
-			setSaved(currentWhat)
-			wheelSnapping((currentWhat - 2) * -height)
-		}
+		if (currentWhat !== saved) {
+			// Update Wheel when randomize beats
+			if (what === 'beats') setWheel({ y: (currentWhat - 2) * -height, snap: true })
 
-		// Update Wheel when tempo tapping
-		if (what === 'tempo' && currentWhat !== saved) {
+			// Update Wheel when tempo tapping
+			if (what === 'tempo') setWheel({ y: (currentWhat - 30) * -height, snap: false })
+
 			setSaved(currentWhat)
-			wheelSnapping((currentWhat - 30) * -height)
 		}
-	}, [what, wheelSnapping, saved, currentWhat, height])
+		// eslint-disable-next-line
+	}, [currentWhat])
 
 	useEffect(() => {
-		wheelRef.current.addEventListener('mouseenter', () => scrollPrevent(true))
-		wheelRef.current.addEventListener('mouseleave', () => scrollPrevent(false))
+		wheelRef.current.addEventListener(
+			'mouseenter',
+			() => (document.body.style.overflow = 'hidden')
+		)
+		wheelRef.current.addEventListener(
+			'mouseleave',
+			() => (document.body.style.overflow = 'auto')
+		)
 	}, [])
 
 	return (
