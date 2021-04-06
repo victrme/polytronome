@@ -62,7 +62,7 @@ function App(): JSX.Element {
 		beats: 4,
 		time: 1,
 		frequency: 0,
-		octave: 3,
+		octave: 2,
 	}
 
 	const [moreSettings, setMoreSettings] = useState({
@@ -92,14 +92,14 @@ function App(): JSX.Element {
 				beats: 4,
 				time: 1,
 				frequency: 0,
-				octave: 3,
+				octave: 1,
 			},
 			{
 				id: setRandomID(),
 				beats: 5,
 				time: 1,
 				frequency: 7,
-				octave: 3,
+				octave: 1,
 			},
 		],
 		startTime: 0,
@@ -275,12 +275,14 @@ function App(): JSX.Element {
 			// Play sound
 			//
 
-			const note = layer.frequency + 12 * layer.octave
+			const note = layer.frequency + 12
 			const freq = 16.35 * 2 ** (note / 12)
 			const wave = new Pizzicato.Sound({
 				source: 'wave',
 				options: {
-					...moreSettingsRef.current.sound,
+					type: moreSettingsRef.current.sound.type,
+					release: moreSettingsRef.current.sound.release,
+					volume: moreSettingsRef.current.sound.volume,
 					frequency: freq,
 					attack: 0,
 				},
@@ -567,6 +569,8 @@ function App(): JSX.Element {
 			// Update with Layers
 			const newLayers = [...metronome.layers]
 			newLayers[index][what] = what === 'beats' ? el + 2 : el
+
+			if (what === 'frequency') newLayers[index]['octave'] = Math.floor(el / 12)
 			setMetronome(prev => ({ ...prev, layers: newLayers }))
 		}
 
@@ -748,12 +752,20 @@ function App(): JSX.Element {
 									update={result => wheelUpdate('frequency', result, i)}
 								></Wheel>
 
-								<Wheel
-									index={i}
-									what={'octave'}
-									metronome={metronome}
-									update={result => wheelUpdate('octave', result, i)}
-								></Wheel>
+								<div className="octave-wrap">
+									<div
+										className={'octave' + (l.octave === 3 ? ' on' : '')}
+									></div>
+									<div
+										className={'octave' + (l.octave === 2 ? ' on' : '')}
+									></div>
+									<div
+										className={'octave' + (l.octave === 1 ? ' on' : '')}
+									></div>
+									<div
+										className={'octave' + (l.octave === 0 ? ' on' : '')}
+									></div>
+								</div>
 							</div>
 
 							<button className="suppr-btn" onClick={() => updateLayer(false, i)}>

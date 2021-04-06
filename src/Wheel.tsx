@@ -4,18 +4,19 @@ import { useState, useRef, useEffect } from 'react'
 // Wheels work by getting the index of an element with wheel height divided by children height
 // Up movement uses translateY(-px), incrementing is negative, so maths are weird
 
-const fillArray = (start: number, end: number) => {
-	const arr: number[] = []
-	for (let i = start; i <= end; i++) arr.push(i)
+const freqArr = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+
+const fillArray = (start: number, end: number, freq?: boolean) => {
+	const arr: any[] = []
+	for (let i = start; i <= end; i++) arr.push(freq ? freqArr[i % freqArr.length] : i)
 	return arr
 }
 
 // Init all wheels text before JSX Element
 const allLists = {
 	beats: fillArray(2, 16),
-	octave: fillArray(-1, 6),
 	tempo: fillArray(30, 300),
-	frequency: ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'],
+	frequency: fillArray(0, freqArr.length * 3, true),
 }
 
 function Wheel({ index, what, metronome, update }): JSX.Element {
