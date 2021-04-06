@@ -178,6 +178,7 @@
 
 .App .setting.layer .notes-wrap {
 	display: flex;
+	align-items: center;
 }
 
 .App .setting.layer .notes-wrap > :first-child {
@@ -190,12 +191,14 @@
 
 .App .octave-wrap {
 	margin: 0 10px;
+	display: grid;
+	grid-template-columns: 10px 10px;
+	grid-template-rows: 10px 10px;
 }
 
 .App .octave-wrap .octave {
 	width: 8px;
 	height: 8px;
-	margin: 1px;
 	border-radius: 8px;
 	background-color: var(--dim);
 	transition: background-color 0.2s;

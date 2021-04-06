@@ -754,16 +754,16 @@ function App(): JSX.Element {
 
 								<div className="octave-wrap">
 									<div
-										className={'octave' + (l.octave === 3 ? ' on' : '')}
+										className={'octave' + (l.octave > 1 ? ' on' : '')}
 									></div>
 									<div
-										className={'octave' + (l.octave === 2 ? ' on' : '')}
+										className={'octave' + (l.octave > 2 ? ' on' : '')}
 									></div>
 									<div
-										className={'octave' + (l.octave === 1 ? ' on' : '')}
+										className={'octave' + (l.octave > -1 ? ' on' : '')}
 									></div>
 									<div
-										className={'octave' + (l.octave === 0 ? ' on' : '')}
+										className={'octave' + (l.octave > 0 ? ' on' : '')}
 									></div>
 								</div>
 							</div>
