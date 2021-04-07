@@ -61,8 +61,7 @@ function App(): JSX.Element {
 		id: setRandomID(),
 		beats: 4,
 		time: 1,
-		frequency: 0,
-		octave: 2,
+		frequency: 12,
 	}
 
 	const [moreSettings, setMoreSettings] = useState({
@@ -91,15 +90,13 @@ function App(): JSX.Element {
 				id: setRandomID(),
 				beats: 4,
 				time: 1,
-				frequency: 0,
-				octave: 1,
+				frequency: 12,
 			},
 			{
 				id: setRandomID(),
 				beats: 5,
 				time: 1,
-				frequency: 7,
-				octave: 1,
+				frequency: 19,
 			},
 		],
 		startTime: 0,
@@ -112,6 +109,14 @@ function App(): JSX.Element {
 			},
 		],
 	})
+
+	const [selectedProfile, setSelectedProfile] = useState(0)
+	const [savedProfiles, setSavedProfiles] = useState([
+		{
+			metronome: metronome,
+			settings: moreSettings,
+		},
+	])
 
 	// Use Refs for async timeouts
 	const moreSettingsRef = useRef(moreSettings)
@@ -175,54 +180,6 @@ function App(): JSX.Element {
 		return xx
 	}
 
-	const initSegment = useCallback(() => {
-		function getDuplicates(list: number[]) {
-			// Creates list of duplicates per division
-			// [1, 3, 1 ...]
-
-			const duplicates: number[] = []
-
-			list.forEach((elem, index) =>
-				list[index] !== list[index - 1]
-					? duplicates.push(1)
-					: duplicates[duplicates.length - 1]++
-			)
-
-			return duplicates
-		}
-
-		function getRatios(list: number[]) {
-			// Removes duplicates
-			list = [0, ...new Set(list), 1]
-			const ratios: number[] = []
-
-			// segment ratio [next - current]
-			list.forEach((elem, i) => {
-				if (list[i + 1]) ratios.push(list[i + 1] - elem)
-			})
-
-			return ratios
-		}
-
-		const division: number[] = []
-
-		// Fill with all layers divisions & sort
-		metronome.layers.forEach(layer => {
-			for (let k = 1; k < layer.beats; k++) division.push(k / layer.beats)
-		})
-		division.sort()
-
-		// Apply functions
-		setMoreSettings(prev => ({
-			...prev,
-			segment: {
-				...prev.segment,
-				ratios: getRatios(division),
-				duplicates: getDuplicates(division),
-			},
-		}))
-	}, [metronome.layers])
-
 	//
 	//
 	// Main functions
@@ -276,7 +233,7 @@ function App(): JSX.Element {
 			//
 
 			const note = layer.frequency + 12
-			const freq = 16.35 * 2 ** (note / 12)
+			const freq = 32.7 * 2 ** (note / 12)
 			const wave = new Pizzicato.Sound({
 				source: 'wave',
 				options: {
@@ -308,7 +265,7 @@ function App(): JSX.Element {
 		}, nextDelay)
 	}
 
-	function launchMetronome(runs: boolean) {
+	const launchMetronome = (runs: boolean) => {
 		const current = metronomeRef.current
 
 		function start() {
@@ -349,6 +306,11 @@ function App(): JSX.Element {
 		runs ? stop() : start()
 	}
 
+	const restartMetronome = () => {
+		launchMetronome(true)
+		setTimeout(() => launchMetronome(false), 10)
+	}
+
 	const updateLayer = (add: boolean, index: number = 0) => {
 		const newLayers = [...metronome.layers]
 
@@ -367,48 +329,96 @@ function App(): JSX.Element {
 		setMetronome(prev => ({ ...prev, layers: newLayers }))
 	}
 
+	const initSegment = useCallback(() => {
+		function getDuplicates(list: number[]) {
+			// Creates list of duplicates per division
+			// [1, 3, 1 ...]
+
+			const duplicates: number[] = []
+
+			list.forEach((elem, index) =>
+				list[index] !== list[index - 1]
+					? duplicates.push(1)
+					: duplicates[duplicates.length - 1]++
+			)
+
+			return duplicates
+		}
+
+		function getRatios(list: number[]) {
+			// Removes duplicates
+			list = [0, ...new Set(list), 1]
+			const ratios: number[] = []
+
+			// segment ratio [next - current]
+			list.forEach((elem, i) => {
+				if (list[i + 1]) ratios.push(list[i + 1] - elem)
+			})
+
+			return ratios
+		}
+
+		const division: number[] = []
+
+		// Fill with all layers divisions & sort
+		metronome.layers.forEach(layer => {
+			for (let k = 1; k < layer.beats; k++) division.push(k / layer.beats)
+		})
+		division.sort()
+
+		// Apply functions
+		setMoreSettings(prev => ({
+			...prev,
+			segment: {
+				...prev.segment,
+				ratios: getRatios(division),
+				duplicates: getDuplicates(division),
+			},
+		}))
+	}, [metronome.layers])
+
 	//
 	//
 	// More Settings functions
 	//
 	//
 
-	const themeHover = (e: any, theme: any) => {
-		//
-		// Quit on Mobile since there's no hover
-		if (isMobileOnly) {
-			return false
-		}
+	// const themeHover = (e: any, theme: any) => {
+	// 	//
+	// 	// Quit on Mobile since there's no hover
+	// 	if (isMobileOnly) {
+	// 		return false
+	// 	}
 
-		const children = e.target.childNodes
+	// 	const children = e.target.childNodes
 
-		// DOM is sometimes undefined (to fix ?)
-		const backgroundColor = (dom: HTMLDivElement, color: string) => {
-			if (dom !== undefined) dom.style.backgroundColor = color
-		}
+	// 	// DOM is sometimes undefined (to fix ?)
+	// 	const backgroundColor = (dom: HTMLDivElement, color: string) => {
+	// 		if (dom !== undefined) dom.style.backgroundColor = color
+	// 	}
 
-		if (e.type === 'mouseenter') {
-			let count = 0
+	// 	if (e.type === 'mouseenter') {
+	// 		let count = 0
 
-			// Don't wait for Interval
-			backgroundColor(children[1], theme.accent)
-			backgroundColor(children[0], theme.dim)
-			count++
+	// 		// Don't wait for Interval
+	// 		backgroundColor(children[1], theme.accent)
+	// 		backgroundColor(children[0], theme.dim)
+	// 		count++
 
-			// Mod to loop after last child
-			previewInterval.current = setInterval(() => {
-				backgroundColor(children[(count + 1) % children.length], theme.accent)
-				backgroundColor(children[count % children.length], theme.dim)
-				count++
-			}, 700)
-		} else {
-			// Every child to dimmed except first one
-			children.forEach((child: HTMLDivElement, i: number) => {
-				backgroundColor(child, i === 0 ? theme.accent : theme.dim)
-			})
-			clearInterval(previewInterval.current)
-		}
-	}
+	// 		// Mod to loop after last child
+	// 		previewInterval.current = setInterval(() => {
+	// 			backgroundColor(children[(count + 1) % children.length], theme.accent)
+	// 			backgroundColor(children[count % children.length], theme.dim)
+	// 			count++
+	// 		}, 700)
+	// 	} else {
+	// 		// Every child to dimmed except first one
+	// 		children.forEach((child: HTMLDivElement, i: number) => {
+	// 			backgroundColor(child, i === 0 ? theme.accent : theme.dim)
+	// 		})
+	// 		clearInterval(previewInterval.current)
+	// 	}
+	// }
 
 	const changeTheme = (theme: string) => {
 		const root = document.querySelector(':root')! as HTMLBodyElement
@@ -430,6 +440,7 @@ function App(): JSX.Element {
 		})
 
 		setMetronome(prev => ({ ...prev, layers }))
+		restartMetronome()
 	}
 
 	const changeWaveform = () => {
@@ -491,28 +502,28 @@ function App(): JSX.Element {
 		setMetronome(prev => ({ ...prev, tempo: outOfBound ? max : amount }))
 	}
 
-	const tempoButtons = (e: any, sign: number) => {
-		const update = () => changeTempo(metronomeRef.current.tempo + 1 * sign)
-
-		if (isMobileOnly && e.type === 'click') {
-			update()
-		}
-
-		if (e.type === 'mousedown') {
-			update()
+	const tempoButtons = (e: any, dir: string, sign: number) => {
+		if (dir === 'enter') {
+			changeTempo(metronomeRef.current.tempo + 1 * sign)
 
 			buttonsInterval.current = setTimeout(
-				() => (buttonsInterval.current = setInterval(() => update(), 70)),
+				() =>
+					(buttonsInterval.current = setInterval(
+						() => changeTempo(metronomeRef.current.tempo + 1 * sign),
+						70
+					)),
 				300
 			)
 		}
 
-		if (e.type === 'mouseup') {
+		if (dir === 'leave') {
 			clearTimeout(buttonsInterval.current)
 			clearInterval(buttonsInterval.current)
+			restartMetronome()
 		}
 
-		e.preventDefault()
+		if (!isMobileOnly) e.preventDefault()
+		e.stopPropagation()
 		return false
 	}
 
@@ -552,6 +563,7 @@ function App(): JSX.Element {
 			)
 
 			changeTempo(averageTempo)
+			restartMetronome()
 		}
 	}
 
@@ -562,26 +574,54 @@ function App(): JSX.Element {
 	//
 
 	const wheelUpdate = (what: string, el: any, index = 0) => {
-		// For Beats & Notes
-		const beatsAndNotes = ['beats', 'frequency', 'octave']
-
-		if (beatsAndNotes.indexOf(what) !== -1) {
-			// Update with Layers
+		if (['beats', 'frequency'].indexOf(what) !== -1) {
 			const newLayers = [...metronome.layers]
-			newLayers[index][what] = what === 'beats' ? el + 2 : el
+			const toSave = what === 'beats' ? el + 2 : el
 
-			if (what === 'frequency') newLayers[index]['octave'] = Math.floor(el / 12)
+			newLayers[index][what] = toSave
 			setMetronome(prev => ({ ...prev, layers: newLayers }))
 		}
 
 		if (what === 'tempo') changeTempo(+el)
+		if (what === 'beats') restartMetronome()
 	}
 
 	const rangeUpdate = (what: string, num: number) => {
 		const newSound = { ...moreSettings.sound }
-		newSound[what] = num
+		const toSave = what === 'release' ? (num < 0.01 ? 0.01 : num) : num
 
+		newSound[what] = toSave
 		setMoreSettings(prev => ({ ...prev, sound: newSound }))
+	}
+
+	//
+	//
+	// Profiles
+	//
+	//
+
+	const addProfiles = () => {
+		const profiles = [...savedProfiles]
+
+		if (profiles.length < 4) {
+			profiles.push({
+				metronome: metronome,
+				settings: moreSettings,
+			})
+
+			setSavedProfiles(profiles)
+		}
+	}
+
+	const selectProfile = (selection: number) => {
+		setMoreSettings({ ...savedProfiles[selection].settings })
+		setMetronome({ ...savedProfiles[selection].metronome })
+
+		setSelectedProfile(selection)
+
+		console.log(metronome)
+
+		console.log(savedProfiles[selection])
 	}
 
 	//
@@ -612,7 +652,8 @@ function App(): JSX.Element {
 
 	useEffect(() => {
 		initSegment()
-	}, [initSegment, metronome.layers])
+		// eslint-disable-next-line
+	}, [metronome.layers])
 
 	//
 	//
@@ -621,7 +662,7 @@ function App(): JSX.Element {
 	//
 
 	return (
-		<div className={'App ' + (isMobileOnly ? 'mobile' : 'mobile')}>
+		<div className={'App ' + (isMobileOnly ? 'mobile' : '')}>
 			<div className="principal">
 				<div className="sticky">
 					<div className="title">
@@ -699,24 +740,44 @@ function App(): JSX.Element {
 							update={result => wheelUpdate('tempo', result)}
 						></Wheel>
 
-						<button
-							className="tempo-minus"
-							onClick={e => tempoButtons(e, -1)}
-							onContextMenu={e => tempoButtons(e, -1)}
-							onMouseUp={e => tempoButtons(e, -1)}
-							onMouseDown={e => tempoButtons(e, -1)}
-						>
-							-
-						</button>
-						<button
-							className="tempo-plus"
-							onClick={e => tempoButtons(e, 1)}
-							onContextMenu={e => tempoButtons(e, 1)}
-							onMouseUp={e => tempoButtons(e, 1)}
-							onMouseDown={e => tempoButtons(e, 1)}
-						>
-							+
-						</button>
+						<div>
+							<button
+								className="tempo-minus"
+								onTouchStart={e =>
+									isMobileOnly ? tempoButtons(e, 'enter', -1) : undefined
+								}
+								onTouchEnd={e =>
+									isMobileOnly ? tempoButtons(e, 'leave', -1) : undefined
+								}
+								onMouseDown={e =>
+									isMobileOnly ? undefined : tempoButtons(e, 'enter', -1)
+								}
+								onMouseUp={e =>
+									isMobileOnly ? undefined : tempoButtons(e, 'leave', -1)
+								}
+								onContextMenu={e => e.preventDefault()}
+							>
+								-
+							</button>
+							<button
+								className="tempo-plus"
+								onTouchStart={e =>
+									isMobileOnly ? tempoButtons(e, 'enter', 1) : undefined
+								}
+								onTouchEnd={e =>
+									isMobileOnly ? tempoButtons(e, 'leave', 1) : undefined
+								}
+								onMouseDown={e =>
+									isMobileOnly ? undefined : tempoButtons(e, 'enter', 1)
+								}
+								onMouseUp={e =>
+									isMobileOnly ? undefined : tempoButtons(e, 'leave', 1)
+								}
+								onContextMenu={e => e.preventDefault()}
+							>
+								+
+							</button>
+						</div>
 					</div>
 				</div>
 
@@ -754,16 +815,28 @@ function App(): JSX.Element {
 
 								<div className="octave-wrap">
 									<div
-										className={'octave' + (l.octave > 1 ? ' on' : '')}
+										className={
+											'octave' +
+											(Math.floor(l.frequency / 12) > 1 ? ' on' : '')
+										}
 									></div>
 									<div
-										className={'octave' + (l.octave > 2 ? ' on' : '')}
+										className={
+											'octave' +
+											(Math.floor(l.frequency / 12) > 2 ? ' on' : '')
+										}
 									></div>
 									<div
-										className={'octave' + (l.octave > -1 ? ' on' : '')}
+										className={
+											'octave' +
+											(Math.floor(l.frequency / 12) > -1 ? ' on' : '')
+										}
 									></div>
 									<div
-										className={'octave' + (l.octave > 0 ? ' on' : '')}
+										className={
+											'octave' +
+											(Math.floor(l.frequency / 12) > 0 ? ' on' : '')
+										}
 									></div>
 								</div>
 							</div>
@@ -909,8 +982,8 @@ function App(): JSX.Element {
 							<div
 								key={theme.name}
 								className={'tp-' + theme.name}
-								onMouseEnter={e => themeHover(e, theme)}
-								onMouseLeave={e => themeHover(e, theme)}
+								// onMouseEnter={e => themeHover(e, theme)}
+								// onMouseLeave={e => themeHover(e, theme)}
 								onClick={() => changeTheme(theme.name)}
 								style={{ backgroundColor: theme.background }}
 							>
@@ -928,6 +1001,25 @@ function App(): JSX.Element {
 								></div>
 							</div>
 						))}
+					</div>
+				</div>
+
+				<div className="saved-profiles">
+					<h3>Profiles</h3>
+
+					<div className="profile-bank">
+						{savedProfiles.map((profile, i) => (
+							<div key={i} className="profile" onClick={() => selectProfile(i)}>
+								<p>{i}</p>
+							</div>
+						))}
+
+						<div className="add-profile">
+							<button onClick={addProfiles}>add</button>
+						</div>
+						<div className="edit-profile">
+							<button>edit</button>
+						</div>
 					</div>
 				</div>
 			</div>

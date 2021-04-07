@@ -110,6 +110,7 @@
 	flex-direction: column;
 	padding: 2em 2em 2em 4em;
 	padding-right: 2em;
+	max-width: 500px;
 }
 
 .App .settings-wrap.bottom {
@@ -140,6 +141,7 @@
 
 .App .boxed.tempo .setting {
 	align-items: center;
+	justify-content: space-between;
 }
 
 .App .settings-title {
@@ -364,9 +366,9 @@
 .App .immovable_wheel {
 	overflow: hidden;
 	user-select: none;
-	line-height: 40px;
-	font-size: 40px;
-	height: 40px;
+	line-height: 50px;
+	font-size: 50px;
+	height: 50px;
 }
 
 .App .boxed.tempo .immovable_wheel {

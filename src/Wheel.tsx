@@ -22,7 +22,7 @@ const allLists = {
 function Wheel({ index, what, metronome, update }): JSX.Element {
 	const is = (cat: string) => what === cat
 
-	const height = is('tempo') ? 80 : 40
+	const height = is('tempo') ? 80 : 50
 	const list = allLists[what]
 	const maxMovement = -height * list.length + height
 	const currentWhat = is('tempo') ? metronome.tempo : metronome.layers[index][what]
