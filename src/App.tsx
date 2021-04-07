@@ -269,12 +269,13 @@ function App(): JSX.Element {
 		const current = metronomeRef.current
 
 		function start() {
-			current.layers.forEach(layer =>
-				metronomeInterval(calculateTempoMs(layer.beats, current.tempo), layer.id)
+			current.layers.forEach(l =>
+				metronomeInterval(calculateTempoMs(l.beats, current.tempo), l.id)
 			)
+
 			// Update to start state
-			setMetronome(args => ({
-				...args,
+			setMetronome(prev => ({
+				...prev,
 				isRunning: true,
 				startTime: Date.now(),
 			}))
@@ -288,11 +289,11 @@ function App(): JSX.Element {
 					count: 0,
 				},
 			}))
-			setMetronome(args => ({
-				...args,
+			setMetronome(prev => ({
+				...prev,
 
 				// Each set to new defaults
-				layers: current.layers.map(l => ({
+				layers: prev.layers.map(l => ({
 					...l,
 					time: 1,
 					id: setRandomID(),
@@ -307,8 +308,10 @@ function App(): JSX.Element {
 	}
 
 	const restartMetronome = () => {
-		launchMetronome(true)
-		setTimeout(() => launchMetronome(false), 10)
+		if (metronome.isRunning) {
+			launchMetronome(true)
+			setTimeout(() => launchMetronome(false), 20)
+		}
 	}
 
 	const updateLayer = (add: boolean, index: number = 0) => {
@@ -434,12 +437,15 @@ function App(): JSX.Element {
 
 	const randomizeLayers = () => {
 		const layers: any[] = []
+		const metro = { ...metronomeRef.current }
 
 		metronomeRef.current.layers.forEach(layer => {
 			layers.push({ ...layer, beats: +randInInterval(2, 16).toFixed(0) })
 		})
 
-		setMetronome(prev => ({ ...prev, layers }))
+		metro.layers = layers
+
+		setMetronome(metro)
 		restartMetronome()
 	}
 
@@ -737,7 +743,10 @@ function App(): JSX.Element {
 							index="0"
 							what="tempo"
 							metronome={metronome}
-							update={result => wheelUpdate('tempo', result)}
+							update={result => {
+								wheelUpdate('tempo', result)
+								restartMetronome()
+							}}
 						></Wheel>
 
 						<div>
