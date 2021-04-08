@@ -44,7 +44,7 @@ function App(): JSX.Element {
 		{
 			name: 'pink',
 			background: '#f37f83',
-			accent: '#e53c58',
+			accent: '#ffdce2',
 			dim: '#e53c584d',
 		},
 		{
@@ -611,8 +611,8 @@ function App(): JSX.Element {
 
 		if (profiles.length < 4) {
 			profiles.push({
-				metronome: metronome,
-				settings: moreSettings,
+				metronome: { ...metronome },
+				settings: { ...moreSettings },
 			})
 
 			setSavedProfiles(profiles)
@@ -624,10 +624,46 @@ function App(): JSX.Element {
 		setMetronome({ ...savedProfiles[selection].metronome })
 
 		setSelectedProfile(selection)
-
-		console.log(metronome)
-
 		console.log(savedProfiles[selection])
+	}
+
+	const ProfileInfos = ({ selection }) => {
+		const profile = savedProfiles[selection]
+
+		return (
+			<div className="profile-infos">
+				<p>
+					<span>tempo</span> {profile.metronome.tempo}
+				</p>
+				<p>
+					<span>animations</span> {profile.settings.animations.toString()}
+				</p>
+				<p>
+					<span>theme</span> {profile.settings.theme}
+					{/* <div
+						className="profile-theme-preview"
+						style={{ backgroundColor:  }}
+					></div> */}
+				</p>
+				<p>
+					<span>volume</span> {(profile.settings.sound.volume * 100).toFixed(0)}%
+				</p>
+				<p>
+					<span>release</span> {(profile.settings.sound.release * 100).toFixed(0)}%
+				</p>
+				<p>
+					<span>waveform</span> {profile.settings.sound.type}
+				</p>
+				<p>
+					<span>click display</span>{' '}
+					{profile.settings.segment.on ? 'segments' : 'layers'}
+				</p>
+				<p>
+					<span>click duration</span>{' '}
+					{profile.settings.sound.duration ? 'relative' : 'fixed'}
+				</p>
+			</div>
+		)
 	}
 
 	//
@@ -1012,22 +1048,36 @@ function App(): JSX.Element {
 						))}
 					</div>
 				</div>
+			</div>
+			<div className="saved-profiles">
+				<h3>Profiles</h3>
 
-				<div className="saved-profiles">
-					<h3>Profiles</h3>
-
+				<div className="profile-wrap">
 					<div className="profile-bank">
 						{savedProfiles.map((profile, i) => (
-							<div key={i} className="profile" onClick={() => selectProfile(i)}>
-								<p>{i}</p>
+							<div
+								key={i}
+								className={
+									'profile' + (selectedProfile === i ? ' selected' : '')
+								}
+								onClick={() => selectProfile(i)}
+							>
+								<span>{'Profile ' + i}</span>
 							</div>
 						))}
 
-						<div className="add-profile">
-							<button onClick={addProfiles}>add</button>
+						<div className="profile" onClick={addProfiles}>
+							<span>+</span>
 						</div>
-						<div className="edit-profile">
-							<button>edit</button>
+					</div>
+
+					<div className="profile-focus">
+						<ProfileInfos selection={selectedProfile}></ProfileInfos>
+
+						<div className="profile-mgmt">
+							<button>Export</button>
+							<button>Rename</button>
+							<button>Delete</button>
 						</div>
 					</div>
 				</div>

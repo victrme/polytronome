@@ -400,6 +400,46 @@
 }
 
 /*
+PROFILE
+*/
+
+.App .profile-wrap {
+	display: flex;
+}
+
+.App .profile {
+	padding: 1em;
+	margin: 1em;
+	max-width: 100px;
+	background-color: var(--dim);
+	border-radius: 10px;
+	text-align: center;
+	cursor: pointer;
+	font-size: 20px;
+}
+
+.App .profile.selected {
+	filter: contrast(0);
+}
+
+.App .profile-infos p {
+	margin: 0.5em;
+	font-size: 20px;
+	color: var(--accent);
+}
+
+.App .profile-infos .profile-theme-preview {
+	width: 20px;
+	height: 10px;
+	border: 1px solid black;
+}
+
+.App .profile-infos p span {
+	opacity: 0.5;
+	font-size: 15px;
+}
+
+/*
 PERFORMANCE
 */
 
