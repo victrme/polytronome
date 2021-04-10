@@ -54,7 +54,7 @@ function App(): JSX.Element {
 			dim: '#fd971f33',
 		},
 	]
-	const previewInterval = useRef(setTimeout(() => {}, 1))
+	// const previewInterval = useRef(setTimeout(() => {}, 1))
 	const buttonsInterval = useRef(setTimeout(() => {}, 1))
 
 	const defaultLayer = {
@@ -65,7 +65,7 @@ function App(): JSX.Element {
 	}
 
 	const [moreSettings, setMoreSettings] = useState({
-		theme: 'lightgreen',
+		theme: 'dark',
 		sound: {
 			type: 'sine',
 			release: 0.2,
@@ -111,12 +111,6 @@ function App(): JSX.Element {
 	})
 
 	const [selectedProfile, setSelectedProfile] = useState(0)
-	const [savedProfiles, setSavedProfiles] = useState([
-		{
-			metronome: metronome,
-			settings: moreSettings,
-		},
-	])
 
 	// Use Refs for async timeouts
 	const moreSettingsRef = useRef(moreSettings)
@@ -426,6 +420,8 @@ function App(): JSX.Element {
 	const changeTheme = (theme: string) => {
 		const root = document.querySelector(':root')! as HTMLBodyElement
 
+		// Change CSS variables
+
 		ThemeList.forEach(t => {
 			if (t.name === theme) {
 				root.style.setProperty('--background', t.background)
@@ -433,6 +429,12 @@ function App(): JSX.Element {
 				root.style.setProperty('--dim', t.dim)
 			}
 		})
+
+		// Update moreSettings
+
+		const moreSett = moreSettings
+		moreSett.theme = theme
+		setMoreSettings(moreSett)
 	}
 
 	const randomizeLayers = () => {
@@ -606,64 +608,148 @@ function App(): JSX.Element {
 	//
 	//
 
-	const addProfiles = () => {
-		const profiles = [...savedProfiles]
+	const pfStorage = {
+		available: () => {
+			if (localStorage.profile === undefined || localStorage.profile === '[]')
+				return false
+			else return true
+		},
 
-		if (profiles.length < 4) {
+		get: () => {
+			let result: any[] = []
+
+			try {
+				result = JSON.parse(localStorage.profile)
+			} catch (error) {
+				console.log(localStorage.profile, error)
+			}
+
+			return result
+		},
+
+		set: (a: any) => (localStorage.profile = JSON.stringify(a)),
+	}
+
+	const addProfiles = () => {
+		const profiles = pfStorage.get()
+
+		if (profiles.length < 5) {
+			// Nested objects need to be saved like this
+			// (layers, sound, etc.)
+
 			profiles.push({
-				metronome: { ...metronome },
-				settings: { ...moreSettings },
+				name: setRandomID(),
+				layers: [...metronome.layers],
+				tempo: metronome.tempo,
+				animations: moreSettings.animations,
+				theme: moreSettings.theme,
+				segment: moreSettings.segment.on,
+				sound: {
+					...moreSettings.sound,
+				},
 			})
 
-			setSavedProfiles(profiles)
+			pfStorage.set(profiles)
+			setSelectedProfile(profiles.length - 1)
 		}
 	}
 
 	const selectProfile = (selection: number) => {
-		setMoreSettings({ ...savedProfiles[selection].settings })
-		setMetronome({ ...savedProfiles[selection].metronome })
+		const profile = JSON.parse(localStorage.profile)[selection]
+
+		setMoreSettings(prev => ({
+			...prev,
+			animations: profile.animations,
+			theme: profile.theme,
+			segment: {
+				...prev.segment,
+				on: profile.segment,
+			},
+			sound: { ...profile.sound },
+		}))
+
+		setMetronome(prev => ({
+			...prev,
+			layers: profile.layers,
+			tempo: profile.tempo,
+		}))
 
 		setSelectedProfile(selection)
-		console.log(savedProfiles[selection])
 	}
 
-	const ProfileInfos = ({ selection }) => {
-		const profile = savedProfiles[selection]
+	const deleteProfile = () => {
+		const i = selectedProfile
+		const p = pfStorage.get()
 
-		return (
-			<div className="profile-infos">
-				<p>
-					<span>tempo</span> {profile.metronome.tempo}
-				</p>
-				<p>
-					<span>animations</span> {profile.settings.animations.toString()}
-				</p>
-				<p>
-					<span>theme</span> {profile.settings.theme}
-					{/* <div
+		p.splice(i, 1)
+		pfStorage.set(p)
+
+		setSelectedProfile(i === 0 ? i : i - 1)
+	}
+
+	const ProfileList = () => {
+		let result = (
+			<div className="profile-bank">
+				<div className="profile" onClick={addProfiles}>
+					<span>+</span>
+				</div>
+			</div>
+		)
+
+		if (pfStorage.available()) {
+			result = (
+				<div className="profile-bank">
+					{pfStorage.get().map((pf, i) => (
+						<div
+							key={i}
+							className={'profile' + (selectedProfile === i ? ' selected' : '')}
+							onClick={() => selectProfile(i)}
+						>
+							<span>{pf.name}</span>
+						</div>
+					))}
+
+					<div className="profile" onClick={addProfiles}>
+						<span>+</span>
+					</div>
+				</div>
+			)
+		}
+
+		return result
+	}
+
+	const ProfileInfos = () => {
+		let index = 0
+		let infosBloc = <div className="profile-infos"></div>
+
+		if (pfStorage.available()) {
+			const savedProfiles = pfStorage.get()
+			if (selectedProfile - 1 < savedProfiles.length) index = selectedProfile
+
+			const profile = savedProfiles[index]
+
+			infosBloc = (
+				<div className="profile-infos">
+					<p>{profile.tempo} tempo</p>
+					<p>animations {profile.animations ? 'on' : 'off'}</p>
+					<p>
+						theme {profile.theme}
+						{/* <div
 						className="profile-theme-preview"
 						style={{ backgroundColor:  }}
 					></div> */}
-				</p>
-				<p>
-					<span>volume</span> {(profile.settings.sound.volume * 100).toFixed(0)}%
-				</p>
-				<p>
-					<span>release</span> {(profile.settings.sound.release * 100).toFixed(0)}%
-				</p>
-				<p>
-					<span>waveform</span> {profile.settings.sound.type}
-				</p>
-				<p>
-					<span>click display</span>{' '}
-					{profile.settings.segment.on ? 'segments' : 'layers'}
-				</p>
-				<p>
-					<span>click duration</span>{' '}
-					{profile.settings.sound.duration ? 'relative' : 'fixed'}
-				</p>
-			</div>
-		)
+					</p>
+					<p>volume at {(profile.sound.volume * 100).toFixed(0)}% </p>
+					<p>release at {(profile.sound.release * 100).toFixed(0)}%</p>
+					<p>{profile.sound.type} waveform</p>
+					<p>{profile.segment ? 'segmented' : 'layered'} display</p>
+					<p>{profile.sound.duration ? 'relative' : 'fixed'} duration</p>
+				</div>
+			)
+		}
+
+		return infosBloc
 	}
 
 	//
@@ -696,6 +782,12 @@ function App(): JSX.Element {
 		initSegment()
 		// eslint-disable-next-line
 	}, [metronome.layers])
+
+	useEffect(() => {
+		changeTheme(moreSettings.theme)
+		console.log('theme change')
+		// eslint-disable-next-line
+	}, [moreSettings.theme])
 
 	//
 	//
@@ -1048,36 +1140,20 @@ function App(): JSX.Element {
 						))}
 					</div>
 				</div>
-			</div>
-			<div className="saved-profiles">
-				<h3>Profiles</h3>
+				<div className="saved-profiles">
+					<h3>Profiles</h3>
 
-				<div className="profile-wrap">
-					<div className="profile-bank">
-						{savedProfiles.map((profile, i) => (
-							<div
-								key={i}
-								className={
-									'profile' + (selectedProfile === i ? ' selected' : '')
-								}
-								onClick={() => selectProfile(i)}
-							>
-								<span>{'Profile ' + i}</span>
+					<div className="profile-wrap">
+						<ProfileList></ProfileList>
+
+						<div className="profile-focus">
+							<div className="profile-mgmt">
+								<button>Export</button>
+								<button>Rename</button>
+								<button onClick={deleteProfile}>Delete</button>
 							</div>
-						))}
 
-						<div className="profile" onClick={addProfiles}>
-							<span>+</span>
-						</div>
-					</div>
-
-					<div className="profile-focus">
-						<ProfileInfos selection={selectedProfile}></ProfileInfos>
-
-						<div className="profile-mgmt">
-							<button>Export</button>
-							<button>Rename</button>
-							<button>Delete</button>
+							<ProfileInfos></ProfileInfos>
 						</div>
 					</div>
 				</div>
