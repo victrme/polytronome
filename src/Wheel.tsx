@@ -1,5 +1,6 @@
 import { useGesture } from 'react-use-gesture'
 import { useState, useRef, useEffect } from 'react'
+import actionSound from './ActionSound'
 
 // Wheels work by getting the index of an element with wheel height divided by children height
 // Up movement uses translateY(-px), incrementing is negative, so maths are weird
@@ -30,6 +31,7 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 
 	// States
 	const wheelRef = useRef(document.createElement('div'))
+	const [soundCueStep, setSoundCueStep] = useState(0)
 	const [saved, setSaved] = useState(currentWhat)
 	const [wheel, setWheel] = useState({
 		y: (currentWhat - initOffset) * -height,
@@ -60,6 +62,13 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 
 		if (userMoves) {
 			setWheel({ y, snap: false })
+
+			// Sound cue finds when you step out of a wheel div onto another
+			const step = +((y - height / 2) / -height).toFixed(0)
+			if (step !== soundCueStep) {
+				setSoundCueStep(step)
+				actionSound()
+			}
 		} else {
 			// Save element position
 			let number = +(Math.abs(wheelSnapping(y)) / height)
@@ -67,6 +76,7 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 
 			setSaved(number)
 			update(number)
+			actionSound()
 		}
 
 		return false
