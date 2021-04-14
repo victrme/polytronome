@@ -4,7 +4,7 @@ import Pizzicato from 'pizzicato'
 import Wheel from './Wheel'
 import Range from './Range'
 import Waveform from './Waveform'
-import './App.css'
+import './App.scss'
 import actionSound from './ActionSound'
 
 function App(): JSX.Element {
@@ -1109,7 +1109,7 @@ function App(): JSX.Element {
 						</button>
 					</div>
 
-					<div className="setting">
+					<div className="setting debug">
 						<h4>Debug button</h4>
 
 						<button onClick={actionSound}>click</button>
