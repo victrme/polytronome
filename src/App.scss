@@ -169,6 +169,24 @@
 				}
 			}
 
+			&.layer {
+				justify-content: space-between;
+				width: 100%;
+
+				.notes-wrap {
+					display: flex;
+					align-items: center;
+
+					> :first-child {
+						text-align: right;
+					}
+
+					> :last-child {
+						text-align: left;
+					}
+				}
+			}
+
 			&.sound {
 				flex-direction: column;
 				width: 500px;
@@ -258,24 +276,6 @@
 				.setting {
 					align-items: center;
 					justify-content: space-between;
-				}
-			}
-
-			&.layer {
-				justify-content: space-between;
-				width: 100%;
-
-				.notes-wrap {
-					display: flex;
-					align-items: center;
-
-					> :first-child {
-						text-align: right;
-					}
-
-					> :last-child {
-						text-align: left;
-					}
 				}
 			}
 		}

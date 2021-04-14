@@ -4,8 +4,8 @@ import Pizzicato from 'pizzicato'
 import Wheel from './Wheel'
 import Range from './Range'
 import Waveform from './Waveform'
-import './App.scss'
 import actionSound from './ActionSound'
+import './App.scss'
 
 function App(): JSX.Element {
 	//
@@ -19,28 +19,22 @@ function App(): JSX.Element {
 
 	const ThemeList = [
 		{
-			name: 'dark',
-			background: '#282c34',
-			accent: '#ffffff',
-			dim: '#00000033',
-		},
-		{
-			name: 'light',
-			background: '#ffffff',
-			accent: '#222222',
-			dim: '#00000033',
-		},
-		{
 			name: 'black',
 			background: '#000000',
 			accent: '#bbbbbb',
 			dim: '#dddddd1a',
 		},
 		{
-			name: 'coffee',
-			background: '#fbefdf',
-			accent: '#8d6852',
-			dim: '#8d68524d',
+			name: 'dark',
+			background: '#282c34',
+			accent: '#ffffff',
+			dim: '#00000033',
+		},
+		{
+			name: 'monokai',
+			background: '#272822',
+			accent: '#a6e22e',
+			dim: '#fd971f33',
 		},
 		{
 			name: 'pink',
@@ -49,10 +43,28 @@ function App(): JSX.Element {
 			dim: '#e53c584d',
 		},
 		{
-			name: 'monokai',
-			background: '#272822',
-			accent: '#a6e22e',
-			dim: '#fd971f33',
+			name: 'boomer',
+			background: '#f6c48a',
+			accent: '#5f9e6d',
+			dim: '#84bc94',
+		},
+		{
+			name: 'coffee',
+			background: '#fbefdf',
+			accent: '#8d6852',
+			dim: '#8d68524d',
+		},
+		{
+			name: 'beach',
+			background: '#fff9e9',
+			accent: '#4b9ab4',
+			dim: '#f6dbbc',
+		},
+		{
+			name: 'contrast',
+			background: '#ffffff',
+			accent: '#222222',
+			dim: '#00000033',
 		},
 	]
 	// const previewInterval = useRef(setTimeout(() => {}, 1))
@@ -436,6 +448,9 @@ function App(): JSX.Element {
 		const moreSett = moreSettings
 		moreSett.theme = theme
 		setMoreSettings(moreSett)
+
+		// Save to localStorage
+		localStorage.theme = theme
 	}
 
 	const randomizeLayers = () => {
@@ -776,6 +791,11 @@ function App(): JSX.Element {
 			return false
 		})
 
+		// Init Theme
+		if (localStorage.theme) {
+			changeTheme(localStorage.theme)
+		}
+
 		// eslint-disable-next-line
 	}, [])
 
@@ -893,6 +913,9 @@ function App(): JSX.Element {
 								onMouseUp={e =>
 									isMobileOnly ? undefined : tempoButtons(e, 'leave', -1)
 								}
+								onMouseLeave={e =>
+									isMobileOnly ? undefined : tempoButtons(e, 'leave', -1)
+								}
 								onContextMenu={e => e.preventDefault()}
 							>
 								-
@@ -910,6 +933,9 @@ function App(): JSX.Element {
 								}
 								onMouseUp={e =>
 									isMobileOnly ? undefined : tempoButtons(e, 'leave', 1)
+								}
+								onMouseLeave={e =>
+									isMobileOnly ? undefined : tempoButtons(e, 'leave', -1)
 								}
 								onContextMenu={e => e.preventDefault()}
 							>
@@ -931,6 +957,10 @@ function App(): JSX.Element {
 							onClick={() => updateLayer(true)}
 						>
 							add
+						</button>
+
+						<button name="randomize" id="randomize" onClick={randomizeLayers}>
+							shuffle
 						</button>
 					</div>
 
@@ -1007,6 +1037,7 @@ function App(): JSX.Element {
 							update={result => rangeUpdate('release', result)}
 						></Range>
 					</div>
+
 					<div className="waveform">
 						<h4>Waveform</h4>
 
@@ -1016,31 +1047,31 @@ function App(): JSX.Element {
 							change={changeWaveform}
 						></Waveform>
 					</div>
+
+					<div className="wavetime">
+						<h4>Wavetime</h4>
+						<button
+							name="duration"
+							id="duration"
+							onClick={() =>
+								setMoreSettings(prev => ({
+									...prev,
+									sound: {
+										...prev.sound,
+										duration: moreSettings.sound.duration ? false : true,
+									},
+								}))
+							}
+						>
+							{moreSettings.sound.duration ? '.4x BPM' : '50ms'}
+						</button>
+					</div>
 				</div>
 
 				<div className="other-settings">
-					<div className="setting randomize">
-						<h4>Randomize</h4>
-
-						<button name="randomize" id="randomize" onClick={randomizeLayers}>
-							go
-						</button>
-					</div>
-
-					<div className="setting fullscreen">
-						<h4>Fullscreen</h4>
-
-						<button
-							name="fullscreen"
-							id="fullscreen"
-							onClick={() => setFullscreen(moreSettings.fullscreen)}
-						>
-							{moreSettings.fullscreen ? 'on' : 'off'}
-						</button>
-					</div>
-
+					<h3>Display</h3>
 					<div className="setting display">
-						<h4>Click display</h4>
+						<h4>Clicks</h4>
 
 						<button
 							name="display"
@@ -1055,27 +1086,19 @@ function App(): JSX.Element {
 								}))
 							}
 						>
-							{moreSettings.segment.on ? 'segment' : 'layers'}
+							{moreSettings.segment.on ? 'segmented' : 'layered'}
 						</button>
 					</div>
 
-					<div className="setting duration">
-						<h4>Click duration</h4>
+					<div className="setting fullscreen">
+						<h4>Fullscreen</h4>
 
 						<button
-							name="duration"
-							id="duration"
-							onClick={() =>
-								setMoreSettings(prev => ({
-									...prev,
-									sound: {
-										...prev.sound,
-										duration: moreSettings.sound.duration ? false : true,
-									},
-								}))
-							}
+							name="fullscreen"
+							id="fullscreen"
+							onClick={() => setFullscreen(moreSettings.fullscreen)}
 						>
-							{moreSettings.sound.duration ? 'relative' : 'fixed'}
+							{moreSettings.fullscreen ? 'on' : 'off'}
 						</button>
 					</div>
 
