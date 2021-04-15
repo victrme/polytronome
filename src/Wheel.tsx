@@ -1,6 +1,7 @@
 import { useGesture } from 'react-use-gesture'
 import { useState, useRef, useEffect } from 'react'
 import actionSound from './ActionSound'
+import { isMacOs } from 'react-device-detect'
 
 // Wheels work by getting the index of an element with wheel height divided by children height
 // Up movement uses translateY(-px), incrementing is negative, so maths are weird
@@ -76,7 +77,11 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 
 			setSaved(number)
 			update(number)
-			actionSound()
+
+			// Debatable
+			if (isMacOs) {
+				actionSound()
+			}
 		}
 
 		return false
