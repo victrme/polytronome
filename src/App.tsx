@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { isMobileOnly } from 'react-device-detect'
+import { useBeforeunload } from 'react-beforeunload'
 import Pizzicato from 'pizzicato'
 import Wheel from './Wheel'
 import Range from './Range'
@@ -83,7 +84,7 @@ function App(): JSX.Element {
 			type: 'sine',
 			release: 0.2,
 			volume: 0.4,
-			duration: false,
+			duration: 0,
 		},
 		segment: {
 			on: false,
@@ -187,6 +188,11 @@ function App(): JSX.Element {
 		return xx
 	}
 
+	function returnWaveTime(num: number) {
+		const list = ['50ms', '.3x tempo', '.5x tempo', '.7x tempo']
+		return list[num]
+	}
+
 	//
 	//
 	// Main functions
@@ -252,8 +258,14 @@ function App(): JSX.Element {
 				},
 			})
 
+			const wtlist = [50, 0.3, 0.5, 0.7]
+			const wavetime =
+				moreSett.sound.duration === 0
+					? wtlist[0]
+					: wtlist[moreSett.sound.duration] * tempoMs
+
 			wave.play()
-			setTimeout(() => wave.stop(), moreSett.sound.duration ? tempoMs * 0.4 : 50)
+			setTimeout(() => wave.stop(), wavetime)
 
 			//
 			// Update beat time
@@ -392,43 +404,6 @@ function App(): JSX.Element {
 	// More Settings functions
 	//
 	//
-
-	// const themeHover = (e: any, theme: any) => {
-	// 	//
-	// 	// Quit on Mobile since there's no hover
-	// 	if (isMobileOnly) {
-	// 		return false
-	// 	}
-
-	// 	const children = e.target.childNodes
-
-	// 	// DOM is sometimes undefined (to fix ?)
-	// 	const backgroundColor = (dom: HTMLDivElement, color: string) => {
-	// 		if (dom !== undefined) dom.style.backgroundColor = color
-	// 	}
-
-	// 	if (e.type === 'mouseenter') {
-	// 		let count = 0
-
-	// 		// Don't wait for Interval
-	// 		backgroundColor(children[1], theme.accent)
-	// 		backgroundColor(children[0], theme.dim)
-	// 		count++
-
-	// 		// Mod to loop after last child
-	// 		previewInterval.current = setInterval(() => {
-	// 			backgroundColor(children[(count + 1) % children.length], theme.accent)
-	// 			backgroundColor(children[count % children.length], theme.dim)
-	// 			count++
-	// 		}, 700)
-	// 	} else {
-	// 		// Every child to dimmed except first one
-	// 		children.forEach((child: HTMLDivElement, i: number) => {
-	// 			backgroundColor(child, i === 0 ? theme.accent : theme.dim)
-	// 		})
-	// 		clearInterval(previewInterval.current)
-	// 	}
-	// }
 
 	const changeTheme = (theme: string) => {
 		const root = document.querySelector(':root')! as HTMLBodyElement
@@ -646,6 +621,39 @@ function App(): JSX.Element {
 		set: (a: any) => (localStorage.profile = JSON.stringify(a)),
 	}
 
+	const saveWork = () => ({
+		name: setRandomID(),
+		layers: [...metronome.layers],
+		tempo: metronome.tempo,
+		animations: moreSettings.animations,
+		theme: moreSettings.theme,
+		segment: moreSettings.segment.on,
+		sound: {
+			...moreSettings.sound,
+		},
+	})
+
+	const applySaved = (data: any) => {
+		setMoreSettings(prev => ({
+			...prev,
+			animations: data.animations,
+			theme: data.theme,
+			segment: {
+				...prev.segment,
+				on: data.segment,
+			},
+			sound: { ...data.sound },
+		}))
+
+		setMetronome(prev => ({
+			...prev,
+			layers: data.layers,
+			tempo: data.tempo,
+		}))
+
+		changeTheme(data.theme)
+	}
+
 	const addProfiles = () => {
 		const profiles = pfStorage.get()
 
@@ -653,17 +661,7 @@ function App(): JSX.Element {
 			// Nested objects need to be saved like this
 			// (layers, sound, etc.)
 
-			profiles.push({
-				name: setRandomID(),
-				layers: [...metronome.layers],
-				tempo: metronome.tempo,
-				animations: moreSettings.animations,
-				theme: moreSettings.theme,
-				segment: moreSettings.segment.on,
-				sound: {
-					...moreSettings.sound,
-				},
-			})
+			profiles.push(saveWork())
 
 			pfStorage.set(profiles)
 			setSelectedProfile(profiles.length - 1)
@@ -673,23 +671,7 @@ function App(): JSX.Element {
 	const selectProfile = (selection: number) => {
 		const profile = JSON.parse(localStorage.profile)[selection]
 
-		setMoreSettings(prev => ({
-			...prev,
-			animations: profile.animations,
-			theme: profile.theme,
-			segment: {
-				...prev.segment,
-				on: profile.segment,
-			},
-			sound: { ...profile.sound },
-		}))
-
-		setMetronome(prev => ({
-			...prev,
-			layers: profile.layers,
-			tempo: profile.tempo,
-		}))
-
+		applySaved(profile)
 		setSelectedProfile(selection)
 	}
 
@@ -774,6 +756,11 @@ function App(): JSX.Element {
 	//
 	//
 
+	// Automaticaly saves before exiting
+	useBeforeunload(event => {
+		localStorage.sleep = JSON.stringify(saveWork())
+	})
+
 	useEffect(() => {
 		document.addEventListener('keydown', (e: KeyboardEvent) => {
 			// Spacebar control metronome
@@ -791,9 +778,9 @@ function App(): JSX.Element {
 			return false
 		})
 
-		// Init Theme
-		if (localStorage.theme) {
-			changeTheme(localStorage.theme)
+		// Wake from sleep (if you have slept)
+		if (localStorage.sleep) {
+			applySaved(JSON.parse(localStorage.sleep))
 		}
 
 		// eslint-disable-next-line
@@ -1058,12 +1045,12 @@ function App(): JSX.Element {
 									...prev,
 									sound: {
 										...prev.sound,
-										duration: moreSettings.sound.duration ? false : true,
+										duration: (moreSettings.sound.duration + 1) % 4,
 									},
 								}))
 							}
 						>
-							{moreSettings.sound.duration ? '.4x BPM' : '50ms'}
+							{returnWaveTime(moreSettings.sound.duration)}
 						</button>
 					</div>
 				</div>
@@ -1147,8 +1134,6 @@ function App(): JSX.Element {
 							<div
 								key={theme.name}
 								className={'tp-' + theme.name}
-								// onMouseEnter={e => themeHover(e, theme)}
-								// onMouseLeave={e => themeHover(e, theme)}
 								onClick={() => changeTheme(theme.name)}
 								style={{ backgroundColor: theme.background }}
 							>
