@@ -460,11 +460,13 @@ function App(): JSX.Element {
 	}
 
 	const setFullscreen = (state: boolean) => {
-		if (!state) {
+		if (!state && document.fullscreenElement === null) {
 			const wrap = document.querySelector('.settings-wrap') as HTMLDivElement
 			document.querySelector('.App')!.requestFullscreen()
 			wrap.style.overflowY = 'auto'
-		} else document.exitFullscreen()
+		} else if (document.fullscreenElement !== null) {
+			document.exitFullscreen()
+		}
 
 		setMoreSettings(prev => ({
 			...prev,
@@ -682,7 +684,12 @@ function App(): JSX.Element {
 		p.splice(i, 1)
 		pfStorage.set(p)
 
-		setSelectedProfile(i === 0 ? i : i - 1)
+		let newSelection = 0
+
+		if (i === 0 || p.length === i) newSelection = i
+		else newSelection = i - 1
+
+		setSelectedProfile(newSelection)
 	}
 
 	const ProfileList = () => {
@@ -781,6 +788,15 @@ function App(): JSX.Element {
 		// Wake from sleep (if you have slept)
 		if (localStorage.sleep) {
 			applySaved(JSON.parse(localStorage.sleep))
+		}
+
+		// Updates fullscreen if left by something else than toggle
+		document.onfullscreenchange = () => {
+			if (document.fullscreenElement === null)
+				setMoreSettings(prev => ({
+					...prev,
+					fullscreen: false,
+				}))
 		}
 
 		// eslint-disable-next-line
