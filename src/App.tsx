@@ -5,7 +5,7 @@ import Pizzicato from 'pizzicato'
 import Wheel from './Wheel'
 import Range from './Range'
 import Waveform from './Waveform'
-import actionSound from './ActionSound'
+// import actionSound from './ActionSound'
 import './App.scss'
 
 function App(): JSX.Element {
@@ -78,8 +78,11 @@ function App(): JSX.Element {
 		frequency: 12,
 	}
 
+	const waveformsList = ['sine', 'triangle', 'sawtooth', 'square']
+	const waveTimeList = ['50ms', '.3x tempo', '.5x tempo', '.7x tempo']
+
 	const [moreSettings, setMoreSettings] = useState({
-		theme: 'dark',
+		theme: 1,
 		sound: {
 			type: 'sine',
 			release: 0.2,
@@ -189,8 +192,7 @@ function App(): JSX.Element {
 	}
 
 	function returnWaveTime(num: number) {
-		const list = ['50ms', '.3x tempo', '.5x tempo', '.7x tempo']
-		return list[num]
+		return waveTimeList[num]
 	}
 
 	//
@@ -405,13 +407,13 @@ function App(): JSX.Element {
 	//
 	//
 
-	const changeTheme = (theme: string) => {
+	const changeTheme = (theme: number) => {
 		const root = document.querySelector(':root')! as HTMLBodyElement
 
 		// Change CSS variables
 
-		ThemeList.forEach(t => {
-			if (t.name === theme) {
+		ThemeList.forEach((t, ii) => {
+			if (ii === theme) {
 				root.style.setProperty('--background', t.background)
 				root.style.setProperty('--accent', t.accent)
 				root.style.setProperty('--dim', t.dim)
@@ -419,10 +421,7 @@ function App(): JSX.Element {
 		})
 
 		// Update moreSettings
-
-		const moreSett = moreSettings
-		moreSett.theme = theme
-		setMoreSettings(moreSett)
+		setMoreSettings(prev => ({ ...prev, theme }))
 
 		// Save to localStorage
 		localStorage.theme = theme
@@ -444,7 +443,6 @@ function App(): JSX.Element {
 
 	const changeWaveform = () => {
 		const type = moreSettings.sound.type
-		const waveformsList = ['sine', 'triangle', 'sawtooth', 'square']
 
 		waveformsList.forEach((x, i) => {
 			if (x === type) {
@@ -623,17 +621,105 @@ function App(): JSX.Element {
 		set: (a: any) => (localStorage.profile = JSON.stringify(a)),
 	}
 
-	const saveWork = () => ({
-		name: setRandomID(),
-		layers: [...metronome.layers],
-		tempo: metronome.tempo,
-		animations: moreSettings.animations,
-		theme: moreSettings.theme,
-		segment: moreSettings.segment.on,
-		sound: {
-			...moreSettings.sound,
-		},
-	})
+	const saveWork = () => {
+		//
+		//
+		//
+		//
+		const importCode = (extended: boolean) => {
+			const mainImport = () => {
+				let layers = ''
+
+				metronome.layers.forEach(layer => {
+					layers +=
+						layer.beats.toString(26) +
+						(layer.frequency % 12).toString(26) +
+						Math.floor(layer.frequency / 12).toString(26)
+				})
+
+				return metronome.tempo.toString(26) + layers
+			}
+
+			//
+			// Stackers uses steps for saving different settings in one character
+			// [a.len: 3, b.len: 4] => to get the a[2] and b[1]
+			// a * b.len + b ---> 3 * 4 + 2 = 14th character
+			//
+
+			const waveStacker = () => {
+				const form = waveformsList.findIndex(w => w === moreSettings.sound.type)
+				const time = moreSettings.sound.duration + 1
+
+				return (form * waveTimeList.length + time).toString(26)
+			}
+
+			const displayStacker = () => {
+				return (
+					// times 2 because [true, false].length = 2
+					(
+						(+moreSettings.animations | 0) * 2 +
+						(+!moreSettings.segment.on | 0)
+					).toString(26)
+				)
+			}
+
+			const settingsImport = () => {
+				const rangeFitInOne = (num: number) => Math.floor((num * 100) / 4).toString(26)
+
+				return (
+					'-' +
+					rangeFitInOne(moreSettings.sound.volume) +
+					rangeFitInOne(moreSettings.sound.release) +
+					waveStacker() +
+					(+moreSettings.theme | 0) +
+					displayStacker()
+				)
+			}
+
+			return mainImport() + (extended ? settingsImport() : '')
+		}
+
+		const exportCode = (code: string) => {
+			const main = code.split('-')[0]
+			const settings = code.split('-')[1]
+
+			if (settings === undefined) {
+				//
+				// For amout of layers found (divide by 3 char by layer)
+				// get 1, 2 and 3 char, and step up... 4, 5, 6, etc
+				//
+				const charLayer = main.slice(2, main.length)
+				const layers: number[][] = []
+
+				for (let ii = 0; ii < charLayer.length / 3; ii++) {
+					const getInt = (num: number) => parseInt(charLayer[num + ii * 3], 26)
+					layers.push([getInt(0), getInt(1) + 12 * getInt(2)])
+				}
+
+				const tempo = parseInt(main.slice(0, 2), 26)
+
+				console.log('tempo: ', tempo)
+				console.log('layers: ', layers)
+			} else {
+				console.log('Import is extended')
+			}
+		}
+
+		console.log(importCode(true))
+		exportCode(importCode(false))
+
+		return {
+			name: setRandomID(),
+			layers: [...metronome.layers],
+			tempo: metronome.tempo,
+			animations: moreSettings.animations,
+			theme: moreSettings.theme,
+			segment: moreSettings.segment.on,
+			sound: {
+				...moreSettings.sound,
+			},
+		}
+	}
 
 	const applySaved = (data: any) => {
 		setMoreSettings(prev => ({
@@ -809,7 +895,6 @@ function App(): JSX.Element {
 
 	useEffect(() => {
 		changeTheme(moreSettings.theme)
-		console.log('theme change')
 		// eslint-disable-next-line
 	}, [moreSettings.theme])
 
@@ -1138,7 +1223,7 @@ function App(): JSX.Element {
 					<div className="setting debug">
 						<h4>Debug button</h4>
 
-						<button onClick={actionSound}>click</button>
+						<button onClick={saveWork}>click</button>
 					</div>
 				</div>
 
@@ -1146,11 +1231,11 @@ function App(): JSX.Element {
 					<h3>Themes</h3>
 
 					<div className="theme-preview">
-						{ThemeList.map(theme => (
+						{ThemeList.map((theme, ii) => (
 							<div
-								key={theme.name}
+								key={ii}
 								className={'tp-' + theme.name}
-								onClick={() => changeTheme(theme.name)}
+								onClick={() => changeTheme(ii)}
 								style={{ backgroundColor: theme.background }}
 							>
 								<div
