@@ -627,24 +627,29 @@ function App(): JSX.Element {
 		//
 		//
 		const importCode = (extended: boolean) => {
+			//
+			//	Stackers uses steps for saving different settings in one character
+			//
+			//	To stack:
+			// 	[a.len: 3, b.len: 4] => to get the a[2] and b[1]
+			// 	a * b.len + b ---> 3 * 4 + 2 = 14th character
+			//
+			// 	To destack:
+			// 	b: stack % b.length
+			// 	a: (stack - b) / b.length
+			//
 			const mainImport = () => {
 				let layers = ''
 
 				metronome.layers.forEach(layer => {
-					layers +=
-						layer.beats.toString(26) +
-						(layer.frequency % 12).toString(26) +
-						Math.floor(layer.frequency / 12).toString(26)
+					const stack = layer.frequency * 16 + layer.beats
+
+					if (stack > 36) layers += stack.toString(36)
+					else layers += '0' + stack.toString(36)
 				})
 
-				return metronome.tempo.toString(26) + layers
+				return metronome.tempo.toString(30) + layers
 			}
-
-			//
-			// Stackers uses steps for saving different settings in one character
-			// [a.len: 3, b.len: 4] => to get the a[2] and b[1]
-			// a * b.len + b ---> 3 * 4 + 2 = 14th character
-			//
 
 			const waveStacker = () => {
 				const form = waveformsList.findIndex(w => w === moreSettings.sound.type)
@@ -653,15 +658,11 @@ function App(): JSX.Element {
 				return (form * waveTimeList.length + time).toString(26)
 			}
 
-			const displayStacker = () => {
-				return (
-					// times 2 because [true, false].length = 2
-					(
-						(+moreSettings.animations | 0) * 2 +
-						(+!moreSettings.segment.on | 0)
-					).toString(26)
+			// times 2 because [true, false].length = 2
+			const displayStacker = () =>
+				((+moreSettings.animations | 0) * 2 + (+!moreSettings.segment.on | 0)).toString(
+					26
 				)
-			}
 
 			const settingsImport = () => {
 				const rangeFitInOne = (num: number) => Math.floor((num * 100) / 4).toString(26)
@@ -685,21 +686,24 @@ function App(): JSX.Element {
 
 			if (settings === undefined) {
 				//
-				// For amout of layers found (divide by 3 char by layer)
-				// get 1, 2 and 3 char, and step up... 4, 5, 6, etc
+				// 	For amout of layers found (divide by 2 char by layer)
+				// 	get 1, 2 char, and step up... 3, 4, etc
 				//
-				const charLayer = main.slice(2, main.length)
+				const charLayers = main.slice(2, main.length)
 				const layers: number[][] = []
 
-				for (let ii = 0; ii < charLayer.length / 3; ii++) {
-					const getInt = (num: number) => parseInt(charLayer[num + ii * 3], 26)
-					layers.push([getInt(0), getInt(1) + 12 * getInt(2)])
+				for (let ii = 0; ii < charLayers.length / 2; ii++) {
+					// 	Takes 2 chars at a time
+					const singleLayer = charLayers.slice(ii * 2, ii * 2 + 2)
+
+					//	Apply destackment
+					const beats = parseInt(singleLayer, 36) % 16
+					const note = (parseInt(singleLayer, 36) - beats) / 16
+					layers.push([beats === 0 ? 16 : beats, note])
 				}
 
-				const tempo = parseInt(main.slice(0, 2), 26)
-
-				console.log('tempo: ', tempo)
-				console.log('layers: ', layers)
+				const tempo = parseInt(main.slice(0, 2), 30)
+				console.log(tempo, ...layers)
 			} else {
 				console.log('Import is extended')
 			}
