@@ -723,8 +723,8 @@ function App(): JSX.Element {
 				return {
 					volume: +(parseInt(settingsChars[0], 36) / 35).toFixed(2),
 					release: +(parseInt(settingsChars[1], 36) / 35).toFixed(2),
-					wavetime,
-					waveform,
+					wavetime: wavetime,
+					waveform: waveformsList[waveform],
 					theme: +settingsChars[3],
 					segment: !!segment,
 					animations: !!animations,
