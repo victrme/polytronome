@@ -846,39 +846,6 @@ function App(): JSX.Element {
 		return result
 	}
 
-	const ProfileInfos = () => {
-		let index = 0
-		let infosBloc = <div className="profile-infos"></div>
-
-		if (pfStorage.available()) {
-			const savedProfiles = pfStorage.get()
-			if (selectedProfile - 1 < savedProfiles.length) index = selectedProfile
-
-			const profile = savedProfiles[index]
-
-			infosBloc = (
-				<div className="profile-infos">
-					<p>{profile.tempo} tempo</p>
-					<p>animations {profile.animations ? 'on' : 'off'}</p>
-					<p>
-						theme {profile.theme}
-						{/* <div
-						className="profile-theme-preview"
-						style={{ backgroundColor:  }}
-					></div> */}
-					</p>
-					<p>volume at {(profile.sound.volume * 100).toFixed(0)}% </p>
-					<p>release at {(profile.sound.release * 100).toFixed(0)}%</p>
-					<p>{profile.sound.type} waveform</p>
-					<p>{profile.segment ? 'segmented' : 'layered'} display</p>
-					<p>{profile.sound.duration ? 'relative' : 'fixed'} duration</p>
-				</div>
-			)
-		}
-
-		return infosBloc
-	}
-
 	//
 	//
 	//	Effects
@@ -1302,8 +1269,6 @@ function App(): JSX.Element {
 								<button>Rename</button>
 								<button onClick={deleteProfile}>Delete</button>
 							</div>
-
-							<ProfileInfos></ProfileInfos>
 						</div>
 					</div>
 				</div>
