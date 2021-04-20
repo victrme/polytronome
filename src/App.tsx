@@ -626,7 +626,7 @@ function App(): JSX.Element {
 		//
 		//
 		//
-		const importCode = (extended: boolean) => {
+		const exportCode = (extended: boolean) => {
 			//
 			//	Stackers uses steps for saving different settings in one character
 			//
@@ -638,7 +638,7 @@ function App(): JSX.Element {
 			// 	b: stack % b.length
 			// 	a: (stack - b) / b.length
 			//
-			const mainImport = () => {
+			const mainExport = () => {
 				let layers = ''
 
 				metronome.layers.forEach(layer => {
@@ -651,66 +651,98 @@ function App(): JSX.Element {
 				return metronome.tempo.toString(30) + layers
 			}
 
-			const waveStacker = () => {
-				const form = waveformsList.findIndex(w => w === moreSettings.sound.type)
-				const time = moreSettings.sound.duration + 1
+			const settingsExport = () => {
+				const waveStacker = () => {
+					const form = waveformsList.findIndex(w => w === moreSettings.sound.type)
+					const time = moreSettings.sound.duration
 
-				return (form * waveTimeList.length + time).toString(26)
-			}
+					return (form * waveTimeList.length + time).toString(26)
+				}
 
-			// times 2 because [true, false].length = 2
-			const displayStacker = () =>
-				((+moreSettings.animations | 0) * 2 + (+!moreSettings.segment.on | 0)).toString(
-					26
-				)
-
-			const settingsImport = () => {
-				const rangeFitInOne = (num: number) => Math.floor((num * 100) / 4).toString(26)
+				// times 2 because [true, false].length = 2
+				const displayStacker = () =>
+					(
+						(+moreSettings.animations | 0) * 2 +
+						(+moreSettings.segment.on | 0)
+					).toString(26)
 
 				return (
 					'-' +
-					rangeFitInOne(moreSettings.sound.volume) +
-					rangeFitInOne(moreSettings.sound.release) +
+					Math.floor(moreSettings.sound.volume * 35).toString(36) +
+					Math.floor(moreSettings.sound.release * 35).toString(36) +
 					waveStacker() +
 					(+moreSettings.theme | 0) +
 					displayStacker()
 				)
 			}
 
-			return mainImport() + (extended ? settingsImport() : '')
+			return mainExport() + (extended ? settingsExport() : '')
 		}
 
-		const exportCode = (code: string) => {
-			const main = code.split('-')[0]
-			const settings = code.split('-')[1]
+		const importCode = (code: string) => {
+			const split = code.split('-')
+			const [mainChars, settingsChars] = split
 
-			if (settings === undefined) {
+			const mainDecode = () => {
 				//
 				// 	For amout of layers found (divide by 2 char by layer)
 				// 	get 1, 2 char, and step up... 3, 4, etc
 				//
-				const charLayers = main.slice(2, main.length)
-				const layers: number[][] = []
+				const layersChars = mainChars.slice(2, mainChars.length)
+				const layers: any[] = []
 
-				for (let ii = 0; ii < charLayers.length / 2; ii++) {
+				for (let ii = 0; ii < layersChars.length / 2; ii++) {
 					// 	Takes 2 chars at a time
-					const singleLayer = charLayers.slice(ii * 2, ii * 2 + 2)
+					const singleLayer = layersChars.slice(ii * 2, ii * 2 + 2)
 
 					//	Apply destackment
 					const beats = parseInt(singleLayer, 36) % 16
 					const note = (parseInt(singleLayer, 36) - beats) / 16
-					layers.push([beats === 0 ? 16 : beats, note])
+					layers.push({
+						beats: beats === 0 ? 16 : beats,
+						frequency: note,
+					})
 				}
 
-				const tempo = parseInt(main.slice(0, 2), 30)
-				console.log(tempo, ...layers)
+				const tempo = parseInt(mainChars.slice(0, 2), 30)
+
+				return {
+					layers,
+					tempo,
+				}
+			}
+
+			const settingsDecode = () => {
+				const wavetime = parseInt(settingsChars[2], 26) % waveTimeList.length
+				const waveform =
+					(parseInt(settingsChars[2], 26) - wavetime) / waveTimeList.length
+
+				const segment = parseInt(settingsChars[4], 26) % 2
+				const animations = (parseInt(settingsChars[4], 26) - segment) / 2
+
+				return {
+					volume: +(parseInt(settingsChars[0], 36) / 35).toFixed(2),
+					release: +(parseInt(settingsChars[1], 36) / 35).toFixed(2),
+					wavetime,
+					waveform,
+					theme: +settingsChars[3],
+					segment: !!segment,
+					animations: !!animations,
+				}
+			}
+
+			if (settingsChars === undefined) {
+				return mainDecode()
 			} else {
-				console.log('Import is extended')
+				return {
+					...mainDecode(),
+					...settingsDecode(),
+				}
 			}
 		}
 
-		console.log(importCode(true))
-		exportCode(importCode(false))
+		console.log(exportCode(true))
+		console.log(importCode(exportCode(true)))
 
 		return {
 			name: setRandomID(),
@@ -909,7 +941,7 @@ function App(): JSX.Element {
 	//
 
 	return (
-		<div className={'App ' + (isMobileOnly ? 'mobile' : '')}>
+		<div className={'App ' + (isMobileOnly ? 'mobile' : 'mobile')}>
 			<div className="principal">
 				<div className="sticky">
 					<div className="title">
