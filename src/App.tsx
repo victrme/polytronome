@@ -5,18 +5,12 @@ import Pizzicato from 'pizzicato'
 import Wheel from './Wheel'
 import Range from './Range'
 import Waveform from './Waveform'
-// import actionSound from './ActionSound'
 import './App.scss'
 
 function App(): JSX.Element {
 	//
 	// States & Values
 	//
-
-	const [perfAvg, setPerfAvg] = useState({
-		total: 0,
-		count: 0,
-	})
 
 	const ThemeList = [
 		{
@@ -128,49 +122,21 @@ function App(): JSX.Element {
 	})
 
 	const [selectedProfile, setSelectedProfile] = useState(0)
+	const [IsTyping, setIsTyping] = useState(false)
+	const [exportInput, setExportInput] = useState('')
 
 	// Use Refs for async timeouts
 	const moreSettingsRef = useRef(moreSettings)
 	const metronomeRef = useRef(metronome)
-	const perfAvgRef = useRef(perfAvg)
+	const IsTypingRef = useRef(false)
 
 	metronomeRef.current = metronome
 	moreSettingsRef.current = moreSettings
-	perfAvgRef.current = perfAvg
+	IsTypingRef.current = IsTyping
 
 	//
 	// Small functions
 	//
-
-	let performanceThen = 0
-	// const perfstart = performance.now()
-	// const perfend = performance.now()
-	// console.log(perfend - perfstart)
-	// eslint-disable-next-line
-	const benchmark = {
-		start: () => (performanceThen = performance.now()),
-		end: (type?: string) => {
-			//
-			// Save average
-			// Or just log difference
-			//
-
-			const now = performance.now()
-
-			if (type === 'average') {
-				const perf = perfAvgRef.current
-				setPerfAvg({
-					total: perf.total + (now - performanceThen),
-					count: perf.count + 1,
-				})
-
-				if (perfAvgRef.current.count > 20) console.log(perf.total / perf.count)
-				else console.log('Gathering data')
-			} else {
-				console.log(now - performanceThen)
-			}
-		},
-	}
 
 	const calculateTempoMs = (beats: number, tempo: number) => {
 		//
@@ -621,64 +587,59 @@ function App(): JSX.Element {
 		set: (a: any) => (localStorage.profile = JSON.stringify(a)),
 	}
 
-	const saveWork = () => {
+	const exportCode = (extended: boolean) => {
 		//
+		//	Stackers uses steps for saving different settings in one character
 		//
+		//	To stack:
+		// 	[a.len: 3, b.len: 4] => to get the a[2] and b[1]
+		// 	a * b.len + b ---> 3 * 4 + 2 = 14th character
 		//
+		// 	To destack:
+		// 	b: stack % b.length
+		// 	a: (stack - b) / b.length
 		//
-		const exportCode = (extended: boolean) => {
-			//
-			//	Stackers uses steps for saving different settings in one character
-			//
-			//	To stack:
-			// 	[a.len: 3, b.len: 4] => to get the a[2] and b[1]
-			// 	a * b.len + b ---> 3 * 4 + 2 = 14th character
-			//
-			// 	To destack:
-			// 	b: stack % b.length
-			// 	a: (stack - b) / b.length
-			//
-			const mainExport = () => {
-				let layers = ''
+		const mainExport = () => {
+			let layers = ''
 
-				metronome.layers.forEach(layer => {
-					const stack = layer.frequency * 16 + layer.beats
+			metronome.layers.forEach(layer => {
+				const stack = layer.frequency * 16 + layer.beats
 
-					if (stack > 36) layers += stack.toString(36)
-					else layers += '0' + stack.toString(36)
-				})
+				if (stack > 36) layers += stack.toString(36)
+				else layers += '0' + stack.toString(36)
+			})
 
-				return metronome.tempo.toString(30) + layers
-			}
-
-			const settingsExport = () => {
-				const waveStacker = () => {
-					const form = waveformsList.findIndex(w => w === moreSettings.sound.type)
-					const time = moreSettings.sound.duration
-
-					return (form * waveTimeList.length + time).toString(26)
-				}
-
-				// times 2 because [true, false].length = 2
-				const displayStacker = () =>
-					(
-						(+moreSettings.animations | 0) * 2 +
-						(+moreSettings.segment.on | 0)
-					).toString(26)
-
-				return (
-					'-' +
-					Math.floor(moreSettings.sound.volume * 35).toString(36) +
-					Math.floor(moreSettings.sound.release * 35).toString(36) +
-					waveStacker() +
-					(+moreSettings.theme | 0) +
-					displayStacker()
-				)
-			}
-
-			return mainExport() + (extended ? settingsExport() : '')
+			return metronome.tempo.toString(30) + layers
 		}
 
+		const settingsExport = () => {
+			const waveStacker = () => {
+				const form = waveformsList.findIndex(w => w === moreSettings.sound.type)
+				const time = moreSettings.sound.duration
+
+				return (form * waveTimeList.length + time).toString(26)
+			}
+
+			// times 2 because [true, false].length = 2
+			const displayStacker = () =>
+				((+moreSettings.animations | 0) * 2 + (+moreSettings.segment.on | 0)).toString(
+					26
+				)
+
+			return (
+				'-' +
+				Math.floor(moreSettings.sound.volume * 35).toString(36) +
+				Math.floor(moreSettings.sound.release * 35).toString(36) +
+				waveStacker() +
+				(+moreSettings.theme | 0) +
+				displayStacker()
+			)
+		}
+
+		return mainExport() + (extended ? settingsExport() : '')
+	}
+
+	const saveWork = () => {
 		const importCode = (code: string) => {
 			const split = code.split('-')
 			const [mainChars, settingsChars] = split
@@ -741,9 +702,6 @@ function App(): JSX.Element {
 			}
 		}
 
-		console.log(exportCode(true))
-		console.log(importCode(exportCode(true)))
-
 		return {
 			name: setRandomID(),
 			layers: [...metronome.layers],
@@ -797,6 +755,7 @@ function App(): JSX.Element {
 
 		applySaved(profile)
 		setSelectedProfile(selection)
+		setExportInput(exportCode(true))
 	}
 
 	const deleteProfile = () => {
@@ -815,6 +774,9 @@ function App(): JSX.Element {
 	}
 
 	const ProfileList = () => {
+		const list = pfStorage.get()
+		const [renamingInput, setRenamingInput] = useState(list[selectedProfile].name)
+
 		let result = (
 			<div className="profile-bank">
 				<div className="profile" onClick={addProfiles}>
@@ -830,9 +792,33 @@ function App(): JSX.Element {
 						<div
 							key={i}
 							className={'profile' + (selectedProfile === i ? ' selected' : '')}
-							onClick={() => selectProfile(i)}
+							onClick={() =>
+								selectedProfile === i ? setIsTyping(true) : selectProfile(i)
+							}
 						>
-							<span>{pf.name}</span>
+							<div
+								className={
+									'profile-name' +
+									(selectedProfile === i && IsTyping ? ' edit' : '')
+								}
+							>
+								<input
+									name="profile-name"
+									type="text"
+									value={renamingInput}
+									onChange={e => {
+										if (e.target.value.length < 12) {
+											setRenamingInput(e.target.value)
+											list[selectedProfile].name = e.target.value
+											pfStorage.set(list)
+										}
+									}}
+									onKeyPress={e =>
+										e.key === 'Enter' ? setIsTyping(false) : ''
+									}
+								/>
+								<span>{pf.name}</span>
+							</div>
 						</div>
 					))}
 
@@ -860,17 +846,18 @@ function App(): JSX.Element {
 	useEffect(() => {
 		document.addEventListener('keydown', (e: KeyboardEvent) => {
 			// Spacebar control metronome
-			if (e.code === 'Space') launchMetronome(metronomeRef.current.isRunning)
+			if (e.code === 'Space' && !IsTypingRef.current)
+				launchMetronome(metronomeRef.current.isRunning)
 
 			// Tempo up by 10 if shift
-			if (e.code === 'ArrowUp')
+			if (e.code === 'ArrowUp' && !IsTypingRef.current)
 				wheelUpdate('tempo', metronomeRef.current.tempo + (e.shiftKey ? 10 : 1))
 
 			// Tempo down by 10 if shift
-			if (e.code === 'ArrowDown')
+			if (e.code === 'ArrowDown' && !IsTypingRef.current)
 				wheelUpdate('tempo', metronomeRef.current.tempo - (e.shiftKey ? 10 : 1))
 
-			e.preventDefault()
+			e.stopPropagation()
 			return false
 		})
 
@@ -908,7 +895,7 @@ function App(): JSX.Element {
 	//
 
 	return (
-		<div className={'App ' + (isMobileOnly ? 'mobile' : 'mobile')}>
+		<div className={'App ' + (isMobileOnly ? 'mobile' : '')}>
 			<div className="principal">
 				<div className="sticky">
 					<div className="title">
@@ -1265,9 +1252,21 @@ function App(): JSX.Element {
 
 						<div className="profile-focus">
 							<div className="profile-mgmt">
+								<button>Import</button>
 								<button>Export</button>
-								<button>Rename</button>
+								{/* <button onClick={() => setIsTyping(!IsTyping)}>
+									Rename
+								</button> */}
 								<button onClick={deleteProfile}>Delete</button>
+							</div>
+							<div className="export">
+								<input
+									type="text"
+									className="shown"
+									value={exportInput}
+									readOnly
+								/>
+								<span className={'export-choice'}>full</span>
 							</div>
 						</div>
 					</div>
