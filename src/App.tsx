@@ -372,20 +372,20 @@ function App(): JSX.Element {
 	//
 	//
 
-	const changeTheme = (theme: number) => {
+	const applyTheme = (theme: number) => {
 		const root = document.querySelector(':root')! as HTMLBodyElement
 
-		// Change CSS variables
+		root.style.setProperty('--background', ThemeList[theme].background)
+		root.style.setProperty('--accent', ThemeList[theme].accent)
+		root.style.setProperty('--dim', ThemeList[theme].dim)
+	}
+
+	const changeTheme = (theme: number) => {
 		const newTheme = (theme + 1) % ThemeList.length
 
-		root.style.setProperty('--background', ThemeList[newTheme].background)
-		root.style.setProperty('--accent', ThemeList[newTheme].accent)
-		root.style.setProperty('--dim', ThemeList[newTheme].dim)
+		applyTheme(newTheme)
 
-		// Update moreSettings
 		setMoreSettings(prev => ({ ...prev, theme: newTheme }))
-
-		// Save to localStorage
 		localStorage.theme = newTheme
 	}
 
@@ -723,7 +723,7 @@ function App(): JSX.Element {
 			tempo: data.tempo,
 		}))
 
-		changeTheme(data.theme)
+		applyTheme(data.theme)
 	}
 
 	const addProfiles = () => {
