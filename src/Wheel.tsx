@@ -1,7 +1,5 @@
 import { useGesture } from 'react-use-gesture'
 import { useState, useRef, useEffect } from 'react'
-import actionSound from './ActionSound'
-import { isMacOs } from 'react-device-detect'
 
 // Wheels work by getting the index of an element with wheel height divided by children height
 // Up movement uses translateY(-px), incrementing is negative, so maths are weird
@@ -31,8 +29,8 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 	const initOffset = is('tempo') ? 30 : is('beats') ? 2 : 0
 
 	// States
+	// const [soundCueStep, setSoundCueStep] = useState(0)
 	const wheelRef = useRef(document.createElement('div'))
-	const [soundCueStep, setSoundCueStep] = useState(0)
 	const [saved, setSaved] = useState(currentWhat)
 	const [wheel, setWheel] = useState({
 		y: (currentWhat - initOffset) * -height,
@@ -65,11 +63,11 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 			setWheel({ y, snap: false })
 
 			// Sound cue finds when you step out of a wheel div onto another
-			const step = +((y - height / 2) / -height).toFixed(0)
-			if (step !== soundCueStep) {
-				setSoundCueStep(step)
-				actionSound()
-			}
+			// const step = +((y - height / 2) / -height).toFixed(0)
+			// if (step !== soundCueStep) {
+			// 	setSoundCueStep(step)
+			// 	actionSound()
+			// }
 		} else {
 			// Save element position
 			let number = +(Math.abs(wheelSnapping(y)) / height)
@@ -79,9 +77,9 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 			update(number)
 
 			// Debatable
-			if (isMacOs) {
-				actionSound()
-			}
+			// if (isMacOs) {
+			// 	actionSound()
+			// }
 		}
 
 		return false

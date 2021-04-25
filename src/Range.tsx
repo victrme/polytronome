@@ -1,6 +1,5 @@
 import { useGesture } from 'react-use-gesture'
 import { useState, useRef, useEffect } from 'react'
-import actionSound from './ActionSound'
 
 // [-----|---------.-------]
 // a     z         x       b
@@ -32,9 +31,9 @@ function Range({ sound, what, update }): JSX.Element {
 
 			// Compare tens from saved value and new value
 			// If different, play sound cue
-			if (+(range.x / 10).toFixed(0) !== +((percent * 100) / 10).toFixed(0)) {
-				actionSound()
-			}
+			// if (+(range.x / 10).toFixed(0) !== +((percent * 100) / 10).toFixed(0)) {
+			// 	actionSound()
+			// }
 		}
 	}
 
@@ -50,13 +49,13 @@ function Range({ sound, what, update }): JSX.Element {
 			// Sound feedback for when you click on range
 			// Animation last 200ms, and sound cue last 20ms
 			// So you can only fit 10 sound cue maximum
-			let soundCueIntervalCount = 0
-			const numberOfSoundCues = +Math.abs(percent * 100 - range.x).toFixed(0) / 10
-			const soundCueInterval = setInterval(() => {
-				actionSound()
-				soundCueIntervalCount++
-				if (soundCueIntervalCount > numberOfSoundCues) clearInterval(soundCueInterval)
-			}, 20)
+			// let soundCueIntervalCount = 0
+			// const numberOfSoundCues = +Math.abs(percent * 100 - range.x).toFixed(0) / 10
+			// const soundCueInterval = setInterval(() => {
+			// 	actionSound()
+			// 	soundCueIntervalCount++
+			// 	if (soundCueIntervalCount > numberOfSoundCues) clearInterval(soundCueInterval)
+			// }, 20)
 		}
 	}
 
