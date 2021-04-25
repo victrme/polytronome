@@ -4,9 +4,9 @@ import { useState, useRef, useEffect } from 'react'
 // [-----|---------.-------]
 // a     z         x       b
 
-function Range({ sound, what, update }): JSX.Element {
+function Range({ layer, what, update }): JSX.Element {
 	const rangeRef = useRef(document.createElement('div'))
-	const init = what === 'volume' ? sound.volume : sound.release
+	const init = what === 'volume' ? layer.volume : layer.release
 
 	const [dontClick, setDontClick] = useState(false)
 	const [range, setRange] = useState({

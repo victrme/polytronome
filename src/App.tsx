@@ -156,8 +156,8 @@ function App(): JSX.Element {
 		return xx
 	}
 
-	function returnWaveTime(num: number) {
-		return waveTimeList[num]
+	function whichOctave(freq: number, n: number) {
+		return Math.floor(freq / 12) > n ? 'octave on' : 'octave'
 	}
 
 	//
@@ -940,6 +940,45 @@ function App(): JSX.Element {
 							{metronome.isRunning ? 'Stop' : 'Start'}
 						</button>
 					</div>
+
+					<div className="layers-settings">
+						{metronome.layers.map((layer, i) => (
+							<div className="ls-row" key={i}>
+								<Wheel
+									index={i}
+									what={'beats'}
+									metronome={metronome}
+									update={result => wheelUpdate('beats', result, i)}
+								></Wheel>
+
+								<div className="ls-type">
+									<p>ok</p>
+								</div>
+
+								<div className="notes-wrap">
+									<Wheel
+										index={i}
+										what={'frequency'}
+										metronome={metronome}
+										update={result => wheelUpdate('frequency', result, i)}
+									></Wheel>
+
+									<div className="octave-wrap">
+										<div className={whichOctave(layer.frequency, 1)}></div>
+										<div className={whichOctave(layer.frequency, 2)}></div>
+										<div className={whichOctave(layer.frequency, -1)}></div>
+										<div className={whichOctave(layer.frequency, 0)}></div>
+									</div>
+								</div>
+
+								<Range
+									what="volume"
+									layer={layer}
+									update={result => rangeUpdate('volume', result)}
+								></Range>
+							</div>
+						))}
+					</div>
 				</div>
 			</div>
 
@@ -1029,49 +1068,6 @@ function App(): JSX.Element {
 
 					{metronome.layers.map((l, i) => (
 						<div className="setting layer" key={i}>
-							<Wheel
-								index={i}
-								what={'beats'}
-								metronome={metronome}
-								update={result => wheelUpdate('beats', result, i)}
-							></Wheel>
-
-							<div className="notes-wrap">
-								<Wheel
-									index={i}
-									what={'frequency'}
-									metronome={metronome}
-									update={result => wheelUpdate('frequency', result, i)}
-								></Wheel>
-
-								<div className="octave-wrap">
-									<div
-										className={
-											'octave' +
-											(Math.floor(l.frequency / 12) > 1 ? ' on' : '')
-										}
-									></div>
-									<div
-										className={
-											'octave' +
-											(Math.floor(l.frequency / 12) > 2 ? ' on' : '')
-										}
-									></div>
-									<div
-										className={
-											'octave' +
-											(Math.floor(l.frequency / 12) > -1 ? ' on' : '')
-										}
-									></div>
-									<div
-										className={
-											'octave' +
-											(Math.floor(l.frequency / 12) > 0 ? ' on' : '')
-										}
-									></div>
-								</div>
-							</div>
-
 							<button className="suppr-btn" onClick={() => updateLayer(false, i)}>
 								&times;
 							</button>
@@ -1086,11 +1082,6 @@ function App(): JSX.Element {
 
 					<div className="volume">
 						<h4>Volume</h4>
-						{/* <Range
-							what="volume"
-							sound={moreSettings.sound}
-							update={result => rangeUpdate('volume', result)}
-						></Range> */}
 					</div>
 					<div className="release">
 						<h4>Release</h4>

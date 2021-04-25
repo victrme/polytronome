@@ -116,6 +116,96 @@
 				margin-top: 50px;
 			}
 		}
+
+		// New Layer Settings
+
+		.layers-settings {
+			> :nth-child(even) {
+				background-color: rgba(0, 0, 0, 0.2);
+			}
+
+			.ls-row {
+				padding: 10px 30px;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+			}
+
+			.immovable_wheel {
+				overflow: hidden;
+				user-select: none;
+				line-height: 50px;
+				font-size: 50px;
+				height: 50px;
+
+				.wheel {
+					cursor: grab;
+					touch-action: none;
+					transition: transform 0.2s;
+
+					div {
+						user-select: none;
+					}
+
+					&.dragging {
+						transition: transform 0s;
+					}
+
+					&.frequency {
+						text-align: right;
+					}
+					&:active {
+						cursor: grabbing;
+					}
+				}
+			}
+
+			.notes-wrap {
+				display: flex;
+				align-items: center;
+				text-align: right;
+
+				.octave-wrap {
+					margin: 0 10px;
+					display: grid;
+					grid-template-columns: 10px 10px;
+					grid-template-rows: 10px 10px;
+
+					.octave {
+						width: 8px;
+						height: 8px;
+						border-radius: 8px;
+						background-color: var(--dim);
+						transition: background-color 0.2s;
+
+						&.on {
+							background-color: var(--accent);
+						}
+					}
+				}
+			}
+
+			.range-wrap {
+				width: 100px;
+				height: 20px;
+				background-color: var(--dim);
+				border-radius: 5px;
+				overflow: hidden;
+				cursor: pointer;
+
+				.inner-range {
+					background-color: var(--accent);
+					/* border-top-right-radius: 5px;
+					border-bottom-right-radius: 5px; */
+					height: 20px;
+					transition: width 0.2s;
+
+					&.moving {
+						transition: width 0s;
+					}
+				}
+			}
+		}
 	}
 
 	.settings-wrap {
@@ -165,24 +255,6 @@
 
 					&.moving {
 						transition: width 0s;
-					}
-				}
-			}
-
-			&.layer {
-				justify-content: space-between;
-				width: 100%;
-
-				.notes-wrap {
-					display: flex;
-					align-items: center;
-
-					> :first-child {
-						text-align: right;
-					}
-
-					> :last-child {
-						text-align: left;
 					}
 				}
 			}
@@ -271,25 +343,6 @@
 				.setting {
 					align-items: center;
 					justify-content: space-between;
-				}
-			}
-		}
-
-		.octave-wrap {
-			margin: 0 10px;
-			display: grid;
-			grid-template-columns: 10px 10px;
-			grid-template-rows: 10px 10px;
-
-			.octave {
-				width: 8px;
-				height: 8px;
-				border-radius: 8px;
-				background-color: var(--dim);
-				transition: background-color 0.2s;
-
-				&.on {
-					background-color: var(--accent);
 				}
 			}
 		}
