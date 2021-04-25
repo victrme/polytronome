@@ -62,7 +62,6 @@ function App(): JSX.Element {
 			dim: '#00000033',
 		},
 	]
-	// const previewInterval = useRef(setTimeout(() => {}, 1))
 	const buttonsInterval = useRef(setTimeout(() => {}, 1))
 
 	const defaultLayer = {
@@ -70,6 +69,8 @@ function App(): JSX.Element {
 		beats: 4,
 		time: 1,
 		frequency: 12,
+		type: 'sine',
+		volume: 0.4,
 	}
 
 	const waveformsList = ['sine', 'triangle', 'sawtooth', 'square']
@@ -77,12 +78,6 @@ function App(): JSX.Element {
 
 	const [moreSettings, setMoreSettings] = useState({
 		theme: 1,
-		sound: {
-			type: 'sine',
-			release: 0.2,
-			volume: 0.4,
-			duration: 0,
-		},
 		segment: {
 			on: false,
 			count: 0,
@@ -102,12 +97,16 @@ function App(): JSX.Element {
 				beats: 4,
 				time: 1,
 				frequency: 12,
+				type: 'sine',
+				volume: 0.4,
 			},
 			{
 				id: setRandomID(),
 				beats: 5,
 				time: 1,
 				frequency: 19,
+				type: 'triangle',
+				volume: 0.3,
 			},
 		],
 		startTime: 0,
@@ -218,22 +217,22 @@ function App(): JSX.Element {
 			const wave = new Pizzicato.Sound({
 				source: 'wave',
 				options: {
-					type: moreSettingsRef.current.sound.type,
-					release: moreSettingsRef.current.sound.release,
-					volume: moreSettingsRef.current.sound.volume,
+					type: layer.type,
+					//release: moreSettingsRef.current.sound.release,
+					volume: layer.volume,
 					frequency: freq,
 					attack: 0,
 				},
 			})
 
-			const wtlist = [50, 0.3, 0.5, 0.7]
-			const wavetime =
-				moreSett.sound.duration === 0
-					? wtlist[0]
-					: wtlist[moreSett.sound.duration] * tempoMs
+			// const wtlist = [50, 0.3, 0.5, 0.7]
+			// const wavetime =
+			// 	moreSett.sound.duration === 0
+			// 		? wtlist[0]
+			// 		: wtlist[moreSett.sound.duration] * tempoMs
 
 			wave.play()
-			setTimeout(() => wave.stop(), wavetime)
+			setTimeout(() => wave.stop(), 50)
 
 			//
 			// Update beat time
@@ -408,19 +407,18 @@ function App(): JSX.Element {
 	}
 
 	const changeWaveform = () => {
-		const type = moreSettings.sound.type
-
-		waveformsList.forEach((x, i) => {
-			if (x === type) {
-				setMoreSettings(prev => ({
-					...prev,
-					sound: {
-						...prev.sound,
-						type: waveformsList[(i + 1) % 4],
-					},
-				}))
-			}
-		})
+		// const type = moreSettings.sound.type
+		// waveformsList.forEach((x, i) => {
+		// 	if (x === type) {
+		// 		setMoreSettings(prev => ({
+		// 			...prev,
+		// 			sound: {
+		// 				...prev.sound,
+		// 				type: waveformsList[(i + 1) % 4],
+		// 			},
+		// 		}))
+		// 	}
+		// })
 	}
 
 	const setFullscreen = (state: boolean) => {
@@ -552,11 +550,10 @@ function App(): JSX.Element {
 	}
 
 	const rangeUpdate = (what: string, num: number) => {
-		const newSound = { ...moreSettings.sound }
-		const toSave = what === 'release' ? (num < 0.01 ? 0.01 : num) : num
-
-		newSound[what] = toSave
-		setMoreSettings(prev => ({ ...prev, sound: newSound }))
+		// const newSound = { ...moreSettings.sound }
+		// const toSave = what === 'release' ? (num < 0.01 ? 0.01 : num) : num
+		// newSound[what] = toSave
+		// setMoreSettings(prev => ({ ...prev, sound: newSound }))
 	}
 
 	//
@@ -614,10 +611,9 @@ function App(): JSX.Element {
 
 		const settingsExport = () => {
 			const waveStacker = () => {
-				const form = waveformsList.findIndex(w => w === moreSettings.sound.type)
-				const time = moreSettings.sound.duration
-
-				return (form * waveTimeList.length + time).toString(26)
+				// const form = waveformsList.findIndex(w => w === moreSettings.sound.type)
+				// const time = moreSettings.sound.duration
+				// return (form * waveTimeList.length + time).toString(26)
 			}
 
 			// times 2 because [true, false].length = 2
@@ -628,9 +624,9 @@ function App(): JSX.Element {
 
 			return (
 				'-' +
-				Math.floor(moreSettings.sound.volume * 35).toString(36) +
-				Math.floor(moreSettings.sound.release * 35).toString(36) +
-				waveStacker() +
+				// Math.floor(moreSettings.sound.volume * 35).toString(36) +
+				// Math.floor(moreSettings.sound.release * 35).toString(36) +
+				// waveStacker() +
 				(+moreSettings.theme | 0) +
 				displayStacker()
 			)
@@ -709,9 +705,6 @@ function App(): JSX.Element {
 			animations: moreSettings.animations,
 			theme: moreSettings.theme,
 			segment: moreSettings.segment.on,
-			sound: {
-				...moreSettings.sound,
-			},
 		}
 	}
 
@@ -1101,32 +1094,32 @@ function App(): JSX.Element {
 
 					<div className="volume">
 						<h4>Volume</h4>
-						<Range
+						{/* <Range
 							what="volume"
 							sound={moreSettings.sound}
 							update={result => rangeUpdate('volume', result)}
-						></Range>
+						></Range> */}
 					</div>
 					<div className="release">
 						<h4>Release</h4>
-						<Range
+						{/* <Range
 							what="release"
 							sound={moreSettings.sound}
 							update={result => rangeUpdate('release', result)}
-						></Range>
+						></Range> */}
 					</div>
 
 					<div className="waveform">
 						<h4>Waveform</h4>
 
-						<Waveform
+						{/* <Waveform
 							color="#fff"
 							type={moreSettings.sound.type}
 							change={changeWaveform}
-						></Waveform>
+						></Waveform> */}
 					</div>
 
-					<div className="wavetime">
+					{/* <div className="wavetime">
 						<h4>Wavetime</h4>
 						<button
 							name="duration"
@@ -1143,7 +1136,7 @@ function App(): JSX.Element {
 						>
 							{returnWaveTime(moreSettings.sound.duration)}
 						</button>
-					</div>
+					</div> */}
 				</div>
 
 				<div className="other-settings">
@@ -1248,7 +1241,7 @@ function App(): JSX.Element {
 					<h3>Profiles</h3>
 
 					<div className="profile-wrap">
-						<ProfileList></ProfileList>
+						{/* <ProfileList></ProfileList> */}
 
 						<div className="profile-focus">
 							<div className="profile-mgmt">
