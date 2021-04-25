@@ -232,31 +232,26 @@
 			}
 
 			&.theme {
-				flex-direction: column;
-				width: 320px;
-
 				.theme-preview {
-					width: 100%;
 					display: flex;
-					flex-wrap: wrap;
-					justify-content: flex-start;
+					padding: 5px 10px;
+					margin: 10px 0;
+					width: 100px;
+					height: 20px;
+					background-color: var(--background);
+					border-radius: 20px;
+					cursor: pointer;
+					transition: all 0.2s;
 
-					> div {
-						display: flex;
-						padding: 2px 5px;
-						margin: 10px;
-						width: 100px;
-						height: 20px;
-						background-color: rgba(0, 0, 0, 0.2);
-						border-radius: 5px;
-						cursor: pointer;
+					.tp-mini-click {
+						background-color: var(--dim);
+						width: 100%;
+						margin: 5px 2px;
+						border-radius: 3px;
 						transition: all 0.2s;
 
-						.tp-mini-click {
-							width: 100%;
-							margin: 5px 2px;
-							border-radius: 3px;
-							transition: all 0.2s;
+						&.on {
+							background-color: var(--accent);
 						}
 					}
 				}
@@ -317,7 +312,7 @@
 				}
 			}
 
-			// .debug
+			.debug,
 			.unlimited {
 				display: none;
 			}

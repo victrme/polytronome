@@ -376,20 +376,17 @@ function App(): JSX.Element {
 		const root = document.querySelector(':root')! as HTMLBodyElement
 
 		// Change CSS variables
+		const newTheme = (theme + 1) % ThemeList.length
 
-		ThemeList.forEach((t, ii) => {
-			if (ii === theme) {
-				root.style.setProperty('--background', t.background)
-				root.style.setProperty('--accent', t.accent)
-				root.style.setProperty('--dim', t.dim)
-			}
-		})
+		root.style.setProperty('--background', ThemeList[newTheme].background)
+		root.style.setProperty('--accent', ThemeList[newTheme].accent)
+		root.style.setProperty('--dim', ThemeList[newTheme].dim)
 
 		// Update moreSettings
-		setMoreSettings(prev => ({ ...prev, theme }))
+		setMoreSettings(prev => ({ ...prev, theme: newTheme }))
 
 		// Save to localStorage
-		localStorage.theme = theme
+		localStorage.theme = newTheme
 	}
 
 	const randomizeLayers = () => {
@@ -876,11 +873,6 @@ function App(): JSX.Element {
 		// eslint-disable-next-line
 	}, [metronome.layers])
 
-	useEffect(() => {
-		changeTheme(moreSettings.theme)
-		// eslint-disable-next-line
-	}, [moreSettings.theme])
-
 	//
 	//
 	//
@@ -1183,6 +1175,20 @@ function App(): JSX.Element {
 						</button>
 					</div>
 
+					<div className="setting theme">
+						<div>
+							<h4>Theme</h4>
+						</div>
+						<div
+							className="theme-preview"
+							onClick={() => changeTheme(moreSettings.theme)}
+						>
+							<div className="tp-mini-click on"></div>
+							<div className="tp-mini-click"></div>
+							<div className="tp-mini-click"></div>
+						</div>
+					</div>
+
 					<div className="setting unlimited">
 						<div>
 							<h4>Unlimited</h4>
@@ -1210,33 +1216,6 @@ function App(): JSX.Element {
 					</div>
 				</div>
 
-				<div className="setting boxed theme">
-					<h3>Themes</h3>
-
-					<div className="theme-preview">
-						{ThemeList.map((theme, ii) => (
-							<div
-								key={ii}
-								className={'tp-' + theme.name}
-								onClick={() => changeTheme(ii)}
-								style={{ backgroundColor: theme.background }}
-							>
-								<div
-									className="tp-mini-click"
-									style={{ backgroundColor: theme.accent }}
-								></div>
-								<div
-									className="tp-mini-click"
-									style={{ backgroundColor: theme.dim }}
-								></div>
-								<div
-									className="tp-mini-click"
-									style={{ backgroundColor: theme.dim }}
-								></div>
-							</div>
-						))}
-					</div>
-				</div>
 				<div className="saved-profiles">
 					<h3>Profiles</h3>
 
