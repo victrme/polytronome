@@ -14,6 +14,12 @@ function App(): JSX.Element {
 
 	const ThemeList = [
 		{
+			name: 'contrast',
+			background: '#ffffff',
+			accent: '#222222',
+			dim: '#00000033',
+		},
+		{
 			name: 'black',
 			background: '#000000',
 			accent: '#bbbbbb',
@@ -55,12 +61,6 @@ function App(): JSX.Element {
 			accent: '#4b9ab4',
 			dim: '#f6dbbc',
 		},
-		{
-			name: 'contrast',
-			background: '#ffffff',
-			accent: '#222222',
-			dim: '#00000033',
-		},
 	]
 	const buttonsInterval = useRef(setTimeout(() => {}, 1))
 
@@ -77,7 +77,7 @@ function App(): JSX.Element {
 	const waveTimeList = ['50ms', '.3x tempo', '.5x tempo', '.7x tempo']
 
 	const [moreSettings, setMoreSettings] = useState({
-		theme: 1,
+		theme: 2,
 		segment: {
 			on: false,
 			count: 0,
@@ -300,11 +300,11 @@ function App(): JSX.Element {
 		}
 	}
 
-	const updateLayer = (add: boolean, index: number = 0) => {
+	const updateLayer = (add: boolean) => {
 		const newLayers = [...metronome.layers]
 
 		// Remove
-		if (!add && newLayers.length > 1) newLayers.splice(index, 1)
+		if (!add && newLayers.length > 1) newLayers.splice(-1, 1)
 
 		// Add Unlimited
 		// Add limited
@@ -462,7 +462,10 @@ function App(): JSX.Element {
 		setMetronome(prev => ({ ...prev, tempo: outOfBound ? max : amount }))
 	}
 
-	const tempoButtons = (e: any, dir: string, sign: number) => {
+	const tempoButtons = (e: any, dir: string, sign: number, doAnything: boolean) => {
+		// Cut fct short if not good platform
+		if (!doAnything) return false
+
 		if (dir === 'enter') {
 			changeTempo(metronomeRef.current.tempo + 1 * sign)
 
@@ -882,66 +885,64 @@ function App(): JSX.Element {
 	return (
 		<div className={'App ' + (isMobileOnly ? 'mobile' : '')}>
 			<div className="principal">
-				<div className="sticky">
-					<div className="title">
-						<p>Train your polyrythms</p>
-						<h1>Polytronome</h1>
+				<div className="title">
+					<p>Train your polyrythms</p>
+					<h1>Polytronome</h1>
+				</div>
+
+				<div
+					className={`clicks ${
+						moreSettingsRef.current.segment.on ? 'isSegment' : 'isLayers'
+					}`}
+				>
+					<div className="segment">
+						<div className="click-row">
+							{moreSettings.segment.ratios.map((ratio, i) => (
+								<span
+									key={i}
+									className={
+										'click' +
+										(moreSettings.segment.count === i ? ' on' : '')
+									}
+									style={{
+										width: `calc(${ratio * 100}% - 10px)`,
+									}}
+								/>
+							))}
+						</div>
 					</div>
 
-					<div
-						className={`clicks ${
-							moreSettingsRef.current.segment.on ? 'isSegment' : 'isLayers'
-						}`}
-					>
-						<div className="segment">
-							<div className="click-row">
-								{moreSettings.segment.ratios.map((ratio, i) => (
-									<span
-										key={i}
-										className={
-											'click' +
-											(moreSettings.segment.count === i ? ' on' : '')
-										}
-										style={{
-											width: `calc(${ratio * 100}% - 10px)`,
-										}}
+					<div className="layers">
+						{metronome.layers.map((layer, jj) => {
+							// Add clicks for each layers
+
+							const children: JSX.Element[] = []
+							for (let kk = 0; kk < layer.beats; kk++)
+								children.push(
+									<div
+										key={kk}
+										className={+kk <= layer.time - 1 ? 'click on' : 'click'}
 									/>
-								))}
-							</div>
-						</div>
-
-						<div className="layers">
-							{metronome.layers.map((layer, jj) => {
-								// Add clicks for each layers
-
-								const children: JSX.Element[] = []
-								for (let kk = 0; kk < layer.beats; kk++)
-									children.push(
-										<div
-											key={kk}
-											className={
-												+kk <= layer.time - 1 ? 'click on' : 'click'
-											}
-										/>
-									)
-
-								// Wrap in rows & return
-								return (
-									<div key={jj} className="click-row">
-										{children}
-									</div>
 								)
-							})}
-						</div>
-					</div>
 
-					<div className="start-button">
-						<button onMouseDown={() => launchMetronome(metronome.isRunning)}>
-							{metronome.isRunning ? 'Stop' : 'Start'}
-						</button>
+							// Wrap in rows & return
+							return (
+								<div key={jj} className="click-row">
+									{children}
+								</div>
+							)
+						})}
 					</div>
+				</div>
 
-					<div className="layers-settings">
+				<div className="start-button">
+					<button onMouseDown={() => launchMetronome(metronome.isRunning)}>
+						{metronome.isRunning ? 'Stop' : 'Start'}
+					</button>
+				</div>
+
+				<div className="layers-table-wrap">
+					<div className="layers-table">
 						{metronome.layers.map((layer, i) => (
 							<div className="ls-row" key={i}>
 								<Wheel
@@ -951,9 +952,7 @@ function App(): JSX.Element {
 									update={result => wheelUpdate('beats', result, i)}
 								></Wheel>
 
-								<div className="ls-type">
-									<p>ok</p>
-								</div>
+								<div className="ls-type">ok</div>
 
 								<div className="notes-wrap">
 									<Wheel
@@ -979,10 +978,21 @@ function App(): JSX.Element {
 							</div>
 						))}
 					</div>
+
+					<div className="ls-buttons">
+						<div className="layers-amount">
+							<button onClick={() => updateLayer(false)}>-</button>
+							<button onClick={() => updateLayer(true)}>+</button>
+						</div>
+
+						<button className="randomize" onClick={randomizeLayers}>
+							⚂
+						</button>
+					</div>
 				</div>
 			</div>
 
-			<div className="settings-wrap side">
+			<div className="settings-wrap">
 				<div className="boxed tempo">
 					<div className="settings-title">
 						<h3>Tempo</h3>
@@ -1003,123 +1013,28 @@ function App(): JSX.Element {
 						<div>
 							<button
 								className="tempo-minus"
-								onTouchStart={e =>
-									isMobileOnly ? tempoButtons(e, 'enter', -1) : undefined
-								}
-								onTouchEnd={e =>
-									isMobileOnly ? tempoButtons(e, 'leave', -1) : undefined
-								}
-								onMouseDown={e =>
-									isMobileOnly ? undefined : tempoButtons(e, 'enter', -1)
-								}
-								onMouseUp={e =>
-									isMobileOnly ? undefined : tempoButtons(e, 'leave', -1)
-								}
-								onMouseLeave={e =>
-									isMobileOnly ? undefined : tempoButtons(e, 'leave', -1)
-								}
+								onTouchStart={e => tempoButtons(e, 'enter', -1, isMobileOnly)}
+								onTouchEnd={e => tempoButtons(e, 'leave', -1, isMobileOnly)}
+								onMouseDown={e => tempoButtons(e, 'enter', -1, !isMobileOnly)}
+								onMouseUp={e => tempoButtons(e, 'leave', -1, !isMobileOnly)}
+								onMouseLeave={e => tempoButtons(e, 'leave', -1, !isMobileOnly)}
 								onContextMenu={e => e.preventDefault()}
 							>
 								-
 							</button>
 							<button
 								className="tempo-plus"
-								onTouchStart={e =>
-									isMobileOnly ? tempoButtons(e, 'enter', 1) : undefined
-								}
-								onTouchEnd={e =>
-									isMobileOnly ? tempoButtons(e, 'leave', 1) : undefined
-								}
-								onMouseDown={e =>
-									isMobileOnly ? undefined : tempoButtons(e, 'enter', 1)
-								}
-								onMouseUp={e =>
-									isMobileOnly ? undefined : tempoButtons(e, 'leave', 1)
-								}
-								onMouseLeave={e =>
-									isMobileOnly ? undefined : tempoButtons(e, 'leave', -1)
-								}
+								onTouchStart={e => tempoButtons(e, 'enter', 1, isMobileOnly)}
+								onTouchEnd={e => tempoButtons(e, 'leave', 1, isMobileOnly)}
+								onMouseDown={e => tempoButtons(e, 'enter', 1, !isMobileOnly)}
+								onMouseUp={e => tempoButtons(e, 'leave', 1, !isMobileOnly)}
+								onMouseLeave={e => tempoButtons(e, 'leave', 1, !isMobileOnly)}
 								onContextMenu={e => e.preventDefault()}
 							>
 								+
 							</button>
 						</div>
 					</div>
-				</div>
-
-				<div className="boxed beats-notes">
-					<div className="settings-title">
-						<h3>Beats & Notes</h3>
-						<button
-							className={
-								!moreSettings.unlimited && metronome.layers.length === 4
-									? 'off'
-									: ''
-							}
-							onClick={() => updateLayer(true)}
-						>
-							add
-						</button>
-
-						<button name="randomize" id="randomize" onClick={randomizeLayers}>
-							shuffle
-						</button>
-					</div>
-
-					{metronome.layers.map((l, i) => (
-						<div className="setting layer" key={i}>
-							<button className="suppr-btn" onClick={() => updateLayer(false, i)}>
-								&times;
-							</button>
-						</div>
-					))}
-				</div>
-			</div>
-
-			<div className="settings-wrap bottom">
-				<div className="setting boxed sound">
-					<h3>Click sound</h3>
-
-					<div className="volume">
-						<h4>Volume</h4>
-					</div>
-					<div className="release">
-						<h4>Release</h4>
-						{/* <Range
-							what="release"
-							sound={moreSettings.sound}
-							update={result => rangeUpdate('release', result)}
-						></Range> */}
-					</div>
-
-					<div className="waveform">
-						<h4>Waveform</h4>
-
-						{/* <Waveform
-							color="#fff"
-							type={moreSettings.sound.type}
-							change={changeWaveform}
-						></Waveform> */}
-					</div>
-
-					{/* <div className="wavetime">
-						<h4>Wavetime</h4>
-						<button
-							name="duration"
-							id="duration"
-							onClick={() =>
-								setMoreSettings(prev => ({
-									...prev,
-									sound: {
-										...prev.sound,
-										duration: (moreSettings.sound.duration + 1) % 4,
-									},
-								}))
-							}
-						>
-							{returnWaveTime(moreSettings.sound.duration)}
-						</button>
-					</div> */}
 				</div>
 
 				<div className="other-settings">

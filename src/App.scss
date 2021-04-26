@@ -8,9 +8,7 @@
 	background-color: var(--background);
 	color: var(--accent);
 	min-height: 100vh;
-	display: grid;
-	grid-template-columns: 65% 35%;
-	grid-template-rows: 60% 40%;
+	display: flex;
 	font-size: calc(10px + 2vmin);
 	transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
 	user-select: none;
@@ -61,12 +59,10 @@
 
 	.principal {
 		display: flex;
+		flex-direction: column;
 		align-items: center;
 		padding: 2em;
-
-		.sticky {
-			width: calc(100% - 4em);
-		}
+		width: 100%;
 
 		.title {
 			margin: 1em 0;
@@ -83,6 +79,11 @@
 				font-size: 0.6em;
 				opacity: 0.4;
 			}
+		}
+
+		.clicks {
+			width: 100%;
+			height: 120px;
 		}
 
 		.click-row {
@@ -119,9 +120,28 @@
 
 		// New Layer Settings
 
-		.layers-settings {
+		.layers-table-wrap {
+			display: flex;
+			align-items: center;
+
+			.ls-buttons {
+				width: 100px;
+				padding: 20px;
+
+				.randomize {
+					margin-top: 20px;
+				}
+			}
+		}
+
+		.layers-table {
+			height: 280px;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+
 			> :nth-child(even) {
-				background-color: rgba(0, 0, 0, 0.2);
+				background-color: rgba($color: #111, $alpha: 0.05);
 			}
 
 			.ls-row {
@@ -129,6 +149,10 @@
 				display: flex;
 				align-items: center;
 				justify-content: space-between;
+
+				> div {
+					margin: 0 30px;
+				}
 			}
 
 			.immovable_wheel {
@@ -187,7 +211,7 @@
 
 			.range-wrap {
 				width: 100px;
-				height: 20px;
+				height: 15px;
 				background-color: var(--dim);
 				border-radius: 5px;
 				overflow: hidden;
@@ -210,7 +234,10 @@
 
 	.settings-wrap {
 		display: flex;
+		flex-direction: column;
 		align-items: center;
+		width: 500px;
+		padding: 2em;
 
 		&.side {
 			flex-direction: column;
@@ -353,8 +380,7 @@
 		}
 
 		.other-settings {
-			width: 320px;
-			margin-right: 2em;
+			width: 100%;
 
 			.setting {
 				align-items: center;
