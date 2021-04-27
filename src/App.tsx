@@ -462,7 +462,7 @@ function App(): JSX.Element {
 		setMetronome(prev => ({ ...prev, tempo: outOfBound ? max : amount }))
 	}
 
-	const tempoButtons = (e: any, dir: string, sign: number, doAnything: boolean) => {
+	const tempoBtns = (e: any, dir: string, sign: number, doAnything: boolean) => {
 		// Cut fct short if not good platform
 		if (!doAnything) return false
 
@@ -994,11 +994,6 @@ function App(): JSX.Element {
 
 			<div className="settings-wrap">
 				<div className="boxed tempo">
-					<div className="settings-title">
-						<h3>Tempo</h3>
-						<button onClick={tapTempo}>tap</button>
-					</div>
-
 					<div className="setting">
 						<Wheel
 							index="0"
@@ -1011,28 +1006,31 @@ function App(): JSX.Element {
 						></Wheel>
 
 						<div>
-							<button
-								className="tempo-minus"
-								onTouchStart={e => tempoButtons(e, 'enter', -1, isMobileOnly)}
-								onTouchEnd={e => tempoButtons(e, 'leave', -1, isMobileOnly)}
-								onMouseDown={e => tempoButtons(e, 'enter', -1, !isMobileOnly)}
-								onMouseUp={e => tempoButtons(e, 'leave', -1, !isMobileOnly)}
-								onMouseLeave={e => tempoButtons(e, 'leave', -1, !isMobileOnly)}
-								onContextMenu={e => e.preventDefault()}
-							>
-								-
-							</button>
-							<button
-								className="tempo-plus"
-								onTouchStart={e => tempoButtons(e, 'enter', 1, isMobileOnly)}
-								onTouchEnd={e => tempoButtons(e, 'leave', 1, isMobileOnly)}
-								onMouseDown={e => tempoButtons(e, 'enter', 1, !isMobileOnly)}
-								onMouseUp={e => tempoButtons(e, 'leave', 1, !isMobileOnly)}
-								onMouseLeave={e => tempoButtons(e, 'leave', 1, !isMobileOnly)}
-								onContextMenu={e => e.preventDefault()}
-							>
-								+
-							</button>
+							<button onClick={tapTempo}>tap</button>
+							<div className="tempo-buttons">
+								<button
+									className="tempo-minus"
+									onTouchStart={e => tempoBtns(e, 'enter', -1, isMobileOnly)}
+									onTouchEnd={e => tempoBtns(e, 'leave', -1, isMobileOnly)}
+									onMouseDown={e => tempoBtns(e, 'enter', -1, !isMobileOnly)}
+									onMouseUp={e => tempoBtns(e, 'leave', -1, !isMobileOnly)}
+									onMouseLeave={e => tempoBtns(e, 'leave', -1, !isMobileOnly)}
+									onContextMenu={e => e.preventDefault()}
+								>
+									-
+								</button>
+								<button
+									className="tempo-plus"
+									onTouchStart={e => tempoBtns(e, 'enter', 1, isMobileOnly)}
+									onTouchEnd={e => tempoBtns(e, 'leave', 1, isMobileOnly)}
+									onMouseDown={e => tempoBtns(e, 'enter', 1, !isMobileOnly)}
+									onMouseUp={e => tempoBtns(e, 'leave', 1, !isMobileOnly)}
+									onMouseLeave={e => tempoBtns(e, 'leave', 1, !isMobileOnly)}
+									onContextMenu={e => e.preventDefault()}
+								>
+									+
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -1095,12 +1093,9 @@ function App(): JSX.Element {
 						</div>
 					</div>
 
-					<div className="setting unlimited">
+					{/* <div className="setting unlimited">
 						<div>
 							<h4>Unlimited</h4>
-							<small>
-								⚠️ This can slow down your {isMobileOnly ? 'phone' : 'computer'}
-							</small>
 						</div>
 
 						<button
@@ -1113,13 +1108,13 @@ function App(): JSX.Element {
 						>
 							{moreSettingsRef.current.unlimited ? 'on' : 'off'}
 						</button>
-					</div>
+					</div> */}
 
-					<div className="setting debug">
+					{/* <div className="setting debug">
 						<h4>Debug button</h4>
 
 						<button onClick={saveWork}>click</button>
-					</div>
+					</div> */}
 				</div>
 
 				<div className="saved-profiles">
