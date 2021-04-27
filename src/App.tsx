@@ -18,48 +18,55 @@ function App(): JSX.Element {
 			background: '#ffffff',
 			accent: '#222222',
 			dim: '#00000033',
+			dimmer: '#00000010',
 		},
 		{
 			name: 'black',
 			background: '#000000',
 			accent: '#bbbbbb',
 			dim: '#dddddd1a',
+			dimmer: '#bbbbbb1a',
 		},
 		{
 			name: 'dark',
 			background: '#282c34',
 			accent: '#ffffff',
-			dim: '#00000033',
+			dim: '#0000001a',
 		},
 		{
 			name: 'monokai',
 			background: '#272822',
 			accent: '#a6e22e',
 			dim: '#fd971f33',
+			dimmer: '#e87d3e22',
 		},
 		{
 			name: 'pink',
 			background: '#f37f83',
 			accent: '#ffdce2',
 			dim: '#e53c584d',
+			dimmer: '#ffffff2a',
 		},
 		{
 			name: 'boomer',
 			background: '#f6c48a',
 			accent: '#5f9e6d',
 			dim: '#84bc94',
+			dimmer: '#84bc942b',
 		},
 		{
 			name: 'coffee',
 			background: '#fbefdf',
 			accent: '#8d6852',
-			dim: '#8d68524d',
+			dim: '#dac6b5',
+			dimmer: '#dac6b52a',
 		},
 		{
 			name: 'beach',
 			background: '#fff9e9',
 			accent: '#4b9ab4',
 			dim: '#f6dbbc',
+			dimmer: '#f6dbbc50',
 		},
 	]
 	const buttonsInterval = useRef(setTimeout(() => {}, 1))
@@ -378,6 +385,11 @@ function App(): JSX.Element {
 		root.style.setProperty('--background', ThemeList[theme].background)
 		root.style.setProperty('--accent', ThemeList[theme].accent)
 		root.style.setProperty('--dim', ThemeList[theme].dim)
+
+		if (ThemeList[theme].dimmer) {
+			const color = ThemeList[theme].dimmer
+			root.style.setProperty('--dimmer', color || '#000')
+		}
 	}
 
 	const changeTheme = (theme: number) => {

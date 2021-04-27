@@ -2,6 +2,7 @@
 	--accent: white;
 	--background: #282c34;
 	--dim: #ebe9e933;
+	--dimmer: #f6dbbc40;
 }
 
 .App {
@@ -26,11 +27,11 @@
 		outline: none;
 
 		&:hover {
-			filter: brightness(0.8);
+			filter: brightness(0.9);
 		}
 
 		&:active {
-			filter: brightness(0.6);
+			filter: brightness(0.8);
 		}
 
 		&.off {
@@ -63,6 +64,14 @@
 		line-height: 50px;
 		font-size: 50px;
 		height: 50px;
+		padding: 5px 10px;
+		border-radius: 10px;
+		text-align: center;
+		transition: background-color 0.2s;
+
+		&:hover {
+			background-color: var(--dimmer);
+		}
 
 		.wheel {
 			cursor: grab;
@@ -173,7 +182,7 @@
 			justify-content: center;
 
 			> :nth-child(even) {
-				background-color: rgba($color: #111, $alpha: 0.05);
+				background-color: var(--dimmer);
 			}
 
 			.ls-row {
