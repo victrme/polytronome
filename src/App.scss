@@ -11,6 +11,7 @@
 	color: var(--accent);
 	min-height: 100vh;
 	display: flex;
+	justify-content: space-evenly;
 	font-size: calc(10px + 2vmin);
 	transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
 	user-select: none;
@@ -102,6 +103,7 @@
 		align-items: center;
 		padding: 2em;
 		width: 100%;
+		max-width: 1000px;
 
 		.title {
 			margin: 1em 0;
@@ -184,6 +186,10 @@
 
 			> :nth-child(even) {
 				background-color: var(--dimmer);
+
+				.immovable_wheel:hover {
+					background-color: var(--background);
+				}
 			}
 
 			.ls-row {
@@ -194,6 +200,19 @@
 
 				> div {
 					margin: 0 30px;
+				}
+			}
+
+			.css-waves {
+				position: relative;
+				width: 60px;
+				height: 40px;
+
+				svg {
+					position: absolute;
+					width: 100%;
+					height: 100%;
+					cursor: pointer;
 				}
 			}
 
@@ -249,7 +268,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		width: 500px;
+		max-width: 450px;
 		padding: 2em;
 
 		> div {
@@ -315,6 +334,7 @@
 
 			&.tempo {
 				.immovable_wheel {
+					margin-left: -20px;
 					line-height: 80px;
 					font-size: 80px;
 					height: 80px;
@@ -490,11 +510,6 @@
 			.boxed.beats-notes,
 			.setting.boxed.sound {
 				margin-top: 1em;
-			}
-
-			.setting.sound .css-waves {
-				width: 50px;
-				height: 30px;
 			}
 
 			.range-wrap {

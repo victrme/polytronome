@@ -412,19 +412,18 @@ function App(): JSX.Element {
 		restartMetronome()
 	}
 
-	const changeWaveform = () => {
-		// const type = moreSettings.sound.type
-		// waveformsList.forEach((x, i) => {
-		// 	if (x === type) {
-		// 		setMoreSettings(prev => ({
-		// 			...prev,
-		// 			sound: {
-		// 				...prev.sound,
-		// 				type: waveformsList[(i + 1) % 4],
-		// 			},
-		// 		}))
-		// 	}
-		// })
+	const changeWaveform = (type: string, i: number) => {
+		const layers = [...metronome.layers]
+
+		waveformsList.forEach((x, ii) => {
+			if (x === type) {
+				layers[i].type = waveformsList[(ii + 1) % 4]
+				setMetronome(prev => ({
+					...prev,
+					layers: [...layers],
+				}))
+			}
+		})
 	}
 
 	const setFullscreen = (state: boolean) => {
@@ -986,7 +985,12 @@ function App(): JSX.Element {
 									update={result => wheelUpdate('beats', result, i)}
 								></Wheel>
 
-								<div className="ls-type">ok</div>
+								<div className="ls-type">
+									<Waveform
+										type={layer.type}
+										change={() => changeWaveform(layer.type, i)}
+									></Waveform>
+								</div>
 
 								<div className="notes-wrap">
 									<Wheel
