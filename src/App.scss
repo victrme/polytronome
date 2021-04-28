@@ -3,6 +3,7 @@
 	--background: #282c34;
 	--dim: #ebe9e933;
 	--dimmer: #f6dbbc40;
+	--buttons: #ebe9e933;
 }
 
 .App {
@@ -16,7 +17,7 @@
 
 	button {
 		color: var(--accent);
-		background: var(--dim);
+		background: var(--buttons);
 		padding: 7px 30px;
 		border: none;
 		border-radius: 2em;
