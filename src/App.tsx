@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
+import propTypes from 'prop-types'
 import { isMobileOnly } from 'react-device-detect'
 import { useBeforeunload } from 'react-beforeunload'
 import Pizzicato from 'pizzicato'
@@ -6,6 +7,7 @@ import Wheel from './Wheel'
 import Range from './Range'
 import Waveform from './Waveform'
 import './App.scss'
+import { MoreSettings, Metronome, Layer } from './Types'
 
 function App(): JSX.Element {
 	//
@@ -31,7 +33,8 @@ function App(): JSX.Element {
 			name: 'dark',
 			background: '#282c34',
 			accent: '#ffffff',
-			dim: '#0000001a',
+			dim: '#5c657736',
+			dimmer: '#5c657736',
 		},
 		{
 			name: 'monokai',
@@ -39,6 +42,7 @@ function App(): JSX.Element {
 			accent: '#a6e22e',
 			dim: '#fd971f33',
 			dimmer: '#e87d3e22',
+			buttons: '#FD971F60',
 		},
 		{
 			name: 'pink',
@@ -69,21 +73,11 @@ function App(): JSX.Element {
 			dimmer: '#f6dbbc50',
 		},
 	]
-	const buttonsInterval = useRef(setTimeout(() => {}, 1))
-
-	const defaultLayer = {
-		id: setRandomID(),
-		beats: 4,
-		time: 1,
-		frequency: 12,
-		type: 'sine',
-		volume: 0.4,
-	}
 
 	const waveformsList = ['sine', 'triangle', 'sawtooth', 'square']
 	const waveTimeList = ['50ms', '.3x tempo', '.5x tempo', '.7x tempo']
 
-	const [moreSettings, setMoreSettings] = useState({
+	const [moreSettings, setMoreSettings] = useState<MoreSettings>({
 		theme: 2,
 		segment: {
 			on: false,
@@ -97,7 +91,7 @@ function App(): JSX.Element {
 		animations: true,
 	})
 
-	const [metronome, setMetronome] = useState({
+	const [metronome, setMetronome] = useState<Metronome>({
 		layers: [
 			{
 				id: setRandomID(),
@@ -127,6 +121,15 @@ function App(): JSX.Element {
 		],
 	})
 
+	const defaultLayer: Layer = {
+		id: setRandomID(),
+		beats: 4,
+		time: 1,
+		frequency: 12,
+		type: 'sine',
+		volume: 0.4,
+	}
+
 	const [selectedProfile, setSelectedProfile] = useState(0)
 	const [IsTyping, setIsTyping] = useState(false)
 	const [exportInput, setExportInput] = useState('')
@@ -135,6 +138,7 @@ function App(): JSX.Element {
 	const moreSettingsRef = useRef(moreSettings)
 	const metronomeRef = useRef(metronome)
 	const IsTypingRef = useRef(false)
+	const buttonsInterval = useRef(setTimeout(() => {}, 1))
 
 	metronomeRef.current = metronome
 	moreSettingsRef.current = moreSettings
@@ -161,10 +165,6 @@ function App(): JSX.Element {
 		let xx = ''
 		while (xx.length < 8) xx += String.fromCharCode(randInInterval(97, 122))
 		return xx
-	}
-
-	function whichOctave(freq: number, n: number) {
-		return Math.floor(freq / 12) > n ? 'octave on' : 'octave'
 	}
 
 	//
@@ -385,11 +385,8 @@ function App(): JSX.Element {
 		root.style.setProperty('--background', ThemeList[theme].background)
 		root.style.setProperty('--accent', ThemeList[theme].accent)
 		root.style.setProperty('--dim', ThemeList[theme].dim)
-
-		if (ThemeList[theme].dimmer) {
-			const color = ThemeList[theme].dimmer
-			root.style.setProperty('--dimmer', color || '#000')
-		}
+		root.style.setProperty('--dimmer', ThemeList[theme].dimmer)
+		root.style.setProperty('--buttons', ThemeList[theme].buttons || ThemeList[theme].dim)
 	}
 
 	const changeTheme = (theme: number) => {
@@ -561,11 +558,15 @@ function App(): JSX.Element {
 		if (what === 'beats') restartMetronome()
 	}
 
-	const rangeUpdate = (what: string, num: number) => {
-		// const newSound = { ...moreSettings.sound }
-		// const toSave = what === 'release' ? (num < 0.01 ? 0.01 : num) : num
-		// newSound[what] = toSave
-		// setMoreSettings(prev => ({ ...prev, sound: newSound }))
+	const rangeUpdate = (index: number, num: number) => {
+		//
+		// For defunct release
+		//const toSave = what === 'release' ? (num < 0.01 ? 0.01 : num) : num
+
+		const layers = [...metronome.layers]
+		layers[index].volume = num
+
+		setMetronome(prev => ({ ...prev, layers: [...layers] }))
 	}
 
 	//
@@ -778,6 +779,12 @@ function App(): JSX.Element {
 		setSelectedProfile(newSelection)
 	}
 
+	//
+	//
+	//	JSXs
+	//
+	//
+
 	const ProfileList = () => {
 		const list = pfStorage.get()
 		const [renamingInput, setRenamingInput] = useState(list[selectedProfile].name)
@@ -835,6 +842,23 @@ function App(): JSX.Element {
 		}
 
 		return result
+	}
+
+	const Octaves = ({ freq }) => {
+		const a = Math.floor(freq / 12)
+
+		return (
+			<div className="octave-wrap">
+				<div className={'octave' + (a > 1 ? ' on' : '')}></div>
+				<div className={'octave' + (a > 2 ? ' on' : '')}></div>
+				<div className={'octave' + (a > -1 ? ' on' : '')}></div>
+				<div className={'octave' + (a > 0 ? ' on' : '')}></div>
+			</div>
+		)
+	}
+
+	Octaves.propTypes = {
+		freq: propTypes.number.isRequired,
 	}
 
 	//
@@ -958,9 +982,7 @@ function App(): JSX.Element {
 						{metronome.layers.map((layer, i) => (
 							<div className="ls-row" key={i}>
 								<Wheel
-									index={i}
-									what={'beats'}
-									metronome={metronome}
+									beats={layer.beats}
 									update={result => wheelUpdate('beats', result, i)}
 								></Wheel>
 
@@ -968,24 +990,16 @@ function App(): JSX.Element {
 
 								<div className="notes-wrap">
 									<Wheel
-										index={i}
-										what={'frequency'}
-										metronome={metronome}
+										freq={layer.beats}
 										update={result => wheelUpdate('frequency', result, i)}
 									></Wheel>
 
-									<div className="octave-wrap">
-										<div className={whichOctave(layer.frequency, 1)}></div>
-										<div className={whichOctave(layer.frequency, 2)}></div>
-										<div className={whichOctave(layer.frequency, -1)}></div>
-										<div className={whichOctave(layer.frequency, 0)}></div>
-									</div>
+									<Octaves freq={layer.frequency}></Octaves>
 								</div>
 
 								<Range
-									what="volume"
-									layer={layer}
-									update={result => rangeUpdate('volume', result)}
+									volume={layer.volume}
+									update={result => rangeUpdate(i, result)}
 								></Range>
 							</div>
 						))}
@@ -1008,9 +1022,7 @@ function App(): JSX.Element {
 				<div className="boxed tempo">
 					<div className="setting">
 						<Wheel
-							index="0"
-							what="tempo"
-							metronome={metronome}
+							tempo={metronome.tempo}
 							update={result => {
 								wheelUpdate('tempo', result)
 								restartMetronome()
@@ -1120,9 +1132,9 @@ function App(): JSX.Element {
 						>
 							{moreSettingsRef.current.unlimited ? 'on' : 'off'}
 						</button>
-					</div> */}
-
-					{/* <div className="setting debug">
+					</div>
+					
+					<div className="setting debug">
 						<h4>Debug button</h4>
 
 						<button onClick={saveWork}>click</button>

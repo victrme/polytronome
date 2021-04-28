@@ -1,5 +1,6 @@
 import { useGesture } from 'react-use-gesture'
 import { useState, useRef, useEffect } from 'react'
+import propTypes from 'prop-types'
 
 // Wheels work by getting the index of an element with wheel height divided by children height
 // Up movement uses translateY(-px), incrementing is negative, so maths are weird
@@ -19,21 +20,43 @@ const allLists = {
 	frequency: fillArray(0, freqArr.length * 3, true),
 }
 
-function Wheel({ index, what, metronome, update }): JSX.Element {
-	const is = (cat: string) => what === cat
+function Wheel({ update, tempo, freq, beats }): JSX.Element {
+	const what: {
+		height: number
+		list: (number | string)[]
+		current: number
+		offset: number
+	} = { height: 50, list: [], current: 0, offset: 0 }
 
-	const height = is('tempo') ? 80 : 50
-	const list = allLists[what]
+	if (tempo !== undefined) {
+		what.height = 80
+		what.list = allLists.tempo
+		what.current = tempo
+		what.offset = 30
+	}
+
+	if (beats !== undefined) {
+		what.list = allLists.beats
+		what.current = beats
+		what.offset = 2
+	}
+
+	if (freq !== undefined) {
+		what.list = allLists.frequency
+		what.current = freq
+	}
+
+	const height = what.height
+	const list = what.list
 	const maxMovement = -height * list.length + height
-	const currentWhat = is('tempo') ? metronome.tempo : metronome.layers[index][what]
-	const initOffset = is('tempo') ? 30 : is('beats') ? 2 : 0
+	const current = what.current
+	const initOffset = what.offset
 
 	// States
-	// const [soundCueStep, setSoundCueStep] = useState(0)
 	const wheelRef = useRef(document.createElement('div'))
-	const [saved, setSaved] = useState(currentWhat)
+	const [saved, setSaved] = useState(current)
 	const [wheel, setWheel] = useState({
-		y: (currentWhat - initOffset) * -height,
+		y: (current - initOffset) * -height,
 		snap: true,
 	})
 
@@ -61,25 +84,13 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 
 		if (userMoves) {
 			setWheel({ y, snap: false })
-
-			// Sound cue finds when you step out of a wheel div onto another
-			// const step = +((y - height / 2) / -height).toFixed(0)
-			// if (step !== soundCueStep) {
-			// 	setSoundCueStep(step)
-			// 	actionSound()
-			// }
 		} else {
 			// Save element position
 			let number = +(Math.abs(wheelSnapping(y)) / height)
-			number = what === 'tempo' ? number + 30 : number
+			number = tempo !== undefined ? number + 30 : number
 
 			setSaved(number)
 			update(number)
-
-			// Debatable
-			// if (isMacOs) {
-			// 	actionSound()
-			// }
 		}
 
 		return false
@@ -109,17 +120,17 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 	// Listens for state changes outside of the component
 	// Only update affected wheel
 	useEffect(() => {
-		if (currentWhat !== saved) {
+		if (current !== saved) {
 			// Update Wheel when randomize beats
-			if (what === 'beats') setWheel({ y: (currentWhat - 2) * -height, snap: true })
+			if (beats !== undefined) setWheel({ y: (current - 2) * -height, snap: true })
 
 			// Update Wheel when tempo tapping
-			if (what === 'tempo') setWheel({ y: (currentWhat - 30) * -height, snap: false })
+			if (tempo !== undefined) setWheel({ y: (current - 30) * -height, snap: false })
 
-			setSaved(currentWhat)
+			setSaved(current)
 		}
 		// eslint-disable-next-line
-	}, [currentWhat])
+	}, [current])
 
 	useEffect(() => {
 		wheelRef.current.addEventListener(
@@ -146,6 +157,13 @@ function Wheel({ index, what, metronome, update }): JSX.Element {
 			</div>
 		</div>
 	)
+}
+
+Wheel.propTypes = {
+	update: propTypes.func.isRequired,
+	tempo: propTypes.number,
+	beats: propTypes.number,
+	freq: propTypes.number,
 }
 
 export default Wheel
