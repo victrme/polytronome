@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
+import propTypes from 'prop-types'
 import { isMobileOnly } from 'react-device-detect'
 import { useBeforeunload } from 'react-beforeunload'
 import Pizzicato from 'pizzicato'
@@ -6,6 +7,7 @@ import Wheel from './Wheel'
 import Range from './Range'
 import Waveform from './Waveform'
 import './App.scss'
+import { MoreSettings, Metronome, Layer } from './Types'
 
 function App(): JSX.Element {
 	//
@@ -14,75 +16,69 @@ function App(): JSX.Element {
 
 	const ThemeList = [
 		{
+			name: 'contrast',
+			background: '#ffffff',
+			accent: '#222222',
+			dim: '#00000033',
+			dimmer: '#00000010',
+		},
+		{
 			name: 'black',
 			background: '#000000',
 			accent: '#bbbbbb',
 			dim: '#dddddd1a',
+			dimmer: '#bbbbbb1a',
 		},
 		{
 			name: 'dark',
 			background: '#282c34',
 			accent: '#ffffff',
-			dim: '#00000033',
+			dim: '#5c657736',
+			dimmer: '#5c657736',
 		},
 		{
 			name: 'monokai',
 			background: '#272822',
 			accent: '#a6e22e',
 			dim: '#fd971f33',
+			dimmer: '#e87d3e22',
+			buttons: '#FD971F60',
 		},
 		{
 			name: 'pink',
 			background: '#f37f83',
 			accent: '#ffdce2',
 			dim: '#e53c584d',
+			dimmer: '#ffffff2a',
 		},
 		{
 			name: 'boomer',
 			background: '#f6c48a',
 			accent: '#5f9e6d',
 			dim: '#84bc94',
+			dimmer: '#84bc942b',
 		},
 		{
 			name: 'coffee',
 			background: '#fbefdf',
 			accent: '#8d6852',
-			dim: '#8d68524d',
+			dim: '#dac6b5',
+			dimmer: '#dac6b52a',
 		},
 		{
 			name: 'beach',
 			background: '#fff9e9',
 			accent: '#4b9ab4',
 			dim: '#f6dbbc',
-		},
-		{
-			name: 'contrast',
-			background: '#ffffff',
-			accent: '#222222',
-			dim: '#00000033',
+			dimmer: '#f6dbbc50',
 		},
 	]
-	// const previewInterval = useRef(setTimeout(() => {}, 1))
-	const buttonsInterval = useRef(setTimeout(() => {}, 1))
-
-	const defaultLayer = {
-		id: setRandomID(),
-		beats: 4,
-		time: 1,
-		frequency: 12,
-	}
 
 	const waveformsList = ['sine', 'triangle', 'sawtooth', 'square']
 	const waveTimeList = ['50ms', '.3x tempo', '.5x tempo', '.7x tempo']
 
-	const [moreSettings, setMoreSettings] = useState({
-		theme: 1,
-		sound: {
-			type: 'sine',
-			release: 0.2,
-			volume: 0.4,
-			duration: 0,
-		},
+	const [moreSettings, setMoreSettings] = useState<MoreSettings>({
+		theme: 2,
 		segment: {
 			on: false,
 			count: 0,
@@ -95,19 +91,23 @@ function App(): JSX.Element {
 		animations: true,
 	})
 
-	const [metronome, setMetronome] = useState({
+	const [metronome, setMetronome] = useState<Metronome>({
 		layers: [
 			{
 				id: setRandomID(),
 				beats: 4,
 				time: 1,
 				frequency: 12,
+				type: 'sine',
+				volume: 0.4,
 			},
 			{
 				id: setRandomID(),
 				beats: 5,
 				time: 1,
 				frequency: 19,
+				type: 'triangle',
+				volume: 0.3,
 			},
 		],
 		startTime: 0,
@@ -121,6 +121,15 @@ function App(): JSX.Element {
 		],
 	})
 
+	const defaultLayer: Layer = {
+		id: setRandomID(),
+		beats: 4,
+		time: 1,
+		frequency: 12,
+		type: 'sine',
+		volume: 0.4,
+	}
+
 	const [selectedProfile, setSelectedProfile] = useState(0)
 	const [IsTyping, setIsTyping] = useState(false)
 	const [exportInput, setExportInput] = useState('')
@@ -129,6 +138,7 @@ function App(): JSX.Element {
 	const moreSettingsRef = useRef(moreSettings)
 	const metronomeRef = useRef(metronome)
 	const IsTypingRef = useRef(false)
+	const buttonsInterval = useRef(setTimeout(() => {}, 1))
 
 	metronomeRef.current = metronome
 	moreSettingsRef.current = moreSettings
@@ -155,10 +165,6 @@ function App(): JSX.Element {
 		let xx = ''
 		while (xx.length < 8) xx += String.fromCharCode(randInInterval(97, 122))
 		return xx
-	}
-
-	function returnWaveTime(num: number) {
-		return waveTimeList[num]
 	}
 
 	//
@@ -218,22 +224,22 @@ function App(): JSX.Element {
 			const wave = new Pizzicato.Sound({
 				source: 'wave',
 				options: {
-					type: moreSettingsRef.current.sound.type,
-					release: moreSettingsRef.current.sound.release,
-					volume: moreSettingsRef.current.sound.volume,
+					type: layer.type,
+					//release: moreSettingsRef.current.sound.release,
+					volume: layer.volume,
 					frequency: freq,
 					attack: 0,
 				},
 			})
 
-			const wtlist = [50, 0.3, 0.5, 0.7]
-			const wavetime =
-				moreSett.sound.duration === 0
-					? wtlist[0]
-					: wtlist[moreSett.sound.duration] * tempoMs
+			// const wtlist = [50, 0.3, 0.5, 0.7]
+			// const wavetime =
+			// 	moreSett.sound.duration === 0
+			// 		? wtlist[0]
+			// 		: wtlist[moreSett.sound.duration] * tempoMs
 
 			wave.play()
-			setTimeout(() => wave.stop(), wavetime)
+			setTimeout(() => wave.stop(), 50)
 
 			//
 			// Update beat time
@@ -301,11 +307,11 @@ function App(): JSX.Element {
 		}
 	}
 
-	const updateLayer = (add: boolean, index: number = 0) => {
+	const updateLayer = (add: boolean) => {
 		const newLayers = [...metronome.layers]
 
 		// Remove
-		if (!add && newLayers.length > 1) newLayers.splice(index, 1)
+		if (!add && newLayers.length > 1) newLayers.splice(-1, 1)
 
 		// Add Unlimited
 		// Add limited
@@ -373,24 +379,23 @@ function App(): JSX.Element {
 	//
 	//
 
-	const changeTheme = (theme: number) => {
+	const applyTheme = (theme: number) => {
 		const root = document.querySelector(':root')! as HTMLBodyElement
 
-		// Change CSS variables
+		root.style.setProperty('--background', ThemeList[theme].background)
+		root.style.setProperty('--accent', ThemeList[theme].accent)
+		root.style.setProperty('--dim', ThemeList[theme].dim)
+		root.style.setProperty('--dimmer', ThemeList[theme].dimmer)
+		root.style.setProperty('--buttons', ThemeList[theme].buttons || ThemeList[theme].dim)
+	}
 
-		ThemeList.forEach((t, ii) => {
-			if (ii === theme) {
-				root.style.setProperty('--background', t.background)
-				root.style.setProperty('--accent', t.accent)
-				root.style.setProperty('--dim', t.dim)
-			}
-		})
+	const changeTheme = (theme: number) => {
+		const newTheme = (theme + 1) % ThemeList.length
 
-		// Update moreSettings
-		setMoreSettings(prev => ({ ...prev, theme }))
+		applyTheme(newTheme)
 
-		// Save to localStorage
-		localStorage.theme = theme
+		setMoreSettings(prev => ({ ...prev, theme: newTheme }))
+		localStorage.theme = newTheme
 	}
 
 	const randomizeLayers = () => {
@@ -407,17 +412,15 @@ function App(): JSX.Element {
 		restartMetronome()
 	}
 
-	const changeWaveform = () => {
-		const type = moreSettings.sound.type
+	const changeWaveform = (type: string, i: number) => {
+		const layers = [...metronome.layers]
 
-		waveformsList.forEach((x, i) => {
+		waveformsList.forEach((x, ii) => {
 			if (x === type) {
-				setMoreSettings(prev => ({
+				layers[i].type = waveformsList[(ii + 1) % 4]
+				setMetronome(prev => ({
 					...prev,
-					sound: {
-						...prev.sound,
-						type: waveformsList[(i + 1) % 4],
-					},
+					layers: [...layers],
 				}))
 			}
 		})
@@ -467,7 +470,10 @@ function App(): JSX.Element {
 		setMetronome(prev => ({ ...prev, tempo: outOfBound ? max : amount }))
 	}
 
-	const tempoButtons = (e: any, dir: string, sign: number) => {
+	const tempoBtns = (e: any, dir: string, sign: number, doAnything: boolean) => {
+		// Cut fct short if not good platform
+		if (!doAnything) return false
+
 		if (dir === 'enter') {
 			changeTempo(metronomeRef.current.tempo + 1 * sign)
 
@@ -551,12 +557,15 @@ function App(): JSX.Element {
 		if (what === 'beats') restartMetronome()
 	}
 
-	const rangeUpdate = (what: string, num: number) => {
-		const newSound = { ...moreSettings.sound }
-		const toSave = what === 'release' ? (num < 0.01 ? 0.01 : num) : num
+	const rangeUpdate = (index: number, num: number) => {
+		//
+		// For defunct release
+		//const toSave = what === 'release' ? (num < 0.01 ? 0.01 : num) : num
 
-		newSound[what] = toSave
-		setMoreSettings(prev => ({ ...prev, sound: newSound }))
+		const layers = [...metronome.layers]
+		layers[index].volume = num
+
+		setMetronome(prev => ({ ...prev, layers: [...layers] }))
 	}
 
 	//
@@ -614,10 +623,9 @@ function App(): JSX.Element {
 
 		const settingsExport = () => {
 			const waveStacker = () => {
-				const form = waveformsList.findIndex(w => w === moreSettings.sound.type)
-				const time = moreSettings.sound.duration
-
-				return (form * waveTimeList.length + time).toString(26)
+				// const form = waveformsList.findIndex(w => w === moreSettings.sound.type)
+				// const time = moreSettings.sound.duration
+				// return (form * waveTimeList.length + time).toString(26)
 			}
 
 			// times 2 because [true, false].length = 2
@@ -628,9 +636,9 @@ function App(): JSX.Element {
 
 			return (
 				'-' +
-				Math.floor(moreSettings.sound.volume * 35).toString(36) +
-				Math.floor(moreSettings.sound.release * 35).toString(36) +
-				waveStacker() +
+				// Math.floor(moreSettings.sound.volume * 35).toString(36) +
+				// Math.floor(moreSettings.sound.release * 35).toString(36) +
+				// waveStacker() +
 				(+moreSettings.theme | 0) +
 				displayStacker()
 			)
@@ -709,9 +717,6 @@ function App(): JSX.Element {
 			animations: moreSettings.animations,
 			theme: moreSettings.theme,
 			segment: moreSettings.segment.on,
-			sound: {
-				...moreSettings.sound,
-			},
 		}
 	}
 
@@ -733,7 +738,7 @@ function App(): JSX.Element {
 			tempo: data.tempo,
 		}))
 
-		changeTheme(data.theme)
+		applyTheme(data.theme)
 	}
 
 	const addProfiles = () => {
@@ -772,6 +777,12 @@ function App(): JSX.Element {
 
 		setSelectedProfile(newSelection)
 	}
+
+	//
+	//
+	//	JSXs
+	//
+	//
 
 	const ProfileList = () => {
 		const list = pfStorage.get()
@@ -832,6 +843,23 @@ function App(): JSX.Element {
 		return result
 	}
 
+	const Octaves = ({ freq }) => {
+		const a = Math.floor(freq / 12)
+
+		return (
+			<div className="octave-wrap">
+				<div className={'octave' + (a > 1 ? ' on' : '')}></div>
+				<div className={'octave' + (a > 2 ? ' on' : '')}></div>
+				<div className={'octave' + (a > -1 ? ' on' : '')}></div>
+				<div className={'octave' + (a > 0 ? ' on' : '')}></div>
+			</div>
+		)
+	}
+
+	Octaves.propTypes = {
+		freq: propTypes.number.isRequired,
+	}
+
 	//
 	//
 	//	Effects
@@ -883,11 +911,6 @@ function App(): JSX.Element {
 		// eslint-disable-next-line
 	}, [metronome.layers])
 
-	useEffect(() => {
-		changeTheme(moreSettings.theme)
-		// eslint-disable-next-line
-	}, [moreSettings.theme])
-
 	//
 	//
 	//
@@ -897,79 +920,113 @@ function App(): JSX.Element {
 	return (
 		<div className={'App ' + (isMobileOnly ? 'mobile' : '')}>
 			<div className="principal">
-				<div className="sticky">
-					<div className="title">
-						<p>Train your polyrythms</p>
-						<h1>Polytronome</h1>
+				<div className="title">
+					<p>Train your polyrythms</p>
+					<h1>Polytronome</h1>
+				</div>
+
+				<div
+					className={`clicks ${
+						moreSettingsRef.current.segment.on ? 'isSegment' : 'isLayers'
+					}`}
+				>
+					<div className="segment">
+						<div className="click-row">
+							{moreSettings.segment.ratios.map((ratio, i) => (
+								<span
+									key={i}
+									className={
+										'click' +
+										(moreSettings.segment.count === i ? ' on' : '')
+									}
+									style={{
+										width: `calc(${ratio * 100}% - 10px)`,
+									}}
+								/>
+							))}
+						</div>
 					</div>
 
-					<div
-						className={`clicks ${
-							moreSettingsRef.current.segment.on ? 'isSegment' : 'isLayers'
-						}`}
-					>
-						<div className="segment">
-							<div className="click-row">
-								{moreSettings.segment.ratios.map((ratio, i) => (
-									<span
-										key={i}
-										className={
-											'click' +
-											(moreSettings.segment.count === i ? ' on' : '')
-										}
-										style={{
-											width: `calc(${ratio * 100}% - 10px)`,
-										}}
+					<div className="layers">
+						{metronome.layers.map((layer, jj) => {
+							// Add clicks for each layers
+
+							const children: JSX.Element[] = []
+							for (let kk = 0; kk < layer.beats; kk++)
+								children.push(
+									<div
+										key={kk}
+										className={+kk <= layer.time - 1 ? 'click on' : 'click'}
 									/>
-								))}
-							</div>
-						</div>
-
-						<div className="layers">
-							{metronome.layers.map((layer, jj) => {
-								// Add clicks for each layers
-
-								const children: JSX.Element[] = []
-								for (let kk = 0; kk < layer.beats; kk++)
-									children.push(
-										<div
-											key={kk}
-											className={
-												+kk <= layer.time - 1 ? 'click on' : 'click'
-											}
-										/>
-									)
-
-								// Wrap in rows & return
-								return (
-									<div key={jj} className="click-row">
-										{children}
-									</div>
 								)
-							})}
-						</div>
+
+							// Wrap in rows & return
+							return (
+								<div key={jj} className="click-row">
+									{children}
+								</div>
+							)
+						})}
+					</div>
+				</div>
+
+				<div className="start-button">
+					<button onMouseDown={() => launchMetronome(metronome.isRunning)}>
+						{metronome.isRunning ? 'Stop' : 'Start'}
+					</button>
+				</div>
+
+				<div className="layers-table-wrap">
+					<div className="layers-table">
+						{metronome.layers.map((layer, i) => (
+							<div className="ls-row" key={i}>
+								<Wheel
+									beats={layer.beats}
+									update={result => wheelUpdate('beats', result, i)}
+								></Wheel>
+
+								<div className="ls-type">
+									<Waveform
+										type={layer.type}
+										change={() => changeWaveform(layer.type, i)}
+									></Waveform>
+								</div>
+
+								<div className="notes-wrap">
+									<Wheel
+										freq={layer.beats}
+										update={result => wheelUpdate('frequency', result, i)}
+									></Wheel>
+
+									<Octaves freq={layer.frequency}></Octaves>
+								</div>
+
+								<Range
+									volume={layer.volume}
+									update={result => rangeUpdate(i, result)}
+								></Range>
+							</div>
+						))}
 					</div>
 
-					<div className="start-button">
-						<button onMouseDown={() => launchMetronome(metronome.isRunning)}>
-							{metronome.isRunning ? 'Stop' : 'Start'}
+					<div className="ls-buttons">
+						<div className="layers-amount">
+							<button onClick={() => updateLayer(false)}>-</button>
+							<button onClick={() => updateLayer(true)}>+</button>
+						</div>
+
+						<button className="randomize" onClick={randomizeLayers}>
+							⚂
 						</button>
 					</div>
 				</div>
 			</div>
 
-			<div className="settings-wrap side">
+			<div className="settings-wrap">
 				<div className="boxed tempo">
-					<div className="settings-title">
-						<h3>Tempo</h3>
-						<button onClick={tapTempo}>tap</button>
-					</div>
-
 					<div className="setting">
 						<Wheel
-							index="0"
-							what="tempo"
-							metronome={metronome}
+							tempo={metronome.tempo}
 							update={result => {
 								wheelUpdate('tempo', result)
 								restartMetronome()
@@ -977,172 +1034,32 @@ function App(): JSX.Element {
 						></Wheel>
 
 						<div>
-							<button
-								className="tempo-minus"
-								onTouchStart={e =>
-									isMobileOnly ? tempoButtons(e, 'enter', -1) : undefined
-								}
-								onTouchEnd={e =>
-									isMobileOnly ? tempoButtons(e, 'leave', -1) : undefined
-								}
-								onMouseDown={e =>
-									isMobileOnly ? undefined : tempoButtons(e, 'enter', -1)
-								}
-								onMouseUp={e =>
-									isMobileOnly ? undefined : tempoButtons(e, 'leave', -1)
-								}
-								onMouseLeave={e =>
-									isMobileOnly ? undefined : tempoButtons(e, 'leave', -1)
-								}
-								onContextMenu={e => e.preventDefault()}
-							>
-								-
-							</button>
-							<button
-								className="tempo-plus"
-								onTouchStart={e =>
-									isMobileOnly ? tempoButtons(e, 'enter', 1) : undefined
-								}
-								onTouchEnd={e =>
-									isMobileOnly ? tempoButtons(e, 'leave', 1) : undefined
-								}
-								onMouseDown={e =>
-									isMobileOnly ? undefined : tempoButtons(e, 'enter', 1)
-								}
-								onMouseUp={e =>
-									isMobileOnly ? undefined : tempoButtons(e, 'leave', 1)
-								}
-								onMouseLeave={e =>
-									isMobileOnly ? undefined : tempoButtons(e, 'leave', -1)
-								}
-								onContextMenu={e => e.preventDefault()}
-							>
-								+
-							</button>
-						</div>
-					</div>
-				</div>
-
-				<div className="boxed beats-notes">
-					<div className="settings-title">
-						<h3>Beats & Notes</h3>
-						<button
-							className={
-								!moreSettings.unlimited && metronome.layers.length === 4
-									? 'off'
-									: ''
-							}
-							onClick={() => updateLayer(true)}
-						>
-							add
-						</button>
-
-						<button name="randomize" id="randomize" onClick={randomizeLayers}>
-							shuffle
-						</button>
-					</div>
-
-					{metronome.layers.map((l, i) => (
-						<div className="setting layer" key={i}>
-							<Wheel
-								index={i}
-								what={'beats'}
-								metronome={metronome}
-								update={result => wheelUpdate('beats', result, i)}
-							></Wheel>
-
-							<div className="notes-wrap">
-								<Wheel
-									index={i}
-									what={'frequency'}
-									metronome={metronome}
-									update={result => wheelUpdate('frequency', result, i)}
-								></Wheel>
-
-								<div className="octave-wrap">
-									<div
-										className={
-											'octave' +
-											(Math.floor(l.frequency / 12) > 1 ? ' on' : '')
-										}
-									></div>
-									<div
-										className={
-											'octave' +
-											(Math.floor(l.frequency / 12) > 2 ? ' on' : '')
-										}
-									></div>
-									<div
-										className={
-											'octave' +
-											(Math.floor(l.frequency / 12) > -1 ? ' on' : '')
-										}
-									></div>
-									<div
-										className={
-											'octave' +
-											(Math.floor(l.frequency / 12) > 0 ? ' on' : '')
-										}
-									></div>
-								</div>
+							<button onClick={tapTempo}>tap</button>
+							<div className="tempo-buttons">
+								<button
+									className="tempo-minus"
+									onTouchStart={e => tempoBtns(e, 'enter', -1, isMobileOnly)}
+									onTouchEnd={e => tempoBtns(e, 'leave', -1, isMobileOnly)}
+									onMouseDown={e => tempoBtns(e, 'enter', -1, !isMobileOnly)}
+									onMouseUp={e => tempoBtns(e, 'leave', -1, !isMobileOnly)}
+									onMouseLeave={e => tempoBtns(e, 'leave', -1, !isMobileOnly)}
+									onContextMenu={e => e.preventDefault()}
+								>
+									-
+								</button>
+								<button
+									className="tempo-plus"
+									onTouchStart={e => tempoBtns(e, 'enter', 1, isMobileOnly)}
+									onTouchEnd={e => tempoBtns(e, 'leave', 1, isMobileOnly)}
+									onMouseDown={e => tempoBtns(e, 'enter', 1, !isMobileOnly)}
+									onMouseUp={e => tempoBtns(e, 'leave', 1, !isMobileOnly)}
+									onMouseLeave={e => tempoBtns(e, 'leave', 1, !isMobileOnly)}
+									onContextMenu={e => e.preventDefault()}
+								>
+									+
+								</button>
 							</div>
-
-							<button className="suppr-btn" onClick={() => updateLayer(false, i)}>
-								&times;
-							</button>
 						</div>
-					))}
-				</div>
-			</div>
-
-			<div className="settings-wrap bottom">
-				<div className="setting boxed sound">
-					<h3>Click sound</h3>
-
-					<div className="volume">
-						<h4>Volume</h4>
-						<Range
-							what="volume"
-							sound={moreSettings.sound}
-							update={result => rangeUpdate('volume', result)}
-						></Range>
-					</div>
-					<div className="release">
-						<h4>Release</h4>
-						<Range
-							what="release"
-							sound={moreSettings.sound}
-							update={result => rangeUpdate('release', result)}
-						></Range>
-					</div>
-
-					<div className="waveform">
-						<h4>Waveform</h4>
-
-						<Waveform
-							color="#fff"
-							type={moreSettings.sound.type}
-							change={changeWaveform}
-						></Waveform>
-					</div>
-
-					<div className="wavetime">
-						<h4>Wavetime</h4>
-						<button
-							name="duration"
-							id="duration"
-							onClick={() =>
-								setMoreSettings(prev => ({
-									...prev,
-									sound: {
-										...prev.sound,
-										duration: (moreSettings.sound.duration + 1) % 4,
-									},
-								}))
-							}
-						>
-							{returnWaveTime(moreSettings.sound.duration)}
-						</button>
 					</div>
 				</div>
 
@@ -1190,12 +1107,23 @@ function App(): JSX.Element {
 						</button>
 					</div>
 
-					<div className="setting unlimited">
+					<div className="setting theme">
+						<div>
+							<h4>Theme</h4>
+						</div>
+						<div
+							className="theme-preview"
+							onClick={() => changeTheme(moreSettings.theme)}
+						>
+							<div className="tp-mini-click on"></div>
+							<div className="tp-mini-click"></div>
+							<div className="tp-mini-click"></div>
+						</div>
+					</div>
+
+					{/* <div className="setting unlimited">
 						<div>
 							<h4>Unlimited</h4>
-							<small>
-								⚠️ This can slow down your {isMobileOnly ? 'phone' : 'computer'}
-							</small>
 						</div>
 
 						<button
@@ -1209,46 +1137,19 @@ function App(): JSX.Element {
 							{moreSettingsRef.current.unlimited ? 'on' : 'off'}
 						</button>
 					</div>
-
+					
 					<div className="setting debug">
 						<h4>Debug button</h4>
 
 						<button onClick={saveWork}>click</button>
-					</div>
+					</div> */}
 				</div>
 
-				<div className="setting boxed theme">
-					<h3>Themes</h3>
-
-					<div className="theme-preview">
-						{ThemeList.map((theme, ii) => (
-							<div
-								key={ii}
-								className={'tp-' + theme.name}
-								onClick={() => changeTheme(ii)}
-								style={{ backgroundColor: theme.background }}
-							>
-								<div
-									className="tp-mini-click"
-									style={{ backgroundColor: theme.accent }}
-								></div>
-								<div
-									className="tp-mini-click"
-									style={{ backgroundColor: theme.dim }}
-								></div>
-								<div
-									className="tp-mini-click"
-									style={{ backgroundColor: theme.dim }}
-								></div>
-							</div>
-						))}
-					</div>
-				</div>
 				<div className="saved-profiles">
 					<h3>Profiles</h3>
 
 					<div className="profile-wrap">
-						<ProfileList></ProfileList>
+						{/* <ProfileList></ProfileList> */}
 
 						<div className="profile-focus">
 							<div className="profile-mgmt">

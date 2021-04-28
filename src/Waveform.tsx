@@ -1,6 +1,6 @@
 // import { useState } from 'react'
 
-function Waveforms({ color, type, change }) {
+function Waveforms({ type, change }) {
 	// const [hovered, setHovered] = useState(false)
 
 	return (
