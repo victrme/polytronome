@@ -1160,16 +1160,35 @@ function App(): JSX.Element {
 					<div className="profile-wrap">
 						{/* <ProfileList></ProfileList> */}
 
+						<div className="profile-bank">
+							<div className="profile">
+								<span>Profile 1</span>
+							</div>
+							<div className="profile">
+								<span>Profile 2</span>
+							</div>
+							<div className="pfb-btns">
+								<div className="profile">
+									<span>+</span>
+								</div>
+								<div className="profile">
+									<span>↧</span>
+								</div>
+							</div>
+						</div>
+
 						<div className="profile-focus">
+							<h4>Profile 1</h4>
+							<div className="export-code">
+								<span>43ko7u-001f</span>
+							</div>
+
 							<div className="profile-mgmt">
-								<button>Import</button>
-								<button>Export</button>
-								{/* <button onClick={() => setIsTyping(!IsTyping)}>
-									Rename
-								</button> */}
+								<button onClick={() => setIsTyping(!IsTyping)}>Rename</button>
+								<br />
 								<button onClick={deleteProfile}>Delete</button>
 							</div>
-							<div className="export">
+							{/* <div className="export">
 								<input
 									type="text"
 									className="shown"
@@ -1177,9 +1196,25 @@ function App(): JSX.Element {
 									readOnly
 								/>
 								<span className={'export-choice'}>full</span>
-							</div>
+							</div> */}
 						</div>
 					</div>
+				</div>
+
+				<div className="links">
+					<h3>Links</h3>
+					<div>
+						<a href="#docs">documentation</a>
+						<br />
+						<a href="https://github.com/victorazevedo-me/polytronome">
+							source code
+						</a>
+						<br />
+						<span>Arranged by </span>
+						<a href="https://victr.me/">victor azevedo</a>
+					</div>
+
+					<div></div>
 				</div>
 			</div>
 		</div>
