@@ -32,10 +32,6 @@
 			filter: brightness(0.9);
 		}
 
-		&:active {
-			filter: brightness(0.8);
-		}
-
 		&.off {
 			opacity: 0;
 			cursor: initial;
@@ -291,8 +287,6 @@
 
 				.inner-range {
 					background-color: var(--accent);
-					/* border-top-right-radius: 5px;
-					border-bottom-right-radius: 5px; */
 					height: 20px;
 					transition: width 0.2s;
 
@@ -309,13 +303,13 @@
 					margin: 10px 0;
 					width: 100px;
 					height: 20px;
-					background-color: var(--background);
+					background-color: var(--dim);
 					border-radius: 20px;
 					cursor: pointer;
 					transition: all 0.2s;
 
 					.tp-mini-click {
-						background-color: var(--dim);
+						background-color: var(--dimmer);
 						width: 100%;
 						margin: 5px 2px;
 						border-radius: 3px;
@@ -338,6 +332,14 @@
 					line-height: 80px;
 					font-size: 80px;
 					height: 80px;
+				}
+
+				button {
+					margin: 5px;
+				}
+
+				.tap {
+					width: 120px;
 				}
 
 				.tempo-buttons {

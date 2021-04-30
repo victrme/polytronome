@@ -873,6 +873,13 @@ function App(): JSX.Element {
 
 	useEffect(() => {
 		document.addEventListener('keydown', (e: KeyboardEvent) => {
+			//
+			// Lose focus before firing
+			if (document.activeElement) {
+				const el = document.activeElement as HTMLButtonElement
+				el.blur()
+			}
+
 			// Spacebar control metronome
 			if (e.code === 'Space' && !IsTypingRef.current)
 				launchMetronome(metronomeRef.current.isRunning)
@@ -1034,7 +1041,9 @@ function App(): JSX.Element {
 						></Wheel>
 
 						<div>
-							<button onClick={tapTempo}>tap</button>
+							<button className="tap" onClick={tapTempo}>
+								tap
+							</button>
 							<div className="tempo-buttons">
 								<button
 									className="tempo-minus"
