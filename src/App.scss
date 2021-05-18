@@ -212,6 +212,20 @@
 				}
 			}
 
+			.woodblocks {
+				> div {
+					width: 40px;
+					height: 10px;
+					margin: 2px;
+					border-radius: 3px;
+					background-color: var(--dim);
+
+					&.on {
+						background-color: var(--accent);
+					}
+				}
+			}
+
 			.notes-wrap {
 				display: flex;
 				align-items: center;

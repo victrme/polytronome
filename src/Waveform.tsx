@@ -55,7 +55,7 @@ function Waveforms({ type, change }) {
 					d="M1.254 27.098l51.99-25.099-.074 49.171 51.631-24.072"
 					fill="none"
 					stroke="var(--accent)"
-					opacity={type === 'sawtooth' ? 1 : 0}
+					opacity={type === 'wood' ? 1 : 0}
 					strokeWidth="4"
 					strokeLinecap="round"
 				/>
@@ -72,7 +72,7 @@ function Waveforms({ type, change }) {
 					d="M1.254 1.253h51.91l-.106 50.66 51.627-.013"
 					fill="none"
 					stroke="var(--accent)"
-					opacity={type === 'square' ? 1 : 0}
+					opacity={type === 'drum' ? 1 : 0}
 					strokeWidth="4"
 					strokeLinecap="round"
 				/>

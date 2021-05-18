@@ -31,3 +31,8 @@ export type Metronome = {
 		wait: number
 	}[]
 }
+
+export type Sounds = {
+	wood: [any]
+	drum: [any]
+}

@@ -1,13 +1,13 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
-import propTypes from 'prop-types'
+import { MoreSettings, Metronome, Layer, Sounds } from './Types'
 import { isMobileOnly } from 'react-device-detect'
 import { useBeforeunload } from 'react-beforeunload'
+import propTypes from 'prop-types'
 import Pizzicato from 'pizzicato'
 import Wheel from './Wheel'
 import Range from './Range'
 import Waveform from './Waveform'
 import './App.scss'
-import { MoreSettings, Metronome, Layer } from './Types'
 
 function App(): JSX.Element {
 	//
@@ -74,7 +74,7 @@ function App(): JSX.Element {
 		},
 	]
 
-	const waveformsList = ['sine', 'triangle', 'sawtooth', 'square']
+	const clickTypeList = ['wood', 'drum', 'sine', 'triangle']
 	const waveTimeList = ['50ms', '.3x tempo', '.5x tempo', '.7x tempo']
 
 	const [moreSettings, setMoreSettings] = useState<MoreSettings>({
@@ -121,6 +121,8 @@ function App(): JSX.Element {
 		],
 	})
 
+	const [sounds, setSounds] = useState<Sounds>()
+
 	const defaultLayer: Layer = {
 		id: setRandomID(),
 		beats: 4,
@@ -166,6 +168,9 @@ function App(): JSX.Element {
 		while (xx.length < 8) xx += String.fromCharCode(randInInterval(97, 122))
 		return xx
 	}
+
+	//const tick = new UIFx({ asset: wood })
+	//const [play] = useSound(wood)
 
 	//
 	//
@@ -219,27 +224,30 @@ function App(): JSX.Element {
 			// Play sound
 			//
 
-			const note = layer.frequency + 12
-			const freq = 32.7 * 2 ** (note / 12)
-			const wave = new Pizzicato.Sound({
-				source: 'wave',
-				options: {
-					type: layer.type,
-					//release: moreSettingsRef.current.sound.release,
-					volume: layer.volume,
-					frequency: freq,
-					attack: 0,
-				},
-			})
+			if (layer.type === 'sine' || layer.type === 'triangle') {
+				const note = layer.frequency + 12
+				const freq = 32.7 * 2 ** (note / 12)
+				const wave = new Pizzicato.Sound({
+					source: 'wave',
+					options: {
+						type: layer.type,
+						volume: layer.volume,
+						frequency: freq,
+						attack: 0,
+					},
+				})
 
-			// const wtlist = [50, 0.3, 0.5, 0.7]
-			// const wavetime =
-			// 	moreSett.sound.duration === 0
-			// 		? wtlist[0]
-			// 		: wtlist[moreSett.sound.duration] * tempoMs
+				wave.play()
+				setTimeout(() => wave.stop(), 50)
+			} else {
+				if (sounds) {
+					const freq = layer.frequency > 2 ? 2 : layer.frequency
 
-			wave.play()
-			setTimeout(() => wave.stop(), 50)
+					const audio = new Audio(sounds[layer.type][freq].default)
+					audio.volume = layer.volume
+					audio.play()
+				}
+			}
 
 			//
 			// Update beat time
@@ -412,12 +420,15 @@ function App(): JSX.Element {
 		restartMetronome()
 	}
 
-	const changeWaveform = (type: string, i: number) => {
+	const changeClickType = (type: string, i: number) => {
 		const layers = [...metronome.layers]
 
-		waveformsList.forEach((x, ii) => {
+		clickTypeList.forEach((x, ii) => {
 			if (x === type) {
-				layers[i].type = waveformsList[(ii + 1) % 4]
+				layers[i].type = clickTypeList[(ii + 1) % clickTypeList.length]
+
+				if (type === 'wood') layers[i].frequency = 0
+
 				setMetronome(prev => ({
 					...prev,
 					layers: [...layers],
@@ -683,7 +694,7 @@ function App(): JSX.Element {
 
 			const settingsDecode = () => {
 				const wavetime = parseInt(settingsChars[2], 26) % waveTimeList.length
-				const waveform =
+				const clickType =
 					(parseInt(settingsChars[2], 26) - wavetime) / waveTimeList.length
 
 				const segment = parseInt(settingsChars[4], 26) % 2
@@ -693,7 +704,7 @@ function App(): JSX.Element {
 					volume: +(parseInt(settingsChars[0], 36) / 35).toFixed(2),
 					release: +(parseInt(settingsChars[1], 36) / 35).toFixed(2),
 					wavetime: wavetime,
-					waveform: waveformsList[waveform],
+					waveform: clickTypeList[clickType],
 					theme: +settingsChars[3],
 					segment: !!segment,
 					animations: !!animations,
@@ -910,6 +921,9 @@ function App(): JSX.Element {
 				}))
 		}
 
+		//Init sounds requires
+		setSounds(require('./Sounds').default)
+
 		// eslint-disable-next-line
 	}, [])
 
@@ -925,7 +939,7 @@ function App(): JSX.Element {
 	//
 
 	return (
-		<div className={'App ' + (isMobileOnly ? 'mobile' : '')}>
+		<div className={'App ' + (isMobileOnly ? 'mobile' : 'mobile')}>
 			<div className="principal">
 				<div className="title">
 					<p>Train your polyrythms</p>
@@ -995,18 +1009,50 @@ function App(): JSX.Element {
 								<div className="ls-type">
 									<Waveform
 										type={layer.type}
-										change={() => changeWaveform(layer.type, i)}
+										change={() => changeClickType(layer.type, i)}
 									></Waveform>
 								</div>
 
-								<div className="notes-wrap">
-									<Wheel
-										freq={layer.beats}
-										update={result => wheelUpdate('frequency', result, i)}
-									></Wheel>
-
-									<Octaves freq={layer.frequency}></Octaves>
-								</div>
+								{layer.type === 'wood' ? (
+									<div
+										className="woodblocks"
+										onClick={() => {
+											const layers = [...metronome.layers]
+											layers[i].frequency = (layers[i].frequency + 1) % 3
+											setMetronome(prev => ({ ...prev, layers }))
+										}}
+									>
+										<div className={layer.frequency > 1 ? 'on' : ''}></div>
+										<div className={layer.frequency > 0 ? 'on' : ''}></div>
+										<div className={layer.frequency > -1 ? 'on' : ''}></div>
+									</div>
+								) : layer.type === 'drum' ? (
+									<div
+										className="woodblocks drumset"
+										onClick={() => {
+											const layers = [...metronome.layers]
+											layers[i].frequency = (layers[i].frequency + 1) % 3
+											setMetronome(prev => ({ ...prev, layers }))
+										}}
+									>
+										{/* <div className="hat"></div>
+										<div className="kick"></div>
+										<div className="snare"></div> */}
+										<div className={layer.frequency > 1 ? 'on' : ''}></div>
+										<div className={layer.frequency > 0 ? 'on' : ''}></div>
+										<div className={layer.frequency > -1 ? 'on' : ''}></div>
+									</div>
+								) : (
+									<div className="notes-wrap">
+										<Wheel
+											freq={layer.beats}
+											update={result =>
+												wheelUpdate('frequency', result, i)
+											}
+										></Wheel>
+										<Octaves freq={layer.frequency}></Octaves>
+									</div>
+								)}
 
 								<Range
 									volume={layer.volume}
