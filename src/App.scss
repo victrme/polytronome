@@ -6,6 +6,20 @@
 	--buttons: #ebe9e933;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@800&display=swap');
+
+body {
+	margin: 0;
+}
+
+button,
+body,
+input {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-family: 'Work Sans', sans-serif;
+}
+
 .App {
 	background-color: var(--background);
 	color: var(--accent);
@@ -195,30 +209,45 @@
 				justify-content: space-between;
 
 				> div {
-					margin: 0 30px;
+					margin: 0 10px;
+					width: 180px;
+					text-align: center;
+				}
+
+				&.ls-labels {
+					height: 50px;
+					opacity: 0.3;
+					font-size: 0.5em;
 				}
 			}
 
 			.css-waves {
 				position: relative;
-				width: 60px;
-				height: 40px;
+				width: 100%;
+				height: 30px;
 
 				svg {
 					position: absolute;
 					width: 100%;
 					height: 100%;
 					cursor: pointer;
+					top: 0;
+					left: 0;
 				}
 			}
 
 			.woodblocks {
+				cursor: pointer;
 				> div {
+					text-align: center;
+					display: inline-block;
 					width: 40px;
-					height: 10px;
+					height: 15px;
 					margin: 2px;
-					border-radius: 3px;
+					border-radius: 5px;
 					background-color: var(--dim);
+
+					transition: background-color 0.2s;
 
 					&.on {
 						background-color: var(--accent);
@@ -252,6 +281,7 @@
 			}
 
 			.range-wrap {
+				display: inline-block;
 				width: 100px;
 				height: 15px;
 				background-color: var(--dim);
@@ -313,21 +343,18 @@
 			&.theme {
 				.theme-preview {
 					display: flex;
-					padding: 5px 10px;
+					padding: 5px 0;
 					margin: 10px 0;
-					width: 100px;
 					height: 20px;
-					background-color: var(--dim);
-					border-radius: 20px;
 					cursor: pointer;
 					transition: all 0.2s;
 
-					.tp-mini-click {
-						background-color: var(--dimmer);
-						width: 100%;
-						margin: 5px 2px;
-						border-radius: 3px;
-						transition: all 0.2s;
+					> div {
+						width: 16px;
+						height: 16px;
+						margin: 2px;
+						border-radius: 4px;
+						background-color: var(--dim);
 
 						&.on {
 							background-color: var(--accent);

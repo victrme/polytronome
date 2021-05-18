@@ -16,13 +16,6 @@ function App(): JSX.Element {
 
 	const ThemeList = [
 		{
-			name: 'contrast',
-			background: '#ffffff',
-			accent: '#222222',
-			dim: '#00000033',
-			dimmer: '#00000010',
-		},
-		{
 			name: 'black',
 			background: '#000000',
 			accent: '#bbbbbb',
@@ -51,13 +44,7 @@ function App(): JSX.Element {
 			dim: '#e53c584d',
 			dimmer: '#ffffff2a',
 		},
-		{
-			name: 'boomer',
-			background: '#f6c48a',
-			accent: '#5f9e6d',
-			dim: '#84bc94',
-			dimmer: '#84bc942b',
-		},
+
 		{
 			name: 'coffee',
 			background: '#fbefdf',
@@ -71,6 +58,13 @@ function App(): JSX.Element {
 			accent: '#4b9ab4',
 			dim: '#f6dbbc',
 			dimmer: '#f6dbbc50',
+		},
+		{
+			name: 'contrast',
+			background: '#ffffff',
+			accent: '#222222',
+			dim: '#00000033',
+			dimmer: '#00000010',
 		},
 	]
 
@@ -1022,13 +1016,13 @@ function App(): JSX.Element {
 											setMetronome(prev => ({ ...prev, layers }))
 										}}
 									>
-										<div className={layer.frequency > 1 ? 'on' : ''}></div>
-										<div className={layer.frequency > 0 ? 'on' : ''}></div>
 										<div className={layer.frequency > -1 ? 'on' : ''}></div>
+										<div className={layer.frequency > 0 ? 'on' : ''}></div>
+										<div className={layer.frequency > 1 ? 'on' : ''}></div>
 									</div>
 								) : layer.type === 'drum' ? (
 									<div
-										className="woodblocks drumset"
+										className="drumset"
 										onClick={() => {
 											const layers = [...metronome.layers]
 											layers[i].frequency = (layers[i].frequency + 1) % 3
@@ -1038,9 +1032,7 @@ function App(): JSX.Element {
 										{/* <div className="hat"></div>
 										<div className="kick"></div>
 										<div className="snare"></div> */}
-										<div className={layer.frequency > 1 ? 'on' : ''}></div>
-										<div className={layer.frequency > 0 ? 'on' : ''}></div>
-										<div className={layer.frequency > -1 ? 'on' : ''}></div>
+										<div>{layer.frequency}</div>
 									</div>
 								) : (
 									<div className="notes-wrap">
@@ -1054,12 +1046,21 @@ function App(): JSX.Element {
 									</div>
 								)}
 
-								<Range
-									volume={layer.volume}
-									update={result => rangeUpdate(i, result)}
-								></Range>
+								<div>
+									<Range
+										volume={layer.volume}
+										update={result => rangeUpdate(i, result)}
+									></Range>
+								</div>
 							</div>
 						))}
+
+						<div className="ls-row ls-labels">
+							<div>beats</div>
+							<div>type</div>
+							<div>note</div>
+							<div>volume</div>
+						</div>
 					</div>
 
 					<div className="ls-buttons">
@@ -1170,9 +1171,13 @@ function App(): JSX.Element {
 							className="theme-preview"
 							onClick={() => changeTheme(moreSettings.theme)}
 						>
-							<div className="tp-mini-click on"></div>
-							<div className="tp-mini-click"></div>
-							<div className="tp-mini-click"></div>
+							<div className={moreSettings.theme >= 0 ? 'on' : ''}></div>
+							<div className={moreSettings.theme >= 1 ? 'on' : ''}></div>
+							<div className={moreSettings.theme >= 2 ? 'on' : ''}></div>
+							<div className={moreSettings.theme >= 3 ? 'on' : ''}></div>
+							<div className={moreSettings.theme >= 4 ? 'on' : ''}></div>
+							<div className={moreSettings.theme >= 5 ? 'on' : ''}></div>
+							<div className={moreSettings.theme >= 6 ? 'on' : ''}></div>
 						</div>
 					</div>
 
