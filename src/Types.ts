@@ -13,9 +13,7 @@ export type MoreSettings = {
 }
 
 export type Layer = {
-	id: string
 	beats: number
-	time: number
 	frequency: number
 	type: string
 	volume: number

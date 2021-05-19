@@ -2,10 +2,10 @@ import { useRef, useState, useEffect, useCallback } from 'react'
 import { MoreSettings, Metronome, Layer, Sounds } from './Types'
 import { isMobileOnly } from 'react-device-detect'
 import { useBeforeunload } from 'react-beforeunload'
-import propTypes from 'prop-types'
 import Pizzicato from 'pizzicato'
 import Wheel from './Wheel'
 import Range from './Range'
+import Octaves from './Octaves'
 import Waveform from './Waveform'
 import './App.scss'
 
@@ -85,20 +85,17 @@ function App(): JSX.Element {
 		animations: true,
 	})
 
+	const [times, setTimes] = useState<number[]>([1, 1])
 	const [metronome, setMetronome] = useState<Metronome>({
 		layers: [
 			{
-				id: setRandomID(),
 				beats: 4,
-				time: 1,
 				frequency: 12,
 				type: 'sine',
 				volume: 0.4,
 			},
 			{
-				id: setRandomID(),
 				beats: 5,
-				time: 1,
 				frequency: 19,
 				type: 'triangle',
 				volume: 0.3,
@@ -118,9 +115,7 @@ function App(): JSX.Element {
 	const [sounds, setSounds] = useState<Sounds>()
 
 	const defaultLayer: Layer = {
-		id: setRandomID(),
 		beats: 4,
-		time: 1,
 		frequency: 12,
 		type: 'sine',
 		volume: 0.4,
@@ -131,11 +126,13 @@ function App(): JSX.Element {
 	const [exportInput, setExportInput] = useState('')
 
 	// Use Refs for async timeouts
+	const timesRef = useRef(times)
 	const moreSettingsRef = useRef(moreSettings)
 	const metronomeRef = useRef(metronome)
 	const IsTypingRef = useRef(false)
 	const buttonsInterval = useRef(setTimeout(() => {}, 1))
 
+	timesRef.current = times
 	metronomeRef.current = metronome
 	moreSettingsRef.current = moreSettings
 	IsTypingRef.current = IsTyping
@@ -172,25 +169,20 @@ function App(): JSX.Element {
 	//
 	//
 
-	function metronomeInterval(nextDelay: number, id: string) {
+	function metronomeInterval(fixedTempoMs: number, nextDelay: number, id: number) {
 		const timeoutID = window.setTimeout(() => {
 			//
 			// Short name for refs
 			const metro = { ...metronomeRef.current }
 			const moreSett = { ...moreSettingsRef.current }
-
-			// Find layer
-			const layerIndex = metro.layers.findIndex(layer => layer.id === id)
-			const layer = metro.layers[layerIndex]
+			const layer = metro.layers[id]
+			const t_times = times
 
 			// Quit recursion if stopped or removed
 			if (!metro.isRunning || layer === undefined) {
 				clearTimeout(timeoutID)
 				return
 			}
-
-			// Has to be after Quit
-			const tempoMs = calculateTempoMs(layer.beats, metro.tempo)
 
 			//
 			// Segment count, if on
@@ -205,8 +197,8 @@ function App(): JSX.Element {
 					// Reset duplicate count
 					// Check for layers.time to know what segment should do
 					segment.dupCount = 1
-					const allAtOne = metro.layers.every(l => l.time === 1)
-					const oneAtMax = layer.time === layer.beats
+					const allAtOne = times.every(t => t === 1)
+					const oneAtMax = times[id] === layer.beats
 					segment.count = allAtOne ? 1 : oneAtMax ? 0 : segment.count + 1
 				}
 
@@ -248,15 +240,16 @@ function App(): JSX.Element {
 			// Return to 1 if 'time' above 'beats'
 			//
 
-			metro.layers[layerIndex].time = layer.time >= layer.beats ? 1 : layer.time + 1
+			t_times[id] = times[id] >= layer.beats ? 1 : times[id] + 1
 			setMetronome(metro)
+			setTimes(t_times)
 
 			// Calculate latency
 			const latencyOffset =
-				metro.startTime > 0 ? (Date.now() - metro.startTime) % tempoMs : 0
+				metro.startTime > 0 ? (Date.now() - metro.startTime) % fixedTempoMs : 0
 
 			// Recursion
-			metronomeInterval(tempoMs - latencyOffset, id)
+			metronomeInterval(fixedTempoMs, fixedTempoMs - latencyOffset, id)
 		}, nextDelay)
 	}
 
@@ -264,9 +257,10 @@ function App(): JSX.Element {
 		const current = metronomeRef.current
 
 		function start() {
-			current.layers.forEach(l =>
-				metronomeInterval(calculateTempoMs(l.beats, current.tempo), l.id)
-			)
+			current.layers.forEach((l, i) => {
+				const tempoMs = calculateTempoMs(l.beats, current.tempo)
+				metronomeInterval(tempoMs, tempoMs, i)
+			})
 
 			// Update to start state
 			setMetronome(prev => ({
@@ -286,17 +280,14 @@ function App(): JSX.Element {
 			}))
 			setMetronome(prev => ({
 				...prev,
-
-				// Each set to new defaults
-				layers: prev.layers.map(l => ({
-					...l,
-					time: 1,
-					id: setRandomID(),
-				})),
-
 				isRunning: false,
 				startTime: 0,
 			}))
+
+			// reset times
+			const newTimes = times.map(x => (x = 1))
+			setTimes(newTimes)
+			console.log(newTimes)
 		}
 
 		runs ? stop() : start()
@@ -305,26 +296,35 @@ function App(): JSX.Element {
 	const restartMetronome = () => {
 		if (metronome.isRunning) {
 			launchMetronome(true)
-			setTimeout(() => launchMetronome(false), 20)
+			setTimeout(() => {
+				if (!metronomeRef.current.isRunning) launchMetronome(false)
+			}, 200)
 		}
 	}
 
 	const updateLayer = (add: boolean) => {
 		const newLayers = [...metronome.layers]
+		const newTimes = times
 
 		// Remove
-		if (!add && newLayers.length > 1) newLayers.splice(-1, 1)
+		if (!add && newLayers.length > 1) {
+			newLayers.splice(-1, 1)
+			newTimes.pop()
+		}
 
 		// Add Unlimited
 		// Add limited
 		if (
 			(add && moreSettings.unlimited) ||
 			(add && !moreSettings.unlimited && newLayers.length < 4)
-		)
+		) {
 			newLayers.push(defaultLayer)
+			newTimes.push(0)
+		}
 
 		// Update
 		setMetronome(prev => ({ ...prev, layers: newLayers }))
+		setTimes(newTimes)
 	}
 
 	const initSegment = useCallback(() => {
@@ -848,23 +848,6 @@ function App(): JSX.Element {
 		return result
 	}
 
-	const Octaves = ({ freq }) => {
-		const a = Math.floor(freq / 12)
-
-		return (
-			<div className="octave-wrap">
-				<div className={'octave' + (a > 1 ? ' on' : '')}></div>
-				<div className={'octave' + (a > 2 ? ' on' : '')}></div>
-				<div className={'octave' + (a > -1 ? ' on' : '')}></div>
-				<div className={'octave' + (a > 0 ? ' on' : '')}></div>
-			</div>
-		)
-	}
-
-	Octaves.propTypes = {
-		freq: propTypes.number.isRequired,
-	}
-
 	//
 	//
 	//	Effects
@@ -971,7 +954,7 @@ function App(): JSX.Element {
 								children.push(
 									<div
 										key={kk}
-										className={+kk <= layer.time - 1 ? 'click on' : 'click'}
+										className={+kk <= times[jj] - 1 ? 'click on' : 'click'}
 									/>
 								)
 

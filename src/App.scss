@@ -202,6 +202,10 @@ input {
 				}
 			}
 
+			> :last-child {
+				background-color: transparent;
+			}
+
 			.ls-row {
 				padding: 10px 30px;
 				display: flex;
@@ -353,7 +357,7 @@ input {
 						width: 16px;
 						height: 16px;
 						margin: 2px;
-						border-radius: 4px;
+						border-radius: 8px;
 						background-color: var(--dim);
 
 						&.on {
