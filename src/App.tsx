@@ -121,6 +121,7 @@ function App(): JSX.Element {
 	// Use Refs for async timeouts
 	const timesRef = useRef(times)
 	const tempoRef = useRef(tempo)
+	const startTimeRef = useRef(startTime)
 	const isRunningRef = useRef(isRunning)
 	const moreSettingsRef = useRef(moreSettings)
 	const layersRef = useRef(layers)
@@ -128,6 +129,7 @@ function App(): JSX.Element {
 
 	timesRef.current = times
 	tempoRef.current = tempo
+	startTimeRef.current = startTime
 	isRunningRef.current = isRunning
 	layersRef.current = layers
 	moreSettingsRef.current = moreSettings
@@ -229,7 +231,8 @@ function App(): JSX.Element {
 			setTimes([...t_times])
 
 			// Calculate latency
-			const latencyOffset = startTime > 0 ? (Date.now() - startTime) % fixedTempoMs : 0
+			const start = startTimeRef.current
+			const latencyOffset = start > 0 ? (Date.now() - start) % fixedTempoMs : 0
 
 			// Recursion
 			metronomeInterval(fixedTempoMs, fixedTempoMs - latencyOffset, id)
