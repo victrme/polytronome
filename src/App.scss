@@ -551,7 +551,19 @@ input {
 		display: flex;
 		flex-direction: column;
 
-		.principal .sticky,
+		.principal {
+			width: calc(100% - 4em);
+
+			.layers-table .ls-row > div {
+				width: 100%;
+				padding: 0 10px;
+
+				&.ls-type .css-waves {
+					width: 70px;
+				}
+			}
+		}
+
 		.other-settings,
 		.setting.boxed.sound,
 		.setting.theme {
