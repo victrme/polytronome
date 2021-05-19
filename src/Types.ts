@@ -19,17 +19,6 @@ export type Layer = {
 	volume: number
 }
 
-export type Metronome = {
-	layers: Layer[]
-	startTime: number
-	isRunning: boolean
-	tempo: number
-	tap: {
-		date: number
-		wait: number
-	}[]
-}
-
 export type Sounds = {
 	wood: [any]
 	drum: [any]

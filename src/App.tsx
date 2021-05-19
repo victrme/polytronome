@@ -1,12 +1,14 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
-import { MoreSettings, Metronome, Layer, Sounds } from './Types'
+import { MoreSettings, Layer, Sounds } from './Types'
 import { isMobileOnly } from 'react-device-detect'
 import { useBeforeunload } from 'react-beforeunload'
 import Pizzicato from 'pizzicato'
 import Wheel from './Wheel'
 import Range from './Range'
 import Octaves from './Octaves'
+import Tempo from './Tempo'
 import Waveform from './Waveform'
+import Layers from './Layers'
 import './App.scss'
 
 function App(): JSX.Element {
@@ -86,31 +88,24 @@ function App(): JSX.Element {
 	})
 
 	const [times, setTimes] = useState<number[]>([1, 1])
-	const [metronome, setMetronome] = useState<Metronome>({
-		layers: [
-			{
-				beats: 4,
-				frequency: 12,
-				type: 'sine',
-				volume: 0.4,
-			},
-			{
-				beats: 5,
-				frequency: 19,
-				type: 'triangle',
-				volume: 0.3,
-			},
-		],
-		startTime: 0,
-		isRunning: false,
-		tempo: 80,
-		tap: [
-			{
-				date: 0,
-				wait: 0,
-			},
-		],
-	})
+	const [tempo, setTempo] = useState(80)
+	const [startTime, setStartTime] = useState(Date.now)
+	const [isRunning, setIsRunning] = useState(false)
+
+	const [layers, setLayers] = useState<Layer[]>([
+		{
+			beats: 4,
+			frequency: 12,
+			type: 'sine',
+			volume: 0.4,
+		},
+		{
+			beats: 5,
+			frequency: 19,
+			type: 'triangle',
+			volume: 0.3,
+		},
+	])
 
 	const [sounds, setSounds] = useState<Sounds>()
 
@@ -123,17 +118,19 @@ function App(): JSX.Element {
 
 	const [selectedProfile, setSelectedProfile] = useState(0)
 	const [IsTyping, setIsTyping] = useState(false)
-	const [exportInput, setExportInput] = useState('')
 
 	// Use Refs for async timeouts
 	const timesRef = useRef(times)
+	const tempoRef = useRef(tempo)
+	const isRunningRef = useRef(isRunning)
 	const moreSettingsRef = useRef(moreSettings)
-	const metronomeRef = useRef(metronome)
+	const layersRef = useRef(layers)
 	const IsTypingRef = useRef(false)
-	const buttonsInterval = useRef(setTimeout(() => {}, 1))
 
 	timesRef.current = times
-	metronomeRef.current = metronome
+	tempoRef.current = tempo
+	isRunningRef.current = isRunning
+	layersRef.current = layers
 	moreSettingsRef.current = moreSettings
 	IsTypingRef.current = IsTyping
 
@@ -141,13 +138,12 @@ function App(): JSX.Element {
 	// Small functions
 	//
 
-	const calculateTempoMs = (beats: number, tempo: number) => {
+	const calculateTempoMs = (beats: number, tmp: number) => {
 		//
 		// Set min / max if limited
-		if (!moreSettingsRef.current.unlimited)
-			tempo = tempo < 30 ? 30 : tempo > 300 ? 300 : tempo
+		if (!moreSettingsRef.current.unlimited) tmp = tmp < 30 ? 30 : tmp > 300 ? 300 : tmp
 
-		return 60000 / ((beats / 4) * tempo)
+		return 60000 / ((beats / 4) * tmp)
 	}
 
 	function randInInterval(a: number, b: number) {
@@ -160,9 +156,6 @@ function App(): JSX.Element {
 		return xx
 	}
 
-	//const tick = new UIFx({ asset: wood })
-	//const [play] = useSound(wood)
-
 	//
 	//
 	// Main functions
@@ -173,13 +166,12 @@ function App(): JSX.Element {
 		const timeoutID = window.setTimeout(() => {
 			//
 			// Short name for refs
-			const metro = { ...metronomeRef.current }
 			const moreSett = { ...moreSettingsRef.current }
-			const layer = metro.layers[id]
+			const layer = layersRef.current[id]
 			const t_times = times
 
 			// Quit recursion if stopped or removed
-			if (!metro.isRunning || layer === undefined) {
+			if (!isRunningRef.current || layer === undefined) {
 				clearTimeout(timeoutID)
 				return
 			}
@@ -241,12 +233,10 @@ function App(): JSX.Element {
 			//
 
 			t_times[id] = times[id] >= layer.beats ? 1 : times[id] + 1
-			setMetronome(metro)
-			setTimes(t_times)
+			setTimes([...t_times])
 
 			// Calculate latency
-			const latencyOffset =
-				metro.startTime > 0 ? (Date.now() - metro.startTime) % fixedTempoMs : 0
+			const latencyOffset = startTime > 0 ? (Date.now() - startTime) % fixedTempoMs : 0
 
 			// Recursion
 			metronomeInterval(fixedTempoMs, fixedTempoMs - latencyOffset, id)
@@ -254,20 +244,15 @@ function App(): JSX.Element {
 	}
 
 	const launchMetronome = (runs: boolean) => {
-		const current = metronomeRef.current
-
 		function start() {
-			current.layers.forEach((l, i) => {
-				const tempoMs = calculateTempoMs(l.beats, current.tempo)
+			layersRef.current.forEach((l, i) => {
+				const tempoMs = calculateTempoMs(l.beats, tempoRef.current)
 				metronomeInterval(tempoMs, tempoMs, i)
 			})
 
 			// Update to start state
-			setMetronome(prev => ({
-				...prev,
-				isRunning: true,
-				startTime: Date.now(),
-			}))
+			setStartTime(Date.now())
+			setIsRunning(true)
 		}
 
 		function stop() {
@@ -278,32 +263,28 @@ function App(): JSX.Element {
 					count: 0,
 				},
 			}))
-			setMetronome(prev => ({
-				...prev,
-				isRunning: false,
-				startTime: 0,
-			}))
+
+			setIsRunning(false)
+			setStartTime(0)
 
 			// reset times
-			const newTimes = times.map(x => (x = 1))
-			setTimes(newTimes)
-			console.log(newTimes)
+			setTimes(times.map(x => (x = 1)))
 		}
 
 		runs ? stop() : start()
 	}
 
 	const restartMetronome = () => {
-		if (metronome.isRunning) {
+		if (isRunningRef.current) {
 			launchMetronome(true)
 			setTimeout(() => {
-				if (!metronomeRef.current.isRunning) launchMetronome(false)
+				if (!isRunningRef.current) launchMetronome(false)
 			}, 200)
 		}
 	}
 
 	const updateLayer = (add: boolean) => {
-		const newLayers = [...metronome.layers]
+		const newLayers = [...layers]
 		const newTimes = times
 
 		// Remove
@@ -323,7 +304,7 @@ function App(): JSX.Element {
 		}
 
 		// Update
-		setMetronome(prev => ({ ...prev, layers: newLayers }))
+		setLayers([...newLayers])
 		setTimes(newTimes)
 	}
 
@@ -359,7 +340,7 @@ function App(): JSX.Element {
 		const division: number[] = []
 
 		// Fill with all layers divisions & sort
-		metronome.layers.forEach(layer => {
+		layers.forEach(layer => {
 			for (let k = 1; k < layer.beats; k++) division.push(k / layer.beats)
 		})
 		division.sort()
@@ -373,7 +354,7 @@ function App(): JSX.Element {
 				duplicates: getDuplicates(division),
 			},
 		}))
-	}, [metronome.layers])
+	}, [layers])
 
 	//
 	//
@@ -401,32 +382,26 @@ function App(): JSX.Element {
 	}
 
 	const randomizeLayers = () => {
-		const layers: any[] = []
-		const metro = { ...metronomeRef.current }
+		const newLayers = [...layers]
 
-		metronomeRef.current.layers.forEach(layer => {
-			layers.push({ ...layer, beats: +randInInterval(2, 16).toFixed(0) })
-		})
+		layersRef.current.forEach(layer =>
+			newLayers.push({ ...layer, beats: +randInInterval(2, 16).toFixed(0) })
+		)
 
-		metro.layers = layers
-
-		setMetronome(metro)
+		setLayers([...newLayers])
 		restartMetronome()
 	}
 
 	const changeClickType = (type: string, i: number) => {
-		const layers = [...metronome.layers]
+		const newLayers = [...layers]
 
 		clickTypeList.forEach((x, ii) => {
 			if (x === type) {
-				layers[i].type = clickTypeList[(ii + 1) % clickTypeList.length]
+				newLayers[i].type = clickTypeList[(ii + 1) % clickTypeList.length]
 
-				if (type === 'wood') layers[i].frequency = 0
+				if (type === 'wood') newLayers[i].frequency = 0
 
-				setMetronome(prev => ({
-					...prev,
-					layers: [...layers],
-				}))
+				setLayers([...layers])
 			}
 		})
 	}
@@ -468,79 +443,11 @@ function App(): JSX.Element {
 	//
 
 	const changeTempo = (amount: number) => {
-		const up = amount > metronome.tempo
+		const up = amount > tempo
 		const max = up ? 300 : 30
 		const outOfBound = up ? amount > max : amount < max
 
-		setMetronome(prev => ({ ...prev, tempo: outOfBound ? max : amount }))
-	}
-
-	const tempoBtns = (e: any, dir: string, sign: number, doAnything: boolean) => {
-		// Cut fct short if not good platform
-		if (!doAnything) return false
-
-		if (dir === 'enter') {
-			changeTempo(metronomeRef.current.tempo + 1 * sign)
-
-			buttonsInterval.current = setTimeout(
-				() =>
-					(buttonsInterval.current = setInterval(
-						() => changeTempo(metronomeRef.current.tempo + 1 * sign),
-						70
-					)),
-				300
-			)
-		}
-
-		if (dir === 'leave') {
-			clearTimeout(buttonsInterval.current)
-			clearInterval(buttonsInterval.current)
-			restartMetronome()
-		}
-
-		if (!isMobileOnly) e.preventDefault()
-		e.stopPropagation()
-		return false
-	}
-
-	const tapTempo = () => {
-		const tap = metronome.tap
-
-		// Reset tap after 2s
-		if (Date.now() - tap[0].date > 2000) {
-			setMetronome(prev => ({
-				...prev,
-				tap: [
-					{
-						date: Date.now(),
-						wait: 0,
-					},
-				],
-			}))
-		} else {
-			//
-			// Wait is offset between two taps
-			tap.unshift({
-				date: Date.now(),
-				wait: Date.now() - metronome.tap[0].date,
-			})
-
-			// Array of tap offsets
-			const cumul: number[] = []
-
-			// Removes first, only keeps 6 at a time
-			tap.forEach((each, i) => {
-				if (each.wait > 0) cumul.push(each.wait)
-				if (each.wait === 0 || i === 6) tap.pop()
-			})
-
-			const averageTempo = Math.floor(
-				60000 / (cumul.reduce((a: number, b: number) => a + b) / cumul.length)
-			)
-
-			changeTempo(averageTempo)
-			restartMetronome()
-		}
+		setTempo(outOfBound ? max : amount)
 	}
 
 	//
@@ -551,11 +458,11 @@ function App(): JSX.Element {
 
 	const wheelUpdate = (what: string, el: any, index = 0) => {
 		if (['beats', 'frequency'].indexOf(what) !== -1) {
-			const newLayers = [...metronome.layers]
+			const newLayers = [...layers]
 			const toSave = what === 'beats' ? el + 2 : el
 
 			newLayers[index][what] = toSave
-			setMetronome(prev => ({ ...prev, layers: newLayers }))
+			setLayers([...newLayers])
 		}
 
 		if (what === 'tempo') changeTempo(+el)
@@ -567,10 +474,10 @@ function App(): JSX.Element {
 		// For defunct release
 		//const toSave = what === 'release' ? (num < 0.01 ? 0.01 : num) : num
 
-		const layers = [...metronome.layers]
+		const newLayers = [...layers]
 		layers[index].volume = num
 
-		setMetronome(prev => ({ ...prev, layers: [...layers] }))
+		setLayers([...newLayers])
 	}
 
 	//
@@ -613,43 +520,36 @@ function App(): JSX.Element {
 		// 	b: stack % b.length
 		// 	a: (stack - b) / b.length
 		//
-		const mainExport = () => {
-			let layers = ''
-
-			metronome.layers.forEach(layer => {
-				const stack = layer.frequency * 16 + layer.beats
-
-				if (stack > 36) layers += stack.toString(36)
-				else layers += '0' + stack.toString(36)
-			})
-
-			return metronome.tempo.toString(30) + layers
-		}
-
-		const settingsExport = () => {
-			const waveStacker = () => {
-				// const form = waveformsList.findIndex(w => w === moreSettings.sound.type)
-				// const time = moreSettings.sound.duration
-				// return (form * waveTimeList.length + time).toString(26)
-			}
-
-			// times 2 because [true, false].length = 2
-			const displayStacker = () =>
-				((+moreSettings.animations | 0) * 2 + (+moreSettings.segment.on | 0)).toString(
-					26
-				)
-
-			return (
-				'-' +
-				// Math.floor(moreSettings.sound.volume * 35).toString(36) +
-				// Math.floor(moreSettings.sound.release * 35).toString(36) +
-				// waveStacker() +
-				(+moreSettings.theme | 0) +
-				displayStacker()
-			)
-		}
-
-		return mainExport() + (extended ? settingsExport() : '')
+		// const mainExport = () => {
+		// 	let layers = ''
+		// 	layers.forEach(layer => {
+		// 		const stack = layer.frequency * 16 + layer.beats
+		// 		if (stack > 36) layers += stack.toString(36)
+		// 		else layers += '0' + stack.toString(36)
+		// 	})
+		// 	return tempo.toString(30) + layers
+		// }
+		// const settingsExport = () => {
+		// 	const waveStacker = () => {
+		// 		// const form = waveformsList.findIndex(w => w === moreSettings.sound.type)
+		// 		// const time = moreSettings.sound.duration
+		// 		// return (form * waveTimeList.length + time).toString(26)
+		// 	}
+		// 	// times 2 because [true, false].length = 2
+		// 	const displayStacker = () =>
+		// 		((+moreSettings.animations | 0) * 2 + (+moreSettings.segment.on | 0)).toString(
+		// 			26
+		// 		)
+		// 	return (
+		// 		'-' +
+		// 		// Math.floor(moreSettings.sound.volume * 35).toString(36) +
+		// 		// Math.floor(moreSettings.sound.release * 35).toString(36) +
+		// 		// waveStacker() +
+		// 		(+moreSettings.theme | 0) +
+		// 		displayStacker()
+		// 	)
+		// }
+		// return mainExport() + (extended ? settingsExport() : '')
 	}
 
 	const saveWork = () => {
@@ -663,7 +563,7 @@ function App(): JSX.Element {
 				// 	get 1, 2 char, and step up... 3, 4, etc
 				//
 				const layersChars = mainChars.slice(2, mainChars.length)
-				const layers: any[] = []
+				const newLayers: any[] = []
 
 				for (let ii = 0; ii < layersChars.length / 2; ii++) {
 					// 	Takes 2 chars at a time
@@ -672,7 +572,7 @@ function App(): JSX.Element {
 					//	Apply destackment
 					const beats = parseInt(singleLayer, 36) % 16
 					const note = (parseInt(singleLayer, 36) - beats) / 16
-					layers.push({
+					newLayers.push({
 						beats: beats === 0 ? 16 : beats,
 						frequency: note,
 					})
@@ -717,8 +617,8 @@ function App(): JSX.Element {
 
 		return {
 			name: setRandomID(),
-			layers: [...metronome.layers],
-			tempo: metronome.tempo,
+			layers: [...layers],
+			tempo: tempo,
 			animations: moreSettings.animations,
 			theme: moreSettings.theme,
 			segment: moreSettings.segment.on,
@@ -737,12 +637,8 @@ function App(): JSX.Element {
 			sound: { ...data.sound },
 		}))
 
-		setMetronome(prev => ({
-			...prev,
-			layers: data.layers,
-			tempo: data.tempo,
-		}))
-
+		setLayers([...data.layers])
+		setTempo(data.tempo)
 		applyTheme(data.theme)
 	}
 
@@ -765,7 +661,7 @@ function App(): JSX.Element {
 
 		applySaved(profile)
 		setSelectedProfile(selection)
-		setExportInput(exportCode(true))
+		//setExportInput(exportCode(true))
 	}
 
 	const deleteProfile = () => {
@@ -870,15 +766,15 @@ function App(): JSX.Element {
 
 			// Spacebar control metronome
 			if (e.code === 'Space' && !IsTypingRef.current)
-				launchMetronome(metronomeRef.current.isRunning)
+				launchMetronome(isRunningRef.current)
 
 			// Tempo up by 10 if shift
-			if (e.code === 'ArrowUp' && !IsTypingRef.current)
-				wheelUpdate('tempo', metronomeRef.current.tempo + (e.shiftKey ? 10 : 1))
+			if (e.code === 'ArrowUp')
+				wheelUpdate('tempo', tempoRef.current + (e.shiftKey ? 10 : 1))
 
 			// Tempo down by 10 if shift
-			if (e.code === 'ArrowDown' && !IsTypingRef.current)
-				wheelUpdate('tempo', metronomeRef.current.tempo - (e.shiftKey ? 10 : 1))
+			if (e.code === 'ArrowDown')
+				wheelUpdate('tempo', tempoRef.current - (e.shiftKey ? 10 : 1))
 
 			e.stopPropagation()
 			return false
@@ -886,7 +782,7 @@ function App(): JSX.Element {
 
 		// Wake from sleep (if you have slept)
 		if (localStorage.sleep) {
-			applySaved(JSON.parse(localStorage.sleep))
+			//applySaved(JSON.parse(localStorage.sleep))
 		}
 
 		// Updates fullscreen if left by something else than toggle
@@ -907,7 +803,7 @@ function App(): JSX.Element {
 	useEffect(() => {
 		initSegment()
 		// eslint-disable-next-line
-	}, [metronome.layers])
+	}, [layers])
 
 	//
 	//
@@ -923,60 +819,17 @@ function App(): JSX.Element {
 					<h1>Polytronome</h1>
 				</div>
 
-				<div
-					className={`clicks ${
-						moreSettingsRef.current.segment.on ? 'isSegment' : 'isLayers'
-					}`}
-				>
-					<div className="segment">
-						<div className="click-row">
-							{moreSettings.segment.ratios.map((ratio, i) => (
-								<span
-									key={i}
-									className={
-										'click' +
-										(moreSettings.segment.count === i ? ' on' : '')
-									}
-									style={{
-										width: `calc(${ratio * 100}% - 10px)`,
-									}}
-								/>
-							))}
-						</div>
-					</div>
-
-					<div className="layers">
-						{metronome.layers.map((layer, jj) => {
-							// Add clicks for each layers
-
-							const children: JSX.Element[] = []
-							for (let kk = 0; kk < layer.beats; kk++)
-								children.push(
-									<div
-										key={kk}
-										className={+kk <= times[jj] - 1 ? 'click on' : 'click'}
-									/>
-								)
-
-							// Wrap in rows & return
-							return (
-								<div key={jj} className="click-row">
-									{children}
-								</div>
-							)
-						})}
-					</div>
-				</div>
+				<Layers times={times} layers={layers} moreSettings={moreSettings}></Layers>
 
 				<div className="start-button">
-					<button onMouseDown={() => launchMetronome(metronome.isRunning)}>
-						{metronome.isRunning ? 'Stop' : 'Start'}
+					<button onMouseDown={() => launchMetronome(isRunning)}>
+						{isRunning ? 'Stop' : 'Start'}
 					</button>
 				</div>
 
 				<div className="layers-table-wrap">
 					<div className="layers-table">
-						{metronome.layers.map((layer, i) => (
+						{layers.map((layer, i) => (
 							<div className="ls-row" key={i}>
 								<Wheel
 									beats={layer.beats}
@@ -994,9 +847,10 @@ function App(): JSX.Element {
 									<div
 										className="woodblocks"
 										onClick={() => {
-											const layers = [...metronome.layers]
-											layers[i].frequency = (layers[i].frequency + 1) % 3
-											setMetronome(prev => ({ ...prev, layers }))
+											const newLayers = [...layers]
+											newLayers[i].frequency =
+												(layers[i].frequency + 1) % 3
+											setLayers([...newLayers])
 										}}
 									>
 										<div className={layer.frequency > -1 ? 'on' : ''}></div>
@@ -1007,9 +861,10 @@ function App(): JSX.Element {
 									<div
 										className="drumset"
 										onClick={() => {
-											const layers = [...metronome.layers]
-											layers[i].frequency = (layers[i].frequency + 1) % 3
-											setMetronome(prev => ({ ...prev, layers }))
+											const newLayers = [...layers]
+											newLayers[i].frequency =
+												(layers[i].frequency + 1) % 3
+											setLayers([...newLayers])
 										}}
 									>
 										{/* <div className="hat"></div>
@@ -1060,47 +915,12 @@ function App(): JSX.Element {
 			</div>
 
 			<div className="settings-wrap">
-				<div className="boxed tempo">
-					<div className="setting">
-						<Wheel
-							tempo={metronome.tempo}
-							update={result => {
-								wheelUpdate('tempo', result)
-								restartMetronome()
-							}}
-						></Wheel>
-
-						<div>
-							<button className="tap" onClick={tapTempo}>
-								tap
-							</button>
-							<div className="tempo-buttons">
-								<button
-									className="tempo-minus"
-									onTouchStart={e => tempoBtns(e, 'enter', -1, isMobileOnly)}
-									onTouchEnd={e => tempoBtns(e, 'leave', -1, isMobileOnly)}
-									onMouseDown={e => tempoBtns(e, 'enter', -1, !isMobileOnly)}
-									onMouseUp={e => tempoBtns(e, 'leave', -1, !isMobileOnly)}
-									onMouseLeave={e => tempoBtns(e, 'leave', -1, !isMobileOnly)}
-									onContextMenu={e => e.preventDefault()}
-								>
-									-
-								</button>
-								<button
-									className="tempo-plus"
-									onTouchStart={e => tempoBtns(e, 'enter', 1, isMobileOnly)}
-									onTouchEnd={e => tempoBtns(e, 'leave', 1, isMobileOnly)}
-									onMouseDown={e => tempoBtns(e, 'enter', 1, !isMobileOnly)}
-									onMouseUp={e => tempoBtns(e, 'leave', 1, !isMobileOnly)}
-									onMouseLeave={e => tempoBtns(e, 'leave', 1, !isMobileOnly)}
-									onContextMenu={e => e.preventDefault()}
-								>
-									+
-								</button>
-							</div>
-						</div>
-					</div>
-				</div>
+				<Tempo
+					restart={restartMetronome}
+					update={changeTempo}
+					wheelUpdate={wheelUpdate}
+					tempo={tempo}
+				></Tempo>
 
 				<div className="other-settings">
 					<h3>Display</h3>
