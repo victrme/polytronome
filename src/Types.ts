@@ -1,15 +1,16 @@
 export type MoreSettings = {
 	theme: number
-	segment: {
-		on: boolean
-		count: number
-		ratios: number[]
-		duplicates: number[]
-		dupCount: number
-	}
 	fullscreen: boolean
 	unlimited: boolean
 	animations: boolean
+}
+
+export type Segment = {
+	on: boolean
+	count: number
+	ratios: number[]
+	duplicates: number[]
+	dupCount: number
 }
 
 export type Layer = {

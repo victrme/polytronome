@@ -6,7 +6,7 @@ import Vectors from './Vectors'
 import Octaves from './Octaves'
 
 const Principal = ({
-	moreSettings,
+	segment,
 	layers,
 	times,
 	isRunning,
@@ -25,7 +25,7 @@ const Principal = ({
 				<h1>Polytronome</h1>
 			</div>
 
-			<Layers times={times} layers={layers} moreSettings={moreSettings}></Layers>
+			<Layers times={times} layers={layers} segment={segment}></Layers>
 
 			<div className="start-button">
 				<button onMouseDown={() => launchMetronome(isRunning)}>
@@ -107,7 +107,7 @@ const Principal = ({
 Principal.propTypes = {
 	isRunning: propTypes.bool.isRequired,
 	times: propTypes.array.isRequired,
-	moreSettings: propTypes.any.isRequired,
+	segment: propTypes.any.isRequired,
 	layers: propTypes.any.isRequired,
 	launchMetronome: propTypes.func,
 	wheelUpdate: propTypes.func.isRequired,

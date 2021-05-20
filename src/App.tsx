@@ -14,15 +14,16 @@ function App(): JSX.Element {
 
 	const clickTypeList = ['wood', 'drum', 'sine', 'triangle']
 
+	const [segment, setSegment] = useState({
+		on: false,
+		count: 0,
+		ratios: [0],
+		duplicates: [0],
+		dupCount: 1,
+	})
+
 	const [moreSettings, setMoreSettings] = useState<MoreSettings>({
 		theme: 2,
-		segment: {
-			on: false,
-			count: 0,
-			ratios: [0],
-			duplicates: [0],
-			dupCount: 1,
-		},
 		fullscreen: false,
 		unlimited: false,
 		animations: true,
@@ -77,6 +78,7 @@ function App(): JSX.Element {
 	const tempoRef = useRef(tempo)
 	const startTimeRef = useRef(startTime)
 	const isRunningRef = useRef(isRunning)
+	const segmentRef = useRef(segment)
 	const moreSettingsRef = useRef(moreSettings)
 	const layersRef = useRef(layers)
 	const IsTypingRef = useRef(false)
@@ -86,6 +88,7 @@ function App(): JSX.Element {
 	startTimeRef.current = startTime
 	isRunningRef.current = isRunning
 	layersRef.current = layers
+	segmentRef.current = segment
 	moreSettingsRef.current = moreSettings
 	// IsTypingRef.current = IsTyping
 
@@ -115,7 +118,6 @@ function App(): JSX.Element {
 		const timeoutID = window.setTimeout(() => {
 			//
 			// Short name for refs
-			const moreSett = { ...moreSettingsRef.current }
 			const layer = layersRef.current[id]
 			const t_times = times
 
@@ -129,22 +131,21 @@ function App(): JSX.Element {
 			// Segment count, if on
 			//
 
-			if (moreSett.segment.on) {
-				const segment = moreSett.segment
+			if (segmentRef.current.on) {
+				const currSeg = segmentRef.current
 
 				// If there are duplicates, do nothing but count duplicates
-				if (segment.dupCount < segment.duplicates[segment.count]) segment.dupCount++
+				if (currSeg.dupCount < currSeg.duplicates[currSeg.count]) currSeg.dupCount++
 				else {
 					// Reset duplicate count
-					// Check for layers.time to know what segment should do
-					segment.dupCount = 1
+					// Check for layers.time to know what currSeg should do
+					currSeg.dupCount = 1
 					const allAtOne = times.every(t => t === 1)
 					const oneAtMax = times[id] === layer.beats
-					segment.count = allAtOne ? 1 : oneAtMax ? 0 : segment.count + 1
+					currSeg.count = allAtOne ? 1 : oneAtMax ? 0 : currSeg.count + 1
 				}
 
-				moreSett.segment = segment
-				setMoreSettings(moreSett)
+				setSegment({ ...currSeg })
 			}
 
 			//
@@ -206,18 +207,9 @@ function App(): JSX.Element {
 		}
 
 		function stop() {
-			setMoreSettings(prev => ({
-				...prev,
-				segment: {
-					...prev.segment,
-					count: 0,
-				},
-			}))
-
+			setSegment({ ...segment, count: 0 })
 			setIsRunning(false)
 			setStartTime(0)
-
-			// reset times
 			setTimes(times.map(x => (x = 1)))
 		}
 
@@ -295,16 +287,12 @@ function App(): JSX.Element {
 		})
 		division.sort()
 
-		// Apply functions
-		setMoreSettings(prev => ({
-			...prev,
-			segment: {
-				...prev.segment,
-				ratios: getRatios(division),
-				duplicates: getDuplicates(division),
-			},
-		}))
-	}, [layers])
+		setSegment({
+			...segment,
+			ratios: getRatios(division),
+			duplicates: getDuplicates(division),
+		})
+	}, [layers, segment])
 
 	//
 	//
@@ -496,7 +484,7 @@ function App(): JSX.Element {
 				launchMetronome={launchMetronome}
 				times={times}
 				layers={layers}
-				moreSettings={moreSettings}
+				segment={segment}
 				wheelUpdate={wheelUpdate}
 				changeClickType={changeClickType}
 				changeFreqs={changeFreqs}
@@ -523,16 +511,13 @@ function App(): JSX.Element {
 							name="display"
 							id="display"
 							onClick={() =>
-								setMoreSettings(prev => ({
-									...prev,
-									segment: {
-										...prev.segment,
-										on: moreSettings.segment.on ? false : true,
-									},
-								}))
+								setSegment({
+									...segment,
+									on: segment.on ? false : true,
+								})
 							}
 						>
-							{moreSettings.segment.on ? 'segmented' : 'layered'}
+							{segment.on ? 'segmented' : 'layered'}
 						</button>
 					</div>
 

@@ -1,16 +1,14 @@
 import propTypes from 'prop-types'
 
-const Layers = ({ moreSettings, layers, times }) => {
+const Layers = ({ segment, layers, times }) => {
 	return (
-		<div className={`clicks ${moreSettings.segment.on ? 'isSegment' : 'isLayers'}`}>
+		<div className={`clicks ${segment.on ? 'isSegment' : 'isLayers'}`}>
 			<div className="segment">
 				<div className="click-row">
-					{moreSettings.segment.ratios.map((ratio, i) => (
+					{segment.ratios.map((ratio, i) => (
 						<span
 							key={i}
-							className={
-								'click' + (moreSettings.segment.count === i ? ' on' : '')
-							}
+							className={'click' + (segment.count === i ? ' on' : '')}
 							style={{
 								width: `calc(${ratio * 100}% - 10px)`,
 							}}
@@ -46,7 +44,7 @@ const Layers = ({ moreSettings, layers, times }) => {
 
 Layers.propTypes = {
 	times: propTypes.array.isRequired,
-	moreSettings: propTypes.any.isRequired,
+	segment: propTypes.any.isRequired,
 	layers: propTypes.any.isRequired,
 }
 

@@ -5,10 +5,10 @@ const Octaves = ({ freq }) => {
 
 	return (
 		<div className="octave-wrap">
-			<div className={'octave' + (a > 1 ? ' on' : '')}></div>
 			<div className={'octave' + (a > 2 ? ' on' : '')}></div>
-			<div className={'octave' + (a > -1 ? ' on' : '')}></div>
+			<div className={'octave' + (a > 1 ? ' on' : '')}></div>
 			<div className={'octave' + (a > 0 ? ' on' : '')}></div>
+			<div className={'octave' + (a > -1 ? ' on' : '')}></div>
 		</div>
 	)
 }
