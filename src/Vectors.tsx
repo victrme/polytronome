@@ -1,6 +1,6 @@
 // import { useState } from 'react'
 
-function Waveforms({ type, change }) {
+function Vectors({ type, change }) {
 	// const [hovered, setHovered] = useState(false)
 
 	return (
@@ -81,4 +81,4 @@ function Waveforms({ type, change }) {
 	)
 }
 
-export default Waveforms
+export default Vectors

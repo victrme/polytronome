@@ -1,74 +1,16 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { MoreSettings, Layer, Sounds } from './Types'
 import { isMobileOnly } from 'react-device-detect'
-import { useBeforeunload } from 'react-beforeunload'
 import Pizzicato from 'pizzicato'
-import Wheel from './Wheel'
-import Range from './Range'
-import Octaves from './Octaves'
 import Tempo from './Tempo'
-import Waveform from './Waveform'
-import Layers from './Layers'
+import Themes from './Themes'
+import Principal from './Principal'
 import './App.scss'
 
 function App(): JSX.Element {
 	//
 	// States & Values
 	//
-
-	const ThemeList = [
-		{
-			name: 'black',
-			background: '#000000',
-			accent: '#bbbbbb',
-			dim: '#dddddd1a',
-			dimmer: '#bbbbbb1a',
-		},
-		{
-			name: 'dark',
-			background: '#282c34',
-			accent: '#ffffff',
-			dim: '#ebe9e933',
-			dimmer: '#ebe9e911',
-		},
-		{
-			name: 'monokai',
-			background: '#272822',
-			accent: '#a6e22e',
-			dim: '#fd971f33',
-			dimmer: '#e87d3e22',
-			buttons: '#FD971F60',
-		},
-		{
-			name: 'pink',
-			background: '#f37f83',
-			accent: '#ffdce2',
-			dim: '#e53c584d',
-			dimmer: '#ffffff2a',
-		},
-
-		{
-			name: 'coffee',
-			background: '#fbefdf',
-			accent: '#8d6852',
-			dim: '#dac6b5',
-			dimmer: '#dac6b52a',
-		},
-		{
-			name: 'beach',
-			background: '#fff9e9',
-			accent: '#4b9ab4',
-			dim: '#f6dbbc',
-			dimmer: '#f6dbbc50',
-		},
-		{
-			name: 'contrast',
-			background: '#ffffff',
-			accent: '#222222',
-			dim: '#00000033',
-			dimmer: '#00000010',
-		},
-	]
 
 	const clickTypeList = ['wood', 'drum', 'sine', 'triangle']
 
@@ -373,15 +315,15 @@ function App(): JSX.Element {
 	const applyTheme = (theme: number) => {
 		const root = document.querySelector(':root')! as HTMLBodyElement
 
-		root.style.setProperty('--background', ThemeList[theme].background)
-		root.style.setProperty('--accent', ThemeList[theme].accent)
-		root.style.setProperty('--dim', ThemeList[theme].dim)
-		root.style.setProperty('--dimmer', ThemeList[theme].dimmer)
-		root.style.setProperty('--buttons', ThemeList[theme].buttons || ThemeList[theme].dim)
+		root.style.setProperty('--background', Themes[theme].background)
+		root.style.setProperty('--accent', Themes[theme].accent)
+		root.style.setProperty('--dim', Themes[theme].dim)
+		root.style.setProperty('--dimmer', Themes[theme].dimmer)
+		root.style.setProperty('--buttons', Themes[theme].buttons || Themes[theme].dim)
 	}
 
 	const changeTheme = (theme: number) => {
-		const newTheme = (theme + 1) % ThemeList.length
+		const newTheme = (theme + 1) % Themes.length
 
 		applyTheme(newTheme)
 
@@ -487,279 +429,9 @@ function App(): JSX.Element {
 
 	//
 	//
-	// Profiles
-	//
-	//
-
-	// const pfStorage = {
-	// 	available: () => {
-	// 		if (localStorage.profile === undefined || localStorage.profile === '[]')
-	// 			return false
-	// 		else return true
-	// 	},
-
-	// 	get: () => {
-	// 		let result: any[] = []
-
-	// 		try {
-	// 			result = JSON.parse(localStorage.profile)
-	// 		} catch (error) {
-	// 			console.log(localStorage.profile, error)
-	// 		}
-
-	// 		return result
-	// 	},
-
-	// 	set: (a: any) => (localStorage.profile = JSON.stringify(a)),
-	// }
-
-	// const exportCode = (extended: boolean) => {
-	// 	//
-	// 	//	Stackers uses steps for saving different settings in one character
-	// 	//
-	// 	//	To stack:
-	// 	// 	[a.len: 3, b.len: 4] => to get the a[2] and b[1]
-	// 	// 	a * b.len + b ---> 3 * 4 + 2 = 14th character
-	// 	//
-	// 	// 	To destack:
-	// 	// 	b: stack % b.length
-	// 	// 	a: (stack - b) / b.length
-	// 	//
-	// 	const mainExport = () => {
-	// 		let layers = ''
-	// 		layers.forEach(layer => {
-	// 			const stack = layer.frequency * 16 + layer.beats
-	// 			if (stack > 36) layers += stack.toString(36)
-	// 			else layers += '0' + stack.toString(36)
-	// 		})
-	// 		return tempo.toString(30) + layers
-	// 	}
-	// 	const settingsExport = () => {
-	// 		const waveStacker = () => {
-	// 			const form = waveformsList.findIndex(w => w === moreSettings.sound.type)
-	// 			const time = moreSettings.sound.duration
-	// 			return (form * waveTimeList.length + time).toString(26)
-	// 		}
-	// 		// times 2 because [true, false].length = 2
-	// 		const displayStacker = () =>
-	// 			((+moreSettings.animations | 0) * 2 + (+moreSettings.segment.on | 0)).toString(
-	// 				26
-	// 			)
-	// 		return (
-	// 			'-' +
-	// 			Math.floor(moreSettings.sound.volume * 35).toString(36) +
-	// 			Math.floor(moreSettings.sound.release * 35).toString(36) +
-	// 			waveStacker() +
-	// 			(+moreSettings.theme | 0) +
-	// 			displayStacker()
-	// 		)
-	// 	}
-	// 	return mainExport() + (extended ? settingsExport() : '')
-	// }
-
-	// const saveWork = () => {
-	// 	const importCode = (code: string) => {
-	// 		const split = code.split('-')
-	// 		const [mainChars, settingsChars] = split
-
-	// 		const mainDecode = () => {
-	// 			//
-	// 			// 	For amout of layers found (divide by 2 char by layer)
-	// 			// 	get 1, 2 char, and step up... 3, 4, etc
-	// 			//
-	// 			const layersChars = mainChars.slice(2, mainChars.length)
-	// 			const newLayers: any[] = []
-
-	// 			for (let ii = 0; ii < layersChars.length / 2; ii++) {
-	// 				// 	Takes 2 chars at a time
-	// 				const singleLayer = layersChars.slice(ii * 2, ii * 2 + 2)
-
-	// 				//	Apply destackment
-	// 				const beats = parseInt(singleLayer, 36) % 16
-	// 				const note = (parseInt(singleLayer, 36) - beats) / 16
-	// 				newLayers.push({
-	// 					beats: beats === 0 ? 16 : beats,
-	// 					frequency: note,
-	// 				})
-	// 			}
-
-	// 			const tempo = parseInt(mainChars.slice(0, 2), 30)
-
-	// 			return {
-	// 				layers,
-	// 				tempo,
-	// 			}
-	// 		}
-
-	// 		const settingsDecode = () => {
-	// 			const wavetime = parseInt(settingsChars[2], 26) % waveTimeList.length
-	// 			const clickType =
-	// 				(parseInt(settingsChars[2], 26) - wavetime) / waveTimeList.length
-
-	// 			const segment = parseInt(settingsChars[4], 26) % 2
-	// 			const animations = (parseInt(settingsChars[4], 26) - segment) / 2
-
-	// 			return {
-	// 				volume: +(parseInt(settingsChars[0], 36) / 35).toFixed(2),
-	// 				release: +(parseInt(settingsChars[1], 36) / 35).toFixed(2),
-	// 				wavetime: wavetime,
-	// 				waveform: clickTypeList[clickType],
-	// 				theme: +settingsChars[3],
-	// 				segment: !!segment,
-	// 				animations: !!animations,
-	// 			}
-	// 		}
-
-	// 		if (settingsChars === undefined) {
-	// 			return mainDecode()
-	// 		} else {
-	// 			return {
-	// 				...mainDecode(),
-	// 				...settingsDecode(),
-	// 			}
-	// 		}
-	// 	}
-
-	// 	return {
-	// 		name: setRandomID(),
-	// 		layers: [...layers],
-	// 		tempo: tempo,
-	// 		animations: moreSettings.animations,
-	// 		theme: moreSettings.theme,
-	// 		segment: moreSettings.segment.on,
-	// 	}
-	// }
-
-	// const applySaved = (data: any) => {
-	// 	setMoreSettings(prev => ({
-	// 		...prev,
-	// 		animations: data.animations,
-	// 		theme: data.theme,
-	// 		segment: {
-	// 			...prev.segment,
-	// 			on: data.segment,
-	// 		},
-	// 		sound: { ...data.sound },
-	// 	}))
-
-	// 	setLayers([...data.layers])
-	// 	setTempo(data.tempo)
-	// 	applyTheme(data.theme)
-	// }
-
-	// const addProfiles = () => {
-	// 	const profiles = pfStorage.get()
-
-	// 	if (profiles.length < 5) {
-	// 		// Nested objects need to be saved like this
-	// 		// (layers, sound, etc.)
-
-	// 		profiles.push(saveWork())
-
-	// 		pfStorage.set(profiles)
-	// 		setSelectedProfile(profiles.length - 1)
-	// 	}
-	// }
-
-	// const selectProfile = (selection: number) => {
-	// 	const profile = JSON.parse(localStorage.profile)[selection]
-
-	// 	applySaved(profile)
-	// 	setSelectedProfile(selection)
-	// 	//setExportInput(exportCode(true))
-	// }
-
-	// const deleteProfile = () => {
-	// 	const i = selectedProfile
-	// 	const p = pfStorage.get()
-
-	// 	p.splice(i, 1)
-	// 	pfStorage.set(p)
-
-	// 	let newSelection = 0
-
-	// 	if (i === 0 || p.length === i) newSelection = i
-	// 	else newSelection = i - 1
-
-	// 	setSelectedProfile(newSelection)
-	// }
-
-	//
-	//
-	//	JSXs
-	//
-	//
-
-	// const ProfileList = () => {
-	// 	const list = pfStorage.get()
-	// 	const [renamingInput, setRenamingInput] = useState(list[selectedProfile].name)
-
-	// 	let result = (
-	// 		<div className="profile-bank">
-	// 			<div className="profile" onClick={addProfiles}>
-	// 				<span>+</span>
-	// 			</div>
-	// 		</div>
-	// 	)
-
-	// 	if (pfStorage.available()) {
-	// 		result = (
-	// 			<div className="profile-bank">
-	// 				{pfStorage.get().map((pf, i) => (
-	// 					<div
-	// 						key={i}
-	// 						className={'profile' + (selectedProfile === i ? ' selected' : '')}
-	// 						onClick={() =>
-	// 							selectedProfile === i ? setIsTyping(true) : selectProfile(i)
-	// 						}
-	// 					>
-	// 						<div
-	// 							className={
-	// 								'profile-name' +
-	// 								(selectedProfile === i && IsTyping ? ' edit' : '')
-	// 							}
-	// 						>
-	// 							<input
-	// 								name="profile-name"
-	// 								type="text"
-	// 								value={renamingInput}
-	// 								onChange={e => {
-	// 									if (e.target.value.length < 12) {
-	// 										setRenamingInput(e.target.value)
-	// 										list[selectedProfile].name = e.target.value
-	// 										pfStorage.set(list)
-	// 									}
-	// 								}}
-	// 								onKeyPress={e =>
-	// 									e.key === 'Enter' ? setIsTyping(false) : ''
-	// 								}
-	// 							/>
-	// 							<span>{pf.name}</span>
-	// 						</div>
-	// 					</div>
-	// 				))}
-
-	// 				<div className="profile" onClick={addProfiles}>
-	// 					<span>+</span>
-	// 				</div>
-	// 			</div>
-	// 		)
-	// 	}
-
-	// 	return result
-	// }
-
-	//
-	//
 	//	Effects
 	//
 	//
-
-	// Automaticaly saves before exiting
-	useBeforeunload(event => {
-		localStorage.bite = Date.now
-		// localStorage.sleep = JSON.stringify(saveWork())
-	})
 
 	useEffect(() => {
 		document.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -819,96 +491,19 @@ function App(): JSX.Element {
 
 	return (
 		<div className={'App ' + (isMobileOnly ? 'mobile' : 'mobile')}>
-			<div className="principal">
-				<div className="title">
-					<p>Train your polyrythms</p>
-					<h1>Polytronome</h1>
-				</div>
-
-				<Layers times={times} layers={layers} moreSettings={moreSettings}></Layers>
-
-				<div className="start-button">
-					<button onMouseDown={() => launchMetronome(isRunning)}>
-						{isRunning ? 'Stop' : 'Start'}
-					</button>
-				</div>
-
-				<div className="layers-table-wrap">
-					<div className="layers-table">
-						{layers.map((layer, i) => (
-							<div className="ls-row" key={i}>
-								<Wheel
-									beats={layer.beats}
-									update={result => wheelUpdate('beats', result, i)}
-								></Wheel>
-
-								<div className="ls-type">
-									<Waveform
-										type={layer.type}
-										change={() => changeClickType(layer.type, i)}
-									></Waveform>
-								</div>
-
-								{layer.type === 'wood' ? (
-									<div
-										className="woodblocks"
-										onClick={() => changeFreqs('wood', i)}
-									>
-										<div className={layer.freq.wood > -1 ? 'on' : ''}></div>
-										<div className={layer.freq.wood > 0 ? 'on' : ''}></div>
-										<div className={layer.freq.wood > 1 ? 'on' : ''}></div>
-									</div>
-								) : layer.type === 'drum' ? (
-									<div
-										className="drumset"
-										onClick={() => changeFreqs('drum', i)}
-									>
-										{/* <div className="hat"></div>
-										<div className="kick"></div>
-										<div className="snare"></div> */}
-										<div>{layer.freq.drum}</div>
-									</div>
-								) : (
-									<div className="notes-wrap">
-										<Wheel
-											freq={layer.beats}
-											update={result =>
-												wheelUpdate('frequency', result, i)
-											}
-										></Wheel>
-										<Octaves freq={layer.freq.wave}></Octaves>
-									</div>
-								)}
-
-								<div>
-									<Range
-										volume={layer.volume}
-										update={result => rangeUpdate(i, result)}
-									></Range>
-								</div>
-							</div>
-						))}
-
-						<div className="ls-row ls-labels">
-							<div>beats</div>
-							<div>type</div>
-							<div>note</div>
-							<div>volume</div>
-						</div>
-					</div>
-
-					<div className="ls-buttons">
-						<div className="layers-amount">
-							<button onClick={() => updateLayer(false)}>-</button>
-							<button onClick={() => updateLayer(true)}>+</button>
-						</div>
-
-						<button className="randomize" onClick={randomizeLayers}>
-							⚂
-						</button>
-					</div>
-				</div>
-			</div>
+			<Principal
+				isRunning={isRunning}
+				launchMetronome={launchMetronome}
+				times={times}
+				layers={layers}
+				moreSettings={moreSettings}
+				wheelUpdate={wheelUpdate}
+				changeClickType={changeClickType}
+				changeFreqs={changeFreqs}
+				rangeUpdate={rangeUpdate}
+				updateLayer={updateLayer}
+				randomizeLayers={randomizeLayers}
+			></Principal>
 
 			<div className="settings-wrap">
 				<Tempo
@@ -1003,53 +598,6 @@ function App(): JSX.Element {
 
 						<button onClick={saveWork}>click</button>
 					</div> */}
-				</div>
-
-				<div className="saved-profiles">
-					<h3>Profiles</h3>
-
-					<div className="profile-wrap">
-						{/* <ProfileList></ProfileList> */}
-
-						{/* <div className="profile-bank">
-							<div className="profile">
-								<span>Profile 1</span>
-							</div>
-							<div className="profile">
-								<span>Profile 2</span>
-							</div>
-							<div className="pfb-btns">
-								<div className="profile">
-									<span>+</span>
-								</div>
-								<div className="profile">
-									<span>↧</span>
-								</div>
-							</div>
-						</div>
-
-						<div className="profile-focus">
-							<h4>Profile 1</h4>
-							<div className="export-code">
-								<span>43ko7u-001f</span>
-							</div>
-
-							<div className="profile-mgmt">
-								<button onClick={() => setIsTyping(!IsTyping)}>Rename</button>
-								<br />
-								<button onClick={deleteProfile}>Delete</button>
-							</div>
-							<div className="export">
-								<input
-									type="text"
-									className="shown"
-									value={exportInput}
-									readOnly
-								/>
-								<span className={'export-choice'}>full</span>
-							</div>
-						</div> */}
-					</div>
 				</div>
 
 				<div className="links">
