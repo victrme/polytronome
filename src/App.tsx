@@ -2,7 +2,7 @@ import { useRef, useState, useEffect, useCallback } from 'react'
 import { MoreSettings, Layer, Sounds } from './Types'
 import { isMobileOnly } from 'react-device-detect'
 import Pizzicato from 'pizzicato'
-import Tempo from './Tempo'
+import Settings from './Settings'
 import Themes from './Themes'
 import Principal from './Principal'
 import './App.scss'
@@ -58,20 +58,6 @@ function App(): JSX.Element {
 	])
 
 	const [sounds, setSounds] = useState<Sounds>()
-
-	const defaultLayer: Layer = {
-		beats: 4,
-		freq: {
-			wave: 12,
-			wood: 0,
-			drum: 1,
-		},
-		type: 'sine',
-		volume: 0.4,
-	}
-
-	// const [selectedProfile, setSelectedProfile] = useState(0)
-	// const [IsTyping, setIsTyping] = useState(false)
 
 	// Use Refs for async timeouts
 	const timesRef = useRef(times)
@@ -241,7 +227,16 @@ function App(): JSX.Element {
 			(add && moreSettings.unlimited) ||
 			(add && !moreSettings.unlimited && newLayers.length < 4)
 		) {
-			newLayers.push(defaultLayer)
+			newLayers.push({
+				beats: 4,
+				freq: {
+					wave: 12,
+					wood: 0,
+					drum: 1,
+				},
+				type: 'sine',
+				volume: 0.4,
+			})
 			newTimes.push(0)
 		}
 
@@ -310,15 +305,6 @@ function App(): JSX.Element {
 		root.style.setProperty('--buttons', Themes[theme].buttons || Themes[theme].dim)
 	}
 
-	const changeTheme = (theme: number) => {
-		const newTheme = (theme + 1) % Themes.length
-
-		applyTheme(newTheme)
-
-		setMoreSettings(prev => ({ ...prev, theme: newTheme }))
-		localStorage.theme = newTheme
-	}
-
 	const randomizeLayers = () => {
 		setLayers([
 			...layersRef.current.map(layer => ({
@@ -327,6 +313,15 @@ function App(): JSX.Element {
 			})),
 		])
 		restartMetronome()
+	}
+
+	const changeTheme = (theme: number) => {
+		const newTheme = (theme + 1) % Themes.length
+
+		applyTheme(newTheme)
+
+		setMoreSettings(prev => ({ ...prev, theme: newTheme }))
+		localStorage.theme = newTheme
 	}
 
 	const changeClickType = (type: string, i: number) => {
@@ -341,7 +336,7 @@ function App(): JSX.Element {
 		})
 	}
 
-	const setFullscreen = (state: boolean) => {
+	const changeFullscreen = (state: boolean) => {
 		if (!state && document.fullscreenElement === null) {
 			const wrap = document.querySelector('.settings-wrap') as HTMLDivElement
 			document.querySelector('.App')!.requestFullscreen()
@@ -480,127 +475,32 @@ function App(): JSX.Element {
 	return (
 		<div className={'App ' + (isMobileOnly ? 'mobile' : 'mobile')}>
 			<Principal
-				isRunning={isRunning}
-				launchMetronome={launchMetronome}
 				times={times}
 				layers={layers}
 				segment={segment}
+				isRunning={isRunning}
 				wheelUpdate={wheelUpdate}
-				changeClickType={changeClickType}
 				changeFreqs={changeFreqs}
 				rangeUpdate={rangeUpdate}
 				updateLayer={updateLayer}
+				changeClickType={changeClickType}
+				launchMetronome={launchMetronome}
 				randomizeLayers={randomizeLayers}
 			></Principal>
 
-			<div className="settings-wrap">
-				<Tempo
-					restart={restartMetronome}
-					update={changeTempo}
-					wheelUpdate={wheelUpdate}
-					tempo={tempo}
-					tempoRef={tempoRef}
-				></Tempo>
-
-				<div className="other-settings">
-					<h3>Display</h3>
-					<div className="setting display">
-						<h4>Clicks</h4>
-
-						<button
-							name="display"
-							id="display"
-							onClick={() =>
-								setSegment({
-									...segment,
-									on: segment.on ? false : true,
-								})
-							}
-						>
-							{segment.on ? 'segmented' : 'layered'}
-						</button>
-					</div>
-
-					<div className="setting fullscreen">
-						<h4>Fullscreen</h4>
-
-						<button
-							name="fullscreen"
-							id="fullscreen"
-							onClick={() => setFullscreen(moreSettings.fullscreen)}
-						>
-							{moreSettings.fullscreen ? 'on' : 'off'}
-						</button>
-					</div>
-
-					<div className="setting animations">
-						<div>
-							<h4>Animations</h4>
-						</div>
-
-						<button name="animations" id="animations" onClick={changeAnimations}>
-							{moreSettingsRef.current.animations ? 'on' : 'off'}
-						</button>
-					</div>
-
-					<div className="setting theme">
-						<div>
-							<h4>Theme</h4>
-						</div>
-						<div
-							className="theme-preview"
-							onClick={() => changeTheme(moreSettings.theme)}
-						>
-							<div className={moreSettings.theme >= 0 ? 'on' : ''}></div>
-							<div className={moreSettings.theme >= 1 ? 'on' : ''}></div>
-							<div className={moreSettings.theme >= 2 ? 'on' : ''}></div>
-							<div className={moreSettings.theme >= 3 ? 'on' : ''}></div>
-							<div className={moreSettings.theme >= 4 ? 'on' : ''}></div>
-							<div className={moreSettings.theme >= 5 ? 'on' : ''}></div>
-							<div className={moreSettings.theme >= 6 ? 'on' : ''}></div>
-						</div>
-					</div>
-
-					{/* <div className="setting unlimited">
-						<div>
-							<h4>Unlimited</h4>
-						</div>
-
-						<button
-							onClick={() =>
-								setMoreSettings(prev => ({
-									...prev,
-									unlimited: moreSettings.unlimited ? false : true,
-								}))
-							}
-						>
-							{moreSettingsRef.current.unlimited ? 'on' : 'off'}
-						</button>
-					</div>
-					
-					<div className="setting debug">
-						<h4>Debug button</h4>
-
-						<button onClick={saveWork}>click</button>
-					</div> */}
-				</div>
-
-				<div className="links">
-					<h3>Links</h3>
-					<div>
-						<a href="#docs">documentation</a>
-						<br />
-						<a href="https://github.com/victorazevedo-me/polytronome">
-							source code
-						</a>
-						<br />
-						<span>Arranged by </span>
-						<a href="https://victr.me/">victor azevedo</a>
-					</div>
-
-					<div></div>
-				</div>
-			</div>
+			<Settings
+				tempo={tempo}
+				segment={segment}
+				tempoRef={tempoRef}
+				moreSettings={moreSettings}
+				setSegment={setSegment}
+				changeTempo={changeTempo}
+				changeTheme={changeTheme}
+				wheelUpdate={wheelUpdate}
+				changeAnimations={changeAnimations}
+				changeFullscreen={changeFullscreen}
+				restartMetronome={restartMetronome}
+			></Settings>
 		</div>
 	)
 }
