@@ -28,8 +28,8 @@ function App(): JSX.Element {
 			name: 'dark',
 			background: '#282c34',
 			accent: '#ffffff',
-			dim: '#5c657736',
-			dimmer: '#5c657736',
+			dim: '#ebe9e933',
+			dimmer: '#ebe9e911',
 		},
 		{
 			name: 'monokai',
@@ -94,13 +94,21 @@ function App(): JSX.Element {
 	const [layers, setLayers] = useState<Layer[]>([
 		{
 			beats: 4,
-			frequency: 12,
+			freq: {
+				wave: 12,
+				wood: 0,
+				drum: 1,
+			},
 			type: 'sine',
 			volume: 0.4,
 		},
 		{
 			beats: 5,
-			frequency: 19,
+			freq: {
+				wave: 19,
+				wood: 1,
+				drum: 0,
+			},
 			type: 'triangle',
 			volume: 0.3,
 		},
@@ -110,7 +118,11 @@ function App(): JSX.Element {
 
 	const defaultLayer: Layer = {
 		beats: 4,
-		frequency: 12,
+		freq: {
+			wave: 12,
+			wood: 0,
+			drum: 1,
+		},
 		type: 'sine',
 		volume: 0.4,
 	}
@@ -198,7 +210,7 @@ function App(): JSX.Element {
 			//
 
 			if (layer.type === 'sine' || layer.type === 'triangle') {
-				const note = layer.frequency + 12
+				const note = layer.freq.wave + 12
 				const freq = 32.7 * 2 ** (note / 12)
 				const wave = new Pizzicato.Sound({
 					source: 'wave',
@@ -214,9 +226,9 @@ function App(): JSX.Element {
 				setTimeout(() => wave.stop(), 50)
 			} else {
 				if (sounds) {
-					const freq = layer.frequency > 2 ? 2 : layer.frequency
-
+					const freq = layer.freq[layer.type]
 					const audio = new Audio(sounds[layer.type][freq].default)
+
 					audio.volume = layer.volume
 					audio.play()
 				}
@@ -395,8 +407,6 @@ function App(): JSX.Element {
 			if (x === type) {
 				newLayers[i].type = clickTypeList[(ii + 1) % clickTypeList.length]
 
-				if (type === 'wood') newLayers[i].frequency = 0
-
 				setLayers([...layers])
 			}
 		})
@@ -432,18 +442,18 @@ function App(): JSX.Element {
 		}))
 	}
 
-	//
-	//
-	// Tempo
-	//
-	//
-
 	const changeTempo = (amount: number) => {
 		const up = amount > tempo
 		const max = up ? 300 : 30
 		const outOfBound = up ? amount > max : amount < max
 
 		setTempo(outOfBound ? max : amount)
+	}
+
+	const changeFreqs = (which: string, i: number) => {
+		const newLayers = [...layers]
+		newLayers[i].freq[which] = (layers[i].freq[which] + 1) % 3
+		setLayers([...newLayers])
 	}
 
 	//
@@ -453,14 +463,16 @@ function App(): JSX.Element {
 	//
 
 	const wheelUpdate = (what: string, el: any, index = 0) => {
-		if (['beats', 'frequency'].indexOf(what) !== -1) {
-			const newLayers = [...layers]
-			const toSave = what === 'beats' ? el + 2 : el
+		const newLayers = [...layers]
 
-			newLayers[index][what] = toSave
+		if (what === 'beats') {
+			newLayers[index][what] = el + 2
 			setLayers([...newLayers])
 		}
-
+		if (what === 'frequency') {
+			newLayers[index].freq.wave = el
+			setLayers([...newLayers])
+		}
 		if (what === 'tempo') changeTempo(+el)
 		if (what === 'beats') restartMetronome()
 	}
@@ -843,31 +855,21 @@ function App(): JSX.Element {
 								{layer.type === 'wood' ? (
 									<div
 										className="woodblocks"
-										onClick={() => {
-											const newLayers = [...layers]
-											newLayers[i].frequency =
-												(layers[i].frequency + 1) % 3
-											setLayers([...newLayers])
-										}}
+										onClick={() => changeFreqs('wood', i)}
 									>
-										<div className={layer.frequency > -1 ? 'on' : ''}></div>
-										<div className={layer.frequency > 0 ? 'on' : ''}></div>
-										<div className={layer.frequency > 1 ? 'on' : ''}></div>
+										<div className={layer.freq.wood > -1 ? 'on' : ''}></div>
+										<div className={layer.freq.wood > 0 ? 'on' : ''}></div>
+										<div className={layer.freq.wood > 1 ? 'on' : ''}></div>
 									</div>
 								) : layer.type === 'drum' ? (
 									<div
 										className="drumset"
-										onClick={() => {
-											const newLayers = [...layers]
-											newLayers[i].frequency =
-												(layers[i].frequency + 1) % 3
-											setLayers([...newLayers])
-										}}
+										onClick={() => changeFreqs('drum', i)}
 									>
 										{/* <div className="hat"></div>
 										<div className="kick"></div>
 										<div className="snare"></div> */}
-										<div>{layer.frequency}</div>
+										<div>{layer.freq.drum}</div>
 									</div>
 								) : (
 									<div className="notes-wrap">
@@ -877,7 +879,7 @@ function App(): JSX.Element {
 												wheelUpdate('frequency', result, i)
 											}
 										></Wheel>
-										<Octaves freq={layer.frequency}></Octaves>
+										<Octaves freq={layer.freq.wave}></Octaves>
 									</div>
 								)}
 
