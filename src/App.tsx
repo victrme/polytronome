@@ -390,13 +390,12 @@ function App(): JSX.Element {
 	}
 
 	const randomizeLayers = () => {
-		const newLayers = [...layers]
-
-		layersRef.current.forEach(layer =>
-			newLayers.push({ ...layer, beats: +randInInterval(2, 16).toFixed(0) })
-		)
-
-		setLayers([...newLayers])
+		setLayers([
+			...layersRef.current.map(layer => ({
+				...layer,
+				beats: +randInInterval(2, 16).toFixed(0),
+			})),
+		])
 		restartMetronome()
 	}
 
@@ -430,11 +429,9 @@ function App(): JSX.Element {
 	const changeAnimations = () => {
 		const appDOM = document.querySelector('.App') as HTMLDivElement
 
-		if (moreSettings.animations) {
-			appDOM.classList.add('performance')
-		} else {
-			appDOM.classList.remove('performance')
-		}
+		moreSettings.animations
+			? appDOM.classList.add('performance')
+			: appDOM.classList.remove('performance')
 
 		setMoreSettings(prev => ({
 			...prev,
@@ -919,6 +916,7 @@ function App(): JSX.Element {
 					update={changeTempo}
 					wheelUpdate={wheelUpdate}
 					tempo={tempo}
+					tempoRef={tempoRef}
 				></Tempo>
 
 				<div className="other-settings">

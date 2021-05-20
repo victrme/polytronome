@@ -3,7 +3,7 @@ import { isMobileOnly } from 'react-device-detect'
 import propTypes from 'prop-types'
 import Wheel from './Wheel'
 
-const Tempo = ({ tempo, restart, update, wheelUpdate }) => {
+const Tempo = ({ tempo, tempoRef, restart, update, wheelUpdate }) => {
 	const [tap, setTap] = useState([
 		{
 			date: 0,
@@ -21,7 +21,9 @@ const Tempo = ({ tempo, restart, update, wheelUpdate }) => {
 
 			buttonsInterval.current = setTimeout(
 				() =>
-					(buttonsInterval.current = setInterval(() => update(tempo + 1 * sign), 70)),
+					(buttonsInterval.current = setInterval(() => {
+						update(tempoRef.current + 1 * sign)
+					}, 70)),
 				300
 			)
 		}
@@ -86,32 +88,35 @@ const Tempo = ({ tempo, restart, update, wheelUpdate }) => {
 						}}
 					></Wheel>
 
-					<button className="tap" onClick={tapTempo}>
-						tap
-					</button>
-					<div className="tempo-buttons">
-						<button
-							className="tempo-minus"
-							onTouchStart={e => tempoBtns(e, 'enter', -1, isMobileOnly)}
-							onTouchEnd={e => tempoBtns(e, 'leave', -1, isMobileOnly)}
-							onMouseDown={e => tempoBtns(e, 'enter', -1, !isMobileOnly)}
-							onMouseUp={e => tempoBtns(e, 'leave', -1, !isMobileOnly)}
-							onMouseLeave={e => tempoBtns(e, 'leave', -1, !isMobileOnly)}
-							onContextMenu={e => e.preventDefault()}
-						>
-							-
+					<div>
+						<button className="tap" onClick={tapTempo}>
+							tap
 						</button>
-						<button
-							className="tempo-plus"
-							onTouchStart={e => tempoBtns(e, 'enter', 1, isMobileOnly)}
-							onTouchEnd={e => tempoBtns(e, 'leave', 1, isMobileOnly)}
-							onMouseDown={e => tempoBtns(e, 'enter', 1, !isMobileOnly)}
-							onMouseUp={e => tempoBtns(e, 'leave', 1, !isMobileOnly)}
-							onMouseLeave={e => tempoBtns(e, 'leave', 1, !isMobileOnly)}
-							onContextMenu={e => e.preventDefault()}
-						>
-							+
-						</button>
+
+						<div className="tempo-buttons">
+							<button
+								className="tempo-minus"
+								onTouchStart={e => tempoBtns(e, 'enter', -1, isMobileOnly)}
+								onTouchEnd={e => tempoBtns(e, 'leave', -1, isMobileOnly)}
+								onMouseDown={e => tempoBtns(e, 'enter', -1, !isMobileOnly)}
+								onMouseUp={e => tempoBtns(e, 'leave', -1, !isMobileOnly)}
+								onMouseLeave={e => tempoBtns(e, 'leave', -1, !isMobileOnly)}
+								onContextMenu={e => e.preventDefault()}
+							>
+								-
+							</button>
+							<button
+								className="tempo-plus"
+								onTouchStart={e => tempoBtns(e, 'enter', 1, isMobileOnly)}
+								onTouchEnd={e => tempoBtns(e, 'leave', 1, isMobileOnly)}
+								onMouseDown={e => tempoBtns(e, 'enter', 1, !isMobileOnly)}
+								onMouseUp={e => tempoBtns(e, 'leave', 1, !isMobileOnly)}
+								onMouseLeave={e => tempoBtns(e, 'leave', 1, !isMobileOnly)}
+								onContextMenu={e => e.preventDefault()}
+							>
+								+
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -124,6 +129,7 @@ Tempo.propTypes = {
 	wheelUpdate: propTypes.func,
 	update: propTypes.func,
 	tempo: propTypes.number,
+	tempoRef: propTypes.object,
 }
 
 export default Tempo
