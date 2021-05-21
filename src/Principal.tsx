@@ -4,6 +4,8 @@ import Wheel from './Wheel'
 import Range from './Range'
 import Vectors from './Vectors'
 import Octaves from './Octaves'
+import { JsxElement } from 'typescript'
+import { JSXElementConstructor } from 'react'
 
 const Principal = ({
 	segment,
@@ -11,6 +13,7 @@ const Principal = ({
 	times,
 	isRunning,
 	launchMetronome,
+	moreSettings,
 	wheelUpdate,
 	setLayers,
 	updateLayer,
@@ -40,6 +43,42 @@ const Principal = ({
 		})
 	}
 
+	const LayerType = ({ layer, i }) => {
+		let result: any = <div></div>
+
+		if (layer.type === 'wood') {
+			result = (
+				<div className="woodblocks" onClick={() => changeFreqs('wood', i)}>
+					<div className={layer.freq.wood > -1 ? 'on' : ''}></div>
+					<div className={layer.freq.wood > 0 ? 'on' : ''}></div>
+					<div className={layer.freq.wood > 1 ? 'on' : ''}></div>
+				</div>
+			)
+		}
+
+		if (layer.type === 'drum') {
+			result = (
+				<div className="drumset" onClick={() => changeFreqs('drum', i)}>
+					<div>{layer.freq.drum}</div>
+				</div>
+			)
+		}
+
+		if (layer.type === 'sine' || layer.type === 'triangle') {
+			result = (
+				<div className="notes-wrap">
+					<Wheel
+						freq={layer.freq.wave}
+						update={result => wheelUpdate('frequency', result, i)}
+					></Wheel>
+					<Octaves freq={layer.freq.wave}></Octaves>
+				</div>
+			)
+		}
+
+		return result
+	}
+
 	return (
 		<div className="principal">
 			<div className="title">
@@ -58,51 +97,46 @@ const Principal = ({
 								update={result => wheelUpdate('beats', result, i)}
 							></Wheel>
 
-							<div className="ls-type">
-								<Vectors
-									type={layer.type}
-									change={() => changeClickType(layer.type, i)}
-								></Vectors>
-							</div>
-
-							{layer.type === 'wood' ? (
-								<div
-									className="woodblocks"
-									onClick={() => changeFreqs('wood', i)}
-								>
-									<div className={layer.freq.wood > -1 ? 'on' : ''}></div>
-									<div className={layer.freq.wood > 0 ? 'on' : ''}></div>
-									<div className={layer.freq.wood > 1 ? 'on' : ''}></div>
-								</div>
-							) : layer.type === 'drum' ? (
-								<div className="drumset" onClick={() => changeFreqs('drum', i)}>
-									<div>{layer.freq.drum}</div>
+							{moreSettings.all ? (
+								<div className="ls-type">
+									<Vectors
+										type={layer.type}
+										change={() => changeClickType(layer.type, i)}
+									></Vectors>
 								</div>
 							) : (
-								<div className="notes-wrap">
-									<Wheel
-										freq={layer.freq.wave}
-										update={result => wheelUpdate('frequency', result, i)}
-									></Wheel>
-									<Octaves freq={layer.freq.wave}></Octaves>
-								</div>
+								''
 							)}
 
-							<div>
-								<Range
-									volume={layer.volume}
-									update={result => changeRange(i, result)}
-								></Range>
-							</div>
+							{moreSettings.all ? (
+								<LayerType layer={layer} i={i}></LayerType>
+							) : (
+								''
+							)}
+
+							{moreSettings.all ? (
+								<div>
+									<Range
+										volume={layer.volume}
+										update={result => changeRange(i, result)}
+									></Range>
+								</div>
+							) : (
+								''
+							)}
 						</div>
 					))}
 
-					<div className="ls-row ls-labels">
-						<div>beats</div>
-						<div>type</div>
-						<div>note</div>
-						<div>volume</div>
-					</div>
+					{moreSettings.all ? (
+						<div className="ls-row ls-labels">
+							<div>beats</div>
+							<div>type</div>
+							<div>note</div>
+							<div>volume</div>
+						</div>
+					) : (
+						''
+					)}
 				</div>
 
 				<div className="ls-buttons">
@@ -129,8 +163,9 @@ const Principal = ({
 Principal.propTypes = {
 	isRunning: propTypes.bool.isRequired,
 	times: propTypes.array.isRequired,
-	segment: propTypes.any.isRequired,
-	layers: propTypes.any.isRequired,
+	segment: propTypes.object.isRequired,
+	layers: propTypes.object.isRequired,
+	moreSettings: propTypes.object.isRequired,
 	launchMetronome: propTypes.func,
 	wheelUpdate: propTypes.func.isRequired,
 	updateLayer: propTypes.func.isRequired,

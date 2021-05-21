@@ -11,6 +11,7 @@
 body {
 	margin: 0;
 	background-color: var(--background);
+	transition: background-color 1s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 button,
@@ -27,7 +28,6 @@ input {
 	display: flex;
 	justify-content: space-evenly;
 	font-size: calc(10px + 2vmin);
-	transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
 	user-select: none;
 
 	button {
@@ -273,6 +273,7 @@ input {
 						height: 8px;
 						border-radius: 8px;
 						margin: 1px;
+						opacity: 0.6;
 						background-color: var(--dim);
 						transition: background-color 0.2s;
 

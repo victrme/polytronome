@@ -3,6 +3,7 @@ export type MoreSettings = {
 	fullscreen: boolean
 	unlimited: boolean
 	animations: boolean
+	all: boolean
 }
 
 export type Segment = {

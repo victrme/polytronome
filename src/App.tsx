@@ -3,7 +3,6 @@ import { MoreSettings, Layer, Sounds } from './Types'
 import { isMobileOnly } from 'react-device-detect'
 import Pizzicato from 'pizzicato'
 import Settings from './Settings'
-import Themes from './Themes'
 import Principal from './Principal'
 import './App.scss'
 
@@ -11,6 +10,11 @@ function App(): JSX.Element {
 	//
 	// States & Values
 	//
+
+	const [times, setTimes] = useState<number[]>([1, 1])
+	const [tempo, setTempo] = useState(80)
+	const [startTime, setStartTime] = useState(Date.now)
+	const [isRunning, setIsRunning] = useState(false)
 
 	const [segment, setSegment] = useState({
 		on: false,
@@ -25,12 +29,8 @@ function App(): JSX.Element {
 		fullscreen: false,
 		unlimited: false,
 		animations: true,
+		all: false,
 	})
-
-	const [times, setTimes] = useState<number[]>([1, 1])
-	const [tempo, setTempo] = useState(80)
-	const [startTime, setStartTime] = useState(Date.now)
-	const [isRunning, setIsRunning] = useState(false)
 
 	const [layers, setLayers] = useState<Layer[]>([
 		{
@@ -57,7 +57,6 @@ function App(): JSX.Element {
 
 	const [sounds, setSounds] = useState<Sounds>()
 
-	// Use Refs for async timeouts
 	const timesRef = useRef(times)
 	const tempoRef = useRef(tempo)
 	const startTimeRef = useRef(startTime)
@@ -74,23 +73,6 @@ function App(): JSX.Element {
 	layersRef.current = layers
 	segmentRef.current = segment
 	moreSettingsRef.current = moreSettings
-	// IsTypingRef.current = IsTyping
-
-	//
-	// Small functions
-	//
-
-	const calculateTempoMs = (beats: number, tmp: number) => {
-		//
-		// Set min / max if limited
-		if (!moreSettingsRef.current.unlimited) tmp = tmp < 30 ? 30 : tmp > 300 ? 300 : tmp
-
-		return 60000 / ((beats / 4) * tmp)
-	}
-
-	function randInInterval(a: number, b: number) {
-		return Math.random() * (b - a) + a
-	}
 
 	//
 	//
@@ -180,6 +162,14 @@ function App(): JSX.Element {
 
 	const launchMetronome = (runs: boolean) => {
 		function start() {
+			const calculateTempoMs = (beats: number, tmp: number) => {
+				//
+				// Set min / max if limited
+				tmp = tmp < 30 ? 30 : tmp > 300 ? 300 : tmp
+
+				return 60000 / ((beats / 4) * tmp)
+			}
+
 			layersRef.current.forEach((l, i) => {
 				const tempoMs = calculateTempoMs(l.beats, tempoRef.current)
 				metronomeInterval(tempoMs, tempoMs, i)
@@ -293,61 +283,16 @@ function App(): JSX.Element {
 	//
 	//
 
-	const applyTheme = (theme: number) => {
-		const root = document.querySelector(':root')! as HTMLBodyElement
-
-		root.style.setProperty('--background', Themes[theme].background)
-		root.style.setProperty('--accent', Themes[theme].accent)
-		root.style.setProperty('--dim', Themes[theme].dim)
-		root.style.setProperty('--dimmer', Themes[theme].dimmer)
-		root.style.setProperty('--buttons', Themes[theme].buttons || Themes[theme].dim)
-	}
-
 	const randomizeLayers = () => {
+		const rand = (a: number, b: number) => Math.random() * (b - a) + a
+
 		setLayers([
 			...layersRef.current.map(layer => ({
 				...layer,
-				beats: +randInInterval(2, 16).toFixed(0),
+				beats: +rand(2, 16).toFixed(0),
 			})),
 		])
 		restartMetronome()
-	}
-
-	const changeTheme = (theme: number) => {
-		const newTheme = (theme + 1) % Themes.length
-
-		applyTheme(newTheme)
-
-		setMoreSettings(prev => ({ ...prev, theme: newTheme }))
-		localStorage.theme = newTheme
-	}
-
-	const changeFullscreen = (state: boolean) => {
-		if (!state && document.fullscreenElement === null) {
-			const wrap = document.querySelector('.settings-wrap') as HTMLDivElement
-			document.querySelector('.App')!.requestFullscreen()
-			wrap.style.overflowY = 'auto'
-		} else if (document.fullscreenElement !== null) {
-			document.exitFullscreen()
-		}
-
-		setMoreSettings(prev => ({
-			...prev,
-			fullscreen: !state,
-		}))
-	}
-
-	const changeAnimations = () => {
-		const appDOM = document.querySelector('.App') as HTMLDivElement
-
-		moreSettings.animations
-			? appDOM.classList.add('performance')
-			: appDOM.classList.remove('performance')
-
-		setMoreSettings(prev => ({
-			...prev,
-			animations: moreSettings.animations ? false : true,
-		}))
 	}
 
 	const changeTempo = (amount: number) => {
@@ -442,7 +387,11 @@ function App(): JSX.Element {
 	//
 
 	return (
-		<div className={'App ' + (isMobileOnly ? 'mobile' : 'mobile')}>
+		<div
+			className={
+				'App' + (isMobileOnly ? ' mobile' : '') + (moreSettings.all ? '' : ' easy')
+			}
+		>
 			<Principal
 				times={times}
 				layers={layers}
@@ -451,6 +400,7 @@ function App(): JSX.Element {
 				wheelUpdate={wheelUpdate}
 				updateLayer={updateLayer}
 				setLayers={setLayers}
+				moreSettings={moreSettings}
 				launchMetronome={launchMetronome}
 				randomizeLayers={randomizeLayers}
 			></Principal>
@@ -460,12 +410,10 @@ function App(): JSX.Element {
 				segment={segment}
 				tempoRef={tempoRef}
 				moreSettings={moreSettings}
+				setMoreSettings={setMoreSettings}
 				setSegment={setSegment}
 				changeTempo={changeTempo}
-				changeTheme={changeTheme}
 				wheelUpdate={wheelUpdate}
-				changeAnimations={changeAnimations}
-				changeFullscreen={changeFullscreen}
 				restartMetronome={restartMetronome}
 			></Settings>
 		</div>

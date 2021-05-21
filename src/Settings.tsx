@@ -1,3 +1,4 @@
+import Themes from './Themes'
 import Tempo from './Tempo'
 import propTypes from 'prop-types'
 
@@ -7,38 +8,89 @@ const Settings = ({
 	tempo,
 	tempoRef,
 	setSegment,
-	changeFullscreen,
-	changeTempo,
-	changeAnimations,
-	changeTheme,
+	setMoreSettings,
 	restartMetronome,
+	changeTempo,
 	wheelUpdate,
 }) => {
+	const changeAnimations = () => {
+		const appDOM = document.querySelector('.App') as HTMLDivElement
+
+		moreSettings.animations
+			? appDOM.classList.add('performance')
+			: appDOM.classList.remove('performance')
+
+		setMoreSettings(prev => ({
+			...prev,
+			animations: moreSettings.animations ? false : true,
+		}))
+	}
+
+	const changeFullscreen = (state: boolean) => {
+		if (!state && document.fullscreenElement === null) {
+			const wrap = document.querySelector('.settings-wrap') as HTMLDivElement
+			document.querySelector('.App')!.requestFullscreen()
+			wrap.style.overflowY = 'auto'
+		} else if (document.fullscreenElement !== null) {
+			document.exitFullscreen()
+		}
+
+		setMoreSettings(prev => ({
+			...prev,
+			fullscreen: !state,
+		}))
+	}
+
+	const applyTheme = (theme: number) => {
+		const root = document.querySelector(':root')! as HTMLBodyElement
+
+		root.style.setProperty('--background', Themes[theme].background)
+		root.style.setProperty('--accent', Themes[theme].accent)
+		root.style.setProperty('--dim', Themes[theme].dim)
+		root.style.setProperty('--dimmer', Themes[theme].dimmer)
+		root.style.setProperty('--buttons', Themes[theme].buttons || Themes[theme].dim)
+	}
+
+	const changeTheme = (theme: number) => {
+		const newTheme = (theme + 1) % Themes.length
+
+		applyTheme(newTheme)
+
+		setMoreSettings(prev => ({ ...prev, theme: newTheme }))
+		localStorage.theme = newTheme
+	}
+
 	return (
 		<div className="settings-wrap">
-			<Tempo
-				restart={restartMetronome}
-				update={changeTempo}
-				wheelUpdate={wheelUpdate}
-				tempo={tempo}
-				tempoRef={tempoRef}
-			></Tempo>
+			{moreSettings.all ? (
+				<Tempo
+					restart={restartMetronome}
+					update={changeTempo}
+					wheelUpdate={wheelUpdate}
+					tempo={tempo}
+					tempoRef={tempoRef}
+				></Tempo>
+			) : (
+				''
+			)}
 
 			<div className="other-settings">
-				<div className="setting display">
-					<h4>Clicks</h4>
+				<div className="setting advanced">
+					<div>
+						<h4>All settings</h4>
+					</div>
 
 					<button
-						name="display"
-						id="display"
+						name="advanced"
+						id="advanced"
 						onClick={() =>
-							setSegment({
-								...segment,
-								on: segment.on ? false : true,
-							})
+							setMoreSettings(prev => ({
+								...prev,
+								all: moreSettings.all ? false : true,
+							}))
 						}
 					>
-						{segment.on ? 'segmented' : 'layered'}
+						{moreSettings.all ? 'on' : 'off'}
 					</button>
 				</div>
 
@@ -61,6 +113,23 @@ const Settings = ({
 
 					<button name="animations" id="animations" onClick={changeAnimations}>
 						{moreSettings.animations ? 'on' : 'off'}
+					</button>
+				</div>
+
+				<div className="setting display">
+					<h4>Clicks</h4>
+
+					<button
+						name="display"
+						id="display"
+						onClick={() =>
+							setSegment({
+								...segment,
+								on: segment.on ? false : true,
+							})
+						}
+					>
+						{segment.on ? 'segmented' : 'layered'}
 					</button>
 				</div>
 
@@ -126,10 +195,8 @@ Settings.propTypes = {
 	tempo: propTypes.number.isRequired,
 	tempoRef: propTypes.object.isRequired,
 	setSegment: propTypes.func.isRequired,
-	changeFullscreen: propTypes.func.isRequired,
+	setMoreSettings: propTypes.func.isRequired,
 	changeTempo: propTypes.func.isRequired,
-	changeAnimations: propTypes.func.isRequired,
-	changeTheme: propTypes.func.isRequired,
 	restartMetronome: propTypes.func.isRequired,
 	wheelUpdate: propTypes.func.isRequired,
 }
