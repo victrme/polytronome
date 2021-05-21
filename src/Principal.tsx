@@ -49,12 +49,6 @@ const Principal = ({
 
 			<Layers times={times} layers={layers} segment={segment}></Layers>
 
-			<div className="start-button">
-				<button onMouseDown={() => launchMetronome(isRunning)}>
-					{isRunning ? 'Stop' : 'Start'}
-				</button>
-			</div>
-
 			<div className="layers-table-wrap">
 				<div className="layers-table">
 					{layers.map((layer, i) => (
@@ -121,6 +115,12 @@ const Principal = ({
 						⚂
 					</button>
 				</div>
+			</div>
+
+			<div className="start-button">
+				<button onMouseDown={() => launchMetronome(isRunning)}>
+					{isRunning ? 'Stop' : 'Start'}
+				</button>
 			</div>
 		</div>
 	)

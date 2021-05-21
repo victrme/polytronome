@@ -25,7 +25,6 @@ const Settings = ({
 			></Tempo>
 
 			<div className="other-settings">
-				<h3>Display</h3>
 				<div className="setting display">
 					<h4>Clicks</h4>
 
@@ -108,17 +107,14 @@ const Settings = ({
 			</div>
 
 			<div className="links">
-				<h3>Links</h3>
-				<div>
-					<a href="#docs">documentation</a>
-					<br />
-					<a href="https://github.com/victorazevedo-me/polytronome">source code</a>
-					<br />
-					<span>Arranged by </span>
-					<a href="https://victr.me/">victor azevedo</a>
-				</div>
+				<p>📚 docs</p>
 
-				<div></div>
+				<p>🧩 source code</p>
+
+				<p className="pub">
+					Made for your curiosity <br />
+					by victr 👱🏼
+				</p>
 			</div>
 		</div>
 	)

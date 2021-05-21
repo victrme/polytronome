@@ -10,6 +10,7 @@
 
 body {
 	margin: 0;
+	background-color: var(--background);
 }
 
 button,
@@ -21,7 +22,6 @@ input {
 }
 
 .App {
-	background-color: var(--background);
 	color: var(--accent);
 	min-height: 100vh;
 	display: flex;
@@ -399,11 +399,24 @@ input {
 	}
 
 	.links {
-		font-size: 16px;
-
-		a {
+		margin-top: 100px;
+		text-align: center;
+		p {
+			display: inline-block;
 			font-size: 16px;
-			color: var(--accent);
+			padding: 5px 15px;
+			margin: 10px 5px;
+			border-radius: 5px;
+			cursor: pointer;
+			transition: background-color 0.2s;
+
+			&:hover {
+				background-color: var(--dimmer);
+			}
+
+			&:active {
+				background-color: var(--dim);
+			}
 		}
 	}
 
