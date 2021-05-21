@@ -12,12 +12,34 @@ const Principal = ({
 	isRunning,
 	launchMetronome,
 	wheelUpdate,
-	changeClickType,
-	changeFreqs,
-	rangeUpdate,
+	setLayers,
 	updateLayer,
 	randomizeLayers,
 }) => {
+	const changeRange = (index: number, num: number) => {
+		const newLayers = [...layers]
+		newLayers[index].volume = num
+		setLayers(newLayers)
+	}
+
+	const changeFreqs = (which: string, i: number) => {
+		const newLayers = [...layers]
+		newLayers[i].freq[which] = (layers[i].freq[which] + 1) % 3
+		setLayers(newLayers)
+	}
+
+	const changeClickType = (type: string, i: number) => {
+		const clickTypeList = ['wood', 'drum', 'sine', 'triangle']
+		const newLayers = [...layers]
+
+		clickTypeList.forEach((x, ii) => {
+			if (x === type) {
+				newLayers[i].type = clickTypeList[(ii + 1) % clickTypeList.length]
+				setLayers(newLayers)
+			}
+		})
+	}
+
 	return (
 		<div className="principal">
 			<div className="title">
@@ -75,7 +97,7 @@ const Principal = ({
 							<div>
 								<Range
 									volume={layer.volume}
-									update={result => rangeUpdate(i, result)}
+									update={result => changeRange(i, result)}
 								></Range>
 							</div>
 						</div>
@@ -111,10 +133,8 @@ Principal.propTypes = {
 	layers: propTypes.any.isRequired,
 	launchMetronome: propTypes.func,
 	wheelUpdate: propTypes.func.isRequired,
-	changeClickType: propTypes.func.isRequired,
-	changeFreqs: propTypes.func.isRequired,
-	rangeUpdate: propTypes.func.isRequired,
 	updateLayer: propTypes.func.isRequired,
+	setLayers: propTypes.func.isRequired,
 	randomizeLayers: propTypes.func.isRequired,
 }
 

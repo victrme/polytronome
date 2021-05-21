@@ -12,8 +12,6 @@ function App(): JSX.Element {
 	// States & Values
 	//
 
-	const clickTypeList = ['wood', 'drum', 'sine', 'triangle']
-
 	const [segment, setSegment] = useState({
 		on: false,
 		count: 0,
@@ -324,18 +322,6 @@ function App(): JSX.Element {
 		localStorage.theme = newTheme
 	}
 
-	const changeClickType = (type: string, i: number) => {
-		const newLayers = [...layers]
-
-		clickTypeList.forEach((x, ii) => {
-			if (x === type) {
-				newLayers[i].type = clickTypeList[(ii + 1) % clickTypeList.length]
-
-				setLayers([...layers])
-			}
-		})
-	}
-
 	const changeFullscreen = (state: boolean) => {
 		if (!state && document.fullscreenElement === null) {
 			const wrap = document.querySelector('.settings-wrap') as HTMLDivElement
@@ -372,12 +358,6 @@ function App(): JSX.Element {
 		setTempo(outOfBound ? max : amount)
 	}
 
-	const changeFreqs = (which: string, i: number) => {
-		const newLayers = [...layers]
-		newLayers[i].freq[which] = (layers[i].freq[which] + 1) % 3
-		setLayers([...newLayers])
-	}
-
 	//
 	//
 	// Wheel & Range
@@ -397,17 +377,6 @@ function App(): JSX.Element {
 		}
 		if (what === 'tempo') changeTempo(+el)
 		if (what === 'beats') restartMetronome()
-	}
-
-	const rangeUpdate = (index: number, num: number) => {
-		//
-		// For defunct release
-		//const toSave = what === 'release' ? (num < 0.01 ? 0.01 : num) : num
-
-		const newLayers = [...layers]
-		layers[index].volume = num
-
-		setLayers([...newLayers])
 	}
 
 	//
@@ -480,10 +449,8 @@ function App(): JSX.Element {
 				segment={segment}
 				isRunning={isRunning}
 				wheelUpdate={wheelUpdate}
-				changeFreqs={changeFreqs}
-				rangeUpdate={rangeUpdate}
 				updateLayer={updateLayer}
-				changeClickType={changeClickType}
+				setLayers={setLayers}
 				launchMetronome={launchMetronome}
 				randomizeLayers={randomizeLayers}
 			></Principal>
