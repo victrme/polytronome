@@ -4,8 +4,6 @@ import Wheel from './Wheel'
 import Range from './Range'
 import Vectors from './Vectors'
 import Octaves from './Octaves'
-import { JsxElement } from 'typescript'
-import { JSXElementConstructor } from 'react'
 
 const Principal = ({
 	segment,
@@ -164,7 +162,7 @@ Principal.propTypes = {
 	isRunning: propTypes.bool.isRequired,
 	times: propTypes.array.isRequired,
 	segment: propTypes.object.isRequired,
-	layers: propTypes.object.isRequired,
+	layers: propTypes.array.isRequired,
 	moreSettings: propTypes.object.isRequired,
 	launchMetronome: propTypes.func,
 	wheelUpdate: propTypes.func.isRequired,

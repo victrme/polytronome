@@ -9,32 +9,20 @@
 		/>
 
 		<link
-			rel="apple-touch-icon"
+			id="android"
+			rel="android-chrome-192x192"
 			sizes="180x180"
-			href="%PUBLIC_URL%/apple-touch-icon.png?v=2"
+			href="%PUBLIC_URL%/android-chrome-192x192.png?v=3"
 		/>
-		<link
-			rel="icon"
-			type="image/png"
-			sizes="32x32"
-			href="%PUBLIC_URL%/favicon-32x32.png?v=2"
-		/>
-		<link
-			rel="icon"
-			type="image/png"
-			sizes="16x16"
-			href="%PUBLIC_URL%/favicon-16x16.png?v=2"
-		/>
-		<link rel="manifest" href="%PUBLIC_URL%/site.webmanifest?v=2" />
-		<link rel="mask-icon" href="%PUBLIC_URL%/safari-pinned-tab.svg?v=2" color="#b0e0a4" />
-		<link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico?v=2" />
-		<meta name="msapplication-TileColor" content="#b0e0a4" />
-		<meta name="theme-color" content="#b0e0a4" />
+
+		<link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+		<link rel="shortcut icon" id="favicon" href="%PUBLIC_URL%/favicon.ico?v=3" />
+		<link rel="mask-icon" href="%PUBLIC_URL%/safari-pinned-tab.svg?v=3" color="#282c34" />
 		<!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
-		<link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
 		<!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -45,18 +33,30 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
 		<title>Polytronome - Layered metronome</title>
+
+		<script>
+			const dark = window.matchMedia('(prefers-color-scheme: dark)').matches || false
+			const favicon = document.getElementById('favicon')
+			const android = document.getElementById('android')
+
+			function switchIcon(dark) {
+				if (dark) {
+					favicon.href = '%PUBLIC_URL%/favicon-dark.ico'
+					android.href = '%PUBLIC_URL%/android-chrome-192x192-dark.png'
+				} else {
+					favicon.href = '%PUBLIC_URL%/favicon.ico'
+					android.href = '%PUBLIC_URL%/android-chrome-192x192.png'
+				}
+			}
+
+			window
+				.matchMedia('(prefers-color-scheme: dark)')
+				.addEventListener('change', e => switchIcon(e.matches))
+			switchIcon(dark)
+		</script>
 	</head>
 	<body>
 		<noscript>You need to enable JavaScript to run this app.</noscript>
 		<div id="root"></div>
-		<!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    --></body>
+	</body>
 </html>
