@@ -151,21 +151,23 @@ const Principal = ({
 				</div>
 
 				<div className="ls-buttons">
-					<button
-						className={layers.length === 1 ? 'off' : ''}
-						onClick={() => updateLayer(false)}
-					>
-						-
-					</button>
-					<button
-						className={layers.length === 4 ? 'off' : ''}
-						onClick={() => updateLayer(true)}
-					>
-						+
-					</button>
 					<button className="randomize" onClick={randomizeLayers}>
-						🎲
+						shuffle
 					</button>
+					<div className="plus-minus">
+						<button
+							className={layers.length === 1 ? 'off' : ''}
+							onClick={() => updateLayer(false)}
+						>
+							-
+						</button>
+						<button
+							className={layers.length === 4 ? 'off' : ''}
+							onClick={() => updateLayer(true)}
+						>
+							+
+						</button>
+					</div>
 				</div>
 			</div>
 

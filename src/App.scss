@@ -315,7 +315,7 @@ input {
 			}
 
 			.tap {
-				width: calc(100% - 3px);
+				width: 120px;
 			}
 
 			.tempo-buttons {
@@ -439,6 +439,13 @@ input {
 				width: auto;
 				margin-left: 30px;
 				display: flex;
+				flex-direction: column;
+				justify-content: end;
+				align-items: flex-end;
+
+				.randomize {
+					width: 120px;
+				}
 			}
 		}
 	}
