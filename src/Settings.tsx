@@ -70,7 +70,6 @@ const Settings = ({ moreSettings, segment, setSegment, setMoreSettings }) => {
 						{moreSettings.all ? 'on' : 'off'}
 					</button>
 				</div>
-
 				<div className="setting fullscreen">
 					<h4>Fullscreen</h4>
 
@@ -82,7 +81,6 @@ const Settings = ({ moreSettings, segment, setSegment, setMoreSettings }) => {
 						{moreSettings.fullscreen ? 'on' : 'off'}
 					</button>
 				</div>
-
 				<div className="setting animations">
 					<div>
 						<h4>Animations</h4>
@@ -92,46 +90,41 @@ const Settings = ({ moreSettings, segment, setSegment, setMoreSettings }) => {
 						{moreSettings.animations ? 'on' : 'off'}
 					</button>
 				</div>
+				<div className="setting display">
+					<h4>Clicks</h4>
 
-				{moreSettings.all ? (
-					<div className="setting display">
-						<h4>Clicks</h4>
-
-						<button
-							name="display"
-							id="display"
-							onClick={() =>
-								setSegment({
-									...segment,
-									on: segment.on ? false : true,
-								})
-							}
-						>
-							{segment.on ? 'segmented' : 'layered'}
-						</button>
-					</div>
-				) : (
-					''
-				)}
-
+					<button
+						name="display"
+						id="display"
+						onClick={() =>
+							setSegment({
+								...segment,
+								on: segment.on ? false : true,
+							})
+						}
+					>
+						{segment.on ? 'segmented' : 'layered'}
+					</button>
+				</div>
+				)
 				<div className="setting theme">
 					<div>
 						<h4>Theme</h4>
 					</div>
-					<div
+					<button
 						className="theme-preview"
 						onClick={() => changeTheme(moreSettings.theme)}
 					>
-						<div className={moreSettings.theme >= 0 ? 'on' : ''}></div>
-						<div className={moreSettings.theme >= 1 ? 'on' : ''}></div>
-						<div className={moreSettings.theme >= 2 ? 'on' : ''}></div>
-						<div className={moreSettings.theme >= 3 ? 'on' : ''}></div>
-						<div className={moreSettings.theme >= 4 ? 'on' : ''}></div>
-						<div className={moreSettings.theme >= 5 ? 'on' : ''}></div>
-						<div className={moreSettings.theme >= 6 ? 'on' : ''}></div>
-					</div>
+						{Themes.map((t, i) => {
+							return (
+								<div
+									key={i}
+									className={moreSettings.theme >= i ? 'on' : ''}
+								></div>
+							)
+						})}
+					</button>
 				</div>
-
 				{/* <div className="setting unlimited">
 						<div>
 							<h4>Unlimited</h4>

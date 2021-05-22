@@ -43,13 +43,6 @@ const Themes = [
 		dim: '#f6dbbc',
 		dimmer: '#f6dbbc50',
 	},
-	{
-		name: 'contrast',
-		background: '#ffffff',
-		accent: '#222222',
-		dim: '#00000033',
-		dimmer: '#00000010',
-	},
 ]
 
 export default Themes

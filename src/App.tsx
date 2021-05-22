@@ -50,7 +50,7 @@ function App(): JSX.Element {
 				wood: 1,
 				drum: 0,
 			},
-			type: 'triangle',
+			type: 'sine',
 			volume: 0.3,
 		},
 	])
@@ -411,12 +411,16 @@ function App(): JSX.Element {
 				restartMetronome={restartMetronome}
 			></Principal>
 
-			<Settings
-				segment={segment}
-				moreSettings={moreSettings}
-				setMoreSettings={setMoreSettings}
-				setSegment={setSegment}
-			></Settings>
+			{moreSettings.all ? (
+				<Settings
+					segment={segment}
+					moreSettings={moreSettings}
+					setMoreSettings={setMoreSettings}
+					setSegment={setSegment}
+				></Settings>
+			) : (
+				''
+			)}
 		</div>
 	)
 }

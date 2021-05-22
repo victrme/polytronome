@@ -93,6 +93,14 @@ const Principal = ({
 
 			<div className="layers-table-wrap">
 				<div className="layers-table">
+					{moreSettings.all ? (
+						''
+					) : (
+						<div className="ls-row ls-labels">
+							<div>beats</div>
+						</div>
+					)}
+
 					{layers.map((layer, i) => (
 						<div className="ls-row" key={i}>
 							<Wheel
@@ -143,23 +151,21 @@ const Principal = ({
 				</div>
 
 				<div className="ls-buttons">
+					<button
+						className={layers.length === 1 ? 'off' : ''}
+						onClick={() => updateLayer(false)}
+					>
+						-
+					</button>
+					<button
+						className={layers.length === 4 ? 'off' : ''}
+						onClick={() => updateLayer(true)}
+					>
+						+
+					</button>
 					<button className="randomize" onClick={randomizeLayers}>
 						🎲
 					</button>
-					<div className="layers-amount">
-						<button
-							className={layers.length === 1 ? 'off' : ''}
-							onClick={() => updateLayer(false)}
-						>
-							-
-						</button>
-						<button
-							className={layers.length === 4 ? 'off' : ''}
-							onClick={() => updateLayer(true)}
-						>
-							+
-						</button>
-					</div>
 				</div>
 			</div>
 

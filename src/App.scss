@@ -24,9 +24,10 @@ input {
 
 .App {
 	color: var(--accent);
-	min-height: 100vh;
+	min-height: 80vh;
 	display: flex;
 	justify-content: space-evenly;
+	align-items: center;
 	font-size: calc(10px + 2vmin);
 	user-select: none;
 
@@ -300,7 +301,6 @@ input {
 
 			button {
 				width: 300px;
-				margin: 50px;
 			}
 		}
 
@@ -414,31 +414,31 @@ input {
 	&.easy {
 		.principal {
 			.layers-table-wrap {
-				width: 800px;
-
 				.layers-table {
 					flex-direction: row;
-					width: 100%;
 				}
 
 				.ls-row {
 					padding: 10px;
 
+					&.ls-labels {
+						height: auto;
+						> div {
+							width: auto;
+						}
+					}
+
 					.immovable_wheel {
 						width: 80px;
+						margin: 0;
 					}
 				}
 			}
 
 			.ls-buttons {
 				width: auto;
-				.layers-amount {
-					display: flex;
-				}
-
-				.randomize {
-					margin-top: 0;
-				}
+				margin-left: 30px;
+				display: flex;
 			}
 		}
 	}
