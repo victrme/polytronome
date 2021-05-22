@@ -46,7 +46,7 @@ function App(): JSX.Element {
 		{
 			beats: 5,
 			freq: {
-				wave: 19,
+				wave: 15,
 				wood: 1,
 				drum: 0,
 			},
@@ -202,6 +202,8 @@ function App(): JSX.Element {
 	const updateLayer = (add: boolean) => {
 		const newLayers = [...layers]
 		const newTimes = times
+		const notes = [16, 19, 24]
+		const beats = [5, 7, 10]
 
 		// Remove
 		if (!add && newLayers.length > 1) {
@@ -216,9 +218,9 @@ function App(): JSX.Element {
 			(add && !moreSettings.unlimited && newLayers.length < 4)
 		) {
 			newLayers.push({
-				beats: 4,
+				beats: beats[newLayers.length - 1],
 				freq: {
-					wave: 12,
+					wave: notes[newLayers.length - 1],
 					wood: 0,
 					drum: 1,
 				},
