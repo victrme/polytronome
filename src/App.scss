@@ -42,7 +42,7 @@ input {
 		cursor: pointer;
 		outline: none;
 
-		&:hover {
+		&:hover:not(.off) {
 			filter: brightness(0.9);
 		}
 
@@ -115,6 +115,15 @@ input {
 		width: 100%;
 		max-width: 1000px;
 
+		button {
+			width: 80px;
+			margin: 3px 3px 0 0;
+
+			&.off {
+				opacity: 0.5;
+			}
+		}
+
 		.title {
 			margin: 1em 0;
 			font-size: 30px;
@@ -163,44 +172,18 @@ input {
 			}
 		}
 
-		.start-button {
-			text-align: center;
-
-			button {
-				width: 300px;
-				margin: 50px;
-			}
-		}
-
 		// New Layer Settings
 
 		.layers-table-wrap {
 			display: flex;
 			align-items: center;
-
-			.ls-buttons {
-				width: 100px;
-				padding: 20px;
-
-				.randomize {
-					margin-top: 20px;
-				}
-			}
 		}
 
 		.layers-table {
-			height: 280px;
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
-
-			> :nth-child(even) {
-				background-color: var(--dimmer);
-
-				.immovable_wheel:hover {
-					background-color: var(--background);
-				}
-			}
+			margin: 3em 0;
 
 			> :last-child {
 				background-color: transparent;
@@ -295,8 +278,6 @@ input {
 
 				.inner-range {
 					background-color: var(--accent);
-					/* border-top-right-radius: 5px;
-					border-bottom-right-radius: 5px; */
 					height: 20px;
 					transition: width 0.2s;
 
@@ -304,6 +285,41 @@ input {
 						transition: width 0s;
 					}
 				}
+			}
+		}
+
+		.tempo-n-start {
+			display: flex;
+			width: 100%;
+			justify-content: space-evenly;
+			align-items: center;
+		}
+
+		.start-button {
+			text-align: center;
+
+			button {
+				width: 300px;
+				margin: 50px;
+			}
+		}
+
+		.tempo {
+			display: flex;
+
+			.immovable_wheel {
+				line-height: 80px;
+				font-size: 80px;
+				height: 80px;
+				margin-right: 20px;
+			}
+
+			.tap {
+				width: calc(100% - 3px);
+			}
+
+			.tempo-buttons {
+				display: flex;
 			}
 		}
 	}
@@ -367,36 +383,6 @@ input {
 				}
 			}
 		}
-
-		.boxed {
-			width: 100%;
-
-			&.tempo {
-				.immovable_wheel {
-					margin-left: -20px;
-					line-height: 80px;
-					font-size: 80px;
-					height: 80px;
-				}
-
-				button {
-					margin: 5px;
-				}
-
-				.tap {
-					width: 120px;
-				}
-
-				.tempo-buttons {
-					display: flex;
-				}
-
-				.setting {
-					align-items: center;
-					justify-content: space-between;
-				}
-			}
-		}
 	}
 
 	.links {
@@ -417,6 +403,42 @@ input {
 
 			&:active {
 				background-color: var(--dim);
+			}
+		}
+	}
+
+	/*
+	EASY MODE
+	*/
+
+	&.easy {
+		.principal {
+			.layers-table-wrap {
+				width: 800px;
+
+				.layers-table {
+					flex-direction: row;
+					width: 100%;
+				}
+
+				.ls-row {
+					padding: 10px;
+
+					.immovable_wheel {
+						width: 80px;
+					}
+				}
+			}
+
+			.ls-buttons {
+				width: auto;
+				.layers-amount {
+					display: flex;
+				}
+
+				.randomize {
+					margin-top: 0;
+				}
 			}
 		}
 	}

@@ -1,18 +1,7 @@
 import Themes from './Themes'
-import Tempo from './Tempo'
 import propTypes from 'prop-types'
 
-const Settings = ({
-	moreSettings,
-	segment,
-	tempo,
-	tempoRef,
-	setSegment,
-	setMoreSettings,
-	restartMetronome,
-	changeTempo,
-	wheelUpdate,
-}) => {
+const Settings = ({ moreSettings, segment, setSegment, setMoreSettings }) => {
 	const changeAnimations = () => {
 		const appDOM = document.querySelector('.App') as HTMLDivElement
 
@@ -62,18 +51,6 @@ const Settings = ({
 
 	return (
 		<div className="settings-wrap">
-			{moreSettings.all ? (
-				<Tempo
-					restart={restartMetronome}
-					update={changeTempo}
-					wheelUpdate={wheelUpdate}
-					tempo={tempo}
-					tempoRef={tempoRef}
-				></Tempo>
-			) : (
-				''
-			)}
-
 			<div className="other-settings">
 				<div className="setting advanced">
 					<div>
@@ -116,22 +93,26 @@ const Settings = ({
 					</button>
 				</div>
 
-				<div className="setting display">
-					<h4>Clicks</h4>
+				{moreSettings.all ? (
+					<div className="setting display">
+						<h4>Clicks</h4>
 
-					<button
-						name="display"
-						id="display"
-						onClick={() =>
-							setSegment({
-								...segment,
-								on: segment.on ? false : true,
-							})
-						}
-					>
-						{segment.on ? 'segmented' : 'layered'}
-					</button>
-				</div>
+						<button
+							name="display"
+							id="display"
+							onClick={() =>
+								setSegment({
+									...segment,
+									on: segment.on ? false : true,
+								})
+							}
+						>
+							{segment.on ? 'segmented' : 'layered'}
+						</button>
+					</div>
+				) : (
+					''
+				)}
 
 				<div className="setting theme">
 					<div>
@@ -192,13 +173,8 @@ const Settings = ({
 Settings.propTypes = {
 	moreSettings: propTypes.object.isRequired,
 	segment: propTypes.object.isRequired,
-	tempo: propTypes.number.isRequired,
-	tempoRef: propTypes.object.isRequired,
 	setSegment: propTypes.func.isRequired,
 	setMoreSettings: propTypes.func.isRequired,
-	changeTempo: propTypes.func.isRequired,
-	restartMetronome: propTypes.func.isRequired,
-	wheelUpdate: propTypes.func.isRequired,
 }
 
 export default Settings

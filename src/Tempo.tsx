@@ -77,47 +77,43 @@ const Tempo = ({ tempo, tempoRef, restart, update, wheelUpdate }) => {
 	}
 
 	return (
-		<div>
-			<div className="boxed tempo">
-				<div className="setting">
-					<Wheel
-						tempo={tempo}
-						update={result => {
-							wheelUpdate('tempo', result)
-							restart()
-						}}
-					></Wheel>
+		<div className="tempo">
+			<Wheel
+				tempo={tempo}
+				update={result => {
+					wheelUpdate('tempo', result)
+					restart()
+				}}
+			></Wheel>
 
-					<div>
-						<button className="tap" onClick={tapTempo}>
-							tap
-						</button>
+			<div>
+				<button className="tap" onClick={tapTempo}>
+					tap
+				</button>
 
-						<div className="tempo-buttons">
-							<button
-								className="tempo-minus"
-								onTouchStart={e => tempoBtns(e, 'enter', -1, isMobileOnly)}
-								onTouchEnd={e => tempoBtns(e, 'leave', -1, isMobileOnly)}
-								onMouseDown={e => tempoBtns(e, 'enter', -1, !isMobileOnly)}
-								onMouseUp={e => tempoBtns(e, 'leave', -1, !isMobileOnly)}
-								onMouseLeave={e => tempoBtns(e, 'leave', -1, !isMobileOnly)}
-								onContextMenu={e => e.preventDefault()}
-							>
-								-
-							</button>
-							<button
-								className="tempo-plus"
-								onTouchStart={e => tempoBtns(e, 'enter', 1, isMobileOnly)}
-								onTouchEnd={e => tempoBtns(e, 'leave', 1, isMobileOnly)}
-								onMouseDown={e => tempoBtns(e, 'enter', 1, !isMobileOnly)}
-								onMouseUp={e => tempoBtns(e, 'leave', 1, !isMobileOnly)}
-								onMouseLeave={e => tempoBtns(e, 'leave', 1, !isMobileOnly)}
-								onContextMenu={e => e.preventDefault()}
-							>
-								+
-							</button>
-						</div>
-					</div>
+				<div className="tempo-buttons">
+					<button
+						className={tempo === 30 ? 'off' : ''}
+						onTouchStart={e => tempoBtns(e, 'enter', -1, isMobileOnly)}
+						onTouchEnd={e => tempoBtns(e, 'leave', -1, isMobileOnly)}
+						onMouseDown={e => tempoBtns(e, 'enter', -1, !isMobileOnly)}
+						onMouseUp={e => tempoBtns(e, 'leave', -1, !isMobileOnly)}
+						onMouseLeave={e => tempoBtns(e, 'leave', -1, !isMobileOnly)}
+						onContextMenu={e => e.preventDefault()}
+					>
+						-
+					</button>
+					<button
+						className={tempo === 300 ? 'off' : ''}
+						onTouchStart={e => tempoBtns(e, 'enter', 1, isMobileOnly)}
+						onTouchEnd={e => tempoBtns(e, 'leave', 1, isMobileOnly)}
+						onMouseDown={e => tempoBtns(e, 'enter', 1, !isMobileOnly)}
+						onMouseUp={e => tempoBtns(e, 'leave', 1, !isMobileOnly)}
+						onMouseLeave={e => tempoBtns(e, 'leave', 1, !isMobileOnly)}
+						onContextMenu={e => e.preventDefault()}
+					>
+						+
+					</button>
 				</div>
 			</div>
 		</div>

@@ -403,18 +403,17 @@ function App(): JSX.Element {
 				moreSettings={moreSettings}
 				launchMetronome={launchMetronome}
 				randomizeLayers={randomizeLayers}
+				tempo={tempo}
+				tempoRef={tempoRef}
+				changeTempo={changeTempo}
+				restartMetronome={restartMetronome}
 			></Principal>
 
 			<Settings
-				tempo={tempo}
 				segment={segment}
-				tempoRef={tempoRef}
 				moreSettings={moreSettings}
 				setMoreSettings={setMoreSettings}
 				setSegment={setSegment}
-				changeTempo={changeTempo}
-				wheelUpdate={wheelUpdate}
-				restartMetronome={restartMetronome}
 			></Settings>
 		</div>
 	)

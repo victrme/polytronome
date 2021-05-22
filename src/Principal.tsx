@@ -4,6 +4,7 @@ import Wheel from './Wheel'
 import Range from './Range'
 import Vectors from './Vectors'
 import Octaves from './Octaves'
+import Tempo from './Tempo'
 
 const Principal = ({
 	segment,
@@ -16,6 +17,10 @@ const Principal = ({
 	setLayers,
 	updateLayer,
 	randomizeLayers,
+	restartMetronome,
+	changeTempo,
+	tempo,
+	tempoRef,
 }) => {
 	const changeRange = (index: number, num: number) => {
 		const newLayers = [...layers]
@@ -138,21 +143,40 @@ const Principal = ({
 				</div>
 
 				<div className="ls-buttons">
-					<div className="layers-amount">
-						<button onClick={() => updateLayer(false)}>-</button>
-						<button onClick={() => updateLayer(true)}>+</button>
-					</div>
-
 					<button className="randomize" onClick={randomizeLayers}>
-						⚂
+						🎲
 					</button>
+					<div className="layers-amount">
+						<button
+							className={layers.length === 1 ? 'off' : ''}
+							onClick={() => updateLayer(false)}
+						>
+							-
+						</button>
+						<button
+							className={layers.length === 4 ? 'off' : ''}
+							onClick={() => updateLayer(true)}
+						>
+							+
+						</button>
+					</div>
 				</div>
 			</div>
 
-			<div className="start-button">
-				<button onMouseDown={() => launchMetronome(isRunning)}>
-					{isRunning ? 'Stop' : 'Start'}
-				</button>
+			<div className="tempo-n-start">
+				<Tempo
+					restart={restartMetronome}
+					update={changeTempo}
+					wheelUpdate={wheelUpdate}
+					tempo={tempo}
+					tempoRef={tempoRef}
+				></Tempo>
+
+				<div className="start-button">
+					<button onMouseDown={() => launchMetronome(isRunning)}>
+						{isRunning ? 'Stop' : 'Start'}
+					</button>
+				</div>
 			</div>
 		</div>
 	)
@@ -169,6 +193,10 @@ Principal.propTypes = {
 	updateLayer: propTypes.func.isRequired,
 	setLayers: propTypes.func.isRequired,
 	randomizeLayers: propTypes.func.isRequired,
+	restartMetronome: propTypes.func.isRequired,
+	changeTempo: propTypes.func.isRequired,
+	tempo: propTypes.number.isRequired,
+	tempoRef: propTypes.object.isRequired,
 }
 
 export default Principal
