@@ -186,6 +186,12 @@ const Principal = ({
 					</button>
 				</div>
 			</div>
+
+			<div className="links">
+				<a href="https://docs.polytronome.com">documentation</a>
+				<a href="https://github.com/victrme/polytronome">source code</a>
+				<a href="https://victr.me">created by victr.me</a>
+			</div>
 		</div>
 	)
 }

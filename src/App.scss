@@ -24,7 +24,7 @@ input {
 
 .polytronome {
 	color: var(--accent);
-	min-height: 80vh;
+	min-height: 100vh;
 	display: flex;
 	justify-content: space-evenly;
 	align-items: center;
@@ -112,13 +112,12 @@ input {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		padding: 2em;
 		width: 100%;
 		max-width: 1000px;
 
 		button {
 			width: 80px;
-			margin: 3px 3px 0 0;
+			margin: 5px 5px 0 0;
 
 			&.off {
 				opacity: 0.5;
@@ -139,6 +138,8 @@ input {
 				font-weight: bold;
 				font-size: 0.6em;
 				opacity: 0.4;
+				text-align: end;
+				margin-bottom: -5px;
 			}
 		}
 
@@ -320,6 +321,24 @@ input {
 
 			.tempo-buttons {
 				display: flex;
+			}
+		}
+
+		.links {
+			display: flex;
+			align-items: flex-start;
+			width: 100%;
+			margin-top: 7em;
+			a {
+				font-size: 12px;
+				color: var(--accent);
+				opacity: 0.5;
+				text-decoration: none;
+				margin: 0 1em;
+
+				&:hover {
+					opacity: 1;
+				}
 			}
 		}
 	}
