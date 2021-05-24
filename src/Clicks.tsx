@@ -1,8 +1,8 @@
 import propTypes from 'prop-types'
 
-const Layers = ({ segment, layers, times }) => {
+const Clicks = ({ segment, layers, times }) => {
 	return (
-		<div className={`clicks ${segment.on ? 'isSegment' : 'isLayers'}`}>
+		<div className={`clicks ${segment.on ? 'isSegment' : ''}`}>
 			<div className="segment">
 				<div className="click-row">
 					{segment.ratios.map((ratio, i) => (
@@ -42,10 +42,10 @@ const Layers = ({ segment, layers, times }) => {
 	)
 }
 
-Layers.propTypes = {
+Clicks.propTypes = {
 	times: propTypes.array.isRequired,
 	segment: propTypes.any.isRequired,
 	layers: propTypes.any.isRequired,
 }
 
-export default Layers
+export default Clicks
