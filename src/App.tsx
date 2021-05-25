@@ -2,18 +2,21 @@ import { useRef, useState, useEffect, useCallback } from 'react'
 import { MoreSettings, Layer, Sounds } from './Types'
 import { isMobileOnly } from 'react-device-detect'
 import Pizzicato from 'pizzicato'
-import Settings from './Settings'
-import Clicks from './Clicks'
-import Wheel from './Wheel'
-import Range from './Range'
-import Vectors from './Vectors'
-import Octaves from './Octaves'
-import Tempo from './Tempo'
+import Settings from './settings/Settings'
+import Clicks from './layers/Clicks'
+import Tempo from './layers/Tempo'
+import LayersTable from './layers/table/LayersTable'
 
 const App = (): JSX.Element => {
 	//
 	// States & Values
 	//
+
+	const setRandomID = () => {
+		let str = ''
+		while (str.length < 8) str += String.fromCharCode(Math.random() * (122 - 97) + 97)
+		return str
+	}
 
 	const [times, setTimes] = useState<number[]>([1, 1])
 	const [tempo, setTempo] = useState(80)
@@ -39,6 +42,7 @@ const App = (): JSX.Element => {
 
 	const [layers, setLayers] = useState<Layer[]>([
 		{
+			id: setRandomID(),
 			beats: 4,
 			freq: {
 				wave: 12,
@@ -49,6 +53,7 @@ const App = (): JSX.Element => {
 			volume: 0.4,
 		},
 		{
+			id: setRandomID(),
 			beats: 5,
 			freq: {
 				wave: 15,
@@ -223,6 +228,7 @@ const App = (): JSX.Element => {
 			(add && !moreSettings.unlimited && newLayers.length < 4)
 		) {
 			newLayers.push({
+				id: setRandomID(),
 				beats: beats[newLayers.length - 1],
 				freq: {
 					wave: notes[newLayers.length - 1],
@@ -286,113 +292,6 @@ const App = (): JSX.Element => {
 
 	//
 	//
-	// More Settings functions
-	//
-	//
-
-	const randomizeLayers = () => {
-		const rand = (a: number, b: number) => Math.random() * (b - a) + a
-
-		setLayers([
-			...layersRef.current.map(layer => ({
-				...layer,
-				beats: +rand(2, 16).toFixed(0),
-			})),
-		])
-		restartMetronome()
-	}
-
-	const changeTempo = (amount: number) => {
-		const up = amount > tempo
-		const max = up ? 300 : 30
-		const outOfBound = up ? amount > max : amount < max
-
-		setTempo(outOfBound ? max : amount)
-	}
-
-	const changeRange = (index: number, num: number) => {
-		const newLayers = [...layers]
-		newLayers[index].volume = num
-		setLayers(newLayers)
-	}
-
-	const changeFreqs = (which: string, i: number) => {
-		const newLayers = [...layers]
-		newLayers[i].freq[which] = (layers[i].freq[which] + 1) % 3
-		setLayers(newLayers)
-	}
-
-	const changeClickType = (type: string, i: number) => {
-		const clickTypeList = ['wood', 'drum', 'sine', 'triangle']
-		const newLayers = [...layers]
-
-		clickTypeList.forEach((x, ii) => {
-			if (x === type) {
-				newLayers[i].type = clickTypeList[(ii + 1) % clickTypeList.length]
-				setLayers(newLayers)
-			}
-		})
-	}
-
-	const LayerType = ({ layer, i }) => {
-		let result: any = <div></div>
-
-		if (layer.type === 'wood') {
-			result = (
-				<div className="woodblocks" onClick={() => changeFreqs('wood', i)}>
-					<div className={layer.freq.wood > -1 ? 'on' : ''}></div>
-					<div className={layer.freq.wood > 0 ? 'on' : ''}></div>
-					<div className={layer.freq.wood > 1 ? 'on' : ''}></div>
-				</div>
-			)
-		}
-
-		if (layer.type === 'drum') {
-			result = (
-				<div className="drumset" onClick={() => changeFreqs('drum', i)}>
-					<div>{layer.freq.drum}</div>
-				</div>
-			)
-		}
-
-		if (layer.type === 'sine' || layer.type === 'triangle') {
-			result = (
-				<div className="notes-wrap">
-					<Wheel
-						freq={layer.freq.wave}
-						update={result => wheelUpdate('frequency', result, i)}
-					></Wheel>
-					<Octaves freq={layer.freq.wave}></Octaves>
-				</div>
-			)
-		}
-
-		return result
-	}
-
-	//
-	//
-	// Wheel & Range
-	//
-	//
-
-	const wheelUpdate = (what: string, el: any, index = 0) => {
-		const newLayers = [...layers]
-
-		if (what === 'beats') {
-			newLayers[index][what] = el + 2
-			setLayers([...newLayers])
-		}
-		if (what === 'frequency') {
-			newLayers[index].freq.wave = el
-			setLayers([...newLayers])
-		}
-		if (what === 'tempo') changeTempo(+el)
-		if (what === 'beats') restartMetronome()
-	}
-
-	//
-	//
 	//	Effects
 	//
 	//
@@ -411,12 +310,10 @@ const App = (): JSX.Element => {
 				launchMetronome(isRunningRef.current)
 
 			// Tempo up by 10 if shift
-			if (e.code === 'ArrowUp')
-				wheelUpdate('tempo', tempoRef.current + (e.shiftKey ? 10 : 1))
+			if (e.code === 'ArrowUp') setTempo(tempoRef.current + (e.shiftKey ? 10 : 1))
 
 			// Tempo down by 10 if shift
-			if (e.code === 'ArrowDown')
-				wheelUpdate('tempo', tempoRef.current - (e.shiftKey ? 10 : 1))
+			if (e.code === 'ArrowDown') setTempo(tempoRef.current - (e.shiftKey ? 10 : 1))
 
 			e.stopPropagation()
 			return false
@@ -444,6 +341,18 @@ const App = (): JSX.Element => {
 
 	useEffect(() => {
 		initSegment()
+
+		console.log('changes l')
+		// eslint-disable-next-line
+	}, [layers])
+
+	useEffect(() => {
+		console.log('setLayers')
+		// eslint-disable-next-line
+	}, [setLayers])
+
+	useEffect(() => {
+		console.log(layers)
 		// eslint-disable-next-line
 	}, [layers])
 
@@ -465,88 +374,30 @@ const App = (): JSX.Element => {
 
 				<Clicks times={times} layers={layers} segment={segment}></Clicks>
 
-				<div className="layers-table-wrap">
-					<div className="layers-table">
-						{easy ? (
-							<div className="ls-row ls-labels">
-								<div>beats</div>
-							</div>
-						) : (
-							''
-						)}
-
-						{layers.map((layer, i) => (
-							<div className="ls-row" key={i}>
-								<Wheel
-									beats={layer.beats}
-									update={result => wheelUpdate('beats', result, i)}
-								></Wheel>
-
-								{easy ? (
-									''
-								) : (
-									<div className="ls-type">
-										<Vectors
-											type={layer.type}
-											change={() => changeClickType(layer.type, i)}
-										></Vectors>
-									</div>
-								)}
-
-								{easy ? '' : <LayerType layer={layer} i={i}></LayerType>}
-
-								{easy ? (
-									''
-								) : (
-									<div>
-										<Range
-											volume={layer.volume}
-											update={result => changeRange(i, result)}
-										></Range>
-									</div>
-								)}
-							</div>
-						))}
-
-						{easy ? (
-							''
-						) : (
-							<div className="ls-row ls-labels">
-								<div>beats</div>
-								<div>type</div>
-								<div>note</div>
-								<div>volume</div>
-							</div>
-						)}
-					</div>
-
-					<div className="ls-buttons">
-						<button className="randomize" onClick={randomizeLayers}>
-							{easy ? 'shuffle' : '🎲'}
-						</button>
-						<div className="plus-minus">
-							<button
-								className={layers.length === 1 ? 'off' : ''}
-								onClick={() => updateLayer(false)}
-							>
-								-
-							</button>
-							<button
-								className={layers.length === 4 ? 'off' : ''}
-								onClick={() => updateLayer(true)}
-							>
-								+
-							</button>
+				{/* {layers.map((layer, i) => (
+					<div className="ls-note">
+						<div className="notes-wrap" key={layer.id}>
+							<Wheel
+								freq={layer.freq.wave}
+								update={res => console.log(res)}
+							></Wheel>
+							<Octaves freq={layer.freq.wave}></Octaves>
 						</div>
 					</div>
-				</div>
+				))} */}
+
+				<LayersTable
+					easy={easy}
+					layers={layers}
+					setLayers={setLayers}
+					updateLayer={updateLayer}
+				></LayersTable>
 
 				<div className="tempo-n-start">
 					<Tempo
 						restart={restartMetronome}
-						update={changeTempo}
-						wheelUpdate={wheelUpdate}
 						tempo={tempo}
+						setTempo={setTempo}
 						tempoRef={tempoRef}
 					></Tempo>
 

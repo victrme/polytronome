@@ -15,6 +15,7 @@ export type Segment = {
 }
 
 export type Layer = {
+	id: string
 	beats: number
 	freq: {
 		wave: number

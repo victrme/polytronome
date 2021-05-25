@@ -1,6 +1,6 @@
-import Themes from './Themes'
+import Themes from '../assets/themes.json'
 import propTypes from 'prop-types'
-import Button from './Button'
+import Button from '../inputs/Button'
 
 const Settings = ({ moreSettings, segment, setSegment, setMoreSettings, easy, setEasy }) => {
 	const changeAnimations = () => {

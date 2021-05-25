@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 // [-----|---------.-------]
 // a     z         x       b
 
-function Range({ volume, update }): JSX.Element {
+function Range({ volume, i, layers, setLayers }): JSX.Element {
 	const rangeRef = useRef(document.createElement('div'))
 	const [dontClick, setDontClick] = useState(false)
 	const [range, setRange] = useState({
@@ -21,8 +21,13 @@ function Range({ volume, update }): JSX.Element {
 		if (moving) {
 			const percent = state.movement[0] / range.width
 			setRange({ x: percent * 100, moving, width: range.width })
-			update(stayPositive(percent))
+
 			setDontClick(true)
+
+			//update
+			const newLayers = [...layers]
+			newLayers[i].volume = stayPositive(percent)
+			setLayers(newLayers)
 		}
 	}
 
@@ -33,7 +38,11 @@ function Range({ volume, update }): JSX.Element {
 			const percent = childWidth / range.width
 
 			setRange({ x: percent * 100, moving: false, width: range.width })
-			update(stayPositive(percent))
+
+			//update
+			const newLayers = [...layers]
+			newLayers[i].volume = stayPositive(percent)
+			setLayers(newLayers)
 		}
 	}
 
@@ -67,6 +76,7 @@ function Range({ volume, update }): JSX.Element {
 		updateRangeWidth()
 		window.addEventListener('resize', updateRangeWidth)
 	}, [])
+
 	return (
 		<div className="range-wrap" {...bind()} ref={rangeRef}>
 			<div

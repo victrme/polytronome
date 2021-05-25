@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react'
 import { isMobileOnly } from 'react-device-detect'
 import propTypes from 'prop-types'
-import Wheel from './Wheel'
+import Wheel from '../inputs/Wheel'
 
-const Tempo = ({ tempo, tempoRef, restart, update, wheelUpdate }) => {
+const Tempo = ({ tempo, setTempo, tempoRef, restart }) => {
 	const [tap, setTap] = useState([
 		{
 			date: 0,
@@ -12,17 +12,25 @@ const Tempo = ({ tempo, tempoRef, restart, update, wheelUpdate }) => {
 	])
 	const buttonsInterval = useRef(setTimeout(() => {}, 1))
 
+	const changeTempo = (amount: number) => {
+		const up = amount > tempo
+		const max = up ? 300 : 30
+		const outOfBound = up ? amount > max : amount < max
+
+		setTempo(outOfBound ? max : amount)
+	}
+
 	const tempoBtns = (e: any, dir: string, sign: number, doAnything: boolean) => {
 		// Cut fct short if not good platform
 		if (!doAnything) return false
 
 		if (dir === 'enter') {
-			update(tempo + 1 * sign)
+			changeTempo(tempo + 1 * sign)
 
 			buttonsInterval.current = setTimeout(
 				() =>
 					(buttonsInterval.current = setInterval(() => {
-						update(tempoRef.current + 1 * sign)
+						changeTempo(tempoRef.current + 1 * sign)
 					}, 70)),
 				300
 			)
@@ -69,7 +77,7 @@ const Tempo = ({ tempo, tempoRef, restart, update, wheelUpdate }) => {
 			const averageTempo = Math.floor(
 				60000 / (cumul.reduce((a: number, b: number) => a + b) / cumul.length)
 			)
-			update(averageTempo)
+			changeTempo(averageTempo)
 
 			setTap(currTap)
 			restart()
@@ -80,8 +88,8 @@ const Tempo = ({ tempo, tempoRef, restart, update, wheelUpdate }) => {
 		<div className="tempo">
 			<Wheel
 				tempo={tempo}
-				update={result => {
-					wheelUpdate('tempo', result)
+				update={res => {
+					changeTempo(res)
 					restart()
 				}}
 			></Wheel>
@@ -123,8 +131,8 @@ const Tempo = ({ tempo, tempoRef, restart, update, wheelUpdate }) => {
 Tempo.propTypes = {
 	restart: propTypes.func,
 	wheelUpdate: propTypes.func,
-	update: propTypes.func,
 	tempo: propTypes.number,
+	setTempo: propTypes.func,
 	tempoRef: propTypes.object,
 }
 

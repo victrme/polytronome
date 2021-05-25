@@ -87,7 +87,6 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 		} else {
 			// Save element position
 			let number = +(Math.abs(wheelSnapping(y)) / height)
-			number = tempo !== undefined ? number + 30 : number
 
 			setSaved(number)
 			update(number)
