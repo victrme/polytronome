@@ -50,7 +50,7 @@ const Clicks = ({ segment, layers, times }) => {
 			clicksRef.current.style.opacity = '1'
 			setLateSegmentChange(segment.on)
 		}, 120)
-	}, [segment])
+	}, [segment.on])
 
 	return (
 		<div ref={clicksRef} className="clicks">
