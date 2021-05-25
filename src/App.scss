@@ -143,23 +143,11 @@ input {
 		height: 120px;
 		display: flex;
 		align-items: center;
+		transition: opacity 0.12s;
 
 		.segment,
 		.layers {
 			width: 100%;
-		}
-
-		.segment {
-			display: none;
-		}
-
-		&.isSegment {
-			.segment {
-				display: flex;
-			}
-			.layers {
-				display: none;
-			}
 		}
 	}
 
@@ -375,8 +363,10 @@ input {
 				background-color: transparent;
 				width: auto;
 				font-size: 12px;
+				transition: background-color 0.2s;
 
-				&.on {
+				&.on,
+				&[name='themes']:hover {
 					background-color: var(--dim);
 				}
 			}

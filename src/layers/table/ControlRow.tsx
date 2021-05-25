@@ -47,27 +47,31 @@ const ControlRow = ({ layers, setLayers, easy }) => {
 				</div>
 			)}
 
-			<div className="ls-note">
-				{layer.type === 'wood' ? (
-					<div className="woodblocks" onClick={() => changeFreqs('wood', i)}>
-						<div className={layer.freq.wood > -1 ? 'on' : ''}></div>
-						<div className={layer.freq.wood > 0 ? 'on' : ''}></div>
-						<div className={layer.freq.wood > 1 ? 'on' : ''}></div>
-					</div>
-				) : layer.type === 'drum' ? (
-					<div className="drumset" onClick={() => changeFreqs('drum', i)}>
-						<div>{layer.freq.drum}</div>
-					</div>
-				) : (
-					<div className="notes-wrap">
-						<Wheel
-							freq={layer.freq.wave}
-							update={res => changeFreqs('wave', i, res)}
-						></Wheel>
-						<Octaves freq={layer.freq.wave}></Octaves>
-					</div>
-				)}
-			</div>
+			{easy ? (
+				''
+			) : (
+				<div className="ls-note">
+					{layer.type === 'wood' ? (
+						<div className="woodblocks" onClick={() => changeFreqs('wood', i)}>
+							<div className={layer.freq.wood > -1 ? 'on' : ''}></div>
+							<div className={layer.freq.wood > 0 ? 'on' : ''}></div>
+							<div className={layer.freq.wood > 1 ? 'on' : ''}></div>
+						</div>
+					) : layer.type === 'drum' ? (
+						<div className="drumset" onClick={() => changeFreqs('drum', i)}>
+							<div>{layer.freq.drum}</div>
+						</div>
+					) : (
+						<div className="notes-wrap">
+							<Wheel
+								freq={layer.freq.wave}
+								update={res => changeFreqs('wave', i, res)}
+							></Wheel>
+							<Octaves freq={layer.freq.wave}></Octaves>
+						</div>
+					)}
+				</div>
+			)}
 
 			{easy ? (
 				''

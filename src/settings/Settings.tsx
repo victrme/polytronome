@@ -1,6 +1,6 @@
 import Themes from '../assets/themes.json'
 import propTypes from 'prop-types'
-import Button from '../inputs/Button'
+import Button from './Button'
 
 const Settings = ({ moreSettings, segment, setSegment, setMoreSettings, easy, setEasy }) => {
 	const changeAnimations = () => {
@@ -62,7 +62,7 @@ const Settings = ({ moreSettings, segment, setSegment, setMoreSettings, easy, se
 				func={changeAnimations}
 			></Button>
 
-			<Button name="themes" on={true} func={changeTheme}></Button>
+			<Button name="themes" on={false} func={changeTheme}></Button>
 
 			<Button
 				name="fullscreen"
