@@ -63,11 +63,16 @@ const ControlRow = ({ layers, setLayers, easy }) => {
 						</div>
 					) : (
 						<div className="notes-wrap">
+							<Octaves freq={layer.freq.wave}></Octaves>
 							<Wheel
 								freq={layer.freq.wave}
 								update={res => changeFreqs('wave', i, res)}
 							></Wheel>
-							<Octaves freq={layer.freq.wave}></Octaves>
+
+							<div className="note-length">
+								<button title="Click duration">50ms</button>
+								<button>release</button>
+							</div>
 						</div>
 					)}
 				</div>

@@ -13,6 +13,8 @@ function Range({ volume, i, layers, setLayers }): JSX.Element {
 		moving: false,
 	})
 
+	const saveTimeoutRef = useRef(setTimeout(() => {}, 0))
+
 	const stayPositive = (n: number) => (n > 0 ? n : 0)
 
 	const movingAction = state => {
@@ -22,12 +24,16 @@ function Range({ volume, i, layers, setLayers }): JSX.Element {
 			const percent = state.movement[0] / range.width
 			setRange({ x: percent * 100, moving, width: range.width })
 
+			clearTimeout(saveTimeoutRef.current)
 			setDontClick(true)
 
 			//update
-			const newLayers = [...layers]
-			newLayers[i].volume = stayPositive(percent)
-			setLayers(newLayers)
+			saveTimeoutRef.current = setTimeout(() => {
+				const newLayers = [...layers]
+				newLayers[i].volume = stayPositive(percent)
+				setLayers(newLayers)
+				console.log(percent)
+			}, 100)
 		}
 	}
 
@@ -46,10 +52,15 @@ function Range({ volume, i, layers, setLayers }): JSX.Element {
 		}
 	}
 
+	// const wheelingTest = (state: any) => {
+	// 	console.log(state)
+	// }
+
 	const bind = useGesture(
 		{
 			onDrag: state => movingAction(state),
 			onClick: state => clickAction(state),
+			// onWheel: state => wheelingTest(state),
 			onMouseDown: () => setDontClick(false),
 		},
 		{
