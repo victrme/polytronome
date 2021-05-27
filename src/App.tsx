@@ -340,21 +340,9 @@ const App = (): JSX.Element => {
 	}, [])
 
 	useEffect(() => {
-		initSegment()
-
-		console.log('changes l')
+		if (segment.on) initSegment()
 		// eslint-disable-next-line
-	}, [layers])
-
-	useEffect(() => {
-		console.log('setLayers')
-		// eslint-disable-next-line
-	}, [setLayers])
-
-	useEffect(() => {
-		console.log(layers)
-		// eslint-disable-next-line
-	}, [layers])
+	}, [layers, segment.on])
 
 	//
 	//
