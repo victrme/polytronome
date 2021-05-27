@@ -11,6 +11,7 @@
 		"@types/node": "^12.0.0",
 		"@types/react": "^16.9.53",
 		"@types/react-dom": "^16.9.8",
+		"body-scroll-lock": "^3.1.5",
 		"pizzicato": "^0.6.4",
 		"react": "^17.0.1",
 		"react-beforeunload": "^2.4.0",

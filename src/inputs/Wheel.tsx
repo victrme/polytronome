@@ -1,5 +1,7 @@
 import { useGesture } from 'react-use-gesture'
 import { useState, useRef, useEffect } from 'react'
+import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
+
 import propTypes from 'prop-types'
 
 // Wheels work by getting the index of an element with wheel height divided by children height
@@ -132,14 +134,8 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 	}, [current])
 
 	useEffect(() => {
-		wheelRef.current.addEventListener(
-			'mouseenter',
-			() => (document.body.style.overflow = 'hidden')
-		)
-		wheelRef.current.addEventListener(
-			'mouseleave',
-			() => (document.body.style.overflow = 'auto')
-		)
+		wheelRef.current.addEventListener('mouseenter', () => disableBodyScroll(document.body))
+		wheelRef.current.addEventListener('mouseleave', () => enableBodyScroll(document.body))
 	}, [])
 
 	return (
