@@ -22,6 +22,8 @@ export type Layer = {
 		wood: number
 		drum: number
 	}
+	release: boolean
+	duration: boolean
 	type: string
 	volume: number
 }

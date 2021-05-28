@@ -21,7 +21,7 @@ const App = (): JSX.Element => {
 	const [times, setTimes] = useState<number[]>([1, 1])
 	const [tempo, setTempo] = useState(80)
 	const [startTime, setStartTime] = useState(Date.now)
-	const [isRunning, setIsRunning] = useState(false)
+	const [isRunning, setIsRunning] = useState('')
 	const [easy, setEasy] = useState(true)
 
 	const [segment, setSegment] = useState({
@@ -49,6 +49,8 @@ const App = (): JSX.Element => {
 				wood: 0,
 				drum: 1,
 			},
+			release: false,
+			duration: false,
 			type: 'sine',
 			volume: 0.4,
 		},
@@ -60,6 +62,8 @@ const App = (): JSX.Element => {
 				wood: 1,
 				drum: 0,
 			},
+			release: false,
+			duration: false,
 			type: 'sine',
 			volume: 0.3,
 		},
@@ -90,16 +94,21 @@ const App = (): JSX.Element => {
 	//
 	//
 
-	function metronomeInterval(fixedTempoMs: number, nextDelay: number, id: number) {
-		const timeoutID = window.setTimeout(() => {
+	function metronomeInterval(
+		fixedTempoMs: number,
+		nextDelay: number,
+		index: number,
+		runId: string
+	) {
+		const m_timeout = window.setTimeout(() => {
 			//
 			// Short name for refs
-			const layer = layersRef.current[id]
-			const t_times = times
+			const layer = layersRef.current[index]
+			const innerTimes = [...timesRef.current]
 
 			// Quit recursion if stopped or removed
-			if (!isRunningRef.current || layer === undefined) {
-				clearTimeout(timeoutID)
+			if (isRunningRef.current !== runId || layer === undefined) {
+				clearTimeout(m_timeout)
 				return
 			}
 
@@ -116,8 +125,8 @@ const App = (): JSX.Element => {
 					// Reset duplicate count
 					// Check for layers.time to know what currSeg should do
 					currSeg.dupCount = 1
-					const allAtOne = times.every(t => t === 1)
-					const oneAtMax = times[id] === layer.beats
+					const allAtOne = innerTimes.every(t => t === 1)
+					const oneAtMax = innerTimes[index] === layer.beats
 					currSeg.count = allAtOne ? 1 : oneAtMax ? 0 : currSeg.count + 1
 				}
 
@@ -138,11 +147,12 @@ const App = (): JSX.Element => {
 						volume: layer.volume,
 						frequency: freq,
 						attack: 0,
+						release: layer.release ? 0.4 : null,
 					},
 				})
 
 				wave.play()
-				setTimeout(() => wave.stop(), 50)
+				setTimeout(() => wave.stop(), layer.duration ? fixedTempoMs * 0.3 : 50)
 			} else {
 				if (sounds) {
 					const freq = layer.freq[layer.type]
@@ -158,54 +168,47 @@ const App = (): JSX.Element => {
 			// Return to 1 if 'time' above 'beats'
 			//
 
-			t_times[id] = times[id] >= layer.beats ? 1 : times[id] + 1
-			setTimes([...t_times])
+			innerTimes[index] = innerTimes[index] >= layer.beats ? 1 : innerTimes[index] + 1
+			setTimes([...innerTimes])
 
 			// Calculate latency
 			const start = startTimeRef.current
 			const latencyOffset = start > 0 ? (Date.now() - start) % fixedTempoMs : 0
 
 			// Recursion
-			metronomeInterval(fixedTempoMs, fixedTempoMs - latencyOffset, id)
+			metronomeInterval(fixedTempoMs, fixedTempoMs - latencyOffset, index, runId)
 		}, nextDelay)
 	}
 
-	const launchMetronome = (runs: boolean) => {
-		function start() {
-			const calculateTempoMs = (beats: number, tmp: number) => {
-				//
-				// Set min / max if limited
-				tmp = tmp < 30 ? 30 : tmp > 300 ? 300 : tmp
-
-				return 60000 / ((beats / 4) * tmp)
-			}
-
-			layersRef.current.forEach((l, i) => {
-				const tempoMs = calculateTempoMs(l.beats, tempoRef.current)
-				metronomeInterval(tempoMs, tempoMs, i)
-			})
-
-			// Update to start state
-			setStartTime(Date.now())
-			setIsRunning(true)
+	const startMetronome = () => {
+		const calculateTempoMs = (beats: number, tmp: number) => {
+			tmp = tmp < 30 ? 30 : tmp > 300 ? 300 : tmp
+			return 60000 / ((beats / 4) * tmp)
 		}
 
-		function stop() {
-			setSegment({ ...segment, count: 0 })
-			setIsRunning(false)
-			setStartTime(0)
-			setTimes(times.map(x => (x = 1)))
-		}
+		const runId = setRandomID()
+		setTimes(times.map(x => (x = 1)))
 
-		runs ? stop() : start()
+		layersRef.current.forEach((l, i) => {
+			const tempoMs = calculateTempoMs(l.beats, tempoRef.current)
+			metronomeInterval(tempoMs, tempoMs, i, runId)
+		})
+
+		// Update to start state
+		setStartTime(Date.now())
+		setIsRunning(runId)
+	}
+
+	const stopMetronome = () => {
+		setSegment({ ...segment, count: 0 })
+		setIsRunning('')
+		setStartTime(0)
 	}
 
 	const restartMetronome = () => {
-		if (isRunningRef.current) {
-			launchMetronome(true)
-			setTimeout(() => {
-				if (!isRunningRef.current) launchMetronome(false)
-			}, 200)
+		if (isRunning !== '') {
+			setSegment({ ...segment, count: 0 })
+			startMetronome()
 		}
 	}
 
@@ -215,18 +218,12 @@ const App = (): JSX.Element => {
 		const notes = [16, 19, 24]
 		const beats = [5, 7, 10]
 
-		// Remove
 		if (!add && newLayers.length > 1) {
 			newLayers.splice(-1, 1)
 			newTimes.pop()
 		}
 
-		// Add Unlimited
-		// Add limited
-		if (
-			(add && moreSettings.unlimited) ||
-			(add && !moreSettings.unlimited && newLayers.length < 4)
-		) {
+		if (add && newLayers.length < 4) {
 			newLayers.push({
 				id: setRandomID(),
 				beats: beats[newLayers.length - 1],
@@ -235,6 +232,8 @@ const App = (): JSX.Element => {
 					wood: 0,
 					drum: 1,
 				},
+				release: false,
+				duration: false,
 				type: 'sine',
 				volume: 0.4,
 			})
@@ -243,7 +242,8 @@ const App = (): JSX.Element => {
 
 		// Update
 		setLayers([...newLayers])
-		setTimes(newTimes)
+		setTimes([...newTimes])
+		restartMetronome()
 	}
 
 	const initSegment = useCallback(() => {
@@ -307,7 +307,7 @@ const App = (): JSX.Element => {
 
 			// Spacebar control metronome
 			if (e.code === 'Space' && !IsTypingRef.current)
-				launchMetronome(isRunningRef.current)
+				isRunningRef.current ? stopMetronome() : startMetronome()
 
 			// Tempo up by 10 if shift
 			if (e.code === 'ArrowUp') setTempo(tempoRef.current + (e.shiftKey ? 10 : 1))
@@ -362,23 +362,12 @@ const App = (): JSX.Element => {
 
 				<Clicks times={times} layers={layers} segment={segment}></Clicks>
 
-				{/* {layers.map((layer, i) => (
-					<div className="ls-note">
-						<div className="notes-wrap" key={layer.id}>
-							<Wheel
-								freq={layer.freq.wave}
-								update={res => console.log(res)}
-							></Wheel>
-							<Octaves freq={layer.freq.wave}></Octaves>
-						</div>
-					</div>
-				))} */}
-
 				<LayersTable
 					easy={easy}
 					layers={layers}
 					setLayers={setLayers}
 					updateLayer={updateLayer}
+					restartMetronome={restartMetronome}
 				></LayersTable>
 
 				<div className="tempo-n-start">
@@ -390,7 +379,9 @@ const App = (): JSX.Element => {
 					></Tempo>
 
 					<div className="start-button">
-						<button onMouseDown={() => launchMetronome(isRunning)}>
+						<button
+							onClick={() => (isRunning ? stopMetronome() : startMetronome())}
+						>
 							{isRunning ? 'Stop' : 'Start'}
 						</button>
 					</div>

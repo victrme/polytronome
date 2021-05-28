@@ -1,16 +1,13 @@
 import ControlRow from './ControlRow'
 
-const LayersTable = ({ easy, layers, setLayers, updateLayer }) => {
+const LayersTable = ({ easy, layers, setLayers, updateLayer, restartMetronome }) => {
 	const randomizeLayers = () => {
 		const rand = (a: number, b: number) => Math.random() * (b - a) + a
 
-		setLayers([
-			...layers.map(layer => ({
-				...layer,
-				beats: +rand(2, 16).toFixed(0),
-			})),
-		])
-		// restartMetronome()
+		const newLayers = [...layers]
+		newLayers.forEach((l, i) => (newLayers[i].beats = +rand(2, 16).toFixed(0)))
+		setLayers([...newLayers])
+		restartMetronome()
 	}
 
 	return (
