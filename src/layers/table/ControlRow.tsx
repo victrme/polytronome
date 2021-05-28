@@ -70,8 +70,26 @@ const ControlRow = ({ layers, setLayers, easy }) => {
 							></Wheel>
 
 							<div className="note-length">
-								<button title="Click duration">50ms</button>
-								<button>release</button>
+								<button
+									title="Click duration"
+									onClick={() => {
+										const newLayers = [...layers]
+										newLayers[i].duration = !newLayers[i].duration
+										setLayers([...newLayers])
+									}}
+								>
+									{layer.duration ? '.3*bpm' : '50ms'}
+								</button>
+								<button
+									className={layer.release ? 'on' : ''}
+									onClick={() => {
+										const newLayers = [...layers]
+										newLayers[i].release = !newLayers[i].release
+										setLayers([...newLayers])
+									}}
+								>
+									release
+								</button>
 							</div>
 						</div>
 					)}
