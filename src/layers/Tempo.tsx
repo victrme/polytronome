@@ -1,9 +1,10 @@
 import { useRef, useState } from 'react'
-import { isMobileOnly } from 'react-device-detect'
+import { isDesktop, isMobileOnly } from 'react-device-detect'
 import propTypes from 'prop-types'
 import Wheel from '../inputs/Wheel'
 
 const Tempo = ({ tempo, setTempo, tempoRef, restart }) => {
+	const [changedTempo, setChangedTempo] = useState(false)
 	const [tap, setTap] = useState([
 		{
 			date: 0,
@@ -25,6 +26,7 @@ const Tempo = ({ tempo, setTempo, tempoRef, restart }) => {
 		if (!doAnything) return false
 
 		if (dir === 'enter') {
+			setChangedTempo(true)
 			changeTempo(tempo + 1 * sign)
 
 			buttonsInterval.current = setTimeout(
@@ -39,7 +41,11 @@ const Tempo = ({ tempo, setTempo, tempoRef, restart }) => {
 		if (dir === 'leave') {
 			clearTimeout(buttonsInterval.current)
 			clearInterval(buttonsInterval.current)
-			restart()
+
+			if (changedTempo) {
+				setChangedTempo(false)
+				restart()
+			}
 		}
 
 		if (!isMobileOnly) e.preventDefault()
@@ -89,7 +95,7 @@ const Tempo = ({ tempo, setTempo, tempoRef, restart }) => {
 			<Wheel
 				tempo={tempo}
 				update={res => {
-					changeTempo(res)
+					changeTempo(res + 30)
 					restart()
 				}}
 			></Wheel>
@@ -104,9 +110,9 @@ const Tempo = ({ tempo, setTempo, tempoRef, restart }) => {
 						className={tempo === 30 ? 'off' : ''}
 						onTouchStart={e => tempoBtns(e, 'enter', -1, isMobileOnly)}
 						onTouchEnd={e => tempoBtns(e, 'leave', -1, isMobileOnly)}
-						onMouseDown={e => tempoBtns(e, 'enter', -1, !isMobileOnly)}
-						onMouseUp={e => tempoBtns(e, 'leave', -1, !isMobileOnly)}
-						onMouseLeave={e => tempoBtns(e, 'leave', -1, !isMobileOnly)}
+						onMouseDown={e => tempoBtns(e, 'enter', -1, isDesktop)}
+						onMouseUp={e => tempoBtns(e, 'leave', -1, isDesktop)}
+						onMouseLeave={e => tempoBtns(e, 'leave', -1, isDesktop)}
 						onContextMenu={e => e.preventDefault()}
 					>
 						-
@@ -115,9 +121,9 @@ const Tempo = ({ tempo, setTempo, tempoRef, restart }) => {
 						className={tempo === 300 ? 'off' : ''}
 						onTouchStart={e => tempoBtns(e, 'enter', 1, isMobileOnly)}
 						onTouchEnd={e => tempoBtns(e, 'leave', 1, isMobileOnly)}
-						onMouseDown={e => tempoBtns(e, 'enter', 1, !isMobileOnly)}
-						onMouseUp={e => tempoBtns(e, 'leave', 1, !isMobileOnly)}
-						onMouseLeave={e => tempoBtns(e, 'leave', 1, !isMobileOnly)}
+						onMouseDown={e => tempoBtns(e, 'enter', 1, isDesktop)}
+						onMouseUp={e => tempoBtns(e, 'leave', 1, isDesktop)}
+						onMouseLeave={e => tempoBtns(e, 'leave', 1, isDesktop)}
 						onContextMenu={e => e.preventDefault()}
 					>
 						+
