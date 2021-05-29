@@ -243,7 +243,7 @@ const App = (): JSX.Element => {
 		// Update
 		setLayers([...newLayers])
 		setTimes([...newTimes])
-		restartMetronome()
+		setTimeout(() => restartMetronome(), 20)
 	}
 
 	const initSegment = useCallback(() => {
