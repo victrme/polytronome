@@ -10,8 +10,11 @@
 
 body {
 	margin: 0;
-	background-color: var(--background);
 	transition: background-color 1s cubic-bezier(0.19, 1, 0.22, 1);
+}
+body,
+body:fullscreen::backdrop {
+	background: var(--background);
 }
 
 button,
