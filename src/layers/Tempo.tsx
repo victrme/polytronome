@@ -13,6 +13,19 @@ const Tempo = ({ tempo, setTempo, tempoRef, restart }) => {
 	])
 	const buttonsInterval = useRef(setTimeout(() => {}, 1))
 
+	const buttons = [
+		{
+			bound: 30,
+			sign: -1,
+			str: '-',
+		},
+		{
+			bound: 300,
+			sign: 1,
+			str: '+',
+		},
+	]
+
 	const changeTempo = (amount: number) => {
 		const up = amount > tempo
 		const max = up ? 300 : 30
@@ -106,28 +119,20 @@ const Tempo = ({ tempo, setTempo, tempoRef, restart }) => {
 				</button>
 
 				<div className="tempo-buttons">
-					<button
-						className={tempo === 30 ? 'off' : ''}
-						onTouchStart={e => tempoBtns(e, 'enter', -1, isMobileOnly)}
-						onTouchEnd={e => tempoBtns(e, 'leave', -1, isMobileOnly)}
-						onMouseDown={e => tempoBtns(e, 'enter', -1, isDesktop)}
-						onMouseUp={e => tempoBtns(e, 'leave', -1, isDesktop)}
-						onMouseLeave={e => tempoBtns(e, 'leave', -1, isDesktop)}
-						onContextMenu={e => e.preventDefault()}
-					>
-						-
-					</button>
-					<button
-						className={tempo === 300 ? 'off' : ''}
-						onTouchStart={e => tempoBtns(e, 'enter', 1, isMobileOnly)}
-						onTouchEnd={e => tempoBtns(e, 'leave', 1, isMobileOnly)}
-						onMouseDown={e => tempoBtns(e, 'enter', 1, isDesktop)}
-						onMouseUp={e => tempoBtns(e, 'leave', 1, isDesktop)}
-						onMouseLeave={e => tempoBtns(e, 'leave', 1, isDesktop)}
-						onContextMenu={e => e.preventDefault()}
-					>
-						+
-					</button>
+					{buttons.map(btn => (
+						<button
+							key={btn.bound}
+							className={tempo === btn.bound ? 'off' : ''}
+							onTouchStart={e => tempoBtns(e, 'enter', btn.sign, isMobileOnly)}
+							onTouchEnd={e => tempoBtns(e, 'leave', btn.sign, isMobileOnly)}
+							onMouseDown={e => tempoBtns(e, 'enter', btn.sign, isDesktop)}
+							onMouseUp={e => tempoBtns(e, 'leave', btn.sign, isDesktop)}
+							onMouseLeave={e => tempoBtns(e, 'leave', btn.sign, isDesktop)}
+							onContextMenu={e => e.preventDefault()}
+						>
+							{btn.str}
+						</button>
+					))}
 				</div>
 			</div>
 		</div>

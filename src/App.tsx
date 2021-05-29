@@ -147,7 +147,7 @@ const App = (): JSX.Element => {
 						volume: layer.volume,
 						frequency: freq,
 						attack: 0,
-						release: layer.release ? 0.4 : null,
+						release: layer.release ? 0.6 : null,
 					},
 				})
 

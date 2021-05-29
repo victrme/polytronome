@@ -28,6 +28,7 @@ input {
 	min-height: 100vh;
 	display: flex;
 	justify-content: space-evenly;
+	user-select: none;
 	margin: auto;
 
 	main {
@@ -145,7 +146,7 @@ input {
 	}
 
 	.clicks {
-		width: 100%;
+		width: 90%;
 		height: 120px;
 		display: flex;
 		align-items: center;
@@ -180,6 +181,12 @@ input {
 	.layers-table-wrap {
 		display: flex;
 		align-items: center;
+		width: 90%;
+		max-width: 800px;
+
+		.ls-buttons {
+			width: 100px;
+		}
 	}
 
 	.layers-table {
@@ -187,6 +194,8 @@ input {
 		flex-direction: column;
 		justify-content: center;
 		margin: 100px 0;
+		margin-left: -50px;
+		width: 100%;
 
 		&:hover {
 			.ls-row:not(.ls-labels) {
@@ -210,8 +219,8 @@ input {
 			transition: opacity 0.2s;
 
 			> div {
+				width: 100%;
 				margin: 0 10px;
-				width: 180px;
 				text-align: center;
 			}
 
@@ -220,6 +229,10 @@ input {
 				opacity: 0.3;
 				font-size: 12px;
 			}
+		}
+
+		.ls-type {
+			width: 80px;
 		}
 
 		.css-waves {
@@ -374,8 +387,9 @@ input {
 		display: flex;
 		align-items: flex-end;
 		justify-content: space-between;
-		width: 100%;
-		margin-top: 10em;
+		width: 90%;
+		padding: 2em;
+		margin: 8em auto 0 auto;
 		font-size: 12px;
 
 		.links {
@@ -419,8 +433,11 @@ input {
 
 	&.easy {
 		.layers-table-wrap {
+			justify-content: center;
 			.layers-table {
 				flex-direction: row;
+				margin-left: 0;
+				width: auto;
 			}
 
 			.ls-row {

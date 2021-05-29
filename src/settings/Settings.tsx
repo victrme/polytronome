@@ -17,10 +17,8 @@ const Settings = ({ moreSettings, segment, setSegment, setMoreSettings, easy, se
 	}
 
 	const changeFullscreen = () => {
-		if (moreSettings.fullscreen && document.fullscreenElement === null) {
-			const wrap = document.querySelector('.settings-wrap') as HTMLDivElement
-			document.querySelector('.polytronome')!.requestFullscreen()
-			wrap.style.overflowY = 'auto'
+		if (!moreSettings.fullscreen && document.fullscreenElement === null) {
+			document.body!.requestFullscreen()
 		} else if (document.fullscreenElement !== null) {
 			document.exitFullscreen()
 		}
