@@ -73,16 +73,17 @@ function Range({ volume, i, layers, setLayers }): JSX.Element {
 		}
 	)
 
+	const updateRangeWidth = () =>
+		setRange(prev => ({
+			...prev,
+			width: rangeRef.current.getBoundingClientRect().width,
+		}))
+
 	useEffect(() => {
 		//
 		// Only calculate bounding on start or on resize
 		// Range dragging is laggy if not
 		//
-		const updateRangeWidth = () =>
-			setRange(prev => ({
-				...prev,
-				width: rangeRef.current.getBoundingClientRect().width,
-			}))
 
 		updateRangeWidth()
 		window.addEventListener('resize', updateRangeWidth)
