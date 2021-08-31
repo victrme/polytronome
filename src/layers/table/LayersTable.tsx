@@ -13,14 +13,6 @@ const LayersTable = ({ easy, layers, setLayers, updateLayer, restartMetronome })
 	return (
 		<div className="layers-table-wrap">
 			<div className="layers-table">
-				{easy ? (
-					<div className="ls-row ls-labels">
-						<div>beats</div>
-					</div>
-				) : (
-					''
-				)}
-
 				<ControlRow layers={layers} setLayers={setLayers} easy={easy}></ControlRow>
 
 				{easy ? (
@@ -35,25 +27,30 @@ const LayersTable = ({ easy, layers, setLayers, updateLayer, restartMetronome })
 				)}
 			</div>
 
-			<div className="ls-buttons">
-				<button className="randomize" onClick={randomizeLayers}>
-					{easy ? 'shuffle' : '🎲'}
-				</button>
-				<div className="plus-minus">
-					<button
-						className={layers.length === 1 ? 'off' : ''}
-						onClick={() => updateLayer(false)}
-					>
-						-
+			{easy ? (
+				''
+			) : (
+				<div className="ls-buttons">
+					<button className="randomize" onClick={randomizeLayers}>
+						↬
 					</button>
-					<button
-						className={layers.length === 4 ? 'off' : ''}
-						onClick={() => updateLayer(true)}
-					>
-						+
-					</button>
+
+					<div className="plus-minus">
+						<button
+							className={layers.length === 1 ? 'off' : ''}
+							onClick={() => updateLayer(false)}
+						>
+							×
+						</button>
+						<button
+							className={layers.length === 4 ? 'off' : ''}
+							onClick={() => updateLayer(true)}
+						>
+							+
+						</button>
+					</div>
 				</div>
-			</div>
+			)}
 		</div>
 	)
 }

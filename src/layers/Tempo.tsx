@@ -118,7 +118,7 @@ const Tempo = ({ tempo, setTempo, tempoRef, restart }) => {
 					tap
 				</button>
 
-				<div className="tempo-buttons">
+				{/* <div className="tempo-buttons">
 					{buttons.map(btn => (
 						<button
 							key={btn.bound}
@@ -133,7 +133,7 @@ const Tempo = ({ tempo, setTempo, tempoRef, restart }) => {
 							{btn.str}
 						</button>
 					))}
-				</div>
+				</div> */}
 			</div>
 		</div>
 	)

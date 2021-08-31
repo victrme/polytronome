@@ -31,7 +31,6 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 	} = { height: 50, list: [], current: 0, offset: 0 }
 
 	if (tempo !== undefined) {
-		what.height = 80
 		what.list = allLists.tempo
 		what.current = tempo
 		what.offset = 30

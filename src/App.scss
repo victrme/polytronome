@@ -113,11 +113,15 @@ input {
 	}
 
 	.title {
+		display: flex;
+		align-items: center;
+		width: 90%;
+		justify-content: space-between;
 		margin: 1em 0;
 		font-size: 30px;
 
 		h1 {
-			margin-top: 0;
+			margin: 0;
 			line-height: 1em;
 			font-weight: 800;
 		}
@@ -130,6 +134,27 @@ input {
 			text-align: end;
 			margin-bottom: -10px;
 			font-weight: 800;
+		}
+	}
+
+	.tempo {
+		display: flex;
+		align-items: center;
+
+		.immovable_wheel {
+			line-height: 50px;
+			font-size: 50px;
+			height: 50px;
+			margin-right: 10px;
+		}
+
+		.tap {
+			width: 120px;
+			margin: 0%;
+		}
+
+		.tempo-buttons {
+			display: flex;
 		}
 	}
 
@@ -201,7 +226,7 @@ input {
 		width: 100%;
 
 		&:hover {
-			.ls-row:not(.ls-labels) {
+			.ls-row {
 				opacity: 0.6;
 
 				&:hover {
@@ -225,12 +250,6 @@ input {
 				width: 100%;
 				margin: 0 10px;
 				text-align: center;
-			}
-
-			&.ls-labels {
-				height: 50px;
-				opacity: 0.3;
-				font-size: 12px;
 			}
 		}
 
@@ -367,25 +386,6 @@ input {
 		}
 	}
 
-	.tempo {
-		display: flex;
-
-		.immovable_wheel {
-			line-height: 80px;
-			font-size: 80px;
-			height: 80px;
-			margin-right: 20px;
-		}
-
-		.tap {
-			width: 120px;
-		}
-
-		.tempo-buttons {
-			display: flex;
-		}
-	}
-
 	.bottom {
 		display: flex;
 		align-items: flex-end;
@@ -446,17 +446,23 @@ input {
 			.ls-row {
 				padding: 10px;
 
-				&.ls-labels {
-					height: auto;
-					> div {
-						width: auto;
-					}
-				}
-
 				.immovable_wheel {
 					width: 80px;
 					margin: 0;
 				}
+			}
+		}
+
+		.ls-add {
+			display: grid;
+			place-items: center;
+			width: 80px;
+			cursor: pointer;
+			border: 2px dashed transparent;
+			border-radius: 10px;
+
+			&:hover {
+				border-color: var(--accent);
 			}
 		}
 

@@ -356,8 +356,14 @@ const App = (): JSX.Element => {
 		>
 			<main>
 				<div className="title">
-					<p>Train your polyrythms</p>
 					<h1>Polytronome</h1>
+
+					<Tempo
+						restart={restartMetronome}
+						tempo={tempo}
+						setTempo={setTempo}
+						tempoRef={tempoRef}
+					></Tempo>
 				</div>
 
 				<Clicks times={times} layers={layers} segment={segment}></Clicks>
@@ -371,18 +377,11 @@ const App = (): JSX.Element => {
 				></LayersTable>
 
 				<div className="tempo-n-start">
-					<Tempo
-						restart={restartMetronome}
-						tempo={tempo}
-						setTempo={setTempo}
-						tempoRef={tempoRef}
-					></Tempo>
-
 					<div className="start-button">
 						<button
 							onClick={() => (isRunning ? stopMetronome() : startMetronome())}
 						>
-							{isRunning ? 'Stop' : 'Start'}
+							{isRunning ? '◼' : '▶'}
 						</button>
 					</div>
 				</div>
