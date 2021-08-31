@@ -25,12 +25,19 @@ const Clicks = ({ segment, layers, times }) => {
 				// Add clicks for each layers
 
 				const children: JSX.Element[] = []
-				for (let beat = 0; beat < layer.beats; beat++) {
+				for (let beat = 0; beat < 16; beat++) {
 					if (layer.beats > 1) {
 						children.push(
 							<div
 								key={beat}
-								className={'click' + (beat < times[row] ? ' on' : '')}
+								className={
+									'click' +
+									(beat >= layer.beats
+										? ' off'
+										: beat < times[row]
+										? ' on'
+										: '')
+								}
 							/>
 						)
 					}

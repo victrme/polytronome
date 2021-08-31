@@ -9,6 +9,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@700;900&display=swap');
 
 body {
+	overflow: hidden;
 	margin: 0;
 	transition: background-color 1s cubic-bezier(0.19, 1, 0.22, 1);
 }
@@ -87,10 +88,14 @@ input {
 		padding: 2px 10px;
 		border-radius: 10px;
 		text-align: center;
-		transition: background-color 0.2s;
+		transition: opacity 0.2s, background-color 0.2s;
 
 		&:hover {
 			background-color: var(--dimmer);
+		}
+
+		&.off {
+			opacity: 0.2;
 		}
 
 		.wheel {
@@ -191,12 +196,17 @@ input {
 		margin: 5px;
 		width: 100%;
 		height: 20px;
-		background-color: var(--dim);
 		border-radius: 5px;
+		background-color: var(--dim);
+		transition: margin 0.2s, background-color 0.1s, width 0.2s;
 
 		&.on {
 			background-color: var(--accent);
-			transition: background-color 0.1s;
+		}
+
+		&.off {
+			margin: 5px 0;
+			width: 0;
 		}
 	}
 
@@ -220,20 +230,6 @@ input {
 		margin: 100px 0;
 		margin-left: -50px;
 		width: 100%;
-
-		&:hover {
-			.ls-row {
-				opacity: 0.6;
-
-				&:hover {
-					opacity: 1;
-				}
-			}
-		}
-
-		> :last-child {
-			background-color: transparent;
-		}
 
 		.ls-row {
 			padding: 10px 30px;
