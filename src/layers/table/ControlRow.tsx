@@ -31,7 +31,7 @@ const ControlRow = ({ layers, setLayers, easy }) => {
 				beats={layer.beats}
 				update={res => {
 					const newLayers = [...layers]
-					newLayers[i].beats = res + 2
+					newLayers[i].beats = res + 1
 					setLayers([...newLayers])
 				}}
 			></Wheel>

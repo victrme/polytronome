@@ -67,6 +67,45 @@ const App = (): JSX.Element => {
 			type: 'sine',
 			volume: 0.3,
 		},
+		{
+			id: setRandomID(),
+			beats: 1,
+			freq: {
+				wave: 18,
+				wood: 1,
+				drum: 0,
+			},
+			release: false,
+			duration: false,
+			type: 'sine',
+			volume: 0.3,
+		},
+		{
+			id: setRandomID(),
+			beats: 1,
+			freq: {
+				wave: 22,
+				wood: 1,
+				drum: 0,
+			},
+			release: false,
+			duration: false,
+			type: 'sine',
+			volume: 0.3,
+		},
+		{
+			id: setRandomID(),
+			beats: 1,
+			freq: {
+				wave: 22,
+				wood: 1,
+				drum: 0,
+			},
+			release: false,
+			duration: false,
+			type: 'sine',
+			volume: 0.3,
+		},
 	])
 
 	const [sounds, setSounds] = useState<Sounds>()
@@ -212,40 +251,6 @@ const App = (): JSX.Element => {
 		}
 	}
 
-	const updateLayer = (add: boolean) => {
-		const newLayers = [...layers]
-		const newTimes = times
-		const notes = [16, 19, 24]
-		const beats = [5, 7, 10]
-
-		if (!add && newLayers.length > 1) {
-			newLayers.splice(-1, 1)
-			newTimes.pop()
-		}
-
-		if (add && newLayers.length < 4) {
-			newLayers.push({
-				id: setRandomID(),
-				beats: beats[newLayers.length - 1],
-				freq: {
-					wave: notes[newLayers.length - 1],
-					wood: 0,
-					drum: 1,
-				},
-				release: false,
-				duration: false,
-				type: 'sine',
-				volume: 0.4,
-			})
-			newTimes.push(0)
-		}
-
-		// Update
-		setLayers([...newLayers])
-		setTimes([...newTimes])
-		setTimeout(() => restartMetronome(), 20)
-	}
-
 	const initSegment = useCallback(() => {
 		function getDuplicates(list: number[]) {
 			// Creates list of duplicates per division
@@ -372,7 +377,6 @@ const App = (): JSX.Element => {
 					easy={easy}
 					layers={layers}
 					setLayers={setLayers}
-					updateLayer={updateLayer}
 					restartMetronome={restartMetronome}
 				></LayersTable>
 
