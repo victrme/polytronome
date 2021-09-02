@@ -3,7 +3,7 @@ import Range from '../../inputs/Range'
 import Vectors from './Vectors'
 import Octaves from './Octaves'
 
-const ControlRow = ({ layers, setLayers, easy }) => {
+const ControlRow = ({ layers, setLayers, restartMetronome, easy }) => {
 	const changeClickType = (type: string, i: number) => {
 		const clickTypeList = ['wood', 'drum', 'sine', 'triangle']
 		const newLayers = [...layers]
@@ -25,16 +25,17 @@ const ControlRow = ({ layers, setLayers, easy }) => {
 		setLayers(newLayers)
 	}
 
+	const changeBeats = (res: number, i: number) => {
+		let newLayers = [...layers]
+		newLayers[i].beats = res + 1
+
+		setLayers([...newLayers])
+		restartMetronome()
+	}
+
 	const list = layers.map((layer, i) => (
 		<div className="ls-row" key={layer.id}>
-			<Wheel
-				beats={layer.beats}
-				update={res => {
-					const newLayers = [...layers]
-					newLayers[i].beats = res + 1
-					setLayers([...newLayers])
-				}}
-			></Wheel>
+			<Wheel beats={layer.beats} update={res => changeBeats(res, i)}></Wheel>
 
 			{easy ? (
 				''

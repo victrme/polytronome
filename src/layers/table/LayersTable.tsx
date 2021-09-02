@@ -20,7 +20,12 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome }) => {
 	return (
 		<div className="layers-table-wrap">
 			<div className="layers-table">
-				<ControlRow layers={layers} setLayers={setLayers} easy={easy}></ControlRow>
+				<ControlRow
+					layers={layers}
+					setLayers={setLayers}
+					restartMetronome={restartMetronome}
+					easy={easy}
+				></ControlRow>
 
 				{easy ? (
 					''

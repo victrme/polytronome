@@ -122,7 +122,7 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 	)
 
 	useEffect(
-		() => setCorrectWheel(), // Snaps wheel on change
+		setCorrectWheel, // Snaps wheel on change
 		// eslint-disable-next-line
 		[current]
 	)

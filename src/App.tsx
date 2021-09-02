@@ -18,7 +18,7 @@ const App = (): JSX.Element => {
 		return str
 	}
 
-	const [times, setTimes] = useState<number[]>([1, 1])
+	const [times, setTimes] = useState<number[]>([1, 1, 1, 1, 1])
 	const [tempo, setTempo] = useState(80)
 	const [startTime, setStartTime] = useState(Date.now)
 	const [isRunning, setIsRunning] = useState('')
@@ -33,7 +33,7 @@ const App = (): JSX.Element => {
 	})
 
 	const [moreSettings, setMoreSettings] = useState<MoreSettings>({
-		theme: 2,
+		theme: 1,
 		fullscreen: false,
 		unlimited: false,
 		animations: true,
@@ -52,7 +52,7 @@ const App = (): JSX.Element => {
 			release: false,
 			duration: false,
 			type: 'sine',
-			volume: 0.4,
+			volume: 0.6,
 		},
 		{
 			id: setRandomID(),
@@ -65,7 +65,7 @@ const App = (): JSX.Element => {
 			release: false,
 			duration: false,
 			type: 'sine',
-			volume: 0.3,
+			volume: 0.6,
 		},
 		{
 			id: setRandomID(),
@@ -78,7 +78,7 @@ const App = (): JSX.Element => {
 			release: false,
 			duration: false,
 			type: 'sine',
-			volume: 0.3,
+			volume: 0.6,
 		},
 		{
 			id: setRandomID(),
@@ -97,14 +97,14 @@ const App = (): JSX.Element => {
 			id: setRandomID(),
 			beats: 1,
 			freq: {
-				wave: 22,
+				wave: 26,
 				wood: 1,
 				drum: 0,
 			},
 			release: false,
 			duration: false,
 			type: 'sine',
-			volume: 0.3,
+			volume: 0.6,
 		},
 	])
 
@@ -226,11 +226,13 @@ const App = (): JSX.Element => {
 		}
 
 		const runId = setRandomID()
-		setTimes(times.map(x => (x = 1)))
+		setTimes([1, 1, 1, 1, 1])
 
-		layersRef.current.forEach((l, i) => {
-			const tempoMs = calculateTempoMs(l.beats, tempoRef.current)
-			metronomeInterval(tempoMs, tempoMs, i, runId)
+		layersRef.current.forEach((layer, i) => {
+			if (layer.beats > 1) {
+				const tempoMs = calculateTempoMs(layer.beats, tempoRef.current)
+				metronomeInterval(tempoMs, tempoMs, i, runId)
+			}
 		})
 
 		// Update to start state
