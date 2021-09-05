@@ -17,11 +17,7 @@ export type Segment = {
 export type Layer = {
 	id: string
 	beats: number
-	freq: {
-		wave: number
-		wood: number
-		drum: number
-	}
+	freq: number
 	release: boolean
 	duration: boolean
 	type: string

@@ -1,26 +1,23 @@
 import Wheel from '../../inputs/Wheel'
 import Range from '../../inputs/Range'
-import Vectors from './Vectors'
 import Octaves from './Octaves'
 
 const ControlRow = ({ layers, setLayers, restartMetronome, easy }) => {
 	const changeClickType = (type: string, i: number) => {
-		const clickTypeList = ['wood', 'drum', 'sine', 'triangle']
+		const clickTypeList = ['triangle', 'sawtooth', 'square', 'sine']
 		const newLayers = [...layers]
 
-		clickTypeList.forEach((x, ii) => {
+		clickTypeList.forEach((x, _i) => {
 			if (x === type) {
-				newLayers[i].type = clickTypeList[(ii + 1) % clickTypeList.length]
+				newLayers[i].type = clickTypeList[(_i + 1) % clickTypeList.length]
 				setLayers(newLayers)
 			}
 		})
 	}
 
-	const changeFreqs = (which: string, i: number, res?: number) => {
-		const newLayers = [...layers]
-
-		if (which === 'wave') newLayers[i].freq[which] = res
-		else newLayers[i].freq[which] = (layers[i].freq[which] + 1) % 3
+	const changeFreqs = (i: number, res?: number) => {
+		let newLayers = [...layers]
+		newLayers[i].freq = res
 
 		setLayers(newLayers)
 	}
@@ -33,18 +30,30 @@ const ControlRow = ({ layers, setLayers, restartMetronome, easy }) => {
 		restartMetronome()
 	}
 
+	const wavetypes = {
+		sine: 'M 10 10 Q 20 -6 30 10 V 10 Q 40 26 50 10',
+		triangle: 'M 10 10 L 20 2 L 40 18 L 50 10',
+		sawtooth: 'M 10 10 L 30 2 V 18 L 50 10',
+		square: 'M 10 2 H 30 V 18 H 50',
+	}
+
 	const list = layers.map((layer, i) => (
-		<div className="ls-row" key={layer.id}>
+		<div className={'ls-row' + (layer.beats === 1 ? ' off' : '')} key={layer.id}>
 			<Wheel beats={layer.beats} update={res => changeBeats(res, i)}></Wheel>
 
 			{easy ? (
 				''
 			) : (
-				<div className="ls-type">
-					<Vectors
-						type={layer.type}
-						change={() => changeClickType(layer.type, i)}
-					></Vectors>
+				<div className="ls-type" onMouseDown={() => changeClickType(layer.type, i)}>
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="8 0 44 20">
+						<path
+							d={wavetypes[layer.type]}
+							fill="none"
+							stroke="var(--accent)"
+							strokeWidth="4"
+							strokeLinecap="round"
+						/>
+					</svg>
 				</div>
 			)}
 
@@ -52,48 +61,34 @@ const ControlRow = ({ layers, setLayers, restartMetronome, easy }) => {
 				''
 			) : (
 				<div className="ls-note">
-					{layer.type === 'wood' ? (
-						<div className="woodblocks" onClick={() => changeFreqs('wood', i)}>
-							<div className={layer.freq.wood > -1 ? 'on' : ''}></div>
-							<div className={layer.freq.wood > 0 ? 'on' : ''}></div>
-							<div className={layer.freq.wood > 1 ? 'on' : ''}></div>
+					<div className="notes-wrap">
+						<div className="note-length">
+							<button
+								title="Click duration"
+								className={layer.duration ? 'on' : ''}
+								onClick={() => {
+									const newLayers = [...layers]
+									newLayers[i].duration = !newLayers[i].duration
+									setLayers([...newLayers])
+								}}
+							>
+								∼
+							</button>
+							<button
+								className={layer.release ? 'on' : ''}
+								onClick={() => {
+									const newLayers = [...layers]
+									newLayers[i].release = !newLayers[i].release
+									setLayers([...newLayers])
+								}}
+							>
+								↪
+							</button>
 						</div>
-					) : layer.type === 'drum' ? (
-						<div className="drumset" onClick={() => changeFreqs('drum', i)}>
-							<div>{layer.freq.drum}</div>
-						</div>
-					) : (
-						<div className="notes-wrap">
-							<Octaves freq={layer.freq.wave}></Octaves>
-							<Wheel
-								freq={layer.freq.wave}
-								update={res => changeFreqs('wave', i, res)}
-							></Wheel>
 
-							<div className="note-length">
-								<button
-									title="Click duration"
-									onClick={() => {
-										const newLayers = [...layers]
-										newLayers[i].duration = !newLayers[i].duration
-										setLayers([...newLayers])
-									}}
-								>
-									{layer.duration ? '.3*bpm' : '50ms'}
-								</button>
-								<button
-									className={layer.release ? 'on' : ''}
-									onClick={() => {
-										const newLayers = [...layers]
-										newLayers[i].release = !newLayers[i].release
-										setLayers([...newLayers])
-									}}
-								>
-									release
-								</button>
-							</div>
-						</div>
-					)}
+						<Octaves freq={layer.freq}></Octaves>
+						<Wheel freq={layer.freq} update={res => changeFreqs(i, res)}></Wheel>
+					</div>
 				</div>
 			)}
 

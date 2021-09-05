@@ -28,13 +28,20 @@
 		"dim": "#e53c584d",
 		"dimmer": "#ffffff2a"
 	},
-
 	{
 		"name": "coffee",
 		"background": "#fbefdf",
 		"accent": "#8d6852",
 		"dim": "#dac6b5",
 		"dimmer": "#dac6b52a"
+	},
+	{
+		"name": "jungle",
+		"background": "#FFFBF1",
+		"accent": "#8fb67f",
+		"dim": "#e8dfb3",
+		"dimmer": "#ecefc7",
+		"buttons": "#ecefc7"
 	},
 	{
 		"name": "beach",

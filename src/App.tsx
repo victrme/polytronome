@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
-import { MoreSettings, Layer, Sounds } from './Types'
+import { MoreSettings, Layer } from './Types'
 import { isMobileOnly } from 'react-device-detect'
 import Pizzicato from 'pizzicato'
 import Settings from './settings/Settings'
@@ -44,71 +44,49 @@ const App = (): JSX.Element => {
 		{
 			id: setRandomID(),
 			beats: 4,
-			freq: {
-				wave: 12,
-				wood: 0,
-				drum: 1,
-			},
+			freq: 12,
 			release: false,
 			duration: false,
-			type: 'sine',
+			type: 'triangle',
 			volume: 0.6,
 		},
 		{
 			id: setRandomID(),
 			beats: 5,
-			freq: {
-				wave: 15,
-				wood: 1,
-				drum: 0,
-			},
+			freq: 15,
 			release: false,
 			duration: false,
-			type: 'sine',
+			type: 'triangle',
 			volume: 0.6,
 		},
 		{
 			id: setRandomID(),
 			beats: 1,
-			freq: {
-				wave: 18,
-				wood: 1,
-				drum: 0,
-			},
+			freq: 18,
 			release: false,
 			duration: false,
-			type: 'sine',
+			type: 'triangle',
 			volume: 0.6,
 		},
 		{
 			id: setRandomID(),
 			beats: 1,
-			freq: {
-				wave: 22,
-				wood: 1,
-				drum: 0,
-			},
+			freq: 22,
 			release: false,
 			duration: false,
-			type: 'sine',
+			type: 'triangle',
 			volume: 0.3,
 		},
 		{
 			id: setRandomID(),
 			beats: 1,
-			freq: {
-				wave: 26,
-				wood: 1,
-				drum: 0,
-			},
+			freq: 26,
 			release: false,
 			duration: false,
-			type: 'sine',
+			type: 'triangle',
 			volume: 0.6,
 		},
 	])
-
-	const [sounds, setSounds] = useState<Sounds>()
 
 	const timesRef = useRef(times)
 	const tempoRef = useRef(tempo)
@@ -176,31 +154,21 @@ const App = (): JSX.Element => {
 			// Play sound
 			//
 
-			if (layer.type === 'sine' || layer.type === 'triangle') {
-				const note = layer.freq.wave + 12
-				const freq = 32.7 * 2 ** (note / 12)
-				const wave = new Pizzicato.Sound({
-					source: 'wave',
-					options: {
-						type: layer.type,
-						volume: layer.volume,
-						frequency: freq,
-						attack: 0,
-						release: layer.release ? 0.6 : null,
-					},
-				})
+			const note = layer.freq + 12
+			const freq = 32.7 * 2 ** (note / 12)
+			const wave = new Pizzicato.Sound({
+				source: 'wave',
+				options: {
+					type: layer.type,
+					volume: layer.volume,
+					frequency: freq,
+					attack: 0,
+					release: layer.release ? 0.6 : null,
+				},
+			})
 
-				wave.play()
-				setTimeout(() => wave.stop(), layer.duration ? fixedTempoMs * 0.3 : 50)
-			} else {
-				if (sounds) {
-					const freq = layer.freq[layer.type]
-					const audio = new Audio(sounds[layer.type][freq].default)
-
-					audio.volume = layer.volume
-					audio.play()
-				}
-			}
+			wave.play()
+			setTimeout(() => wave.stop(), layer.duration ? fixedTempoMs * 0.3 : 50)
 
 			//
 			// Update beat time
@@ -339,9 +307,6 @@ const App = (): JSX.Element => {
 					fullscreen: false,
 				}))
 		}
-
-		//Init sounds requires
-		setSounds(require('./Sounds').default)
 
 		// eslint-disable-next-line
 	}, [])

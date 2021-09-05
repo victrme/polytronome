@@ -128,14 +128,12 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 	)
 
 	useEffect(() => {
-		//wheelRef.current.addEventListener('mouseenter', () => disableBodyScroll(document.body))
-		//wheelRef.current.addEventListener('mouseleave', () => enableBodyScroll(document.body))
+		wheelRef.current.addEventListener('mouseenter', () => disableBodyScroll(document.body))
+		wheelRef.current.addEventListener('mouseleave', () => enableBodyScroll(document.body))
 	}, [])
 
 	return (
-		<div
-			className={'immovable_wheel' + (beats !== undefined && current === 1 ? ' off' : '')}
-		>
+		<div className={'immovable_wheel'}>
 			<div
 				{...bind()}
 				ref={wheelRef}
