@@ -12,7 +12,7 @@ const freqArr = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'
 const fillArray = (start: number, end: number, freq?: boolean) => {
 	const arr: any[] = []
 	for (let i = start; i <= end; i++)
-		arr.push(freq ? freqArr[i % freqArr.length].toString() : i.toString())
+		arr.unshift(freq ? freqArr[i % freqArr.length].toString() : i.toString())
 	return arr
 }
 
@@ -41,7 +41,7 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 		what.list = allLists.beats
 		what.current = beats
 		what.offset = 1
-		what.list[0] = '×'
+		what.list[what.list.length - 1] = '×'
 	}
 
 	if (freq !== undefined) {
@@ -51,20 +51,20 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 
 	const height = what.height
 	const list = what.list
-	const maxMovement = -height * list.length + height
-	const current = what.current
+	const maxMovement = -height * (list.length - 1)
+	const current = what.current - what.offset
 
 	// States
 	const wheelRef = useRef(document.createElement('div'))
 	const [wheel, setWheel] = useState({
-		y: (current - what.offset) * -height,
+		y: maxMovement - current * -height,
 		snap: true,
 	})
 
 	const setCorrectWheel = () => {
-		if (beats !== undefined) setWheel({ y: (current - 1) * -height, snap: true })
-		if (tempo !== undefined) setWheel({ y: (current - 30) * -height, snap: false })
-		if (freq !== undefined) setWheel({ y: current * -height, snap: true })
+		if (beats !== undefined) setWheel({ y: maxMovement - current * -height, snap: true })
+		if (freq !== undefined) setWheel({ y: maxMovement - current * -height, snap: true })
+		if (tempo !== undefined) setWheel({ y: maxMovement - current * -height, snap: false })
 	}
 
 	// Let go and wheel align with the nearest element
@@ -87,14 +87,15 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 		const y = state.movement[1]
 		const userMoves = state.dragging || state.wheeling || state.scrolling
 
-		if (userMoves) setWheel({ y, snap: false })
-		else {
+		if (userMoves) {
+			setWheel({ y, snap: false })
+		} else {
 			// Save element position
-			let number = +(Math.abs(wheelSnapping(y)) / height)
+			let number = +(Math.abs(wheelSnapping(maxMovement - y)) / height)
 			update(number)
 
 			// user hasnt moved enough, still snaps
-			if (number + what.offset === current) setCorrectWheel()
+			if (number === current) setCorrectWheel()
 		}
 
 		return false
@@ -114,7 +115,7 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 			},
 			wheel: {
 				axis: 'y',
-				rubberband: 0.1,
+				rubberband: 0.05,
 				initial: () => [0, wheel.y],
 				bounds: { bottom: 0, top: maxMovement },
 			},
