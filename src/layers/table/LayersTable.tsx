@@ -1,32 +1,9 @@
 import ControlRow from './ControlRow'
 
 const LayersTable = ({ easy, layers, setLayers, restartMetronome }) => {
-	const randomizeLayers = () => {
-		const rand = (a: number, b: number) => Math.random() * (b - a) + a
-
-		const newLayers = [...layers]
-		newLayers.forEach((l, i) => (newLayers[i].beats = +rand(2, 16).toFixed(0)))
-		setLayers([...newLayers])
-		restartMetronome()
-	}
-
-	const layerDisplayControl = show => {
-		// Doit simplement afficher ou cacher
-		// Les layers quand on appuit sur either
-		// Met la wheel a 0 pour desactiver son son
-		// Display none je pense pour eviter de la draw
-	}
-
 	return (
 		<div className="layers-table-wrap">
 			<div className="layers-table">
-				<ControlRow
-					layers={layers}
-					setLayers={setLayers}
-					restartMetronome={restartMetronome}
-					easy={easy}
-				></ControlRow>
-
 				{easy ? (
 					''
 				) : (
@@ -37,32 +14,14 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome }) => {
 						<div>volume</div>
 					</div>
 				)}
+
+				<ControlRow
+					layers={layers}
+					setLayers={setLayers}
+					restartMetronome={restartMetronome}
+					easy={easy}
+				></ControlRow>
 			</div>
-
-			{easy ? (
-				''
-			) : (
-				<div className="ls-buttons">
-					<button className="randomize" onClick={randomizeLayers}>
-						↬
-					</button>
-
-					<div className="plus-minus">
-						<button
-							className={layers.length === 1 ? 'off' : ''}
-							onClick={() => layerDisplayControl(false)}
-						>
-							×
-						</button>
-						<button
-							className={layers.length === 4 ? 'off' : ''}
-							onClick={() => layerDisplayControl(true)}
-						>
-							+
-						</button>
-					</div>
-				</div>
-			)}
 		</div>
 	)
 }

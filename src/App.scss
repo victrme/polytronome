@@ -353,18 +353,19 @@ input {
 		}
 	}
 
-	.tempo-n-start {
-		display: flex;
-		width: 100%;
-		justify-content: space-evenly;
-		align-items: center;
-	}
-
 	.start-button {
+		display: flex;
+		justify-content: center;
 		text-align: center;
+		margin-bottom: 40px;
 
 		button {
 			width: 300px;
+			margin: 0 5px;
+
+			&.randomize {
+				width: auto;
+			}
 		}
 	}
 

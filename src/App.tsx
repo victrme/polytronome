@@ -265,6 +265,17 @@ const App = (): JSX.Element => {
 		})
 	}, [layers, segment])
 
+	const randomizeLayers = () => {
+		const rand = (a: number, b: number) => Math.random() * (b - a) + a
+
+		const newLayers = [...layers]
+		newLayers.forEach((l, i) => {
+			if (l.beats > 1) newLayers[i].beats = +rand(2, 16).toFixed(0)
+		})
+		setLayers([...newLayers])
+		restartMetronome()
+	}
+
 	//
 	//
 	//	Effects
@@ -347,14 +358,18 @@ const App = (): JSX.Element => {
 					restartMetronome={restartMetronome}
 				></LayersTable>
 
-				<div className="tempo-n-start">
-					<div className="start-button">
-						<button
-							onClick={() => (isRunning ? stopMetronome() : startMetronome())}
-						>
-							{isRunning ? '◼' : '▶'}
+				<div className="start-button">
+					<button onClick={() => (isRunning ? stopMetronome() : startMetronome())}>
+						{isRunning ? '◼' : '▶'}
+					</button>
+
+					{easy ? (
+						''
+					) : (
+						<button className="randomize" onClick={randomizeLayers}>
+							shuffle
 						</button>
-					</div>
+					)}
 				</div>
 			</main>
 
