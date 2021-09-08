@@ -135,6 +135,14 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 
 	return (
 		<div className={'immovable_wheel'}>
+			<div className="arrows">
+				<span className="up" onClick={() => alert('up')}>
+					↑
+				</span>
+				<span className="down" onClick={() => alert('down')}>
+					↓
+				</span>
+			</div>
 			<div
 				{...bind()}
 				ref={wheelRef}

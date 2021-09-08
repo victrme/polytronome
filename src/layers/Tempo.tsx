@@ -113,28 +113,9 @@ const Tempo = ({ tempo, setTempo, tempoRef, restart }) => {
 				}}
 			></Wheel>
 
-			<div>
-				<button className="tap" onClick={tapTempo}>
-					tap
-				</button>
-
-				{/* <div className="tempo-buttons">
-					{buttons.map(btn => (
-						<button
-							key={btn.bound}
-							className={tempo === btn.bound ? 'off' : ''}
-							onTouchStart={e => tempoBtns(e, 'enter', btn.sign, isMobileOnly)}
-							onTouchEnd={e => tempoBtns(e, 'leave', btn.sign, isMobileOnly)}
-							onMouseDown={e => tempoBtns(e, 'enter', btn.sign, isDesktop)}
-							onMouseUp={e => tempoBtns(e, 'leave', btn.sign, isDesktop)}
-							onMouseLeave={e => tempoBtns(e, 'leave', btn.sign, isDesktop)}
-							onContextMenu={e => e.preventDefault()}
-						>
-							{btn.str}
-						</button>
-					))}
-				</div> */}
-			</div>
+			<button className="tap" onClick={tapTempo}>
+				tap
+			</button>
 		</div>
 	)
 }

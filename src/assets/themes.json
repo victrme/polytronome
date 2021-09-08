@@ -7,13 +7,6 @@
 		"dimmer": "#bbbbbb1a"
 	},
 	{
-		"name": "dark",
-		"background": "#282c34",
-		"accent": "#ffffff",
-		"dim": "#ebe9e933",
-		"dimmer": "#ebe9e911"
-	},
-	{
 		"name": "monokai",
 		"background": "#272822",
 		"accent": "#a6e22e",
