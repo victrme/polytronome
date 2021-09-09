@@ -49,22 +49,67 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 		what.current = freq
 	}
 
-	const height = what.height
-	const list = what.list
+	const { height, list } = what
 	const maxMovement = -height * (list.length - 1)
 	const current = what.current - what.offset
 
 	// States
-	const wheelRef = useRef(document.createElement('div'))
+
+	const [wasInterval, setWasInterval] = useState(false)
 	const [wheel, setWheel] = useState({
 		y: maxMovement - current * -height,
 		snap: true,
 	})
 
+	const arrowTimeout = useRef(setTimeout(() => {}, 1))
+	const arrowInterval = useRef(setTimeout(() => {}, 1))
+	const wheelDivRef = useRef(document.createElement('div'))
+	const wheelRef = useRef(wheel)
+
+	wheelRef.current = wheel
+
+	enum Mouse {
+		enter,
+		leave,
+		click,
+	}
+
+	const wheelArrows = (sign: number, click: Mouse) => {
+		const updateFromArrow = () =>
+			update(getNumberFromPosition(wheelRef.current.y + height * sign))
+
+		if (click === Mouse.enter) {
+			arrowTimeout.current = setTimeout(() => {
+				updateFromArrow()
+				arrowInterval.current = setInterval(
+					() => {
+						setWasInterval(true)
+						updateFromArrow()
+					},
+					tempo !== undefined ? 50 : 200
+				)
+			}, 200)
+		}
+
+		if (click === Mouse.leave) {
+			clearTimeout(arrowInterval.current)
+			clearInterval(arrowTimeout.current)
+
+			if (!wasInterval) update(getNumberFromPosition(wheel.y + height * sign))
+			setWasInterval(false)
+		}
+
+		// if (!isMobileOnly) e.preventDefault()
+		// e.stopPropagation()
+		return false
+	}
+
+	const getNumberFromPosition = pos => +(Math.abs(wheelSnapping(maxMovement - pos)) / height)
+
 	const setCorrectWheel = () => {
 		if (beats !== undefined) setWheel({ y: maxMovement - current * -height, snap: true })
 		if (freq !== undefined) setWheel({ y: maxMovement - current * -height, snap: true })
-		if (tempo !== undefined) setWheel({ y: maxMovement - current * -height, snap: false })
+		if (tempo !== undefined) setWheel({ y: maxMovement - current * -height, snap: true })
 	}
 
 	// Let go and wheel align with the nearest element
@@ -91,7 +136,7 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 			setWheel({ y, snap: false })
 		} else {
 			// Save element position
-			let number = +(Math.abs(wheelSnapping(maxMovement - y)) / height)
+			const number = getNumberFromPosition(y)
 			update(number)
 
 			// user hasnt moved enough, still snaps
@@ -129,23 +174,37 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 	)
 
 	useEffect(() => {
-		wheelRef.current.addEventListener('mouseenter', () => disableBodyScroll(document.body))
-		wheelRef.current.addEventListener('mouseleave', () => enableBodyScroll(document.body))
+		wheelDivRef.current.addEventListener('mouseenter', () =>
+			disableBodyScroll(document.body)
+		)
+		wheelDivRef.current.addEventListener('mouseleave', () =>
+			enableBodyScroll(document.body)
+		)
 	}, [])
 
 	return (
 		<div className={'immovable_wheel'}>
 			<div className="arrows">
-				<span className="up" onClick={() => alert('up')}>
+				<span
+					className="up"
+					onMouseDown={() => wheelArrows(1, Mouse.enter)}
+					onMouseUp={() => wheelArrows(1, Mouse.leave)}
+					onMouseLeave={() => wheelArrows(0, Mouse.leave)}
+				>
 					↑
 				</span>
-				<span className="down" onClick={() => alert('down')}>
+				<span
+					className="down"
+					onMouseDown={() => wheelArrows(-1, Mouse.enter)}
+					onMouseUp={() => wheelArrows(-1, Mouse.leave)}
+					onMouseLeave={() => wheelArrows(0, Mouse.leave)}
+				>
 					↓
 				</span>
 			</div>
 			<div
 				{...bind()}
-				ref={wheelRef}
+				ref={wheelDivRef}
 				className={'wheel' + (wheel.snap ? '' : ' dragging')}
 				style={{ transform: `translateY(${wheel.y}px)` }}
 			>

@@ -153,6 +153,10 @@ const App = (): JSX.Element => {
 			//
 			// Play sound
 			//
+			const vol =
+				layer.type === 'sawtooth' || layer.type === 'square'
+					? layer.volume / 3
+					: layer.volume
 
 			const note = layer.freq + 12
 			const freq = 32.7 * 2 ** (note / 12)
@@ -160,7 +164,7 @@ const App = (): JSX.Element => {
 				source: 'wave',
 				options: {
 					type: layer.type,
-					volume: layer.volume,
+					volume: vol,
 					frequency: freq,
 					attack: 0,
 					release: layer.release ? 0.6 : null,

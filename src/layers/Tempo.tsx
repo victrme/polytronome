@@ -1,30 +1,14 @@
-import { useRef, useState } from 'react'
-import { isDesktop, isMobileOnly } from 'react-device-detect'
+import { useState } from 'react'
 import propTypes from 'prop-types'
 import Wheel from '../inputs/Wheel'
 
 const Tempo = ({ tempo, setTempo, tempoRef, restart }) => {
-	const [changedTempo, setChangedTempo] = useState(false)
 	const [tap, setTap] = useState([
 		{
 			date: 0,
 			wait: 0,
 		},
 	])
-	const buttonsInterval = useRef(setTimeout(() => {}, 1))
-
-	const buttons = [
-		{
-			bound: 30,
-			sign: -1,
-			str: '-',
-		},
-		{
-			bound: 300,
-			sign: 1,
-			str: '+',
-		},
-	]
 
 	const changeTempo = (amount: number) => {
 		const up = amount > tempo
@@ -32,38 +16,6 @@ const Tempo = ({ tempo, setTempo, tempoRef, restart }) => {
 		const outOfBound = up ? amount > max : amount < max
 
 		setTempo(outOfBound ? max : amount)
-	}
-
-	const tempoBtns = (e: any, dir: string, sign: number, doAnything: boolean) => {
-		// Cut fct short if not good platform
-		if (!doAnything) return false
-
-		if (dir === 'enter') {
-			setChangedTempo(true)
-			changeTempo(tempo + 1 * sign)
-
-			buttonsInterval.current = setTimeout(
-				() =>
-					(buttonsInterval.current = setInterval(() => {
-						changeTempo(tempoRef.current + 1 * sign)
-					}, 70)),
-				300
-			)
-		}
-
-		if (dir === 'leave') {
-			clearTimeout(buttonsInterval.current)
-			clearInterval(buttonsInterval.current)
-
-			if (changedTempo) {
-				setChangedTempo(false)
-				restart()
-			}
-		}
-
-		if (!isMobileOnly) e.preventDefault()
-		e.stopPropagation()
-		return false
 	}
 
 	const tapTempo = () => {
