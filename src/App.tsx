@@ -33,7 +33,7 @@ const App = (): JSX.Element => {
 	})
 
 	const [moreSettings, setMoreSettings] = useState<MoreSettings>({
-		theme: 4,
+		theme: 0,
 		fullscreen: false,
 		unlimited: false,
 		animations: true,

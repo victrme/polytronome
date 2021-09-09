@@ -3,13 +3,18 @@ import Range from '../../inputs/Range'
 import Octaves from './Octaves'
 
 const ControlRow = ({ layers, setLayers, restartMetronome, easy }) => {
-	const changeClickType = (type: string, i: number) => {
+	const changeClickType = (type: string, i: number, sign: number) => {
 		const clickTypeList = ['triangle', 'sawtooth', 'square', 'sine']
 		const newLayers = [...layers]
 
 		clickTypeList.forEach((x, _i) => {
 			if (x === type) {
-				newLayers[i].type = clickTypeList[(_i + 1) % clickTypeList.length]
+				const nextIndex = {
+					neg: _i === 0 ? clickTypeList.length - 1 : _i - 1,
+					pos: _i === clickTypeList.length - 1 ? 0 : _i + 1,
+				}
+
+				newLayers[i].type = clickTypeList[sign === -1 ? nextIndex.neg : nextIndex.pos]
 				setLayers(newLayers)
 			}
 		})
@@ -44,7 +49,14 @@ const ControlRow = ({ layers, setLayers, restartMetronome, easy }) => {
 			{easy ? (
 				''
 			) : (
-				<div className="ls-type" onMouseDown={() => changeClickType(layer.type, i)}>
+				<div
+					className="ls-type"
+					onClick={() => changeClickType(layer.type, i, 1)}
+					onContextMenu={e => {
+						e.preventDefault()
+						changeClickType(layer.type, i, -1)
+					}}
+				>
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="8 0 44 20">
 						<path
 							d={wavetypes[layer.type]}

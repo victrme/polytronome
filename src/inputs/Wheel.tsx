@@ -1,6 +1,7 @@
 import { useGesture } from 'react-use-gesture'
 import { useState, useRef, useEffect } from 'react'
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
+import { isWindows } from 'react-device-detect'
 
 import propTypes from 'prop-types'
 
@@ -174,12 +175,19 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 	)
 
 	useEffect(() => {
-		wheelDivRef.current.addEventListener('mouseenter', () =>
+		const tempScrollbarWindowsFix = () => {
+			if (isWindows && document.body.scrollHeight > window.innerHeight)
+				document.body.style.paddingRight = '16px'
+		}
+
+		wheelDivRef.current.addEventListener('mouseenter', () => {
 			disableBodyScroll(document.body)
-		)
-		wheelDivRef.current.addEventListener('mouseleave', () =>
+			tempScrollbarWindowsFix()
+		})
+		wheelDivRef.current.addEventListener('mouseleave', () => {
 			enableBodyScroll(document.body)
-		)
+			tempScrollbarWindowsFix()
+		})
 	}, [])
 
 	return (

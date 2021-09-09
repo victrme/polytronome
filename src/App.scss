@@ -1,14 +1,15 @@
 :root {
-	--accent: #8fb67f;
-	--background: #fffbf1;
-	--dim: #e8dfb3;
-	--dimmer: #ecefc7aa;
-	--buttons: #ecefc7;
+	--accent: #bbbbbb;
+	--background: #000000;
+	--dim: #dddddd1a;
+	--dimmer: #bbbbbb1a;
+	--buttons: #bbbbbb1a;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@700;900&display=swap');
 
 body {
+	background-color: black;
 	margin: 0;
 	transition: background-color 1s cubic-bezier(0.19, 1, 0.22, 1);
 }
