@@ -6,6 +6,7 @@ import Settings from './settings/Settings'
 import Clicks from './layers/Clicks'
 import Tempo from './layers/Tempo'
 import LayersTable from './layers/table/LayersTable'
+import Menu from './Menu'
 
 const App = (): JSX.Element => {
 	//
@@ -342,8 +343,10 @@ const App = (): JSX.Element => {
 			className={'polytronome' + (isMobileOnly ? ' mobile' : '') + (easy ? ' easy' : '')}
 		>
 			<main>
-				<div className="title">
-					<h1>Polytronome</h1>
+				<div className="header">
+					<Menu></Menu>
+
+					<div></div>
 
 					<Tempo
 						restart={restartMetronome}

@@ -6,7 +6,7 @@
 	--buttons: #bbbbbb1a;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@600;700;900&display=swap');
 
 body {
 	background-color: black;
@@ -133,28 +133,58 @@ input {
 		}
 	}
 
-	.title {
+	.header {
+		position: relative;
 		display: flex;
 		align-items: center;
-		width: 90%;
 		justify-content: space-between;
+		align-items: center;
 		margin-bottom: 40px;
 		font-size: 30px;
+		width: 90%;
 
-		h1 {
-			margin: 0;
-			line-height: 1em;
-			font-weight: 800;
-		}
+		.menu {
+			.logo {
+				margin: 40px;
+				cursor: pointer;
+			}
 
-		p {
-			margin: 0;
-			font-weight: bold;
-			font-size: 0.6em;
-			opacity: 0.4;
-			text-align: end;
-			margin-bottom: -10px;
-			font-weight: 800;
+			position: absolute;
+			top: -20px;
+			left: -20px;
+			width: 300px;
+			border-radius: 20px;
+			background-color: #fff;
+			box-shadow: 40px 20px 100px 0px #fff3;
+			z-index: 20;
+			font-size: 12px;
+			font-weight: 600;
+
+			.setting {
+				width: 50%;
+				margin: 1em auto;
+				padding: 10px 20px;
+				border-radius: 40px;
+				background-color: #89ae5a;
+				cursor: pointer;
+
+				p {
+					margin: 0;
+					color: white;
+				}
+			}
+
+			.credit {
+				text-align: center;
+				margin-top: 100px;
+				margin-bottom: 40px;
+				width: 100%;
+
+				a {
+					color: #89ae5a;
+					text-decoration: none;
+				}
+			}
 		}
 	}
 
@@ -217,11 +247,12 @@ input {
 		width: 100%;
 		height: 20px;
 		border-radius: 5px;
-		background-color: var(--dim);
-		transition: margin 0.2s, background-color 0.1s, width 0.2s;
+		background-color: var(--accent);
+		opacity: 0.2;
+		transition: margin 0.2s, opacity 0.1s, width 0.2s;
 
 		&.on {
-			background-color: var(--accent);
+			opacity: 1;
 		}
 
 		&.off {
