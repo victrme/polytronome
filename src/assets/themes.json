@@ -3,8 +3,8 @@
 		"name": "black",
 		"background": "#000000",
 		"accent": "#bbbbbb",
-		"dim": "#dddddd1a",
-		"dimmer": "#bbbbbb1a"
+		"dim": "#171717",
+		"dimmer": "#111111"
 	},
 	{
 		"name": "monokai",

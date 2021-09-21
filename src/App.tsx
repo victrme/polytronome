@@ -2,11 +2,10 @@ import { useRef, useState, useEffect, useCallback } from 'react'
 import { MoreSettings, Layer } from './Types'
 import { isMobileOnly } from 'react-device-detect'
 import Pizzicato from 'pizzicato'
-import Settings from './settings/Settings'
 import Clicks from './layers/Clicks'
 import Tempo from './layers/Tempo'
+import Menu from './menu/Menu'
 import LayersTable from './layers/table/LayersTable'
-import Menu from './Menu'
 
 const App = (): JSX.Element => {
 	//
@@ -34,7 +33,7 @@ const App = (): JSX.Element => {
 	})
 
 	const [moreSettings, setMoreSettings] = useState<MoreSettings>({
-		theme: 0,
+		theme: 1,
 		fullscreen: false,
 		unlimited: false,
 		animations: true,
@@ -344,7 +343,14 @@ const App = (): JSX.Element => {
 		>
 			<main>
 				<div className="header">
-					<Menu></Menu>
+					<Menu
+						easy={easy}
+						segment={segment}
+						moreSettings={moreSettings}
+						setMoreSettings={setMoreSettings}
+						setSegment={setSegment}
+						setEasy={setEasy}
+					></Menu>
 
 					<div></div>
 
@@ -379,23 +385,6 @@ const App = (): JSX.Element => {
 					)}
 				</div>
 			</main>
-
-			<div className="bottom">
-				<div className="links">
-					<a href="https://docs.polytronome.com">about & docs</a>
-					<a href="https://victr.me">created by victr</a>
-				</div>
-				<div>
-					<Settings
-						easy={easy}
-						segment={segment}
-						moreSettings={moreSettings}
-						setMoreSettings={setMoreSettings}
-						setSegment={setSegment}
-						setEasy={setEasy}
-					></Settings>
-				</div>
-			</div>
 		</div>
 	)
 }

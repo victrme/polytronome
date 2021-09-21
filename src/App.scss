@@ -1,12 +1,12 @@
 :root {
-	--accent: #bbbbbb;
-	--background: #000000;
-	--dim: #dddddd1a;
-	--dimmer: #bbbbbb1a;
-	--buttons: #bbbbbb1a;
+	--accent: #a6e22e;
+	--background: #272822;
+	--dim: #fd971f33;
+	--dimmer: #e87d3e22;
+	--buttons: #fd971f60;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@500;900&display=swap');
 
 body {
 	background-color: black;
@@ -29,8 +29,8 @@ input {
 
 .polytronome {
 	color: var(--accent);
-	min-height: 90vh;
-	padding-top: 8vh;
+	min-height: 60vh;
+	padding-top: 20vh;
 	display: flex;
 	justify-content: space-between;
 	user-select: none;
@@ -51,7 +51,7 @@ input {
 		border: none;
 		border-radius: 2em;
 		font-size: 16px;
-		font-weight: 700;
+		font-weight: 500;
 		transition: filter 0.2s;
 		cursor: pointer;
 		outline: none;
@@ -107,6 +107,7 @@ input {
 				width: 20px;
 				text-align: center;
 				font-size: 15px;
+				font-weight: 500;
 				line-height: 20px;
 				cursor: pointer;
 				border-radius: 5px;
@@ -152,37 +153,55 @@ input {
 			position: absolute;
 			top: -20px;
 			left: -20px;
-			width: 300px;
+			width: 400px;
 			border-radius: 20px;
-			background-color: #fff;
-			box-shadow: 40px 20px 100px 0px #fff3;
+			background-color: transparent;
+			box-shadow: none;
 			z-index: 20;
 			font-size: 12px;
 			font-weight: 600;
 
-			.setting {
-				width: 50%;
-				margin: 1em auto;
-				padding: 10px 20px;
-				border-radius: 40px;
-				background-color: #89ae5a;
-				cursor: pointer;
+			&.shown {
+				background-color: #222;
+				box-shadow: 40px 20px 100px 0px rgba(0, 0, 0, 0.5);
 
-				p {
-					margin: 0;
-					color: white;
+				.inner {
+					display: flex;
 				}
 			}
 
-			.credit {
-				text-align: center;
-				margin-top: 100px;
-				margin-bottom: 40px;
-				width: 100%;
+			.inner {
+				display: none;
+				flex-direction: column;
+				align-items: center;
+				margin-top: 40px;
 
-				a {
-					color: #89ae5a;
-					text-decoration: none;
+				button {
+					width: 70%;
+					margin: 10px;
+					padding: 12px 30px;
+					text-align: left;
+
+					color: #aaa;
+					background-color: transparent;
+
+					&.on {
+						color: var(--accent);
+						background-color: var(--buttons);
+					}
+				}
+
+				.credit {
+					text-align: center;
+					margin-top: 200px;
+					margin-bottom: 40px;
+					width: 100%;
+
+					a {
+						color: var(--accent);
+						text-decoration: none;
+						font-weight: 500;
+					}
 				}
 			}
 		}
@@ -247,12 +266,11 @@ input {
 		width: 100%;
 		height: 20px;
 		border-radius: 5px;
-		background-color: var(--accent);
-		opacity: 0.2;
-		transition: margin 0.2s, opacity 0.1s, width 0.2s;
+		background-color: var(--dim);
+		transition: margin 0.2s, background-color 0.1s, width 0.2s;
 
 		&.on {
-			opacity: 1;
+			background-color: var(--accent);
 		}
 
 		&.off {
@@ -306,25 +324,6 @@ input {
 				width: 60px;
 				height: 50px;
 				cursor: pointer;
-			}
-		}
-
-		.woodblocks {
-			cursor: pointer;
-			> div {
-				text-align: center;
-				display: inline-block;
-				width: 40px;
-				height: 15px;
-				margin: 2px;
-				border-radius: 5px;
-				background-color: var(--dim);
-
-				transition: background-color 0.2s;
-
-				&.on {
-					background-color: var(--accent);
-				}
 			}
 		}
 
@@ -412,7 +411,7 @@ input {
 		display: flex;
 		justify-content: center;
 		text-align: center;
-		margin-bottom: 40px;
+		margin-top: 40px;
 
 		button {
 			width: 300px;
@@ -420,50 +419,6 @@ input {
 
 			&.randomize {
 				width: auto;
-			}
-		}
-	}
-
-	.bottom {
-		display: flex;
-		align-items: flex-end;
-		justify-content: space-between;
-		width: 90%;
-		padding: 2em;
-		margin: 0 auto 0 auto;
-		font-size: 12px;
-
-		.links {
-			display: flex;
-			flex-direction: column;
-		}
-		a {
-			font-size: 12px;
-			color: var(--accent);
-			opacity: 0.5;
-			text-decoration: none;
-			margin: 0.5em 1em;
-
-			&:hover {
-				opacity: 1;
-			}
-		}
-
-		.more-settings {
-			display: grid;
-			grid-template-columns: 1fr 1fr 1fr;
-			text-align: right;
-
-			button {
-				background-color: transparent;
-				width: auto;
-				font-size: 12px;
-				transition: background-color 0.2s;
-
-				&.on,
-				&[name='themes']:hover {
-					background-color: var(--buttons);
-				}
 			}
 		}
 	}
