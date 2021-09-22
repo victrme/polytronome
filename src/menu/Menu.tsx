@@ -1,9 +1,18 @@
 import Themes from '../assets/themes.json'
 import propTypes from 'prop-types'
 import Button from './Button'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
-const Menu = ({ moreSettings, segment, setSegment, setMoreSettings, easy, setEasy }) => {
+const Menu = ({
+	moreSettings,
+	segment,
+	setSegment,
+	setMoreSettings,
+	easy,
+	setEasy,
+	menuShown,
+	menuHovered,
+}) => {
 	const changeAnimations = () => {
 		const appDOM = document.querySelector('.polytronome') as HTMLDivElement
 
@@ -51,27 +60,13 @@ const Menu = ({ moreSettings, segment, setSegment, setMoreSettings, easy, setEas
 		})
 	}
 
-	const [menuShown, setMenuShown] = useState(false)
+	const overlayRef = useRef(document.createElement('div'))
 
 	return (
-		<div className={'menu ' + (menuShown ? 'shown' : '')}>
-			<svg
-				className="logo"
-				xmlns="http://www.w3.org/2000/svg"
-				width="61"
-				height="30"
-				fill={Themes[moreSettings.theme].accent}
-				onClick={() => setMenuShown(!menuShown)}
-			>
-				<rect width="29" height="8" y="11" rx="4" />
-				<rect width="12" height="8" rx="4" transform="matrix(1 0 0 -1 0 30)" />
-				<rect width="12" height="8" rx="4" transform="matrix(1 0 0 -1 32 19)" />
-				<rect width="29" height="8" x="32" rx="4" />
-			</svg>
+		<div className={'menu' + (menuShown ? ' shown' : '')}>
+			<div ref={overlayRef} className={'overlay'}></div>
 
 			<div className="inner">
-				<div className="overlay"></div>
-
 				<Button name="theme" on={true} func={changeTheme}></Button>
 
 				<Button
@@ -109,6 +104,8 @@ Menu.propTypes = {
 	setMoreSettings: propTypes.func.isRequired,
 	easy: propTypes.bool.isRequired,
 	setEasy: propTypes.func.isRequired,
+	menuShown: propTypes.bool.isRequired,
+	menuHovered: propTypes.bool.isRequired,
 }
 
 export default Menu

@@ -123,6 +123,8 @@ input {
 			touch-action: none;
 			text-align: center;
 			transition: transform 0.2s;
+			will-change: transform;
+			transform: translateY(0);
 
 			pre {
 				margin: 0;
@@ -145,11 +147,6 @@ input {
 		width: 90%;
 
 		.menu {
-			.logo {
-				margin: 40px;
-				cursor: pointer;
-			}
-
 			position: absolute;
 			top: -20px;
 			left: -20px;
@@ -157,24 +154,65 @@ input {
 			border-radius: 20px;
 			background-color: transparent;
 			box-shadow: none;
+			overflow: hidden;
 			z-index: 20;
 			font-size: 12px;
 			font-weight: 600;
+			box-shadow: 40px 20px 100px 0px rgba(0, 0, 0, 0);
+			transition: box-shadow 0.6s 0s;
 
-			&.shown {
-				background-color: #222;
-				box-shadow: 40px 20px 100px 0px rgba(0, 0, 0, 0.5);
-
-				.inner {
-					display: flex;
+			@keyframes breathing {
+				0% {
+					transform: scale(2);
+				}
+				100% {
+					transform: scale(2.2);
 				}
 			}
 
+			&.hovered {
+				.overlay {
+					animation: breathing 1s ease-in-out 0s infinite alternate;
+					transform: scale(2);
+				}
+			}
+
+			&.shown {
+				box-shadow: 40px 20px 100px 0px rgba(0, 0, 0, 0.5);
+				transition: box-shadow 1s 0.5s;
+
+				.inner {
+					opacity: 1;
+					max-height: 600px;
+					transition: opacity 0.2s 0.3s, max-height 0s;
+				}
+
+				.overlay {
+					transform: scale(18);
+					transition: transform 1s 0s;
+				}
+			}
+			.overlay {
+				position: absolute;
+				top: -0px;
+				left: -0px;
+				width: 100px;
+				height: 100px;
+				border-radius: 50px;
+				background-color: #222;
+				transform: scale(0);
+				transition: transform 1s 0.2s;
+				z-index: -1;
+			}
+
 			.inner {
-				display: none;
+				display: flex;
 				flex-direction: column;
 				align-items: center;
-				margin-top: 40px;
+				margin-top: 160px;
+				opacity: 0;
+				max-height: 0;
+				transition: opacity 0.2s 0s, max-height 0s 1s;
 
 				button {
 					width: 70%;
@@ -205,26 +243,32 @@ input {
 				}
 			}
 		}
-	}
 
-	.tempo {
-		display: flex;
-		align-items: center;
-
-		.immovable_wheel {
-			line-height: 50px;
-			font-size: 50px;
-			height: 50px;
-			margin-right: 10px;
+		.logo {
+			margin: 40px;
+			cursor: pointer;
+			z-index: 20;
 		}
 
-		.tap {
-			width: 120px;
-			margin: 0%;
-		}
-
-		.tempo-buttons {
+		.tempo {
 			display: flex;
+			align-items: center;
+
+			.immovable_wheel {
+				line-height: 50px;
+				font-size: 50px;
+				height: 50px;
+				margin-right: 10px;
+			}
+
+			.tap {
+				width: 120px;
+				margin: 0%;
+			}
+
+			.tempo-buttons {
+				display: flex;
+			}
 		}
 	}
 
@@ -268,6 +312,8 @@ input {
 		border-radius: 5px;
 		background-color: var(--dim);
 		transition: margin 0.2s, background-color 0.1s, width 0.2s;
+		will-change: transform;
+		transform: translate(0, 0);
 
 		&.on {
 			background-color: var(--accent);

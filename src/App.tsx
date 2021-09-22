@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { MoreSettings, Layer } from './Types'
 import { isMobileOnly } from 'react-device-detect'
+import Themes from './assets/themes.json'
 import Pizzicato from 'pizzicato'
 import Clicks from './layers/Clicks'
 import Tempo from './layers/Tempo'
@@ -23,6 +24,8 @@ const App = (): JSX.Element => {
 	const [startTime, setStartTime] = useState(Date.now)
 	const [isRunning, setIsRunning] = useState('')
 	const [easy, setEasy] = useState(true)
+	const [menuShown, setMenuShown] = useState(false)
+	const [menuHovered, setMenuHovered] = useState(false)
 
 	const [segment, setSegment] = useState({
 		on: false,
@@ -350,7 +353,25 @@ const App = (): JSX.Element => {
 						setMoreSettings={setMoreSettings}
 						setSegment={setSegment}
 						setEasy={setEasy}
+						menuShown={menuShown}
+						menuHovered={menuHovered}
 					></Menu>
+
+					<svg
+						className="logo"
+						xmlns="http://www.w3.org/2000/svg"
+						width="61"
+						height="30"
+						fill={Themes[moreSettings.theme].accent}
+						onClick={() => setMenuShown(!menuShown)}
+						onMouseLeave={() => setMenuHovered(false)}
+						onMouseEnter={() => setMenuHovered(true)}
+					>
+						<rect width="29" height="8" y="11" rx="4" />
+						<rect width="12" height="8" rx="4" transform="matrix(1 0 0 -1 0 30)" />
+						<rect width="12" height="8" rx="4" transform="matrix(1 0 0 -1 32 19)" />
+						<rect width="29" height="8" x="32" rx="4" />
+					</svg>
 
 					<div></div>
 
