@@ -4,14 +4,17 @@
 	--dim: #fd971f33;
 	--dimmer: #e87d3e22;
 	--buttons: #fd971f60;
+	--menu: #383026;
 }
+
+$easing: cubic-bezier(0.19, 1, 0.22, 1);
 
 @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@500;900&display=swap');
 
 body {
 	background-color: black;
 	margin: 0;
-	transition: background-color 1s cubic-bezier(0.19, 1, 0.22, 1);
+	transition: background-color 1s $easing;
 }
 body,
 body:fullscreen::backdrop {
@@ -52,9 +55,9 @@ input {
 		border-radius: 2em;
 		font-size: 16px;
 		font-weight: 500;
-		transition: filter 0.2s;
 		cursor: pointer;
 		outline: none;
+		transition: filter 0.3s, background-color 0.3s, color 0.3s;
 
 		&:hover:not(.off) {
 			filter: brightness(0.9);
@@ -158,50 +161,34 @@ input {
 			z-index: 20;
 			font-size: 12px;
 			font-weight: 600;
-			box-shadow: 40px 20px 100px 0px rgba(0, 0, 0, 0);
-			transition: box-shadow 0.6s 0s;
-
-			@keyframes breathing {
-				0% {
-					transform: scale(2);
-				}
-				100% {
-					transform: scale(2.2);
-				}
-			}
-
-			&.hovered {
-				.overlay {
-					animation: breathing 1s ease-in-out 0s infinite alternate;
-					transform: scale(2);
-				}
-			}
+			// box-shadow: 40px 20px 100px 0px rgba(0, 0, 0, 0);
+			// transition: box-shadow 0.3s 0s;
 
 			&.shown {
-				box-shadow: 40px 20px 100px 0px rgba(0, 0, 0, 0.5);
-				transition: box-shadow 1s 0.5s;
+				// box-shadow: 40px 20px 100px 0px rgba(0, 0, 0, 0.3);
+				// transition: box-shadow 1s 0.5s;
 
 				.inner {
 					opacity: 1;
 					max-height: 600px;
-					transition: opacity 0.2s 0.3s, max-height 0s;
+					transition: opacity 0.2s 0.2s, max-height 0s;
 				}
 
 				.overlay {
 					transform: scale(18);
-					transition: transform 1s 0s;
+					transition: transform 1s 0s, background-color 1s $easing;
 				}
 			}
 			.overlay {
 				position: absolute;
-				top: -0px;
-				left: -0px;
+				top: -40px;
+				left: -40px;
 				width: 100px;
 				height: 100px;
 				border-radius: 50px;
-				background-color: #222;
+				background-color: var(--menu);
 				transform: scale(0);
-				transition: transform 1s 0.2s;
+				transition: transform 1s 0s, background-color 1s $easing;
 				z-index: -1;
 			}
 

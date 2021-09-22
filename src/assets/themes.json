@@ -4,7 +4,9 @@
 		"background": "#000000",
 		"accent": "#bbbbbb",
 		"dim": "#171717",
-		"dimmer": "#111111"
+		"dimmer": "#111111",
+		"buttons": "#111111",
+		"menu": "#222222"
 	},
 	{
 		"name": "monokai",
@@ -12,21 +14,24 @@
 		"accent": "#a6e22e",
 		"dim": "#fd971f33",
 		"dimmer": "#e87d3e22",
-		"buttons": "#FD971F60"
+		"buttons": "#FD971F60",
+		"menu": "#383026"
 	},
 	{
 		"name": "pink",
 		"background": "#f37f83",
 		"accent": "#ffdce2",
-		"dim": "#e53c584d",
-		"dimmer": "#ffffff2a"
+		"dim": "#ef6c77",
+		"dimmer": "#ffffff2a",
+		"menu": "#633638"
 	},
 	{
 		"name": "coffee",
 		"background": "#fbefdf",
 		"accent": "#8d6852",
 		"dim": "#dac6b5",
-		"dimmer": "#dac6b52a"
+		"dimmer": "#dac6b52a",
+		"menu": "#f5e7d6"
 	},
 	{
 		"name": "jungle",
@@ -34,13 +39,16 @@
 		"accent": "#8fb67f",
 		"dim": "#e8dfb3",
 		"dimmer": "#ecefc7",
-		"buttons": "#ecefc7"
+		"buttons": "#ecefc7",
+		"menu": "#faf6e5"
 	},
 	{
 		"name": "beach",
 		"background": "#fff9e9",
 		"accent": "#4b9ab4",
 		"dim": "#f6dbbc",
-		"dimmer": "#f6dbbc50"
+		"dimmer": "#f6dbbc50",
+		"buttons": "#f6dbbc50",
+		"menu": "#fdf3e0"
 	}
 ]

@@ -1,7 +1,6 @@
 import Themes from '../assets/themes.json'
 import propTypes from 'prop-types'
 import Button from './Button'
-import { useState, useRef } from 'react'
 
 const Menu = ({
 	moreSettings,
@@ -47,7 +46,8 @@ const Menu = ({
 		root.style.setProperty('--accent', Themes[newTheme].accent)
 		root.style.setProperty('--dim', Themes[newTheme].dim)
 		root.style.setProperty('--dimmer', Themes[newTheme].dimmer)
-		root.style.setProperty('--buttons', Themes[newTheme].buttons || Themes[newTheme].dim)
+		root.style.setProperty('--buttons', Themes[newTheme].dim)
+		root.style.setProperty('--menu', Themes[newTheme].menu)
 
 		setMoreSettings(prev => ({ ...prev, theme: newTheme }))
 		localStorage.theme = newTheme
@@ -60,11 +60,11 @@ const Menu = ({
 		})
 	}
 
-	const overlayRef = useRef(document.createElement('div'))
+	// const overlayRef = useRef(document.createElement('div'))
 
 	return (
 		<div className={'menu' + (menuShown ? ' shown' : '')}>
-			<div ref={overlayRef} className={'overlay'}></div>
+			<div className={'overlay'}></div>
 
 			<div className="inner">
 				<Button name="theme" on={true} func={changeTheme}></Button>
