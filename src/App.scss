@@ -124,8 +124,8 @@ input {
 			text-align: center;
 			transition: transform 0.2s;
 
-			div {
-				user-select: none;
+			pre {
+				margin: 0;
 			}
 
 			&.dragging {

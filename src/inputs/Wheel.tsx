@@ -53,7 +53,6 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 	const { height, list } = what
 	const maxMovement = -height * (list.length - 1)
 	const current = what.current - what.offset
-
 	// States
 
 	const [wasInterval, setWasInterval] = useState(false)
@@ -100,8 +99,6 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 			setWasInterval(false)
 		}
 
-		// if (!isMobileOnly) e.preventDefault()
-		// e.stopPropagation()
 		return false
 	}
 
@@ -216,9 +213,7 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 				className={'wheel' + (wheel.snap ? '' : ' dragging')}
 				style={{ transform: `translateY(${wheel.y}px)` }}
 			>
-				{list.map((elem, i: number) => (
-					<div key={'wheel_child' + i}>{elem}</div>
-				))}
+				<pre>{list.join('\n')}</pre>
 			</div>
 		</div>
 	)
