@@ -161,13 +161,8 @@ input {
 			z-index: 20;
 			font-size: 12px;
 			font-weight: 600;
-			// box-shadow: 40px 20px 100px 0px rgba(0, 0, 0, 0);
-			// transition: box-shadow 0.3s 0s;
 
 			&.shown {
-				// box-shadow: 40px 20px 100px 0px rgba(0, 0, 0, 0.3);
-				// transition: box-shadow 1s 0.5s;
-
 				.inner {
 					opacity: 1;
 					max-height: 600px;
@@ -290,25 +285,32 @@ input {
 	.click-row {
 		display: flex;
 		width: 100%;
-	}
-
-	.click {
-		margin: 5px;
-		width: 100%;
-		height: 20px;
-		border-radius: 5px;
-		background-color: var(--dim);
-		transition: margin 0.2s, background-color 0.1s, width 0.2s;
-		will-change: transform;
-		transform: translate(0, 0);
-
-		&.on {
-			background-color: var(--accent);
-		}
+		max-height: 40px;
+		overflow: hidden;
+		transition: max-height 0.6s;
 
 		&.off {
-			margin: 5px 0;
-			width: 0;
+			max-height: 0px;
+		}
+
+		.click {
+			margin: 5px;
+			width: 100%;
+			height: 20px;
+			border-radius: 5px;
+			background-color: var(--dim);
+			transition: margin 0.2s, background-color 0.1s, width 0.2s;
+			will-change: transform;
+			transform: translate(0, 0);
+
+			&.on {
+				background-color: var(--accent);
+			}
+
+			&.off {
+				margin: 5px 0;
+				width: 0;
+			}
 		}
 	}
 

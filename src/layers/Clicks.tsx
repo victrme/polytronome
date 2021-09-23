@@ -26,26 +26,20 @@ const Clicks = ({ segment, layers, times }) => {
 
 				const children: JSX.Element[] = []
 				for (let beat = 0; beat < 16; beat++) {
-					if (layer.beats > 1) {
-						children.push(
-							<div
-								key={beat}
-								className={
-									'click' +
-									(beat >= layer.beats
-										? ' off'
-										: beat < times[row]
-										? ' on'
-										: '')
-								}
-							/>
-						)
-					}
+					children.push(
+						<div
+							key={beat}
+							className={
+								'click' +
+								(beat >= layer.beats ? ' off' : beat < times[row] ? ' on' : '')
+							}
+						/>
+					)
 				}
 
 				// Wrap in rows & return
 				return (
-					<div key={row} className="click-row">
+					<div key={row} className={'click-row' + (layer.beats === 1 ? ' off' : '')}>
 						{children}
 					</div>
 				)
