@@ -13,58 +13,46 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome }) => {
 		square: 'M 10 2 H 30 V 18 H 50',
 	}
 
-	const handleWaveTypeChange = (type: string, i: number, sign: number) => {
-		const clickTypeList = ['triangle', 'sawtooth', 'square', 'sine']
-		const newLayers = [...layers]
+	const handleLayerChange = useCallback(
+		(cat: 'wave' | 'beats' | 'freq', res: any, index: number) => {
+			let newLayers = [...layers]
 
-		clickTypeList.forEach((x, _i) => {
-			if (x === type) {
-				const nextIndex = {
-					neg: _i === 0 ? clickTypeList.length - 1 : _i - 1,
-					pos: _i === clickTypeList.length - 1 ? 0 : _i + 1,
+			switch (cat) {
+				case 'wave': {
+					const clickTypeList = ['triangle', 'sawtooth', 'square', 'sine']
+					clickTypeList.forEach((x, _i) => {
+						if (x === res.type) {
+							const nextIndex = {
+								neg: _i === 0 ? clickTypeList.length - 1 : _i - 1,
+								pos: _i === clickTypeList.length - 1 ? 0 : _i + 1,
+							}
+
+							newLayers[index].type =
+								clickTypeList[res.sign === -1 ? nextIndex.neg : nextIndex.pos]
+						}
+					})
+					break
 				}
 
-				newLayers[i].type = clickTypeList[sign === -1 ? nextIndex.neg : nextIndex.pos]
-				setLayers(newLayers)
+				case 'beats': {
+					newLayers[index].beats = res + 1
+					break
+				}
+
+				case 'freq':
+					newLayers[index].freq = res
+					break
 			}
-		})
-	}
-
-	const handleBeatsChange = useCallback(
-		(res: number, i: number) => {
-			let newLayers = [...layers]
-			newLayers[i].beats = res + 1
-
-			setLayers([...newLayers])
-			restartMetronome()
-		},
-		[layers, setLayers, restartMetronome]
-	)
-
-	const handleFreqsChange = useCallback(
-		(res: number, i: number) => {
-			let newLayers = [...layers]
-			newLayers[i].freq = res
 
 			setLayers(newLayers)
+			if (cat === 'beats') restartMetronome()
 		},
-		[layers, setLayers]
+		[layers, setLayers, restartMetronome]
 	)
 
 	return (
 		<div className="layers-table-wrap">
 			<div className="layers-table">
-				{easy ? (
-					''
-				) : (
-					<div className="ls-row ls-labels">
-						<div>beats</div>
-						<div>type</div>
-						<div>note</div>
-						<div>volume</div>
-					</div>
-				)}
-
 				{layers.map((layer, i) => (
 					<div
 						className={'ls-row' + (layer.beats === 1 ? ' off' : '')}
@@ -72,7 +60,7 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome }) => {
 					>
 						<Wheel
 							beats={layer.beats}
-							update={res => handleBeatsChange(res, i)}
+							update={res => handleLayerChange('beats', res, i)}
 						></Wheel>
 
 						{easy ? (
@@ -80,10 +68,12 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome }) => {
 						) : (
 							<div
 								className="ls-type"
-								onClick={() => handleWaveTypeChange(layer.type, i, 1)}
+								onClick={() =>
+									handleLayerChange('wave', { type: layer.type, sign: 1 }, i)
+								}
 								onContextMenu={e => {
 									e.preventDefault()
-									handleWaveTypeChange(layer.type, i, -1)
+									handleLayerChange('wave', { type: layer.type, sign: -1 }, i)
 								}}
 							>
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="8 0 44 20">
@@ -130,7 +120,7 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome }) => {
 									<Octaves freq={layer.freq}></Octaves>
 									<Wheel
 										freq={layer.freq}
-										update={res => handleFreqsChange(i, res)}
+										update={res => handleLayerChange('freq', res, i)}
 									></Wheel>
 								</div>
 							</div>

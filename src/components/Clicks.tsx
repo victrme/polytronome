@@ -145,7 +145,7 @@ const Clicks = ({
 			ratios: getRatios(division),
 			duplicates: getDuplicates(division),
 		})
-	}, [layers, segment])
+	}, [layers, segment, setSegment])
 
 	//
 	//
@@ -175,6 +175,7 @@ const Clicks = ({
 		}
 
 		// Ending
+		// eslint-disable-next-line
 	}, [isRunning])
 
 	useEffect(() => {

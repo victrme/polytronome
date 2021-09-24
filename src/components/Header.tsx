@@ -20,7 +20,7 @@ const Header = props => {
 		setTempo,
 	} = props
 
-	const handleMenuChange = e => e.type === 'mouseenter'
+	const handleMenuChange = e => setMenuHovered(e.type === 'mouseenter')
 
 	return (
 		<div className="header">

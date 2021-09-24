@@ -7,14 +7,10 @@ import Clicks from './components/Clicks'
 
 const App = (): JSX.Element => {
 	//
-	// States & Values
 	//
-
-	const setRandomID = () => {
-		let str = ''
-		while (str.length < 8) str += String.fromCharCode(Math.random() * (122 - 97) + 97)
-		return str
-	}
+	// States
+	//
+	//
 
 	const [tempo, setTempo] = useState(80)
 	const [startTime, setStartTime] = useState(Date.now)
@@ -39,7 +35,7 @@ const App = (): JSX.Element => {
 
 	const [layers, setLayers] = useState<Layer[]>([
 		{
-			id: setRandomID(),
+			id: 'xjxexbmx',
 			beats: 4,
 			freq: 12,
 			release: false,
@@ -48,7 +44,7 @@ const App = (): JSX.Element => {
 			volume: 0.4,
 		},
 		{
-			id: setRandomID(),
+			id: 'qjvwpqgw',
 			beats: 5,
 			freq: 17,
 			release: false,
@@ -57,7 +53,7 @@ const App = (): JSX.Element => {
 			volume: 0.4,
 		},
 		{
-			id: setRandomID(),
+			id: 'asgwvubm',
 			beats: 1,
 			freq: 21,
 			release: false,
@@ -66,7 +62,7 @@ const App = (): JSX.Element => {
 			volume: 0.4,
 		},
 		{
-			id: setRandomID(),
+			id: 'inraqysp',
 			beats: 1,
 			freq: 24,
 			release: false,
@@ -75,7 +71,7 @@ const App = (): JSX.Element => {
 			volume: 0.4,
 		},
 		{
-			id: setRandomID(),
+			id: 'ksunnmej',
 			beats: 1,
 			freq: 29,
 			release: false,
@@ -100,28 +96,34 @@ const App = (): JSX.Element => {
 
 	//
 	//
-	// Main functions
+	// Handlers
 	//
 	//
 
-	const startMetronome = () => {
+	const setRandomID = () => {
+		let str = ''
+		while (str.length < 8) str += String.fromCharCode(Math.random() * (122 - 97) + 97)
+		return str
+	}
+
+	const startMetronome = useCallback(() => {
 		// Update to start state
 		setStartTime(Date.now())
 		setIsRunning(setRandomID())
-	}
+	}, [])
 
 	const stopMetronome = () => {
-		setSegment({ ...segment, count: 0 })
+		setSegment(prev => ({ ...prev, count: 0 }))
 		setIsRunning('')
 		setStartTime(0)
 	}
 
 	const restartMetronome = useCallback(() => {
 		if (isRunning !== '') {
-			setSegment({ ...segment, count: 0 })
+			setSegment(prev => ({ ...prev, count: 0 }))
 			startMetronome()
 		}
-	}, [])
+	}, [isRunning, startMetronome])
 
 	const randomizeLayers = () => {
 		const rand = (a: number, b: number) => Math.random() * (b - a) + a
@@ -182,7 +184,7 @@ const App = (): JSX.Element => {
 
 	//
 	//
-	//
+	// Render
 	//
 	//
 
