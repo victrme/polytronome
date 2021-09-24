@@ -195,25 +195,24 @@ const App = (): JSX.Element => {
 			<main>
 				<Header
 					easy={easy}
+					tempo={tempo}
 					segment={segment}
 					moreSettings={moreSettings}
-					setMoreSettings={setMoreSettings}
-					setSegment={setSegment}
 					setEasy={setEasy}
-					restart={restartMetronome}
-					tempo={tempo}
-					tempoRef={tempoRef}
 					setTempo={setTempo}
+					setSegment={setSegment}
+					restart={restartMetronome}
+					setMoreSettings={setMoreSettings}
 				></Header>
 
 				<Clicks
-					isRunning={isRunning}
 					layers={layers}
 					segment={segment}
-					setSegment={setSegment}
 					tempoRef={tempoRef}
+					isRunning={isRunning}
 					isRunningRef={isRunningRef}
 					startTimeRef={startTimeRef}
+					setSegment={setSegment}
 				></Clicks>
 
 				<LayersTable

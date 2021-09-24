@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 import propTypes from 'prop-types'
 import Wheel from './Wheel'
 
-const Tempo = ({ tempo, setTempo, tempoRef, restart }) => {
+const Tempo = ({ tempo, setTempo, restart }) => {
 	const [tap, setTap] = useState([
 		{
 			date: 0,
@@ -82,7 +82,6 @@ Tempo.propTypes = {
 	wheelUpdate: propTypes.func,
 	tempo: propTypes.number,
 	setTempo: propTypes.func,
-	tempoRef: propTypes.object,
 }
 
 export default Tempo

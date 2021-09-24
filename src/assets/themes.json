@@ -23,6 +23,7 @@
 		"accent": "#ffdce2",
 		"dim": "#ef6c77",
 		"dimmer": "#ffffff2a",
+		"buttons": "#ffffff2a",
 		"menu": "#633638"
 	},
 	{
@@ -31,6 +32,7 @@
 		"accent": "#8d6852",
 		"dim": "#dac6b5",
 		"dimmer": "#dac6b52a",
+		"buttons": "#dac6b52a",
 		"menu": "#f5e7d6"
 	},
 	{

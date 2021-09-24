@@ -39,18 +39,15 @@ const Menu = ({
 	}
 
 	const changeTheme = () => {
-		const newTheme = (moreSettings.theme + 1) % Themes.length
+		const selected = (moreSettings.theme + 1) % Themes.length
 		const root = document.querySelector(':root')! as HTMLBodyElement
 
-		root.style.setProperty('--background', Themes[newTheme].background)
-		root.style.setProperty('--accent', Themes[newTheme].accent)
-		root.style.setProperty('--dim', Themes[newTheme].dim)
-		root.style.setProperty('--dimmer', Themes[newTheme].dimmer)
-		root.style.setProperty('--buttons', Themes[newTheme].dim)
-		root.style.setProperty('--menu', Themes[newTheme].menu)
+		Object.entries(Themes[selected]).forEach(([key, val]) =>
+			val !== undefined ? root.style.setProperty('--' + key, val) : ''
+		)
 
-		setMoreSettings(prev => ({ ...prev, theme: newTheme }))
-		localStorage.theme = newTheme
+		setMoreSettings(prev => ({ ...prev, theme: selected }))
+		localStorage.theme = selected
 	}
 
 	const changeSegment = () => {
@@ -63,17 +60,17 @@ const Menu = ({
 	// const overlayRef = useRef(document.createElement('div'))
 
 	return (
-		<div className={'menu' + (menuShown ? ' shown' : '')}>
+		<div className={'menu' + (menuShown ? ' shown' : menuHovered ? ' hovered' : '')}>
 			<div className={'overlay'}></div>
 
 			<div className="inner">
-				<Button name="theme" on={true} func={changeTheme}></Button>
-
 				<Button
 					name="show all settings"
 					on={!easy}
 					func={() => setEasy(!easy)}
 				></Button>
+
+				<Button name="segmented clicks" on={segment.on} func={changeSegment}></Button>
 
 				<Button
 					name="performance mode"
@@ -87,7 +84,7 @@ const Menu = ({
 					func={changeFullscreen}
 				></Button>
 
-				<Button name="segmented clicks" on={segment.on} func={changeSegment}></Button>
+				<Button name="theme" on={true} func={changeTheme}></Button>
 
 				<p className="credit">
 					<a href="https://victr.me">created by victr</a>

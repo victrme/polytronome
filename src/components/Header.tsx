@@ -1,11 +1,11 @@
 import Themes from '../assets/themes.json'
 import Tempo from './Tempo'
 import Menu from './Menu'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const Header = props => {
-	const [menuShown, setMenuShown] = useState(false)
 	const [menuHovered, setMenuHovered] = useState(false)
+	const [menuShown, setMenuShown] = useState(false)
 
 	const {
 		easy,
@@ -16,7 +16,6 @@ const Header = props => {
 		setEasy,
 		restart,
 		tempo,
-		tempoRef,
 		setTempo,
 	} = props
 
@@ -41,9 +40,9 @@ const Header = props => {
 				width="61"
 				height="30"
 				fill={Themes[moreSettings.theme].accent}
-				onClick={() => setMenuShown(!menuShown)}
 				onMouseLeave={handleMenuChange}
 				onMouseEnter={handleMenuChange}
+				onClick={() => setMenuShown(!menuShown)}
 			>
 				<rect width="29" height="8" y="11" rx="4" />
 				<rect width="12" height="8" rx="4" transform="matrix(1 0 0 -1 0 30)" />
@@ -53,12 +52,7 @@ const Header = props => {
 
 			<div></div>
 
-			<Tempo
-				restart={restart}
-				tempo={tempo}
-				tempoRef={tempoRef}
-				setTempo={setTempo}
-			></Tempo>
+			<Tempo restart={restart} tempo={tempo} setTempo={setTempo}></Tempo>
 		</div>
 	)
 }
