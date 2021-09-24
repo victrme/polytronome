@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import propTypes from 'prop-types'
 import Wheel from '../inputs/Wheel'
 
@@ -10,13 +10,16 @@ const Tempo = ({ tempo, setTempo, tempoRef, restart }) => {
 		},
 	])
 
-	const changeTempo = (amount: number) => {
-		const up = amount > tempo
-		const max = up ? 300 : 30
-		const outOfBound = up ? amount > max : amount < max
+	const changeTempo = useCallback(
+		(amount: number) => {
+			const up = amount > tempo
+			const max = up ? 300 : 30
+			const outOfBound = up ? amount > max : amount < max
 
-		setTempo(outOfBound ? max : amount)
-	}
+			setTempo(outOfBound ? max : amount)
+		},
+		[tempo, setTempo]
+	)
 
 	const tapTempo = () => {
 		// Reset tap after 2s
@@ -55,15 +58,17 @@ const Tempo = ({ tempo, setTempo, tempoRef, restart }) => {
 		}
 	}
 
+	const handleUpdate = useCallback(
+		res => {
+			changeTempo(res + 30)
+			restart()
+		},
+		[changeTempo, restart]
+	)
+
 	return (
 		<div className="tempo">
-			<Wheel
-				tempo={tempo}
-				update={res => {
-					changeTempo(res + 30)
-					restart()
-				}}
-			></Wheel>
+			<Wheel tempo={tempo} update={handleUpdate}></Wheel>
 
 			<button className="tap" onClick={tapTempo}>
 				tap

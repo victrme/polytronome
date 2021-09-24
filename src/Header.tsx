@@ -1,0 +1,66 @@
+import Themes from './assets/themes.json'
+import Tempo from './layers/Tempo'
+import Menu from './menu/Menu'
+import { useState } from 'react'
+
+const Header = props => {
+	const [menuShown, setMenuShown] = useState(false)
+	const [menuHovered, setMenuHovered] = useState(false)
+
+	const {
+		easy,
+		segment,
+		moreSettings,
+		setMoreSettings,
+		setSegment,
+		setEasy,
+		restart,
+		tempo,
+		tempoRef,
+		setTempo,
+	} = props
+
+	const handleMenuChange = e => e.type === 'mouseenter'
+
+	return (
+		<div className="header">
+			<Menu
+				easy={easy}
+				segment={segment}
+				moreSettings={moreSettings}
+				setMoreSettings={setMoreSettings}
+				setSegment={setSegment}
+				setEasy={setEasy}
+				menuShown={menuShown}
+				menuHovered={menuHovered}
+			></Menu>
+
+			<svg
+				className="logo"
+				xmlns="http://www.w3.org/2000/svg"
+				width="61"
+				height="30"
+				fill={Themes[moreSettings.theme].accent}
+				onClick={() => setMenuShown(!menuShown)}
+				onMouseLeave={handleMenuChange}
+				onMouseEnter={handleMenuChange}
+			>
+				<rect width="29" height="8" y="11" rx="4" />
+				<rect width="12" height="8" rx="4" transform="matrix(1 0 0 -1 0 30)" />
+				<rect width="12" height="8" rx="4" transform="matrix(1 0 0 -1 32 19)" />
+				<rect width="29" height="8" x="32" rx="4" />
+			</svg>
+
+			<div></div>
+
+			<Tempo
+				restart={restart}
+				tempo={tempo}
+				tempoRef={tempoRef}
+				setTempo={setTempo}
+			></Tempo>
+		</div>
+	)
+}
+
+export default Header

@@ -68,17 +68,11 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 
 	wheelRef.current = wheel
 
-	enum Mouse {
-		enter,
-		leave,
-		click,
-	}
-
-	const wheelArrows = (sign: number, click: Mouse) => {
+	const wheelArrows = (sign: number, click: 'enter' | 'click') => {
 		const updateFromArrow = () =>
 			update(getNumberFromPosition(wheelRef.current.y + height * sign))
 
-		if (click === Mouse.enter) {
+		if (click === 'enter') {
 			arrowTimeout.current = setTimeout(() => {
 				updateFromArrow()
 				arrowInterval.current = setInterval(
@@ -91,11 +85,12 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 			}, 200)
 		}
 
-		if (click === Mouse.leave) {
+		if (click === 'click') {
 			clearTimeout(arrowInterval.current)
 			clearInterval(arrowTimeout.current)
 
-			if (!wasInterval) update(getNumberFromPosition(wheel.y + height * sign))
+			if (!wasInterval) updateFromArrow()
+
 			setWasInterval(false)
 		}
 
@@ -192,17 +187,15 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 			<div className="arrows">
 				<span
 					className="up"
-					onMouseDown={() => wheelArrows(1, Mouse.enter)}
-					onMouseUp={() => wheelArrows(1, Mouse.leave)}
-					onMouseLeave={() => wheelArrows(0, Mouse.leave)}
+					onClick={() => wheelArrows(1, 'click')}
+					onMouseDown={() => wheelArrows(1, 'enter')}
 				>
 					↑
 				</span>
 				<span
 					className="down"
-					onMouseDown={() => wheelArrows(-1, Mouse.enter)}
-					onMouseUp={() => wheelArrows(-1, Mouse.leave)}
-					onMouseLeave={() => wheelArrows(0, Mouse.leave)}
+					onClick={() => wheelArrows(-1, 'click')}
+					onMouseDown={() => wheelArrows(-1, 'enter')}
 				>
 					↓
 				</span>
