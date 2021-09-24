@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import propTypes from 'prop-types'
-import Wheel from '../inputs/Wheel'
+import Wheel from './Wheel'
 
 const Tempo = ({ tempo, setTempo, tempoRef, restart }) => {
 	const [tap, setTap] = useState([

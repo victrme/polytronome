@@ -1,5 +1,5 @@
-import Wheel from '../../inputs/Wheel'
-import Range from '../../inputs/Range'
+import Wheel from './Wheel'
+import Range from './Range'
 import Octaves from './Octaves'
 import { useCallback } from 'react'
 

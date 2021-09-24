@@ -1,6 +1,6 @@
-import Themes from './assets/themes.json'
-import Tempo from './layers/Tempo'
-import Menu from './menu/Menu'
+import Themes from '../assets/themes.json'
+import Tempo from './Tempo'
+import Menu from './Menu'
 import { useState } from 'react'
 
 const Header = props => {

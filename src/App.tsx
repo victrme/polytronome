@@ -1,9 +1,9 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { MoreSettings, Layer } from './Types'
 import { isMobileOnly } from 'react-device-detect'
-import Clicks from './layers/Clicks'
-import LayersTable from './layers/table/LayersTable'
-import Header from './Header'
+import LayersTable from './components/LayersTable'
+import Header from './components/Header'
+import Clicks from './components/Clicks'
 
 const App = (): JSX.Element => {
 	//
