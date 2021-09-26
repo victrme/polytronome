@@ -1,7 +1,7 @@
 import Themes from '../assets/themes.json'
 import Tempo from './Tempo'
 import Menu from './Menu'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 const Header = props => {
 	const [menuHovered, setMenuHovered] = useState(false)

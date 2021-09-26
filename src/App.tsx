@@ -192,6 +192,7 @@ const App = (): JSX.Element => {
 		<div
 			className={'polytronome' + (isMobileOnly ? ' mobile' : '') + (easy ? ' easy' : '')}
 		>
+			<div className="ad"></div>
 			<main>
 				<Header
 					easy={easy}
@@ -236,6 +237,7 @@ const App = (): JSX.Element => {
 					)}
 				</div>
 			</main>
+			<div className="ad"></div>
 		</div>
 	)
 }

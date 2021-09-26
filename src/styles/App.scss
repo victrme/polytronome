@@ -1,0 +1,244 @@
+:root {
+	--accent: #a6e22e;
+	--background: #272822;
+	--dim: #523e21;
+	--dimmer: #413425;
+	--buttons: #fd971f60;
+	--menu: #383026;
+}
+
+$easing: cubic-bezier(0.19, 1, 0.22, 1);
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@500&family=Work+Sans:wght@500&display=swap');
+
+body {
+	background-color: black;
+	margin: 0;
+	transition: background-color 1s $easing;
+}
+body,
+body:fullscreen::backdrop {
+	background: var(--background);
+}
+
+button,
+body,
+input {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-family: 'Work Sans', sans-serif;
+	font-weight: 900;
+}
+
+.polytronome {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	max-width: 1000px;
+	min-height: 1000px;
+	padding-top: 10vh;
+	width: 100%;
+	margin: auto;
+	color: var(--accent);
+	user-select: none;
+	transition: padding 1s $easing;
+
+	@import 'header';
+	@import 'clicks';
+	@import 'layers';
+
+	main {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		width: 100%;
+	}
+
+	button {
+		color: var(--accent);
+		background: var(--buttons);
+		width: 80px;
+		margin: 5px 5px 0 0;
+		padding: 7px 30px;
+		border: none;
+		border-radius: 2em;
+		font-size: 16px;
+		font-weight: 500;
+		cursor: pointer;
+		outline: none;
+		transition: filter 0.3s, background-color 0.3s, color 0.3s;
+
+		&:hover:not(.off) {
+			filter: brightness(0.9);
+			background: var(--buttons);
+		}
+
+		&:active:not(.off) {
+			filter: brightness(0.7);
+			background: var(--buttons);
+		}
+
+		&.off {
+			opacity: 0.5;
+			cursor: initial;
+		}
+
+		&.suppr-btn {
+			background: 0;
+			border: 0;
+			color: var(--accent);
+			font-size: 1em;
+			padding: 10px;
+		}
+	}
+
+	pre {
+		margin: 0;
+
+		font-family: 'Source Code Pro', 'Courier New', Courier, monospace;
+	}
+
+	.immovable_wheel {
+		overflow: hidden;
+		user-select: none;
+		line-height: 50px;
+		font-size: 50px;
+		height: 50px;
+		padding: 2px 10px 2px 30px;
+		border-radius: 10px;
+		transition: opacity 0.2s, background-color 0.2s;
+
+		&:hover {
+			background-color: var(--dimmer);
+		}
+
+		.arrows {
+			position: absolute;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			margin-left: -25px;
+			height: 50px;
+			z-index: 2;
+
+			span {
+				width: 20px;
+				text-align: center;
+				font-size: 15px;
+				font-weight: 500;
+				line-height: 20px;
+				cursor: pointer;
+				border-radius: 5px;
+
+				&:hover {
+					background-color: var(--dimmer);
+				}
+			}
+		}
+
+		.wheel {
+			cursor: grab;
+			touch-action: none;
+			text-align: center;
+			transition: transform 0.2s;
+			will-change: transform;
+			transform: translateY(0);
+
+			&.dragging {
+				transition: transform 0s;
+			}
+		}
+	}
+
+	.start-button {
+		display: flex;
+		justify-content: center;
+		text-align: center;
+		margin-top: 40px;
+
+		button {
+			width: 300px;
+			margin: 0 5px;
+
+			&.randomize {
+				width: auto;
+			}
+		}
+	}
+
+	/*
+	EASY MODE
+	*/
+
+	&.easy {
+		padding-top: 15vh;
+
+		.layers-table-wrap {
+			justify-content: center;
+			.layers-table {
+				flex-direction: row;
+				margin-left: 0;
+				width: auto;
+			}
+
+			.ls-row {
+				padding: 10px;
+
+				.immovable_wheel {
+					width: 80px;
+					margin: 0;
+				}
+			}
+		}
+
+		.ls-add {
+			display: grid;
+			place-items: center;
+			width: 80px;
+			cursor: pointer;
+			border: 2px dashed transparent;
+			border-radius: 10px;
+
+			&:hover {
+				border-color: var(--accent);
+			}
+		}
+
+		.ls-buttons {
+			width: auto;
+			margin-left: 30px;
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-end;
+			align-items: flex-end;
+
+			.randomize {
+				width: 120px;
+			}
+		}
+	}
+
+	/*
+	PERFORMANCE
+	*/
+
+	&.performance {
+		button,
+		.clicks,
+		.theme-preview > div,
+		.theme-preview > div .tp-mini-click,
+		.setting.sound .css-waves svg path,
+		.setting .range-wrap .inner-range,
+		.click.on,
+		.wheel {
+			transition: none;
+		}
+	}
+
+	/*
+	MOBILE
+	*/
+
+	&.mobile {
+	}
+}

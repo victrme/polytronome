@@ -1,0 +1,45 @@
+.clicks {
+	width: 90%;
+	height: 160px;
+	margin: auto;
+	display: flex;
+	align-items: center;
+	transition: opacity 0.12s;
+
+	.segment,
+	.layers {
+		width: 100%;
+	}
+}
+
+.click-row {
+	display: flex;
+	width: 100%;
+	max-height: 40px;
+	overflow: hidden;
+	transition: max-height 0.6s;
+
+	&.off {
+		max-height: 0px;
+	}
+
+	.click {
+		margin: 5px;
+		width: 100%;
+		height: 20px;
+		border-radius: 5px;
+		background-color: var(--dim);
+		transition: margin 0.2s, background-color 0.1s, width 0.2s;
+		will-change: transform;
+		transform: translate(0, 0);
+
+		&.on {
+			background-color: var(--accent);
+		}
+
+		&.off {
+			margin: 5px 0;
+			width: 0;
+		}
+	}
+}

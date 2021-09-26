@@ -1,0 +1,123 @@
+.header {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 40px;
+	font-size: 30px;
+	width: 90%;
+
+	.menu {
+		position: absolute;
+		top: -20px;
+		left: -20px;
+		width: 400px;
+		border-radius: 20px;
+		background-color: transparent;
+		box-shadow: none;
+		overflow: hidden;
+		z-index: 20;
+		font-size: 12px;
+		font-weight: 600;
+
+		&.shown {
+			.inner {
+				opacity: 1;
+				max-height: 600px;
+				transition: opacity 0.2s 0.2s, max-height 0s;
+			}
+
+			.overlay {
+				transform: scale(18);
+				transition: transform 1s 0s, background-color 1s $easing;
+			}
+		}
+
+		&.hovered {
+			.overlay {
+				transform: scale(3.2);
+			}
+		}
+
+		.overlay {
+			position: absolute;
+			top: -40px;
+			left: -40px;
+			width: 100px;
+			height: 100px;
+			border-radius: 50px;
+			background-color: var(--menu);
+			transform: scale(0);
+			transition: transform 1s 0s, background-color 1s $easing;
+			z-index: -1;
+		}
+
+		.inner {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin-top: 200px;
+			opacity: 0;
+			max-height: 0;
+			transition: opacity 0.2s 0s, max-height 0s 1s;
+
+			button {
+				width: 70%;
+				margin: 10px;
+				padding: 12px 30px;
+				text-align: left;
+
+				filter: grayscale(1);
+				background-color: transparent;
+
+				&.on {
+					color: var(--accent);
+					background-color: var(--buttons);
+					filter: grayscale(0);
+				}
+			}
+
+			.credit {
+				text-align: center;
+				margin-top: 200px;
+				margin-bottom: 40px;
+				width: 100%;
+
+				a {
+					color: var(--accent);
+					text-decoration: none;
+					font-weight: 500;
+				}
+			}
+		}
+	}
+
+	.logo {
+		margin: 20px;
+		padding: 20px;
+		cursor: pointer;
+		z-index: 20;
+	}
+
+	.tempo {
+		display: flex;
+		align-items: center;
+
+		.immovable_wheel {
+			line-height: 50px;
+			font-size: 50px;
+			height: 50px;
+			margin-right: 10px;
+		}
+
+		.tap {
+			width: 120px;
+			margin: 0%;
+		}
+
+		.tempo-buttons {
+			display: flex;
+		}
+	}
+}

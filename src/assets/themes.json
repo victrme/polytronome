@@ -12,8 +12,8 @@
 		"name": "monokai",
 		"background": "#272822",
 		"accent": "#a6e22e",
-		"dim": "#fd971f33",
-		"dimmer": "#e87d3e22",
+		"dim": "#523e21",
+		"dimmer": "#413425",
 		"buttons": "#FD971F60",
 		"menu": "#383026"
 	},
@@ -24,7 +24,7 @@
 		"dim": "#ef6c77",
 		"dimmer": "#ffffff2a",
 		"buttons": "#ffffff2a",
-		"menu": "#633638"
+		"menu": "#c36064"
 	},
 	{
 		"name": "coffee",
@@ -40,7 +40,7 @@
 		"background": "#FFFBF1",
 		"accent": "#8fb67f",
 		"dim": "#e8dfb3",
-		"dimmer": "#ecefc7",
+		"dimmer": "#f3f4d6",
 		"buttons": "#ecefc7",
 		"menu": "#faf6e5"
 	},

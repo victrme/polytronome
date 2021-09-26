@@ -19,6 +19,12 @@
 		<link rel="shortcut icon" id="favicon" href="%PUBLIC_URL%/favicon.ico?v=3" />
 		<link rel="mask-icon" href="%PUBLIC_URL%/safari-pinned-tab.svg?v=3" color="#282c34" />
 
+		<script
+			data-ad-client="ca-pub-4569265760991351"
+			async
+			src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+		></script>
+
 		<title>Polytronome</title>
 
 		<script>
@@ -27,13 +33,8 @@
 			const android = document.getElementById('android')
 
 			function switchIcon(dark) {
-				if (dark) {
-					favicon.href = '%PUBLIC_URL%/favicon-dark.ico'
-					android.href = '%PUBLIC_URL%/android-chrome-192x192-dark.png'
-				} else {
-					favicon.href = '%PUBLIC_URL%/favicon.ico'
-					android.href = '%PUBLIC_URL%/android-chrome-192x192.png'
-				}
+				favicon.href = `%PUBLIC_URL%/favicon${dark ? '-dark' : ''}.ico`
+				android.href = `%PUBLIC_URL%/android-chrome-192x192${dark ? '-dark' : ''}.png`
 			}
 
 			window

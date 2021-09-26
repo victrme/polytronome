@@ -1,6 +1,5 @@
 import Wheel from './Wheel'
 import Range from './Range'
-import Octaves from './Octaves'
 import { useCallback } from 'react'
 
 const LayersTable = ({ easy, layers, setLayers, restartMetronome }) => {
@@ -66,6 +65,22 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome }) => {
 						{easy ? (
 							''
 						) : (
+							<div className="ls-note">
+								<div className="notes-wrap">
+									<Wheel
+										freq={layer.freq}
+										update={res => handleLayerChange('freq', res, i)}
+									></Wheel>
+									<pre className="octave">
+										{Math.floor(layer.freq / 12) + 1}
+									</pre>
+								</div>
+							</div>
+						)}
+
+						{easy ? (
+							''
+						) : (
 							<div
 								className="ls-type"
 								onClick={() =>
@@ -91,38 +106,45 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome }) => {
 						{easy ? (
 							''
 						) : (
-							<div className="ls-note">
-								<div className="notes-wrap">
-									<div className="note-length">
-										<button
-											title="Click duration"
-											className={layer.duration ? 'on' : ''}
-											onClick={() => {
-												const newLayers = [...layers]
-												newLayers[i].duration = !newLayers[i].duration
-												setLayers([...newLayers])
-											}}
-										>
-											∼
-										</button>
-										<button
-											className={layer.release ? 'on' : ''}
-											onClick={() => {
-												const newLayers = [...layers]
-												newLayers[i].release = !newLayers[i].release
-												setLayers([...newLayers])
-											}}
-										>
-											↪
-										</button>
-									</div>
-
-									<Octaves freq={layer.freq}></Octaves>
-									<Wheel
-										freq={layer.freq}
-										update={res => handleLayerChange('freq', res, i)}
-									></Wheel>
-								</div>
+							<div className="note-length">
+								<button
+									title="Click duration"
+									onClick={() => {
+										const newLayers = [...layers]
+										newLayers[i].duration = !newLayers[i].duration
+										setLayers([...newLayers])
+									}}
+								>
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="1 1 10 6">
+										<path
+											d="M 2 2 V 6 M 2 4 H 10"
+											stroke="var(--accent)"
+											strokeWidth="1"
+											strokeLinecap="round"
+											fill="none"
+										/>
+									</svg>
+									{layer.duration ? '⅓ bpm' : '50ms'}
+								</button>
+								<button
+									className={layer.release ? 'on' : ''}
+									onClick={() => {
+										const newLayers = [...layers]
+										newLayers[i].release = !newLayers[i].release
+										setLayers([...newLayers])
+									}}
+								>
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="1 1 8 6">
+										<path
+											d="M 2 2 V 6 M 2 2 Q 3 6 8 6"
+											stroke="var(--accent)"
+											strokeWidth="1"
+											strokeLinecap="round"
+											fill="none"
+										/>
+									</svg>
+									{layer.release ? 'on' : 'off'}
+								</button>
 							</div>
 						)}
 
