@@ -40,6 +40,10 @@
 			width: 60px;
 			height: 60px;
 			cursor: pointer;
+
+			path {
+				transition: stroke-dashoffset 1s;
+			}
 		}
 	}
 
@@ -51,7 +55,7 @@
 
 		pre.octave {
 			position: absolute;
-			right: -16px;
+			right: -8px;
 			bottom: -4px;
 			padding: 2px 8px;
 			border-radius: 8px;

@@ -68,7 +68,7 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 
 	wheelRef.current = wheel
 
-	const wheelArrows = (sign: number, click: 'enter' | 'click') => {
+	const wheelArrows = (sign: number, click: 'enter' | 'click' | 'leave') => {
 		const updateFromArrow = () =>
 			update(getNumberFromPosition(wheelRef.current.y + height * sign))
 
@@ -92,6 +92,11 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 			if (!wasInterval) updateFromArrow()
 
 			setWasInterval(false)
+		}
+
+		if (click === 'leave') {
+			clearTimeout(arrowInterval.current)
+			clearInterval(arrowTimeout.current)
 		}
 
 		return false
@@ -189,6 +194,7 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 					className="up"
 					onClick={() => wheelArrows(1, 'click')}
 					onMouseDown={() => wheelArrows(1, 'enter')}
+					onMouseLeave={() => wheelArrows(1, 'leave')}
 				>
 					↑
 				</span>
@@ -196,6 +202,7 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 					className="down"
 					onClick={() => wheelArrows(-1, 'click')}
 					onMouseDown={() => wheelArrows(-1, 'enter')}
+					onMouseLeave={() => wheelArrows(-1, 'leave')}
 				>
 					↓
 				</span>

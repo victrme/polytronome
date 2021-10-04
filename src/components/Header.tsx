@@ -7,17 +7,7 @@ const Header = props => {
 	const [menuHovered, setMenuHovered] = useState(false)
 	const [menuShown, setMenuShown] = useState(false)
 
-	const {
-		easy,
-		segment,
-		moreSettings,
-		setMoreSettings,
-		setSegment,
-		setEasy,
-		restart,
-		tempo,
-		setTempo,
-	} = props
+	const { easy, moreSettings, setMoreSettings, setEasy, restart, tempo, setTempo } = props
 
 	const handleMenuChange = e => setMenuHovered(e.type === 'mouseenter')
 
@@ -25,13 +15,11 @@ const Header = props => {
 		<div className="header">
 			<Menu
 				easy={easy}
-				segment={segment}
-				moreSettings={moreSettings}
-				setMoreSettings={setMoreSettings}
-				setSegment={setSegment}
 				setEasy={setEasy}
 				menuShown={menuShown}
 				menuHovered={menuHovered}
+				moreSettings={moreSettings}
+				setMoreSettings={setMoreSettings}
 			></Menu>
 
 			<svg

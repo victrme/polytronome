@@ -197,11 +197,9 @@ const App = (): JSX.Element => {
 				<Header
 					easy={easy}
 					tempo={tempo}
-					segment={segment}
 					moreSettings={moreSettings}
 					setEasy={setEasy}
 					setTempo={setTempo}
-					setSegment={setSegment}
 					restart={restartMetronome}
 					setMoreSettings={setMoreSettings}
 				></Header>
@@ -223,18 +221,55 @@ const App = (): JSX.Element => {
 					restartMetronome={restartMetronome}
 				></LayersTable>
 
-				<div className={'start-button'}>
-					<button onClick={() => (isRunning ? stopMetronome() : startMetronome())}>
+				<div className='bottom-buttons'>
+					<button className='start' onClick={() => (isRunning ? stopMetronome() : startMetronome())}>
 						{isRunning ? '◼' : '▶'}
 					</button>
 
 					{easy ? (
 						''
 					) : (
-						<button className="randomize" onClick={randomizeLayers}>
-							shuffle
-						</button>
+						<div>
+							<button className="randomize" onClick={randomizeLayers}>
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="3 -1 10 8">
+									<path
+										d="M4 1C7 1 7 5 10 5M4 5C7 5 7 1 10 1M10 1 10 .5 12 1 10 1.5zM10 5 10 4.5 12 5 10 5.5z"
+										stroke="var(--accent)"
+										strokeWidth="1"
+										strokeLinecap="round"
+										fill="none"
+									/>
+								</svg>
+								shuffle
+							</button>
+							<button
+								className="clickview"
+								onClick={() => 
+									setSegment(prev => ({
+										...prev,
+										on: !prev.on,
+									}))
+								}
+							>
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7 3.5">
+									<path
+										d={
+											segment.on
+												? 'M1 1.75 1.5 1.75M2.5 1.75 4 1.75M5 1.75 6 1.75'
+												: 'M1 1 2 1M3 1 4 1M5 1 6 1M1 2.5 3 2.5M4 2.5 6 2.5'
+										}
+										stroke="var(--accent)"
+										strokeWidth="1"
+										strokeLinecap="round"
+										fill="none"
+									/>
+								</svg>
+								click view
+							</button>
+						</div>
 					)}
+
+				
 				</div>
 			</main>
 			<div className="ad"></div>

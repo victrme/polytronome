@@ -91,13 +91,19 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome }) => {
 									handleLayerChange('wave', { type: layer.type, sign: -1 }, i)
 								}}
 							>
-								<svg xmlns="http://www.w3.org/2000/svg" viewBox="8 0 44 20">
+								<svg
+									type="svg"
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="8 0 44 20"
+								>
 									<path
 										d={wavetypes[layer.type]}
 										fill="none"
 										stroke="var(--accent)"
 										strokeWidth="4"
 										strokeLinecap="round"
+										// strokeDasharray="120"
+										// strokeDashoffset="180"
 									/>
 								</svg>
 							</div>

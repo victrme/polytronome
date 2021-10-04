@@ -2,16 +2,7 @@ import Themes from '../assets/themes.json'
 import propTypes from 'prop-types'
 import Button from './Button'
 
-const Menu = ({
-	moreSettings,
-	segment,
-	setSegment,
-	setMoreSettings,
-	easy,
-	setEasy,
-	menuShown,
-	menuHovered,
-}) => {
+const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, menuShown, menuHovered }) => {
 	const changeAnimations = () => {
 		const appDOM = document.querySelector('.polytronome') as HTMLDivElement
 
@@ -50,13 +41,6 @@ const Menu = ({
 		localStorage.theme = selected
 	}
 
-	const changeSegment = () => {
-		setSegment({
-			...segment,
-			on: !segment.on,
-		})
-	}
-
 	// const overlayRef = useRef(document.createElement('div'))
 
 	return (
@@ -69,8 +53,6 @@ const Menu = ({
 					on={!easy}
 					func={() => setEasy(!easy)}
 				></Button>
-
-				<Button name="segmented clicks" on={segment.on} func={changeSegment}></Button>
 
 				<Button
 					name="performance mode"
@@ -96,8 +78,6 @@ const Menu = ({
 
 Menu.propTypes = {
 	moreSettings: propTypes.object.isRequired,
-	segment: propTypes.object.isRequired,
-	setSegment: propTypes.func.isRequired,
 	setMoreSettings: propTypes.func.isRequired,
 	easy: propTypes.bool.isRequired,
 	setEasy: propTypes.func.isRequired,

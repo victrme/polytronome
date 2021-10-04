@@ -57,16 +57,21 @@ input {
 	button {
 		color: var(--accent);
 		background: var(--buttons);
-		width: 80px;
+		width: auto;
 		margin: 5px 5px 0 0;
 		padding: 7px 30px;
 		border: none;
 		border-radius: 2em;
-		font-size: 16px;
+		font-size: 14px;
 		font-weight: 500;
 		cursor: pointer;
 		outline: none;
 		transition: filter 0.3s, background-color 0.3s, color 0.3s;
+
+		svg {
+			width: 16px;
+			margin-right: 10px;
+		}
 
 		&:hover:not(.off) {
 			filter: brightness(0.9);
@@ -150,19 +155,14 @@ input {
 		}
 	}
 
-	.start-button {
+	.bottom-buttons {
 		display: flex;
 		justify-content: center;
 		text-align: center;
 		margin-top: 40px;
 
-		button {
+		.start {
 			width: 300px;
-			margin: 0 5px;
-
-			&.randomize {
-				width: auto;
-			}
 		}
 	}
 
