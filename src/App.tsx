@@ -4,6 +4,8 @@ import { isMobileOnly } from 'react-device-detect'
 import LayersTable from './components/LayersTable'
 import Header from './components/Header'
 import Clicks from './components/Clicks'
+import Profiles from './components/Profiles'
+import defaultLayers from './assets/layers.json'
 
 const App = (): JSX.Element => {
 	//
@@ -16,6 +18,7 @@ const App = (): JSX.Element => {
 	const [startTime, setStartTime] = useState(Date.now)
 	const [isRunning, setIsRunning] = useState('')
 	const [easy, setEasy] = useState(true)
+	const [exportCode, setExportCode] = useState('')
 
 	const [segment, setSegment] = useState({
 		on: false,
@@ -33,54 +36,7 @@ const App = (): JSX.Element => {
 		all: false,
 	})
 
-	const [layers, setLayers] = useState<Layer[]>([
-		{
-			id: 'xjxexbmx',
-			beats: 4,
-			freq: 12,
-			release: false,
-			duration: false,
-			type: 'triangle',
-			volume: 0.4,
-		},
-		{
-			id: 'qjvwpqgw',
-			beats: 5,
-			freq: 17,
-			release: false,
-			duration: false,
-			type: 'triangle',
-			volume: 0.4,
-		},
-		{
-			id: 'asgwvubm',
-			beats: 1,
-			freq: 21,
-			release: false,
-			duration: false,
-			type: 'triangle',
-			volume: 0.4,
-		},
-		{
-			id: 'inraqysp',
-			beats: 1,
-			freq: 24,
-			release: false,
-			duration: false,
-			type: 'triangle',
-			volume: 0.4,
-		},
-		{
-			id: 'ksunnmej',
-			beats: 1,
-			freq: 29,
-			release: false,
-			duration: false,
-			type: 'triangle',
-			volume: 0.4,
-		},
-	])
-
+	const [layers, setLayers] = useState<Layer[]>([...defaultLayers])
 	const tempoRef = useRef(tempo)
 	const startTimeRef = useRef(startTime)
 	const isRunningRef = useRef(isRunning)
@@ -221,8 +177,23 @@ const App = (): JSX.Element => {
 					restartMetronome={restartMetronome}
 				></LayersTable>
 
-				<div className='bottom-buttons'>
-					<button className='start' onClick={() => (isRunning ? stopMetronome() : startMetronome())}>
+				<Profiles
+					layers={layers}
+					setLayers={setLayers}
+					setRandomID={setRandomID}
+					tempo={tempo}
+					moreSettings={moreSettings}
+					setTempo={setTempo}
+					setMoreSettings={setMoreSettings}
+					exportCode={exportCode}
+					setExportCode={setExportCode}
+				></Profiles>
+
+				<div className="bottom-buttons">
+					<button
+						className="start"
+						onClick={() => (isRunning ? stopMetronome() : startMetronome())}
+					>
 						{isRunning ? '◼' : '▶'}
 					</button>
 
@@ -244,7 +215,7 @@ const App = (): JSX.Element => {
 							</button>
 							<button
 								className="clickview"
-								onClick={() => 
+								onClick={() =>
 									setSegment(prev => ({
 										...prev,
 										on: !prev.on,
@@ -268,8 +239,6 @@ const App = (): JSX.Element => {
 							</button>
 						</div>
 					)}
-
-				
 				</div>
 			</main>
 			<div className="ad"></div>

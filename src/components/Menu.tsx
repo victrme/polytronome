@@ -68,6 +68,10 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, menuShown, menuHov
 
 				<Button name="theme" on={true} func={changeTheme}></Button>
 
+				<div className="profile">
+					<p>profile</p>
+				</div>
+
 				<p className="credit">
 					<a href="https://victr.me">created by victr</a>
 				</p>

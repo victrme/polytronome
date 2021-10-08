@@ -1,0 +1,47 @@
+[
+	{
+		"id": "xjxexbmx",
+		"beats": 4,
+		"freq": 12,
+		"release": false,
+		"duration": false,
+		"type": "triangle",
+		"volume": 0.4
+	},
+	{
+		"id": "qjvwpqgw",
+		"beats": 5,
+		"freq": 17,
+		"release": false,
+		"duration": false,
+		"type": "triangle",
+		"volume": 0.4
+	},
+	{
+		"id": "asgwvubm",
+		"beats": 1,
+		"freq": 21,
+		"release": false,
+		"duration": false,
+		"type": "triangle",
+		"volume": 0.4
+	},
+	{
+		"id": "inraqysp",
+		"beats": 1,
+		"freq": 24,
+		"release": false,
+		"duration": false,
+		"type": "triangle",
+		"volume": 0.4
+	},
+	{
+		"id": "ksunnmej",
+		"beats": 1,
+		"freq": 29,
+		"release": false,
+		"duration": false,
+		"type": "triangle",
+		"volume": 0.4
+	}
+]
