@@ -17,7 +17,7 @@ const Profiles = ({
 	const waveformsList = ['triangle', 'sawtooth', 'square', 'sine']
 
 	const binaryToInt = arr => arr.reduce((a, v) => (a << 1) | v)
-	const intToBinary = int => [...Array(15)].map((x, i) => (int >> i) & 1)
+	const intToBinary = (int, size) => [...Array(size)].map((x, i) => (int >> i) & 1)
 
 	const compareLayers = (stateLayer: Layer, defaultLayer: Layer) => {
 		let result = true
@@ -77,13 +77,9 @@ const Profiles = ({
 				effects.push(layer.duration, layer.release)
 			})
 
-			console.log(activeLayers)
-
-			const activeLayersResult = binaryToInt(activeLayers).toString(36)
-
 			return (
 				tempo.toString(36) +
-				(activeLayersResult === 'v' ? '' : activeLayersResult) +
+				binaryToInt(activeLayers).toString(36) +
 				freqBeats +
 				':' +
 				binaryToInt(effects)
@@ -114,36 +110,52 @@ const Profiles = ({
 	}
 
 	// In export: if layers are defaults, add binary after tempo to indicate which are activated
+	// t: tempo, a: active layers, l: layers, m: more settings
+	// [ttallllllllll:mm]
 
 	const importCode = (code: string) => {
 		const split = code.split(':')
 		const [tempoFreqBeats, effects] = split
 
 		const mainDecode = () => {
-			const allEffects = intToBinary(effects)
-			const layersChars = tempoFreqBeats.slice(2, tempoFreqBeats.length)
-			const newLayers: any[] = []
+			const defaultLayers = JSON.parse(sessionStorage.layers)
+			const allEffects = intToBinary(effects, 10)
+			const newLayers = defaultLayers
+			let layersChars = ''
+			let countActivated = 0
+			let activesArray: number[] = []
 
-			if (tempoFreqBeats.length === 12) {
-				// Add Beats and Frequency
-				for (let ii = 0; ii < 5; ii++) {
-					// 	Takes 2 chars at a time
-					const singleLayer = layersChars.slice(ii * 2, ii * 2 + 2)
+			layersChars = tempoFreqBeats.slice(3, tempoFreqBeats.length)
+			activesArray = intToBinary(parseInt(tempoFreqBeats.slice(2, 3), 36), 5).reverse()
 
-					//	Apply destackment
-					const beats = parseInt(singleLayer, 36) % 16
-					const note = (parseInt(singleLayer, 36) - beats) / 16
-					newLayers.push({
-						beats: beats === 0 ? 16 : beats,
-						frequency: note,
-					})
+			//
+			// Decoding
+			//
+
+			for (let i = 0; i < 5; i++) {
+				let beats = defaultLayers[i].beats
+				let freq = defaultLayers[i].freq
+
+				// If changed layer, apply destackment
+				if (activesArray[i]) {
+					const singleLayer = layersChars.slice(
+						countActivated * 2,
+						countActivated * 2 + 2
+					)
+					beats = parseInt(singleLayer, 36) % 16
+					freq = (parseInt(singleLayer, 36) - beats) / 16
+
+					countActivated++
 				}
 
-				// Add Effects
-				newLayers.forEach((l, i) => {
-					newLayers[i].duration = !!allEffects[i * 2]
-					newLayers[i].release = !!allEffects[i * 2 + 1]
-				})
+				newLayers[i] = {
+					beats,
+					freq,
+					id: defaultLayers[i].id,
+					duration: !!allEffects[i * 2],
+					release: !!allEffects[i * 2 + 1],
+					volume: 0.4,
+				}
 			}
 
 			// Add tempo
@@ -154,31 +166,6 @@ const Profiles = ({
 				newTempo,
 			}
 		}
-
-		// const settingsDecode = () => {
-		// 	const wavetime = parseInt(settingsChars[2], 26) % waveformsList.length
-		// 	const clickType = (parseInt(settingsChars[2], 26) - wavetime) / waveformsList.length
-		// 	const segment = parseInt(settingsChars[4], 26) % 2
-		// 	const animations = (parseInt(settingsChars[4], 26) - segment) / 2
-		// 	return {
-		// 		volume: +(parseInt(settingsChars[0], 36) / 35).toFixed(2),
-		// 		release: +(parseInt(settingsChars[1], 36) / 35).toFixed(2),
-		// 		wavetime: wavetime,
-		// 		waveform: waveformsList[clickType],
-		// 		theme: +settingsChars[3],
-		// 		segment: !!segment,
-		// 		animations: !!animations,
-		// 	}
-		// }
-
-		// if (settingsChars === undefined) {
-		// 	return mainDecode()
-		// } else {
-		// 	return {
-		// 		...mainDecode(),
-		// 		...settingsDecode(),
-		// 	}
-		// }
 
 		return mainDecode()
 	}
