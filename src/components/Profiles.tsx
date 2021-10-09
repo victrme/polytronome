@@ -61,20 +61,29 @@ const Profiles = ({
 		// 	a: (stack - b) / b.length
 		//
 		const mainExport = () => {
-			let freqBeats = ''
+			let layerCode = ''
+			let typeVolume = ''
 			let effects: boolean[] = []
 			let activeLayers: boolean[] = []
 
 			layers.forEach((layer: Layer, i: number) => {
 				if (easy) {
-					freqBeats += layer.beats.toString(17)
+					layerCode += layer.beats.toString(17)
 				} else {
 					const savedLayer = JSON.parse(sessionStorage.layers)[i]
 					const layerIsNotDefault = !compareLayers(layer, savedLayer)
 
 					if (layerIsNotDefault) {
-						const stack = layer.freq * 16 + layer.beats
-						freqBeats += (stack < 36 ? '0' : '') + stack.toString(36)
+						const filteredVolume = parseInt(
+							((layer.volume / 2) * 10 + 1).toPrecision(1)
+						)
+						const fbStack = layer.freq * 16 + layer.beats
+						const tvStack = filteredVolume * 4 + waveformsList.indexOf(layer.type)
+
+						layerCode +=
+							(fbStack < 36 ? '0' : '') +
+							fbStack.toString(36) +
+							tvStack.toString(36)
 					}
 
 					activeLayers.push(layerIsNotDefault)
@@ -83,37 +92,19 @@ const Profiles = ({
 			})
 
 			if (easy) {
-				return 'e:' + tempo.toString(36) + freqBeats
+				return 'e:' + tempo.toString(36) + layerCode
 			} else
 				return (
 					tempo.toString(36) +
 					binaryToInt(activeLayers).toString(36) +
-					freqBeats +
+					layerCode +
 					':' +
 					binaryToInt(effects).toString(36)
 				)
 		}
 
-		const settingsExport = () => {
-			const waveStacker = () => {
-				const form = waveformsList.findIndex(w => w === moreSettings.sound.type)
-				const time = moreSettings.sound.duration ? 1 : 0
-				return (form * waveformsList.length + time).toString(26)
-			}
-			// times 2 because [true, false].length = 2
-			const displayStacker = () =>
-				((+moreSettings.animations | 0) * 2 + (+moreSettings.segment.on | 0)).toString(
-					26
-				)
-			return (
-				'-' +
-				Math.floor(moreSettings.sound.volume * 35).toString(36) +
-				Math.floor(moreSettings.sound.release * 35).toString(36) +
-				waveStacker() +
-				(+moreSettings.theme | 0) +
-				displayStacker()
-			)
-		}
+		const settingsExport = () => {}
+
 		return mainExport() + (extended ? settingsExport() : '')
 	}
 
@@ -139,18 +130,23 @@ const Profiles = ({
 
 			// For all 5 layers
 			for (let i = 0; i < 5; i++) {
-				let beats = defaultLayers[i].beats
-				let freq = defaultLayers[i].freq
+				let { beats, freq, volume, type } = defaultLayers[i]
 
 				// If changed layer, apply destackment
 				if (activesArray[i]) {
-					const singleLayer = layersChars.slice(
-						countActivated * 2,
-						countActivated * 2 + 2
+					const typeVolumeCode = layersChars.charAt(countActivated * 3 + 2)
+					const beatsFreqCode = layersChars.slice(
+						countActivated * 3,
+						countActivated * 3 + 2
 					)
-					beats = parseInt(singleLayer, 36) % 16
-					freq = (parseInt(singleLayer, 36) - beats) / 16
+					beats = parseInt(beatsFreqCode, 36) % 16
+					freq = (parseInt(beatsFreqCode, 36) - beats) / 16
 
+					type = parseInt(typeVolumeCode, 36) % 4
+					volume = (parseInt(typeVolumeCode, 36) - type) / 4
+					volume = ((volume - 1) * 2) / 10
+
+					console.log(volume)
 					countActivated++
 				}
 
@@ -160,10 +156,11 @@ const Profiles = ({
 					newLayers[i] = {
 						beats,
 						freq,
+						type,
+						volume,
 						id: setRandomID(),
 						duration: !!allEffects[i * 2],
 						release: !!allEffects[i * 2 + 1],
-						volume: 0.4,
 					}
 				}
 			}
