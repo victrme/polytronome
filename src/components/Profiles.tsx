@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Layer } from '../Types'
 
 const Profiles = ({
+	easy,
 	layers,
 	tempo,
 	moreSettings,
@@ -64,26 +65,33 @@ const Profiles = ({
 			let effects: boolean[] = []
 			let activeLayers: boolean[] = []
 
-			layers.forEach(function (layer: Layer, i: number) {
-				const savedLayer = JSON.parse(sessionStorage.layers)[i]
-				const layerIsNotDefault = !compareLayers(layer, savedLayer)
+			layers.forEach((layer: Layer, i: number) => {
+				if (easy) {
+					freqBeats += layer.beats.toString(17)
+				} else {
+					const savedLayer = JSON.parse(sessionStorage.layers)[i]
+					const layerIsNotDefault = !compareLayers(layer, savedLayer)
 
-				if (layerIsNotDefault) {
-					const stack = layer.freq * 16 + layer.beats
-					freqBeats += (stack < 36 ? '0' : '') + stack.toString(36)
+					if (layerIsNotDefault) {
+						const stack = layer.freq * 16 + layer.beats
+						freqBeats += (stack < 36 ? '0' : '') + stack.toString(36)
+					}
+
+					activeLayers.push(layerIsNotDefault)
+					effects.push(layer.duration, layer.release)
 				}
-
-				activeLayers.push(layerIsNotDefault)
-				effects.push(layer.duration, layer.release)
 			})
 
-			return (
-				tempo.toString(36) +
-				binaryToInt(activeLayers).toString(36) +
-				freqBeats +
-				':' +
-				binaryToInt(effects)
-			)
+			if (easy) {
+				return 'e:' + tempo.toString(36) + freqBeats
+			} else
+				return (
+					tempo.toString(36) +
+					binaryToInt(activeLayers).toString(36) +
+					freqBeats +
+					':' +
+					binaryToInt(effects).toString(36)
+				)
 		}
 
 		const settingsExport = () => {
@@ -114,10 +122,7 @@ const Profiles = ({
 	// [ttallllllllll:mm]
 
 	const importCode = (code: string) => {
-		const split = code.split(':')
-		const [tempoFreqBeats, effects] = split
-
-		const mainDecode = () => {
+		const mainDecode = (easy, tempoFreqBeats, effects) => {
 			const defaultLayers = JSON.parse(sessionStorage.layers)
 			const allEffects = intToBinary(effects, 10)
 			const newLayers = defaultLayers
@@ -125,13 +130,14 @@ const Profiles = ({
 			let countActivated = 0
 			let activesArray: number[] = []
 
-			layersChars = tempoFreqBeats.slice(3, tempoFreqBeats.length)
+			layersChars = tempoFreqBeats.slice(easy ? 2 : 3, tempoFreqBeats.length)
 			activesArray = intToBinary(parseInt(tempoFreqBeats.slice(2, 3), 36), 5).reverse()
 
 			//
 			// Decoding
 			//
 
+			// For all 5 layers
 			for (let i = 0; i < 5; i++) {
 				let beats = defaultLayers[i].beats
 				let freq = defaultLayers[i].freq
@@ -148,13 +154,17 @@ const Profiles = ({
 					countActivated++
 				}
 
-				newLayers[i] = {
-					beats,
-					freq,
-					id: defaultLayers[i].id,
-					duration: !!allEffects[i * 2],
-					release: !!allEffects[i * 2 + 1],
-					volume: 0.4,
+				if (easy) {
+					newLayers[i] = parseInt(layersChars[i], 17)
+				} else {
+					newLayers[i] = {
+						beats,
+						freq,
+						id: setRandomID(),
+						duration: !!allEffects[i * 2],
+						release: !!allEffects[i * 2 + 1],
+						volume: 0.4,
+					}
 				}
 			}
 
@@ -167,7 +177,11 @@ const Profiles = ({
 			}
 		}
 
-		return mainDecode()
+		const split = code.split(':')
+		const [first, second] = split
+
+		if (first === 'e') return mainDecode(true, second, null)
+		else return mainDecode(false, first, second)
 	}
 
 	const applySaved = (data: any) => {
