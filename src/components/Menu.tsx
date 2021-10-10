@@ -71,8 +71,8 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, menuShown, menuHov
 						<div
 							className="theme-list"
 							style={{
-								maxHeight: openedTheme ? 80 : 0,
-								transition: 'max-height .4s',
+								maxHeight: openedTheme ? 120 : 0,
+								transition: 'max-height .5s',
 								overflow: 'hidden',
 							}}
 						>

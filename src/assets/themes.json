@@ -27,6 +27,15 @@
 		"menu": "#ff9196"
 	},
 	{
+		"name": "wood",
+		"background": "#f8dec0",
+		"accent": "#83542d",
+		"dim": "#edc9a0",
+		"dimmer": "#ffebd3",
+		"buttons": "#edc9a0",
+		"menu": "#ffe5c8"
+	},
+	{
 		"name": "coffee",
 		"background": "#fbefdf",
 		"accent": "#8d6852",
@@ -35,6 +44,7 @@
 		"buttons": "#dac6b52a",
 		"menu": "#f5e7d6"
 	},
+
 	{
 		"name": "jungle",
 		"background": "#FFFBF1",
