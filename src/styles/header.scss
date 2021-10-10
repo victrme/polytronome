@@ -67,6 +67,7 @@
 				margin: 10px;
 				padding: 12px 30px;
 				text-align: left;
+				font-size: 16px;
 
 				filter: grayscale(1);
 				background-color: transparent;
@@ -75,6 +76,21 @@
 					color: var(--accent);
 					background-color: var(--buttons);
 					filter: grayscale(0);
+				}
+			}
+
+			.theme-list {
+				display: flex;
+				flex-wrap: wrap;
+				margin-top: 20px;
+
+				span {
+					width: auto;
+					font-size: 12px;
+					padding: 5px 15px;
+					border-radius: 15px;
+					margin: 3px;
+					transition: border-radius 0.4s;
 				}
 			}
 

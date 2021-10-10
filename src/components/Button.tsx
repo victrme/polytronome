@@ -1,6 +1,13 @@
-const Button = ({ name, on, func }) => {
+interface ButtonProps {
+	style?: Object
+	name: string
+	func: any
+	on: boolean
+}
+
+const Button = ({ name, func, on, style }: ButtonProps) => {
 	return (
-		<button name={name} onClick={func} className={on ? 'on' : ''}>
+		<button style={style} name={name} onClick={func} className={on ? 'on' : ''}>
 			{name}
 		</button>
 	)
