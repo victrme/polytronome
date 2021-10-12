@@ -39,10 +39,17 @@
 		svg {
 			width: 60px;
 			height: 60px;
+			padding: 0 15px;
+			border-radius: 8px;
 			cursor: pointer;
+			transition: background-color 0.3s;
 
 			path {
 				transition: stroke-dashoffset 1s;
+			}
+
+			&:hover {
+				background-color: var(--buttons);
 			}
 		}
 	}
@@ -111,6 +118,7 @@
 			&:hover {
 				opacity: 1;
 				background-color: var(--buttons);
+				border-color: transparent;
 			}
 
 			&.on {
