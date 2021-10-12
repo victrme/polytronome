@@ -26,7 +26,7 @@ const App = (): JSX.Element => {
 	})
 
 	const [moreSettings, setMoreSettings] = useState<MoreSettings>({
-		theme: 1,
+		theme: 2,
 		fullscreen: false,
 		unlimited: false,
 		animations: true,
@@ -221,8 +221,11 @@ const App = (): JSX.Element => {
 					restartMetronome={restartMetronome}
 				></LayersTable>
 
-				<div className='bottom-buttons'>
-					<button className='start' onClick={() => (isRunning ? stopMetronome() : startMetronome())}>
+				<div className="bottom-buttons">
+					<button
+						className="start"
+						onClick={() => (isRunning ? stopMetronome() : startMetronome())}
+					>
 						{isRunning ? '◼' : '▶'}
 					</button>
 
@@ -244,7 +247,7 @@ const App = (): JSX.Element => {
 							</button>
 							<button
 								className="clickview"
-								onClick={() => 
+								onClick={() =>
 									setSegment(prev => ({
 										...prev,
 										on: !prev.on,
@@ -268,8 +271,6 @@ const App = (): JSX.Element => {
 							</button>
 						</div>
 					)}
-
-				
 				</div>
 			</main>
 			<div className="ad"></div>

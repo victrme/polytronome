@@ -18,13 +18,22 @@
 		"menu": "#383a2d"
 	},
 	{
-		"name": "pink",
-		"background": "#f37f83",
-		"accent": "#ffdce2",
-		"dim": "#ef6c77",
-		"dimmer": "#ffffff2a",
-		"buttons": "#ffffff2a",
-		"menu": "#ff9196"
+		"name": "silver",
+		"background": "#dae3f0",
+		"accent": "#666c6d",
+		"dim": "#a5b2c5",
+		"dimmer": "#cad4e3",
+		"buttons": "#c9d6be",
+		"menu": "#f7f8fd"
+	},
+	{
+		"name": "cosy",
+		"background": "#dcbdc5",
+		"accent": "#885d5e",
+		"dim": "#ffd8cc",
+		"dimmer": "#ebd4da",
+		"buttons": "#ffd8cc",
+		"menu": "#fff5ed"
 	},
 	{
 		"name": "wood",

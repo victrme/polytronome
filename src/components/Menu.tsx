@@ -1,7 +1,7 @@
 import Themes from '../assets/themes.json'
 import propTypes from 'prop-types'
 import Button from './Button'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, menuShown, menuHovered }) => {
 	const [openedTheme, setOpenedTheme] = useState(false)
@@ -30,18 +30,22 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, menuShown, menuHov
 		}
 	}
 
-	const changeTheme = (index: number) => {
+	const applyTheme = (index: number) => {
 		const root = document.querySelector(':root')! as HTMLBodyElement
-
 		Object.entries(Themes[index]).forEach(([key, val]) =>
 			val !== undefined ? root.style.setProperty('--' + key, val) : ''
 		)
+	}
 
+	const changeTheme = (index: number) => {
+		applyTheme(index)
 		setMoreSettings(prev => ({ ...prev, theme: index }))
 		localStorage.theme = index
 	}
 
-	// const overlayRef = useRef(document.createElement('div'))
+	useEffect(() => {
+		applyTheme(moreSettings.theme)
+	}, [])
 
 	return (
 		<div className={'menu' + (menuShown ? ' shown' : menuHovered ? ' hovered' : '')}>
@@ -62,40 +66,38 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, menuShown, menuHov
 
 				<Button name="fullscreen" on={fullscreen} func={changeFullscreen}></Button>
 
-				<button
-					className={openedTheme ? 'on' : ''}
-					onClick={e => setOpenedTheme(!openedTheme)}
+				<Button
+					name="themes"
+					on={openedTheme}
+					func={e => setOpenedTheme(!openedTheme)}
+				></Button>
+
+				<div
+					className="theme-list"
+					style={{
+						maxHeight: openedTheme ? 90 : 0,
+						transition: 'max-height .5s',
+						overflow: 'hidden',
+					}}
 				>
-					<div>
-						<span>themes</span>
-						<div
-							className="theme-list"
+					{Themes.map((theme, i) => (
+						<span
+							key={i}
 							style={{
-								maxHeight: openedTheme ? 120 : 0,
-								transition: 'max-height .5s',
-								overflow: 'hidden',
+								backgroundColor: theme.background,
+								color: theme.accent,
+								// borderTopLeftRadius: moreSettings.theme === i ? 0 : 20,
+							}}
+							onClick={e => {
+								e.stopPropagation()
+								e.nativeEvent.stopImmediatePropagation()
+								changeTheme(i)
 							}}
 						>
-							{Themes.map((theme, i) => (
-								<span
-									key={i}
-									style={{
-										backgroundColor: theme.background,
-										color: theme.accent,
-										// borderTopLeftRadius: moreSettings.theme === i ? 0 : 20,
-									}}
-									onClick={e => {
-										e.stopPropagation()
-										e.nativeEvent.stopImmediatePropagation()
-										changeTheme(i)
-									}}
-								>
-									{theme.name}
-								</span>
-							))}
-						</div>
-					</div>
-				</button>
+							{theme.name}
+						</span>
+					))}
+				</div>
 
 				<p className="credit">
 					<a href="https://victr.me">created by victr</a>

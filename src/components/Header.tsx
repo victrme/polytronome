@@ -27,7 +27,7 @@ const Header = props => {
 				xmlns="http://www.w3.org/2000/svg"
 				width="61"
 				height="30"
-				fill={Themes[moreSettings.theme].accent}
+				fill="var(--accent)"
 				onMouseLeave={handleMenuChange}
 				onMouseEnter={handleMenuChange}
 				onClick={() => setMenuShown(!menuShown)}
