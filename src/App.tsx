@@ -179,6 +179,7 @@ const App = (): JSX.Element => {
 
 				<Profiles
 					easy={easy}
+					setEasy={setEasy}
 					layers={layers}
 					setLayers={setLayers}
 					setRandomID={setRandomID}

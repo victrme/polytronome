@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from 'react'
 import { Layer } from '../Types'
+import Themes from '../assets/themes.json'
 
 const Profiles = ({
 	easy,
+	setEasy,
 	layers,
 	tempo,
 	moreSettings,
@@ -62,45 +64,43 @@ const Profiles = ({
 		//
 		const mainExport = () => {
 			let layerCode = ''
-			let typeVolume = ''
-			let effects: boolean[] = []
+			let bools: boolean[] = []
 			let activeLayers: boolean[] = []
 
+			// Stack freq with beats, type with volume
+			// (Duration + release) * 5 in binary array
 			layers.forEach((layer: Layer, i: number) => {
-				if (easy) {
-					layerCode += layer.beats.toString(17)
-				} else {
-					const savedLayer = JSON.parse(sessionStorage.layers)[i]
-					const layerIsNotDefault = !compareLayers(layer, savedLayer)
+				const savedLayer = JSON.parse(sessionStorage.layers)[i]
+				const layerIsNotDefault = !compareLayers(layer, savedLayer)
 
-					if (layerIsNotDefault) {
-						const filteredVolume = parseInt(
-							((layer.volume / 2) * 10 + 1).toPrecision(1)
-						)
-						const fbStack = layer.freq * 16 + layer.beats
-						const tvStack = filteredVolume * 4 + waveformsList.indexOf(layer.type)
+				if (layerIsNotDefault) {
+					const filteredVolume = parseInt(
+						((layer.volume / 2) * 10 + 1).toPrecision(1)
+					)
+					const fbStack = layer.freq * 16 + layer.beats
+					const tvStack = filteredVolume * 4 + waveformsList.indexOf(layer.type)
 
-						layerCode +=
-							(fbStack < 36 ? '0' : '') +
-							fbStack.toString(36) +
-							tvStack.toString(36)
-					}
-
-					activeLayers.push(layerIsNotDefault)
-					effects.push(layer.duration, layer.release)
+					layerCode +=
+						(fbStack < 36 ? '0' : '') + fbStack.toString(36) + tvStack.toString(36)
 				}
+
+				activeLayers.push(layerIsNotDefault)
+				bools.push(layer.duration, layer.release)
 			})
 
-			if (easy) {
-				return 'e:' + tempo.toString(36) + layerCode
-			} else
-				return (
-					tempo.toString(36) +
-					binaryToInt(activeLayers).toString(36) +
-					layerCode +
-					':' +
-					binaryToInt(effects).toString(36)
-				)
+			// Add more settings
+			// Stack themes with layers/settings bool
+			bools.push(easy, moreSettings.animations)
+			const boolsInt = binaryToInt(bools)
+			const tbStack = boolsInt * Themes.length + moreSettings.theme
+
+			return (
+				tempo.toString(36) +
+				binaryToInt(activeLayers).toString(36) +
+				layerCode +
+				':' +
+				tbStack.toString(36)
+			)
 		}
 
 		const settingsExport = () => {}
@@ -113,105 +113,102 @@ const Profiles = ({
 	// [ttallllllllll:mm]
 
 	const importCode = (code: string) => {
-		const mainDecode = (easy, tempoFreqBeats, effects) => {
-			const defaultLayers = JSON.parse(sessionStorage.layers)
-			const allEffects = intToBinary(effects, 10)
-			const newLayers = defaultLayers
-			let layersChars = ''
-			let countActivated = 0
-			let activesArray: number[] = []
+		//
 
-			layersChars = tempoFreqBeats.slice(easy ? 2 : 3, tempoFreqBeats.length)
-			activesArray = intToBinary(parseInt(tempoFreqBeats.slice(2, 3), 36), 5).reverse()
+		const split = code.split(':')
+		const [tempoFreqBeats, boolsAndTheme] = split
 
-			//
-			// Decoding
-			//
+		const defaultLayers = JSON.parse(sessionStorage.layers)
+		const newLayers = defaultLayers
+		let layersChars = ''
+		let countActivated = 0
+		let activesArray: number[] = []
 
-			// For all 5 layers
-			for (let i = 0; i < 5; i++) {
-				let { beats, freq, volume, type } = defaultLayers[i]
+		// Separate tempo & active layers from actual layer settings
+		layersChars = tempoFreqBeats.slice(3, tempoFreqBeats.length)
+		activesArray = intToBinary(parseInt(tempoFreqBeats.slice(2, 3), 36), 5).reverse()
 
-				// If changed layer, apply destackment
-				if (activesArray[i]) {
-					const typeVolumeCode = layersChars.charAt(countActivated * 3 + 2)
-					const beatsFreqCode = layersChars.slice(
-						countActivated * 3,
-						countActivated * 3 + 2
-					)
-					beats = parseInt(beatsFreqCode, 36) % 16
-					freq = (parseInt(beatsFreqCode, 36) - beats) / 16
+		const theme = parseInt(boolsAndTheme, 36) % Themes.length
+		const boolsInt = (parseInt(boolsAndTheme, 36) - theme) / Themes.length
+		const boolsArray = intToBinary(boolsInt, 12)
 
-					type = parseInt(typeVolumeCode, 36) % 4
-					volume = (parseInt(typeVolumeCode, 36) - type) / 4
-					volume = ((volume - 1) * 2) / 10
+		//
+		// Decoding
+		//
 
-					console.log(volume)
-					countActivated++
-				}
+		// For all 5 layers
+		for (let i = 0; i < 5; i++) {
+			let { beats, freq, volume, type } = defaultLayers[i]
 
-				if (easy) {
-					newLayers[i] = parseInt(layersChars[i], 17)
-				} else {
-					newLayers[i] = {
-						beats,
-						freq,
-						type,
-						volume,
-						id: setRandomID(),
-						duration: !!allEffects[i * 2],
-						release: !!allEffects[i * 2 + 1],
-					}
-				}
+			// If changed layer, apply destackment
+			if (activesArray[i]) {
+				const typeVolumeCode = layersChars.charAt(countActivated * 3 + 2)
+				const beatsFreqCode = layersChars.slice(
+					countActivated * 3,
+					countActivated * 3 + 2
+				)
+				beats = parseInt(beatsFreqCode, 36) % 16
+				freq = (parseInt(beatsFreqCode, 36) - beats) / 16
+
+				type = parseInt(typeVolumeCode, 36) % 4
+				volume = (parseInt(typeVolumeCode, 36) - type) / 4
+				volume = ((volume - 1) * 2) / 10
+
+				countActivated++
 			}
 
-			// Add tempo
-			const newTempo = parseInt(tempoFreqBeats.slice(0, 2), 36)
-
-			return {
-				newLayers,
-				newTempo,
+			newLayers[i] = {
+				id: setRandomID(),
+				beats,
+				freq,
+				volume,
+				type: waveformsList[type],
+				duration: !!boolsArray[i * 2],
+				release: !!boolsArray[i * 2 + 1],
 			}
 		}
 
-		const split = code.split(':')
-		const [first, second] = split
+		// Add tempo
+		const newTempo = parseInt(tempoFreqBeats.slice(0, 2), 36)
+		const newMoreSettings = {
+			theme,
+			animations: boolsArray[0],
+		}
 
-		if (first === 'e') return mainDecode(true, second, null)
-		else return mainDecode(false, first, second)
+		return {
+			layers: newLayers,
+			tempo: newTempo,
+			moreSettings: newMoreSettings,
+			easy: !!boolsArray[1],
+		}
 	}
 
 	const applySaved = (data: any) => {
 		setMoreSettings(prev => ({
 			...prev,
-			animations: data.animations,
-			theme: data.theme,
-			segment: {
-				...prev.segment,
-				on: data.segment,
-			},
-			sound: { ...data.sound },
+			...data.moreSettings,
 		}))
 		setLayers([...data.layers])
 		setTempo(data.tempo)
-		//applyTheme(data.theme)
+		setEasy(data.easy)
 	}
 
 	// useBeforeunload(event => {
 	// 	localStorage.sleep = JSON.stringify(saveWork())
 	// })
 
+	//28v5gf9hbafnayfcxc:6at
+
 	useEffect(() => {
 		sessionStorage.layers = JSON.stringify(layers)
+		applySaved(importCode('28v5gf9hbafnayfcxc:6at'))
 	}, [])
 
-	useEffect(() => {
-		setExportCode(createExportCode(false))
-	}, [layers, moreSettings, tempo])
+	// useEffect(() => {
+	// 	setExportCode(createExportCode(false))
+	// }, [layers, moreSettings, tempo, easy])
 
-	console.log(exportCode, importCode(exportCode))
-
-	return <div>{'ok'}</div>
+	return <div></div>
 }
 
 export default Profiles
