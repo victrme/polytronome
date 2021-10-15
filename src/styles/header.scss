@@ -19,7 +19,7 @@
 		overflow: hidden;
 		z-index: 20;
 		font-size: 12px;
-		font-weight: 600;
+		font-weight: 500;
 
 		&.shown {
 			.inner {
@@ -67,24 +67,35 @@
 				margin: 10px;
 				padding: 12px 30px;
 				text-align: left;
-
-				filter: grayscale(1);
+				font-size: 16px;
 				background-color: transparent;
 
 				&.on {
 					color: var(--accent);
 					background-color: var(--buttons);
-					filter: grayscale(0);
 				}
 			}
 
-			.profile {
-				margin-top: 50px;
+			.theme-list {
+				display: flex;
+				flex-wrap: wrap;
+				margin-top: 20px;
+				width: 60%;
+
+				span {
+					width: auto;
+					font-size: 12px;
+					padding: 5px 15px;
+					border-radius: 15px;
+					margin: 3px;
+					transition: border-radius 0.4s;
+					cursor: pointer;
+				}
 			}
 
 			.credit {
 				text-align: center;
-				margin-top: 150px;
+				margin-top: 100px;
 				margin-bottom: 40px;
 				width: 100%;
 
