@@ -19,6 +19,7 @@ const App = (): JSX.Element => {
 	const [isRunning, setIsRunning] = useState('')
 	const [easy, setEasy] = useState(true)
 	const [exportCode, setExportCode] = useState('')
+	const [layers, setLayers] = useState<Layer[]>([...defaultLayers])
 
 	const [segment, setSegment] = useState({
 		on: false,
@@ -36,7 +37,6 @@ const App = (): JSX.Element => {
 		all: false,
 	})
 
-	const [layers, setLayers] = useState<Layer[]>([...defaultLayers])
 	const tempoRef = useRef(tempo)
 	const startTimeRef = useRef(startTime)
 	const isRunningRef = useRef(isRunning)

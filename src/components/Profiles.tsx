@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Layer } from '../Types'
 import Themes from '../assets/themes.json'
+import { useBeforeunload } from 'react-beforeunload'
 
 const Profiles = ({
 	easy,
@@ -32,25 +33,7 @@ const Profiles = ({
 		return result
 	}
 
-	const pfStorage = {
-		available: () => {
-			if (localStorage.profile === undefined || localStorage.profile === '[]')
-				return false
-			else return true
-		},
-		get: () => {
-			let result: any[] = []
-			try {
-				result = JSON.parse(localStorage.profile)
-			} catch (error) {
-				console.log(localStorage.profile, error)
-			}
-			return result
-		},
-		set: (a: any) => (localStorage.profile = JSON.stringify(a)),
-	}
-
-	const createExportCode = (extended: boolean) => {
+	const createExportCode = () => {
 		//
 		//	Stackers uses steps for saving different settings in one character
 		//
@@ -62,50 +45,43 @@ const Profiles = ({
 		// 	b: stack % b.length
 		// 	a: (stack - b) / b.length
 		//
-		const mainExport = () => {
-			let layerCode = ''
-			let bools: boolean[] = []
-			let activeLayers: boolean[] = []
 
-			// Stack freq with beats, type with volume
-			// (Duration + release) * 5 in binary array
-			layers.forEach((layer: Layer, i: number) => {
-				const savedLayer = JSON.parse(sessionStorage.layers)[i]
-				const layerIsNotDefault = !compareLayers(layer, savedLayer)
+		let layerCode = ''
+		let bools: boolean[] = []
+		let activeLayers: boolean[] = []
 
-				if (layerIsNotDefault) {
-					const filteredVolume = parseInt(
-						((layer.volume / 2) * 10 + 1).toPrecision(1)
-					)
-					const fbStack = layer.freq * 16 + layer.beats
-					const tvStack = filteredVolume * 4 + waveformsList.indexOf(layer.type)
+		// Stack freq with beats, type with volume
+		// (Duration + release) * 5 in binary array
+		layers.forEach((layer: Layer, i: number) => {
+			const savedLayer = JSON.parse(sessionStorage.layers)[i]
+			const layerIsNotDefault = !compareLayers(layer, savedLayer)
 
-					layerCode +=
-						(fbStack < 36 ? '0' : '') + fbStack.toString(36) + tvStack.toString(36)
-				}
+			if (layerIsNotDefault) {
+				const filteredVolume = parseInt(((layer.volume / 2) * 10 + 1).toPrecision(1))
+				const fbStack = layer.freq * 16 + layer.beats
+				const tvStack = filteredVolume * 4 + waveformsList.indexOf(layer.type)
 
-				activeLayers.push(layerIsNotDefault)
-				bools.push(layer.duration, layer.release)
-			})
+				layerCode +=
+					(fbStack < 36 ? '0' : '') + fbStack.toString(36) + tvStack.toString(36)
+			}
 
-			// Add more settings
-			// Stack themes with layers/settings bool
-			bools.push(easy, moreSettings.animations)
-			const boolsInt = binaryToInt(bools)
-			const tbStack = boolsInt * Themes.length + moreSettings.theme
+			activeLayers.push(layerIsNotDefault)
+			bools.push(layer.duration, layer.release)
+		})
 
-			return (
-				tempo.toString(36) +
-				binaryToInt(activeLayers).toString(36) +
-				layerCode +
-				':' +
-				tbStack.toString(36)
-			)
-		}
+		// Add more settings
+		// Stack themes with layers/settings bool
+		bools.push(easy, moreSettings.animations)
+		const boolsInt = binaryToInt(bools)
+		const tbStack = boolsInt * Themes.length + moreSettings.theme
 
-		const settingsExport = () => {}
-
-		return mainExport() + (extended ? settingsExport() : '')
+		return (
+			tempo.toString(36) +
+			binaryToInt(activeLayers).toString(36) +
+			layerCode +
+			':' +
+			tbStack.toString(36)
+		)
 	}
 
 	// In export: if layers are defaults, add binary after tempo to indicate which are activated
@@ -193,20 +169,18 @@ const Profiles = ({
 		setEasy(data.easy)
 	}
 
-	// useBeforeunload(event => {
-	// 	localStorage.sleep = JSON.stringify(saveWork())
-	// })
-
-	//28v5gf9hbafnayfcxc:6at
+	useBeforeunload(() => {
+		localStorage.sleep = createExportCode()
+	})
 
 	useEffect(() => {
 		sessionStorage.layers = JSON.stringify(layers)
-		applySaved(importCode('28v5gf9hbafnayfcxc:6at'))
+		if (localStorage.sleep) applySaved(importCode(localStorage.sleep))
 	}, [])
 
 	// useEffect(() => {
-	// 	setExportCode(createExportCode(false))
-	// }, [layers, moreSettings, tempo, easy])
+	// 	setExportCode(createExportCode())
+	// }, [moreSettings, layers, tempo, easy])
 
 	return <div></div>
 }
