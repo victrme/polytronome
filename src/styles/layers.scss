@@ -28,7 +28,7 @@
 
 		&.off {
 			opacity: 0.4;
-			filter: grayscale(1);
+			filter: grayscale(0.6);
 		}
 	}
 
@@ -39,10 +39,17 @@
 		svg {
 			width: 60px;
 			height: 60px;
+			padding: 0 20px;
+			border-radius: 8px;
 			cursor: pointer;
+			transition: background-color 0.3s;
 
 			path {
 				transition: stroke-dashoffset 1s;
+			}
+
+			&:hover {
+				background-color: var(--buttons);
 			}
 		}
 	}
@@ -111,6 +118,7 @@
 			&:hover {
 				opacity: 1;
 				background-color: var(--buttons);
+				border-color: transparent;
 			}
 
 			&.on {
