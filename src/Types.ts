@@ -1,9 +1,7 @@
 export type MoreSettings = {
 	theme: number
 	fullscreen: boolean
-	unlimited: boolean
 	animations: boolean
-	all: boolean
 }
 
 export type Segment = {

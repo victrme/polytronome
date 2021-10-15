@@ -1,4 +1,3 @@
-import Themes from '../assets/themes.json'
 import Tempo from './Tempo'
 import Menu from './Menu'
 import { useState } from 'react'

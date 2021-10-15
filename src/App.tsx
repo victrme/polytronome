@@ -1,11 +1,13 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
-import { MoreSettings, Layer } from './Types'
-import { isMobileOnly } from 'react-device-detect'
+import { useBeforeunload } from 'react-beforeunload'
 import LayersTable from './components/LayersTable'
+import { isMobileOnly } from 'react-device-detect'
+
 import Header from './components/Header'
 import Clicks from './components/Clicks'
-import Profiles from './components/Profiles'
 import defaultLayers from './assets/layers.json'
+import { MoreSettings, Layer } from './Types'
+import { setRandomID, importCode, applyTheme, createExportCode } from './utils'
 
 const App = (): JSX.Element => {
 	//
@@ -18,7 +20,7 @@ const App = (): JSX.Element => {
 	const [startTime, setStartTime] = useState(Date.now)
 	const [isRunning, setIsRunning] = useState('')
 	const [easy, setEasy] = useState(true)
-	const [exportCode, setExportCode] = useState('')
+	//const [exportCode, setExportCode] = useState('')
 	const [layers, setLayers] = useState<Layer[]>([...defaultLayers])
 
 	const [segment, setSegment] = useState({
@@ -32,9 +34,7 @@ const App = (): JSX.Element => {
 	const [moreSettings, setMoreSettings] = useState<MoreSettings>({
 		theme: 2,
 		fullscreen: false,
-		unlimited: false,
 		animations: true,
-		all: false,
 	})
 
 	const tempoRef = useRef(tempo)
@@ -55,12 +55,6 @@ const App = (): JSX.Element => {
 	// Handlers
 	//
 	//
-
-	const setRandomID = () => {
-		let str = ''
-		while (str.length < 8) str += String.fromCharCode(Math.random() * (122 - 97) + 97)
-		return str
-	}
 
 	const startMetronome = useCallback(() => {
 		// Update to start state
@@ -121,11 +115,6 @@ const App = (): JSX.Element => {
 			return false
 		})
 
-		// Wake from sleep (if you have slept)
-		if (localStorage.sleep) {
-			//applySaved(JSON.parse(localStorage.sleep))
-		}
-
 		// Updates fullscreen if left by something else than toggle
 		document.onfullscreenchange = () => {
 			if (document.fullscreenElement === null)
@@ -135,8 +124,29 @@ const App = (): JSX.Element => {
 				}))
 		}
 
+		sessionStorage.layers = JSON.stringify(layers)
+
+		// Apply saved settings
+		if (localStorage.sleep) {
+			const savedCode = importCode(localStorage.sleep)
+
+			console.log(savedCode)
+
+			setMoreSettings({ ...savedCode.moreSettings })
+			setLayers([...savedCode.layers])
+			setTempo(savedCode.tempo)
+			setEasy(savedCode.easy)
+			applyTheme(savedCode.moreSettings.theme)
+		} else {
+			applyTheme(moreSettings.theme)
+		}
+
 		// eslint-disable-next-line
 	}, [])
+
+	useBeforeunload(() => {
+		localStorage.sleep = createExportCode(tempo, layers, moreSettings, easy)
+	})
 
 	//
 	//
@@ -176,20 +186,6 @@ const App = (): JSX.Element => {
 					setLayers={setLayers}
 					restartMetronome={restartMetronome}
 				></LayersTable>
-
-				<Profiles
-					easy={easy}
-					setEasy={setEasy}
-					layers={layers}
-					setLayers={setLayers}
-					setRandomID={setRandomID}
-					tempo={tempo}
-					moreSettings={moreSettings}
-					setTempo={setTempo}
-					setMoreSettings={setMoreSettings}
-					exportCode={exportCode}
-					setExportCode={setExportCode}
-				></Profiles>
 
 				<div className="bottom-buttons">
 					<button
