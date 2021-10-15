@@ -32,7 +32,6 @@ function Range({ volume, i, layers, setLayers }): JSX.Element {
 				const newLayers = [...layers]
 				newLayers[i].volume = stayPositive(percent)
 				setLayers(newLayers)
-				console.log(percent)
 			}, 100)
 		}
 	}

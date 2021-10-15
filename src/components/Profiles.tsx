@@ -1,231 +1,188 @@
 // import { useBeforeunload } from 'react-beforeunload'
 
-const Profiles = () => {
-	// const pfStorage = {
-	// 	available: () => {
-	// 		if (localStorage.profile === undefined || localStorage.profile === '[]')
-	// 			return false
-	// 		else return true
-	// 	},
-	// 	get: () => {
-	// 		let result: any[] = []
-	// 		try {
-	// 			result = JSON.parse(localStorage.profile)
-	// 		} catch (error) {
-	// 			console.log(localStorage.profile, error)
-	// 		}
-	// 		return result
-	// 	},
-	// 	set: (a: any) => (localStorage.profile = JSON.stringify(a)),
-	// }
-	// const exportCode = (extended: boolean) => {
-	// 	//
-	// 	//	Stackers uses steps for saving different settings in one character
-	// 	//
-	// 	//	To stack:
-	// 	// 	[a.len: 3, b.len: 4] => to get the a[2] and b[1]
-	// 	// 	a * b.len + b ---> 3 * 4 + 2 = 14th character
-	// 	//
-	// 	// 	To destack:
-	// 	// 	b: stack % b.length
-	// 	// 	a: (stack - b) / b.length
-	// 	//
-	// 	const mainExport = () => {
-	// 		let layers = ''
-	// 		layers.forEach(layer => {
-	// 			const stack = layer.frequency * 16 + layer.beats
-	// 			if (stack > 36) layers += stack.toString(36)
-	// 			else layers += '0' + stack.toString(36)
-	// 		})
-	// 		return tempo.toString(30) + layers
-	// 	}
-	// 	const settingsExport = () => {
-	// 		const waveStacker = () => {
-	// 			const form = waveformsList.findIndex(w => w === moreSettings.sound.type)
-	// 			const time = moreSettings.sound.duration
-	// 			return (form * waveTimeList.length + time).toString(26)
-	// 		}
-	// 		// times 2 because [true, false].length = 2
-	// 		const displayStacker = () =>
-	// 			((+moreSettings.animations | 0) * 2 + (+moreSettings.segment.on | 0)).toString(
-	// 				26
-	// 			)
-	// 		return (
-	// 			'-' +
-	// 			Math.floor(moreSettings.sound.volume * 35).toString(36) +
-	// 			Math.floor(moreSettings.sound.release * 35).toString(36) +
-	// 			waveStacker() +
-	// 			(+moreSettings.theme | 0) +
-	// 			displayStacker()
-	// 		)
-	// 	}
-	// 	return mainExport() + (extended ? settingsExport() : '')
-	// }
-	// const saveWork = () => {
-	// 	const importCode = (code: string) => {
-	// 		const split = code.split('-')
-	// 		const [mainChars, settingsChars] = split
-	// 		const mainDecode = () => {
-	// 			//
-	// 			// 	For amout of layers found (divide by 2 char by layer)
-	// 			// 	get 1, 2 char, and step up... 3, 4, etc
-	// 			//
-	// 			const layersChars = mainChars.slice(2, mainChars.length)
-	// 			const newLayers: any[] = []
-	// 			for (let ii = 0; ii < layersChars.length / 2; ii++) {
-	// 				// 	Takes 2 chars at a time
-	// 				const singleLayer = layersChars.slice(ii * 2, ii * 2 + 2)
-	// 				//	Apply destackment
-	// 				const beats = parseInt(singleLayer, 36) % 16
-	// 				const note = (parseInt(singleLayer, 36) - beats) / 16
-	// 				newLayers.push({
-	// 					beats: beats === 0 ? 16 : beats,
-	// 					frequency: note,
-	// 				})
-	// 			}
-	// 			const tempo = parseInt(mainChars.slice(0, 2), 30)
-	// 			return {
-	// 				layers,
-	// 				tempo,
-	// 			}
-	// 		}
-	// 		const settingsDecode = () => {
-	// 			const wavetime = parseInt(settingsChars[2], 26) % waveTimeList.length
-	// 			const clickType =
-	// 				(parseInt(settingsChars[2], 26) - wavetime) / waveTimeList.length
-	// 			const segment = parseInt(settingsChars[4], 26) % 2
-	// 			const animations = (parseInt(settingsChars[4], 26) - segment) / 2
-	// 			return {
-	// 				volume: +(parseInt(settingsChars[0], 36) / 35).toFixed(2),
-	// 				release: +(parseInt(settingsChars[1], 36) / 35).toFixed(2),
-	// 				wavetime: wavetime,
-	// 				waveform: clickTypeList[clickType],
-	// 				theme: +settingsChars[3],
-	// 				segment: !!segment,
-	// 				animations: !!animations,
-	// 			}
-	// 		}
-	// 		if (settingsChars === undefined) {
-	// 			return mainDecode()
-	// 		} else {
-	// 			return {
-	// 				...mainDecode(),
-	// 				...settingsDecode(),
-	// 			}
-	// 		}
-	// 	}
-	// 	return {
-	// 		name: setRandomID(),
-	// 		layers: [...layers],
-	// 		tempo: tempo,
-	// 		animations: moreSettings.animations,
-	// 		theme: moreSettings.theme,
-	// 		segment: moreSettings.segment.on,
-	// 	}
-	// }
-	// const applySaved = (data: any) => {
-	// 	setMoreSettings(prev => ({
-	// 		...prev,
-	// 		animations: data.animations,
-	// 		theme: data.theme,
-	// 		segment: {
-	// 			...prev.segment,
-	// 			on: data.segment,
-	// 		},
-	// 		sound: { ...data.sound },
-	// 	}))
-	// 	setLayers([...data.layers])
-	// 	setTempo(data.tempo)
-	// 	applyTheme(data.theme)
-	// }
-	// const addProfiles = () => {
-	// 	const profiles = pfStorage.get()
-	// 	if (profiles.length < 5) {
-	// 		// Nested objects need to be saved like this
-	// 		// (layers, sound, etc.)
-	// 		profiles.push(saveWork())
-	// 		pfStorage.set(profiles)
-	// 		setSelectedProfile(profiles.length - 1)
-	// 	}
-	// }
-	// const selectProfile = (selection: number) => {
-	// 	const profile = JSON.parse(localStorage.profile)[selection]
-	// 	applySaved(profile)
-	// 	setSelectedProfile(selection)
-	// 	//setExportInput(exportCode(true))
-	// }
-	// const deleteProfile = () => {
-	// 	const i = selectedProfile
-	// 	const p = pfStorage.get()
-	// 	p.splice(i, 1)
-	// 	pfStorage.set(p)
-	// 	let newSelection = 0
-	// 	if (i === 0 || p.length === i) newSelection = i
-	// 	else newSelection = i - 1
-	// 	setSelectedProfile(newSelection)
-	// }
-	//
-	//
-	//	JSXs
-	//
-	//
-	// const ProfileList = () => {
-	// 	const list = pfStorage.get()
-	// 	const [renamingInput, setRenamingInput] = useState(list[selectedProfile].name)
-	// 	let result = (
-	// 		<div className="profile-bank">
-	// 			<div className="profile" onClick={addProfiles}>
-	// 				<span>+</span>
-	// 			</div>
-	// 		</div>
-	// 	)
-	// 	if (pfStorage.available()) {
-	// 		result = (
-	// 			<div className="profile-bank">
-	// 				{pfStorage.get().map((pf, i) => (
-	// 					<div
-	// 						key={i}
-	// 						className={'profile' + (selectedProfile === i ? ' selected' : '')}
-	// 						onClick={() =>
-	// 							selectedProfile === i ? setIsTyping(true) : selectProfile(i)
-	// 						}
-	// 					>
-	// 						<div
-	// 							className={
-	// 								'profile-name' +
-	// 								(selectedProfile === i && IsTyping ? ' edit' : '')
-	// 							}
-	// 						>
-	// 							<input
-	// 								name="profile-name"
-	// 								type="text"
-	// 								value={renamingInput}
-	// 								onChange={e => {
-	// 									if (e.target.value.length < 12) {
-	// 										setRenamingInput(e.target.value)
-	// 										list[selectedProfile].name = e.target.value
-	// 										pfStorage.set(list)
-	// 									}
-	// 								}}
-	// 								onKeyPress={e =>
-	// 									e.key === 'Enter' ? setIsTyping(false) : ''
-	// 								}
-	// 							/>
-	// 							<span>{pf.name}</span>
-	// 						</div>
-	// 					</div>
-	// 				))}
-	// 				<div className="profile" onClick={addProfiles}>
-	// 					<span>+</span>
-	// 				</div>
-	// 			</div>
-	// 		)
-	// 	}
-	// 	return result
-	// }
-	// useBeforeunload(event => {
-	//     localStorage.sleep = JSON.stringify(saveWork())
-	// })
+import { useEffect, useState } from 'react'
+import { Layer } from '../Types'
+import Themes from '../assets/themes.json'
+import { useBeforeunload } from 'react-beforeunload'
+
+const Profiles = ({
+	easy,
+	setEasy,
+	layers,
+	tempo,
+	moreSettings,
+	setLayers,
+	setMoreSettings,
+	setTempo,
+	setRandomID,
+	exportCode,
+	setExportCode,
+}) => {
+	const waveformsList = ['triangle', 'sawtooth', 'square', 'sine']
+
+	const binaryToInt = arr => arr.reduce((a, v) => (a << 1) | v)
+	const intToBinary = (int, size) => [...Array(size)].map((x, i) => (int >> i) & 1)
+
+	const compareLayers = (stateLayer: Layer, defaultLayer: Layer) => {
+		let result = true
+
+		Object.values(stateLayer).forEach((val, index) => {
+			if (val !== Object.values(defaultLayer)[index]) result = false
+		})
+
+		return result
+	}
+
+	const createExportCode = () => {
+		//
+		//	Stackers uses steps for saving different settings in one character
+		//
+		//	To stack:
+		// 	[a.len: 3, b.len: 4] => to get the a[2] and b[1]
+		// 	a * b.len + b ---> 3 * 4 + 2 = 14th character
+		//
+		// 	To destack:
+		// 	b: stack % b.length
+		// 	a: (stack - b) / b.length
+		//
+
+		let layerCode = ''
+		let bools: boolean[] = []
+		let activeLayers: boolean[] = []
+
+		// Stack freq with beats, type with volume
+		// (Duration + release) * 5 in binary array
+		layers.forEach((layer: Layer, i: number) => {
+			const savedLayer = JSON.parse(sessionStorage.layers)[i]
+			const layerIsNotDefault = !compareLayers(layer, savedLayer)
+
+			if (layerIsNotDefault) {
+				const filteredVolume = parseInt(((layer.volume / 2) * 10 + 1).toPrecision(1))
+				const fbStack = layer.freq * 16 + layer.beats
+				const tvStack = filteredVolume * 4 + waveformsList.indexOf(layer.type)
+
+				layerCode +=
+					(fbStack < 36 ? '0' : '') + fbStack.toString(36) + tvStack.toString(36)
+			}
+
+			activeLayers.push(layerIsNotDefault)
+			bools.push(layer.duration, layer.release)
+		})
+
+		// Add more settings
+		// Stack themes with layers/settings bool
+		bools.push(easy, moreSettings.animations)
+		const boolsInt = binaryToInt(bools)
+		const tbStack = boolsInt * Themes.length + moreSettings.theme
+
+		return (
+			tempo.toString(36) +
+			binaryToInt(activeLayers).toString(36) +
+			layerCode +
+			':' +
+			tbStack.toString(36)
+		)
+	}
+
+	// In export: if layers are defaults, add binary after tempo to indicate which are activated
+	// t: tempo, a: active layers, l: layers, m: more settings
+	// [ttallllllllll:mm]
+
+	const importCode = (code: string) => {
+		//
+
+		const split = code.split(':')
+		const [tempoFreqBeats, boolsAndTheme] = split
+
+		const defaultLayers = JSON.parse(sessionStorage.layers)
+		const newLayers = defaultLayers
+		let layersChars = ''
+		let countActivated = 0
+		let activesArray: number[] = []
+
+		// Separate tempo & active layers from actual layer settings
+		layersChars = tempoFreqBeats.slice(3, tempoFreqBeats.length)
+		activesArray = intToBinary(parseInt(tempoFreqBeats.slice(2, 3), 36), 5).reverse()
+
+		const theme = parseInt(boolsAndTheme, 36) % Themes.length
+		const boolsInt = (parseInt(boolsAndTheme, 36) - theme) / Themes.length
+		const boolsArray = intToBinary(boolsInt, 12)
+
+		//
+		// Decoding
+		//
+
+		// For all 5 layers
+		for (let i = 0; i < 5; i++) {
+			let { beats, freq, volume, type } = defaultLayers[i]
+
+			// If changed layer, apply destackment
+			if (activesArray[i]) {
+				const typeVolumeCode = layersChars.charAt(countActivated * 3 + 2)
+				const beatsFreqCode = layersChars.slice(
+					countActivated * 3,
+					countActivated * 3 + 2
+				)
+				beats = parseInt(beatsFreqCode, 36) % 16
+				freq = (parseInt(beatsFreqCode, 36) - beats) / 16
+
+				type = parseInt(typeVolumeCode, 36) % 4
+				volume = (parseInt(typeVolumeCode, 36) - type) / 4
+				volume = ((volume - 1) * 2) / 10
+
+				countActivated++
+			}
+
+			newLayers[i] = {
+				id: setRandomID(),
+				beats,
+				freq,
+				volume,
+				type: waveformsList[type],
+				duration: !!boolsArray[i * 2],
+				release: !!boolsArray[i * 2 + 1],
+			}
+		}
+
+		// Add tempo
+		const newTempo = parseInt(tempoFreqBeats.slice(0, 2), 36)
+		const newMoreSettings = {
+			theme,
+			animations: boolsArray[0],
+		}
+
+		return {
+			layers: newLayers,
+			tempo: newTempo,
+			moreSettings: newMoreSettings,
+			easy: !!boolsArray[1],
+		}
+	}
+
+	const applySaved = (data: any) => {
+		setMoreSettings(prev => ({
+			...prev,
+			...data.moreSettings,
+		}))
+		setLayers([...data.layers])
+		setTempo(data.tempo)
+		setEasy(data.easy)
+	}
+
+	useBeforeunload(() => {
+		localStorage.sleep = createExportCode()
+	})
+
+	useEffect(() => {
+		sessionStorage.layers = JSON.stringify(layers)
+		if (localStorage.sleep) applySaved(importCode(localStorage.sleep))
+	}, [])
+
+	// useEffect(() => {
+	// 	setExportCode(createExportCode())
+	// }, [moreSettings, layers, tempo, easy])
+
+	return <div></div>
 }
 
 export default Profiles
