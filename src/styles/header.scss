@@ -10,8 +10,8 @@
 
 	.menu {
 		position: absolute;
-		top: -20px;
-		left: -20px;
+		top: -10px;
+		left: -10px;
 		width: 400px;
 		border-radius: 20px;
 		background-color: transparent;
@@ -57,7 +57,7 @@
 			display: flex;
 			flex-direction: column;
 			align-items: center;
-			margin-top: 200px;
+			margin-top: 140px;
 			opacity: 0;
 			max-height: 0;
 			transition: opacity 0.2s 0s, max-height 0s 1s;
@@ -79,7 +79,6 @@
 			.theme-list {
 				display: flex;
 				flex-wrap: wrap;
-				margin-top: 20px;
 				width: 60%;
 
 				span {

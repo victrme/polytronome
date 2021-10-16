@@ -6,6 +6,7 @@ import { applyTheme } from '../utils'
 
 const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, menuShown, menuHovered }) => {
 	const [openedTheme, setOpenedTheme] = useState(false)
+	const [openedSettings, setOpenedSettings] = useState(false)
 	const [fullscreen, setFullscreen] = useState(false)
 
 	const changeAnimations = () => {
@@ -65,8 +66,10 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, menuShown, menuHov
 				<div
 					className="theme-list"
 					style={{
-						maxHeight: openedTheme ? 90 : 0,
-						transition: 'max-height .5s',
+						maxHeight: openedTheme ? 80 : 0,
+						paddingTop: openedTheme ? 20 : 0,
+						paddingBottom: openedTheme ? 20 : 0,
+						transition: 'max-height .5s, padding-top .4s',
 						overflow: 'hidden',
 					}}
 				>
@@ -88,6 +91,12 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, menuShown, menuHov
 						</span>
 					))}
 				</div>
+
+				<Button
+					name="settings"
+					on={openedSettings}
+					func={e => setOpenedSettings(!openedSettings)}
+				></Button>
 
 				<p className="credit">
 					<a href="https://victr.me">created by victr</a>
