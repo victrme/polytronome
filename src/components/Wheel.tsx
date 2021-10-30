@@ -2,6 +2,7 @@ import { useGesture } from 'react-use-gesture'
 import { useState, useRef, useEffect } from 'react'
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
 import { isWindows } from 'react-device-detect'
+import Arrow from './Arrow'
 
 import propTypes from 'prop-types'
 
@@ -195,8 +196,9 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 					onClick={() => wheelArrows(1, 'click')}
 					onMouseDown={() => wheelArrows(1, 'enter')}
 					onMouseLeave={() => wheelArrows(1, 'leave')}
+					style={{ transform: 'rotate(180deg)' }}
 				>
-					↑
+					<Arrow></Arrow>
 				</span>
 				<span
 					className="down"
@@ -204,7 +206,7 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 					onMouseDown={() => wheelArrows(-1, 'enter')}
 					onMouseLeave={() => wheelArrows(-1, 'leave')}
 				>
-					↓
+					<Arrow></Arrow>
 				</span>
 			</div>
 			<div

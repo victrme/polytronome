@@ -1,5 +1,5 @@
 {
-	"short_name": "Polytrnm",
+	"short_name": "Polytronome",
 	"name": "Polytronome",
 	"icons": [
 		{
@@ -15,6 +15,6 @@
 	],
 	"start_url": "/polytronome",
 	"display": "standalone",
-	"theme_color": "#ffffff",
-	"background_color": "#282c34"
+	"theme_color": "#666c6d",
+	"background_color": "#dae3f0"
 }

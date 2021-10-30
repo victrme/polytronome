@@ -23,17 +23,30 @@ const Clicks = ({
 	layersRef.current = layers
 	segmentRef.current = segment
 
+	//
+	//
+	// FAIRE
+	// TIMEOUT
+	// LINEAIRE
+	//
+	//
+
+	const calculateTempoMs = (beats: number, tmp: number) => {
+		tmp = tmp < 30 ? 30 : tmp > 300 ? 300 : tmp
+		return 60000 / ((beats / 4) * tmp)
+	}
+
 	const metronomeInterval = (
-		fixedTempoMs: number,
+		timingsList: number[][],
 		nextDelay: number,
 		index: number,
 		runId: string
 	) => {
-		const m_timeout = window.setTimeout(() => {
+		const m_timeout = window.setTimeout(function callMetronome() {
 			//
 			// Short name for refs
 			const layer = layersRef.current[index]
-			const innerTimes = [...timesRef.current]
+			const innerTimes = timesRef.current
 
 			// Quit recursion if stopped or removed
 			if (isRunningRef.current !== runId || layer === undefined) {
@@ -45,22 +58,22 @@ const Clicks = ({
 			// Segment count, if on
 			//
 
-			if (segmentRef.current.on) {
-				const currSeg = segmentRef.current
+			// if (segmentRef.current.on) {
+			// 	const currSeg = segmentRef.current
 
-				// If there are duplicates, do nothing but count duplicates
-				if (currSeg.dupCount < currSeg.duplicates[currSeg.count]) currSeg.dupCount++
-				else {
-					// Reset duplicate count
-					// Check for layers.time to know what currSeg should do
-					currSeg.dupCount = 1
-					const allAtOne = innerTimes.every(t => t === 1)
-					const oneAtMax = innerTimes[index] === layer.beats
-					currSeg.count = allAtOne ? 1 : oneAtMax ? 0 : currSeg.count + 1
-				}
+			// 	// If there are duplicates, do nothing but count duplicates
+			// 	if (currSeg.dupCount < currSeg.duplicates[currSeg.count]) currSeg.dupCount++
+			// 	else {
+			// 		// Reset duplicate count
+			// 		// Check for layers.time to know what currSeg should do
+			// 		currSeg.dupCount = 1
+			// 		const allAtOne = innerTimes.every(t => t === 1)
+			// 		const oneAtMax = innerTimes[index] === layer.beats
+			// 		currSeg.count = allAtOne ? 1 : oneAtMax ? 0 : currSeg.count + 1
+			// 	}
 
-				setSegment({ ...currSeg })
-			}
+			// 	setSegment({ ...currSeg })
+			// }
 
 			//
 			// Play sound
@@ -84,23 +97,92 @@ const Clicks = ({
 			})
 
 			wave.play()
-			setTimeout(() => wave.stop(), layer.duration ? fixedTempoMs * 0.3 : 50)
+			setTimeout(() => wave.stop(), 50) //layer.duration ? fixedTempoMs * 0.3 : 50)
 
 			//
 			// Update beat time
 			// Return to 1 if 'time' above 'beats'
 			//
 
-			innerTimes[index] = innerTimes[index] >= layer.beats ? 1 : innerTimes[index] + 1
-			setTimes([...innerTimes])
+			// innerTimes[index] = innerTimes[index] >= layer.beats ? 1 : innerTimes[index] + 1
+			// setTimes([...innerTimes])
 
 			// Calculate latency
-			const start = startTimeRef.current
-			const latencyOffset = start > 0 ? (Date.now() - start) % fixedTempoMs : 0
+			// const start = startTimeRef.current
+			//const latencyOffset = start > 0 ? (Date.now() - start) % fixedTempoMs : 0
 
 			// Recursion
-			metronomeInterval(fixedTempoMs, fixedTempoMs - latencyOffset, index, runId)
+			//metronomeInterval(fixedTempoMs, fixedTempoMs - latencyOffset, index, runId)
 		}, nextDelay)
+	}
+
+	function miniMetronomeTest(timingsList: number[][], nextDelay: number) {
+		const m_timeout = window.setTimeout(function callMetronome() {
+			const currentPos = timesRef.current.reduce((a, b) => a + b) - 5
+			const currentTiming = timingsList[currentPos]
+			const times = [...timesRef.current]
+			let nextpos = 0
+
+			times[currentTiming[1]]++
+
+			if (timingsList[currentPos + 1] !== undefined) {
+				setTimes(times)
+				nextpos = timingsList[currentPos + 1][0]
+			} else {
+				setTimes([1, 1, 1, 1, 1])
+				nextpos = timingsList[0][0]
+			}
+
+			miniMetronomeTest(timingsList, nextpos)
+		}, nextDelay)
+	}
+
+	function getMetronomeTimings() {
+		//const beatsLength = segment.ratios.map(ratio => mesureLength * ratio)
+		const mesureLength = 24e4 / tempoRef.current
+		const division: number[] = []
+		let table: any = {}
+		let result: any[] = []
+
+		// Fill with all layers divisions
+		layers.forEach((layer, index) => {
+			for (let beat = 1; beat < layer.beats; beat++) {
+				division.push(beat / layer.beats)
+				table[beat / layer.beats] = index
+			}
+		})
+
+		// Sort: slower latency first, regardless of layer
+		division.sort()
+
+		console.log(division)
+
+		// Substract time from last click to get click interval
+		let lastClickLength = 0
+		division.forEach(div => {
+			const clickLength = mesureLength * div
+			const interval = clickLength - lastClickLength
+
+			result.push([interval, table[div]])
+			lastClickLength = clickLength
+		})
+
+		// last click
+		result.push([mesureLength - lastClickLength, result[result.length - 1][1]])
+		return result
+	}
+
+	function getRatios(list: number[]) {
+		// Removes duplicates
+		list = [0, ...new Set(list), 1]
+		const ratios: number[] = []
+
+		// segment ratio [next - current]
+		list.forEach((elem, i) => {
+			if (list[i + 1]) ratios.push(list[i + 1] - elem)
+		})
+
+		return ratios
 	}
 
 	const initSegment = useCallback(() => {
@@ -119,25 +201,15 @@ const Clicks = ({
 			return duplicates
 		}
 
-		function getRatios(list: number[]) {
-			// Removes duplicates
-			list = [0, ...new Set(list), 1]
-			const ratios: number[] = []
-
-			// segment ratio [next - current]
-			list.forEach((elem, i) => {
-				if (list[i + 1]) ratios.push(list[i + 1] - elem)
-			})
-
-			return ratios
-		}
-
 		const division: number[] = []
 
 		// Fill with all layers divisions & sort
-		layers.forEach(layer => {
-			for (let k = 1; k < layer.beats; k++) division.push(k / layer.beats)
+		layers.forEach((layer, index) => {
+			for (let beat = 1; beat < layer.beats; beat++) {
+				division.push(beat / layer.beats)
+			}
 		})
+
 		division.sort()
 
 		setSegment({
@@ -160,16 +232,12 @@ const Clicks = ({
 	useEffect(() => {
 		// Starting
 		if (isRunning.length > 0) {
-			const calculateTempoMs = (beats: number, tmp: number) => {
-				tmp = tmp < 30 ? 30 : tmp > 300 ? 300 : tmp
-				return 60000 / ((beats / 4) * tmp)
-			}
-
 			setTimes([1, 1, 1, 1, 1])
 			layersRef.current.forEach((layer, i) => {
 				if (layer.beats > 1) {
 					const tempoMs = calculateTempoMs(layer.beats, tempoRef.current)
-					metronomeInterval(tempoMs, tempoMs, i, isRunning)
+					const timings = getMetronomeTimings()
+					metronomeInterval(timings, tempoMs, i, isRunning)
 				}
 			})
 		}
@@ -252,6 +320,8 @@ const Clicks = ({
 	return (
 		<div ref={clicksRef} className="clicks">
 			{clicks}
+			<button onClick={() => getMetronomeTimings()}>timings</button>
+			<button onClick={() => miniMetronomeTest(getMetronomeTimings(), 10)}>start</button>
 		</div>
 	)
 }

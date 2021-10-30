@@ -100,6 +100,10 @@ input {
 
 		&:hover {
 			background-color: var(--buttons);
+
+			.arrows {
+				opacity: 1;
+			}
 		}
 
 		.arrows {
@@ -110,9 +114,11 @@ input {
 			margin-left: -25px;
 			height: 50px;
 			z-index: 2;
+			opacity: 0.3;
 
 			span {
-				width: 20px;
+				width: 16px;
+				padding: 0 4px;
 				text-align: center;
 				font-size: 15px;
 				font-weight: 500;

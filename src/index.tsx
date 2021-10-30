@@ -11,4 +11,4 @@ ReactDOM.render(
 	document.getElementById('app-content')
 )
 
-reportWebVitals()
+// reportWebVitals()
