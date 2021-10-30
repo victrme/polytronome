@@ -31,6 +31,10 @@ const Clicks = ({
 	//
 	//
 
+	//
+	// TODO
+	// Sort division hash table directement
+
 	const calculateTempoMs = (beats: number, tmp: number) => {
 		tmp = tmp < 30 ? 30 : tmp > 300 ? 300 : tmp
 		return 60000 / ((beats / 4) * tmp)
@@ -118,57 +122,55 @@ const Clicks = ({
 
 	function miniMetronomeTest(timingsList: number[][], nextDelay: number) {
 		const m_timeout = window.setTimeout(function callMetronome() {
+			//
+			// Current metronome position counts number of times in array,
+			// minus default: [2, 3, 3, 2, 1] = 6 ... [1, 1, 1, 1, 1] = 0
+			//
 			const currentPos = timesRef.current.reduce((a, b) => a + b) - 5
 			const currentTiming = timingsList[currentPos]
 			const times = [...timesRef.current]
 			let nextpos = 0
 
+			// Bump time in correct layer
 			times[currentTiming[1]]++
 
-			if (timingsList[currentPos + 1] !== undefined) {
-				setTimes(times)
-				nextpos = timingsList[currentPos + 1][0]
-			} else {
-				setTimes([1, 1, 1, 1, 1])
-				nextpos = timingsList[0][0]
-			}
+			// Save times and change position
+			const hasNextClick = timingsList[currentPos + 1] !== undefined
+			setTimes(hasNextClick ? [...times] : [1, 1, 1, 1, 1])
+			nextpos = hasNextClick ? timingsList[currentPos + 1][0] : timingsList[0][0]
 
 			miniMetronomeTest(timingsList, nextpos)
 		}, nextDelay)
 	}
 
 	function getMetronomeTimings() {
-		//const beatsLength = segment.ratios.map(ratio => mesureLength * ratio)
 		const mesureLength = 24e4 / tempoRef.current
-		const division: number[] = []
-		let table: any = {}
+		const division: any[] = []
 		let result: any[] = []
 
 		// Fill with all layers divisions
 		layers.forEach((layer, index) => {
 			for (let beat = 1; beat < layer.beats; beat++) {
-				division.push(beat / layer.beats)
-				table[beat / layer.beats] = index
+				division.push({ ratio: beat / layer.beats, layer: index })
 			}
 		})
 
 		// Sort: slower latency first, regardless of layer
-		division.sort()
-
-		console.log(division)
+		division.sort((a, b) => a.ratio - b.ratio)
 
 		// Substract time from last click to get click interval
 		let lastClickLength = 0
-		division.forEach(div => {
-			const clickLength = mesureLength * div
+		division.forEach(elem => {
+			const clickLength = mesureLength * elem.ratio
 			const interval = clickLength - lastClickLength
 
-			result.push([interval, table[div]])
+			result.push([interval, elem.layer])
 			lastClickLength = clickLength
 		})
 
-		// last click
+		// Subsctract from last click
 		result.push([mesureLength - lastClickLength, result[result.length - 1][1]])
+
 		return result
 	}
 
