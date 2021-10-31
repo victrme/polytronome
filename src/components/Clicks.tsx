@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import propTypes from 'prop-types'
 import Pizzicato from 'pizzicato'
+import { Layer } from '../Types'
 
 const Clicks = ({
 	isRunning,
@@ -23,70 +24,39 @@ const Clicks = ({
 	layersRef.current = layers
 	segmentRef.current = segment
 
-	//
-	//
-	// FAIRE
-	// TIMEOUT
-	// LINEAIRE
-	//
-	//
+	type Timings = [number, number[]][]
 
-	//
-	// TODO
-	// Sort division hash table directement
+	// 		//
+	// 		// Segment count, if on
+	// 		//
 
-	const calculateTempoMs = (beats: number, tmp: number) => {
-		tmp = tmp < 30 ? 30 : tmp > 300 ? 300 : tmp
-		return 60000 / ((beats / 4) * tmp)
-	}
+	// 		// if (segmentRef.current.on) {
+	// 		// 	const currSeg = segmentRef.current
 
-	const metronomeInterval = (
-		timingsList: number[][],
-		nextDelay: number,
-		index: number,
-		runId: string
-	) => {
-		const m_timeout = window.setTimeout(function callMetronome() {
-			//
-			// Short name for refs
-			const layer = layersRef.current[index]
-			const innerTimes = timesRef.current
+	// 		// 	// If there are duplicates, do nothing but count duplicates
+	// 		// 	if (currSeg.dupCount < currSeg.duplicates[currSeg.count]) currSeg.dupCount++
+	// 		// 	else {
+	// 		// 		// Reset duplicate count
+	// 		// 		// Check for layers.time to know what currSeg should do
+	// 		// 		currSeg.dupCount = 1
+	// 		// 		const allAtOne = innerTimes.every(t => t === 1)
+	// 		// 		const oneAtMax = innerTimes[index] === layer.beats
+	// 		// 		currSeg.count = allAtOne ? 1 : oneAtMax ? 0 : currSeg.count + 1
+	// 		// 	}
 
-			// Quit recursion if stopped or removed
-			if (isRunningRef.current !== runId || layer === undefined) {
-				clearTimeout(m_timeout)
-				return
-			}
+	// 		// 	setSegment({ ...currSeg })
+	// 		// }
 
-			//
-			// Segment count, if on
-			//
+	// 		// Calculate latency
+	// 		// const start = startTimeRef.current
+	// 		//const latencyOffset = start > 0 ? (Date.now() - start) % fixedTempoMs : 0
 
-			// if (segmentRef.current.on) {
-			// 	const currSeg = segmentRef.current
+	function playSound(layerArray: Layer[]) {
+		const sounds: Pizzicato[] = []
 
-			// 	// If there are duplicates, do nothing but count duplicates
-			// 	if (currSeg.dupCount < currSeg.duplicates[currSeg.count]) currSeg.dupCount++
-			// 	else {
-			// 		// Reset duplicate count
-			// 		// Check for layers.time to know what currSeg should do
-			// 		currSeg.dupCount = 1
-			// 		const allAtOne = innerTimes.every(t => t === 1)
-			// 		const oneAtMax = innerTimes[index] === layer.beats
-			// 		currSeg.count = allAtOne ? 1 : oneAtMax ? 0 : currSeg.count + 1
-			// 	}
-
-			// 	setSegment({ ...currSeg })
-			// }
-
-			//
-			// Play sound
-			//
-			const vol =
-				layer.type === 'sawtooth' || layer.type === 'square'
-					? layer.volume / 3
-					: layer.volume
-
+		layerArray.forEach(layer => {
+			const isAggressiveType = layer.type === 'sawtooth' || layer.type === 'square'
+			const vol = isAggressiveType ? layer.volume / 3 : layer.volume
 			const note = layer.freq + 12
 			const freq = 32.7 * 2 ** (note / 12)
 			const wave = new Pizzicato.Sound({
@@ -100,47 +70,57 @@ const Clicks = ({
 				},
 			})
 
-			wave.play()
-			setTimeout(() => wave.stop(), 50) //layer.duration ? fixedTempoMs * 0.3 : 50)
+			sounds.push(wave)
+		})
 
-			//
-			// Update beat time
-			// Return to 1 if 'time' above 'beats'
-			//
-
-			// innerTimes[index] = innerTimes[index] >= layer.beats ? 1 : innerTimes[index] + 1
-			// setTimes([...innerTimes])
-
-			// Calculate latency
-			// const start = startTimeRef.current
-			//const latencyOffset = start > 0 ? (Date.now() - start) % fixedTempoMs : 0
-
-			// Recursion
-			//metronomeInterval(fixedTempoMs, fixedTempoMs - latencyOffset, index, runId)
-		}, nextDelay)
+		const group = new Pizzicato.Group(sounds)
+		group.play()
+		setTimeout(() => group.stop(), 50) //layer.duration ? fixedTempoMs * 0.3 : 50)
 	}
 
-	function miniMetronomeTest(timingsList: number[][], nextDelay: number) {
-		const m_timeout = window.setTimeout(function callMetronome() {
+	function miniMetronomeTest(timings: Timings, runId: string) {
+		//
+		function runRecursion(nextDelay: number, position: number) {
 			//
-			// Current metronome position counts number of times in array,
-			// minus default: [2, 3, 3, 2, 1] = 6 ... [1, 1, 1, 1, 1] = 0
-			//
-			const currentPos = timesRef.current.reduce((a, b) => a + b) - 5
-			const currentTiming = timingsList[currentPos]
-			const times = [...timesRef.current]
-			let nextpos = 0
+			const m_timeout = window.setTimeout(function callRecursion() {
+				//
+				// Quit recursion if stopped or removed
+				if (isRunningRef.current !== runId) {
+					clearTimeout(m_timeout)
+					return false
+				}
 
-			// Bump time in correct layer
-			times[currentTiming[1]]++
+				const currentTiming = timings[position]
+				const times = [...timesRef.current]
 
-			// Save times and change position
-			const hasNextClick = timingsList[currentPos + 1] !== undefined
-			setTimes(hasNextClick ? [...times] : [1, 1, 1, 1, 1])
-			nextpos = hasNextClick ? timingsList[currentPos + 1][0] : timingsList[0][0]
+				// Bump time in correct layer
+				currentTiming[1].forEach(index => times[index]++)
 
-			miniMetronomeTest(timingsList, nextpos)
-		}, nextDelay)
+				// Play specific layers
+				const layersToPlay = layers.filter((x, i) => currentTiming[1].indexOf(i) !== -1)
+				playSound(layersToPlay)
+
+				// Save times and change position
+				if (timings[position + 1] !== undefined) {
+					setTimes([...times])
+					nextDelay = timings[position + 1][0]
+					position++
+				} else {
+					playSound(activeLayers())
+					setTimes([1, 1, 1, 1, 1])
+					nextDelay = timings[0][0]
+					position = 0
+				}
+
+				runRecursion(nextDelay, position)
+			}, nextDelay)
+		}
+
+		const layers: Layer[] = [...layersRef.current]
+		const activeLayers = () => layers.filter(layer => layer.beats > 1)
+
+		playSound(activeLayers())
+		runRecursion(timings[0][0], 0)
 	}
 
 	function getMetronomeTimings() {
@@ -170,6 +150,7 @@ const Clicks = ({
 
 		// Subsctract from last click
 		result.push([mesureLength - lastClickLength, result[result.length - 1][1]])
+		result = filterDuplicates(result)
 
 		return result
 	}
@@ -185,6 +166,19 @@ const Clicks = ({
 		})
 
 		return ratios
+	}
+
+	function filterDuplicates(rawTimings: number[][]) {
+		const duplicates: Timings = []
+
+		// Add 0 timed layer index to last timing
+		// Or push a new timing
+		rawTimings.forEach(([time, layer]) => {
+			if (time === 0) duplicates[duplicates.length - 1][1].push(layer)
+			else duplicates.push([time, [layer]])
+		})
+
+		return duplicates
 	}
 
 	const initSegment = useCallback(() => {
@@ -235,13 +229,7 @@ const Clicks = ({
 		// Starting
 		if (isRunning.length > 0) {
 			setTimes([1, 1, 1, 1, 1])
-			layersRef.current.forEach((layer, i) => {
-				if (layer.beats > 1) {
-					const tempoMs = calculateTempoMs(layer.beats, tempoRef.current)
-					const timings = getMetronomeTimings()
-					metronomeInterval(timings, tempoMs, i, isRunning)
-				}
-			})
+			miniMetronomeTest(getMetronomeTimings(), isRunningRef.current)
 		}
 
 		// Ending
@@ -322,8 +310,12 @@ const Clicks = ({
 	return (
 		<div ref={clicksRef} className="clicks">
 			{clicks}
-			<button onClick={() => getMetronomeTimings()}>timings</button>
-			<button onClick={() => miniMetronomeTest(getMetronomeTimings(), 10)}>start</button>
+			{/* <div>
+				<button onClick={() => getMetronomeTimings()}>timings</button>
+				<button onClick={() => console.log(filterDuplicates(getMetronomeTimings()))}>
+					duplicates
+				</button>
+			</div> */}
 		</div>
 	)
 }

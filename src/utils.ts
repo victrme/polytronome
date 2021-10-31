@@ -76,7 +76,7 @@ export const createExportCode = (
 
 	// Add more settings
 	// Stack themes with layers/settings bool
-	bools.push(easy, moreSettings.animations)
+	bools.push(easy, moreSettings.performance)
 	const boolsInt = binaryToInt(bools)
 	const tbStack = boolsInt * Themes.length + moreSettings.theme
 
@@ -150,7 +150,7 @@ export const importCode = (code: string) => {
 	const newTempo = parseInt(tempoFreqBeats.slice(0, 2), 36)
 	const newMoreSettings: MoreSettings = {
 		theme,
-		animations: !!boolsArray[0],
+		performance: !!boolsArray[0],
 		fullscreen: false,
 	}
 
