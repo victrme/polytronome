@@ -34,7 +34,7 @@ const App = (): JSX.Element => {
 	const [moreSettings, setMoreSettings] = useState<MoreSettings>({
 		theme: 2,
 		fullscreen: false,
-		animations: true,
+		performance: false,
 	})
 
 	const tempoRef = useRef(tempo)

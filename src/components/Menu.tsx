@@ -12,13 +12,13 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, menuShown, menuHov
 	const changeAnimations = () => {
 		const appDOM = document.querySelector('.polytronome') as HTMLDivElement
 
-		moreSettings.animations
+		moreSettings.performance
 			? appDOM.classList.add('performance')
 			: appDOM.classList.remove('performance')
 
 		setMoreSettings(prev => ({
 			...prev,
-			animations: moreSettings.animations ? false : true,
+			performance: moreSettings.performance ? false : true,
 		}))
 	}
 
@@ -51,7 +51,7 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, menuShown, menuHov
 
 				<Button
 					name="performance mode"
-					on={!moreSettings.animations}
+					on={!moreSettings.performance}
 					func={changeAnimations}
 				></Button>
 
