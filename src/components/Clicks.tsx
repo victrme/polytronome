@@ -126,8 +126,9 @@ const Clicks = ({
 
 	function getMetronomeTimings() {
 		const mesureLength = 24e4 / tempoRef.current
+		const result: Timings = []
 		const division: any[] = []
-		let result: any[] = []
+		let rawTimings: any[] = []
 
 		// Fill with all layers divisions
 		layers.forEach((layer, index) => {
@@ -145,28 +146,21 @@ const Clicks = ({
 			const clickLength = mesureLength * elem.ratio
 			const interval = clickLength - lastClickLength
 
-			result.push([interval, elem.layer])
+			rawTimings.push([interval, elem.layer])
 			lastClickLength = clickLength
 		})
 
 		// Subsctract from last click
-		result.push([mesureLength - lastClickLength, result[result.length - 1][1]])
-		result = filterDuplicates(result)
-
-		return result
-	}
-
-	function filterDuplicates(rawTimings: number[][]) {
-		const duplicates: Timings = []
+		rawTimings.push([mesureLength - lastClickLength, rawTimings[rawTimings.length - 1][1]])
 
 		// Add 0 timed layer index to last timing
 		// Or push a new timing
 		rawTimings.forEach(([time, layer]) => {
-			if (time === 0) duplicates[duplicates.length - 1][1].push(layer)
-			else duplicates.push([time, [layer]])
+			if (time === 0) result[result.length - 1][1].push(layer)
+			else result.push([time, [layer]])
 		})
 
-		return duplicates
+		return result
 	}
 
 	const initSegment = () => {
