@@ -9,6 +9,15 @@
 		"menu": "#222222"
 	},
 	{
+		"name": "night",
+		"background": "#0d1117",
+		"accent": "#a9b59e",
+		"dim": "#21262d",
+		"dimmer": "#161b22",
+		"buttons": "#2b323b",
+		"menu": "#161b22"
+	},
+	{
 		"name": "monokai",
 		"background": "#272822",
 		"accent": "#a6e22e",

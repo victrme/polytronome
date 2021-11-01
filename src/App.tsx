@@ -169,7 +169,6 @@ const App = (): JSX.Element => {
 					tempoRef={tempoRef}
 					isRunning={isRunning}
 					isRunningRef={isRunningRef}
-					startTimeRef={startTimeRef}
 					setSegment={setSegment}
 				></Clicks>
 

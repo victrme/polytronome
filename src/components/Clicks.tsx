@@ -3,15 +3,7 @@ import propTypes from 'prop-types'
 import Pizzicato from 'pizzicato'
 import { Layer } from '../Types'
 
-const Clicks = ({
-	isRunning,
-	segment,
-	layers,
-	setSegment,
-	tempoRef,
-	isRunningRef,
-	startTimeRef,
-}) => {
+const Clicks = ({ isRunning, segment, layers, setSegment, tempoRef, isRunningRef }) => {
 	const clicksRef = useRef(document.createElement('div'))
 	const [lateSegmentChange, setLateSegmentChange] = useState(false)
 	const [times, setTimes] = useState<number[]>([1, 1, 1, 1, 1])
@@ -112,7 +104,8 @@ const Clicks = ({
 				}
 			})
 
-			return position
+			// test if timings work before sending
+			return timings[position] === undefined ? position - 1 : position
 		}
 
 		const lastPos = findLastPosition()
@@ -191,8 +184,26 @@ const Clicks = ({
 
 	useEffect(() => {
 		if (segment.on) initSegment()
+
+		//
+		// TODO:
+		// Previous layer pour update que
+		// quand les beats changent
+		//
+		if (true) {
+			const tempTimes = [...times]
+			const concatdTimes = times.reduce((a, b) => a + b)
+			const maxTime = layers.map(a => a.beats).reduce((a, b) => a + b)
+			const percent = concatdTimes / maxTime
+
+			for (let i = 0; i < times.length; i++)
+				tempTimes[i] = Math.ceil(layers[i].beats * percent)
+
+			setTimes([...tempTimes])
+		}
+
 		// eslint-disable-next-line
-	}, [layers, segment.on])
+	}, [layers])
 
 	//
 	//
@@ -273,7 +284,6 @@ Clicks.propTypes = {
 	layers: propTypes.any.isRequired,
 	isRunning: propTypes.any.isRequired,
 	isRunningRef: propTypes.any.isRequired,
-	startTimeRef: propTypes.any.isRequired,
 	tempoRef: propTypes.any.isRequired,
 }
 
