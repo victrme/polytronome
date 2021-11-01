@@ -6,10 +6,7 @@ export type MoreSettings = {
 
 export type Segment = {
 	on: boolean
-	count: number
 	ratios: number[]
-	duplicates: number[]
-	dupCount: number
 }
 
 export type Layer = {
