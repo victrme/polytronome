@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import propTypes from 'prop-types'
 import Pizzicato from 'pizzicato'
 import { Layer } from '../Types'
@@ -15,39 +15,19 @@ const Clicks = ({
 	const clicksRef = useRef(document.createElement('div'))
 	const [lateSegmentChange, setLateSegmentChange] = useState(false)
 	const [times, setTimes] = useState<number[]>([1, 1, 1, 1, 1])
+	const [segmentPos, setSegmentPos] = useState(0)
 
 	const timesRef = useRef(times)
 	const segmentRef = useRef(segment)
 	const layersRef = useRef(layers)
+	const segmentPosRef = useRef(segmentPos)
 
 	timesRef.current = times
 	layersRef.current = layers
 	segmentRef.current = segment
+	segmentPosRef.current = segmentPos
 
 	type Timings = [number, number[]][]
-
-	// 		//
-	// 		// Segment count, if on
-	// 		//
-
-	// 		// if (segmentRef.current.on) {
-	// 		// 	const currSeg = segmentRef.current
-
-	// 		// 	// If there are duplicates, do nothing but count duplicates
-	// 		// 	if (currSeg.dupCount < currSeg.duplicates[currSeg.count]) currSeg.dupCount++
-	// 		// 	else {
-	// 		// 		// Reset duplicate count
-	// 		// 		// Check for layers.time to know what currSeg should do
-	// 		// 		currSeg.dupCount = 1
-	// 		// 		const allAtOne = innerTimes.every(t => t === 1)
-	// 		// 		const oneAtMax = innerTimes[index] === layer.beats
-	// 		// 		currSeg.count = allAtOne ? 1 : oneAtMax ? 0 : currSeg.count + 1
-	// 		// 	}
-
-	// 		// 	setSegment({ ...currSeg })
-	// 		// }
-
-	//
 
 	function playSound(layerArray: Layer[]) {
 		const sounds: Pizzicato[] = []
@@ -76,7 +56,7 @@ const Clicks = ({
 		setTimeout(() => group.stop(), 50) //layer.duration ? fixedTempoMs * 0.3 : 50)
 	}
 
-	function miniMetronomeTest(timings: Timings, runId: string) {
+	function metronome(timings: Timings, runId: string) {
 		function runRecursion(nextDelay: number, position: number): void {
 			const m_timeout = window.setTimeout(function callRecursion() {
 				const perfStart = performance.now()
@@ -103,13 +83,15 @@ const Clicks = ({
 					nextDelay = timings[position + 1][0]
 					position++
 				}
-				// Last mesure
+				// Last mesure (or first w/e)
 				else {
 					playSound(activeLayers())
 					setTimes([1, 1, 1, 1, 1])
 					nextDelay = timings[0][0]
 					position = 0
 				}
+
+				if (segmentRef.current.on) setSegmentPos(position)
 
 				runRecursion(preventLatency(nextDelay, perfStart), position)
 			}, nextDelay)
@@ -174,19 +156,6 @@ const Clicks = ({
 		return result
 	}
 
-	function getRatios(list: number[]) {
-		// Removes duplicates
-		list = [0, ...new Set(list), 1]
-		const ratios: number[] = []
-
-		// segment ratio [next - current]
-		list.forEach((elem, i) => {
-			if (list[i + 1]) ratios.push(list[i + 1] - elem)
-		})
-
-		return ratios
-	}
-
 	function filterDuplicates(rawTimings: number[][]) {
 		const duplicates: Timings = []
 
@@ -200,39 +169,15 @@ const Clicks = ({
 		return duplicates
 	}
 
-	const initSegment = useCallback(() => {
-		function getDuplicates(list: number[]) {
-			// Creates list of duplicates per division
-			// [1, 3, 1 ...]
+	const initSegment = () => {
+		const timings = getMetronomeTimings()
+		const ratiosOnly: number[] = []
 
-			const duplicates: number[] = []
+		timings.forEach(click => ratiosOnly.push(click[0] / (24e4 / tempoRef.current)))
+		setSegment({ ...segment, ratios: ratiosOnly })
 
-			list.forEach((elem, index) =>
-				list[index] !== list[index - 1]
-					? duplicates.push(1)
-					: duplicates[duplicates.length - 1]++
-			)
-
-			return duplicates
-		}
-
-		const division: number[] = []
-
-		// Fill with all layers divisions & sort
-		layers.forEach((layer, index) => {
-			for (let beat = 1; beat < layer.beats; beat++) {
-				division.push(beat / layer.beats)
-			}
-		})
-
-		division.sort()
-
-		setSegment({
-			...segment,
-			ratios: getRatios(division),
-			duplicates: getDuplicates(division),
-		})
-	}, [layers, segment, setSegment])
+		// eslint-disable-next-line
+	}
 
 	//
 	//
@@ -244,14 +189,9 @@ const Clicks = ({
 		setLateSegmentChange(segment.on)
 	}, [segment.on])
 
+	// Starting
 	useEffect(() => {
-		// Starting
-		if (isRunning.length > 0) {
-			//setTimes([1, 1, 1, 1, 1])
-			miniMetronomeTest(getMetronomeTimings(), isRunningRef.current)
-		}
-
-		// Ending
+		if (isRunning.length > 0) metronome(getMetronomeTimings(), isRunningRef.current)
 		// eslint-disable-next-line
 	}, [isRunning])
 
@@ -276,7 +216,7 @@ const Clicks = ({
 						{segment.ratios.map((ratio, i) => (
 							<span
 								key={i}
-								className={'click' + (segment.count === i ? ' on' : '')}
+								className={'click' + (segmentPos === i ? ' on' : '')}
 								style={{
 									width: `calc(${ratio * 100}% - 10px)`,
 								}}
@@ -329,12 +269,6 @@ const Clicks = ({
 	return (
 		<div ref={clicksRef} className="clicks">
 			{clicks}
-			{/* <div>
-				<button onClick={() => getMetronomeTimings()}>timings</button>
-				<button onClick={() => console.log(filterDuplicates(getMetronomeTimings()))}>
-					duplicates
-				</button>
-			</div> */}
 		</div>
 	)
 }

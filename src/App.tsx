@@ -16,19 +16,16 @@ const App = (): JSX.Element => {
 	//
 	//
 
+	//const [exportCode, setExportCode] = useState('')
 	const [tempo, setTempo] = useState(80)
 	const [startTime, setStartTime] = useState(Date.now)
 	const [isRunning, setIsRunning] = useState('')
 	const [easy, setEasy] = useState(true)
-	//const [exportCode, setExportCode] = useState('')
 	const [layers, setLayers] = useState<Layer[]>([...defaultLayers])
 
 	const [segment, setSegment] = useState({
 		on: false,
-		count: 0,
 		ratios: [0],
-		duplicates: [0],
-		dupCount: 1,
 	})
 
 	const [moreSettings, setMoreSettings] = useState<MoreSettings>({
@@ -63,16 +60,12 @@ const App = (): JSX.Element => {
 	}, [])
 
 	const stopMetronome = () => {
-		setSegment(prev => ({ ...prev, count: 0 }))
 		setIsRunning('')
 		setStartTime(0)
 	}
 
 	const restartMetronome = useCallback(() => {
-		if (isRunning !== '') {
-			setSegment(prev => ({ ...prev, count: 0 }))
-			startMetronome()
-		}
+		if (isRunning !== '') startMetronome()
 	}, [isRunning, startMetronome])
 
 	const randomizeLayers = () => {
@@ -130,7 +123,7 @@ const App = (): JSX.Element => {
 		if (localStorage.sleep) {
 			const savedCode = importCode(localStorage.sleep)
 
-			console.log(savedCode)
+			console.log(localStorage.sleep, savedCode)
 
 			setMoreSettings({ ...savedCode.moreSettings })
 			setLayers([...savedCode.layers])
