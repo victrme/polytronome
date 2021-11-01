@@ -47,9 +47,7 @@ const Clicks = ({
 	// 		// 	setSegment({ ...currSeg })
 	// 		// }
 
-	// 		// Calculate latency
-	// 		// const start = startTimeRef.current
-	// 		//const latencyOffset = start > 0 ? (Date.now() - start) % fixedTempoMs : 0
+	//
 
 	function playSound(layerArray: Layer[]) {
 		const sounds: Pizzicato[] = []
@@ -79,10 +77,9 @@ const Clicks = ({
 	}
 
 	function miniMetronomeTest(timings: Timings, runId: string) {
-		//
-		function runRecursion(nextDelay: number, position: number) {
-			//
+		function runRecursion(nextDelay: number, position: number): void {
 			const m_timeout = window.setTimeout(function callRecursion() {
+				const perfStart = performance.now()
 				//
 				// Quit recursion if stopped or removed
 				if (isRunningRef.current !== runId) {
@@ -100,27 +97,49 @@ const Clicks = ({
 				const layersToPlay = layers.filter((x, i) => currentTiming[1].indexOf(i) !== -1)
 				playSound(layersToPlay)
 
-				// Save times and change position
+				// When mesure is not over
 				if (timings[position + 1] !== undefined) {
 					setTimes([...times])
 					nextDelay = timings[position + 1][0]
 					position++
-				} else {
+				}
+				// Last mesure
+				else {
 					playSound(activeLayers())
 					setTimes([1, 1, 1, 1, 1])
 					nextDelay = timings[0][0]
 					position = 0
 				}
 
-				runRecursion(nextDelay, position)
+				runRecursion(preventLatency(nextDelay, perfStart), position)
 			}, nextDelay)
 		}
 
+		const findLastPosition = () => {
+			//
+			// Simulate last mesure and
+			// stops when times corresponds
+			const concatdTimes = times.reduce((a, b) => a + b) - 5
+			let simulatedTimes = 0
+			let position = 0
+
+			timings.forEach(click => {
+				if (concatdTimes > simulatedTimes) {
+					simulatedTimes += click[1].length
+					position++
+				}
+			})
+
+			return position
+		}
+
+		const lastPos = findLastPosition()
 		const layers: Layer[] = [...layersRef.current]
 		const activeLayers = () => layers.filter(layer => layer.beats > 1)
+		const preventLatency = (delay: number, startWatch: number) =>
+			delay - (performance.now() - startWatch)
 
-		playSound(activeLayers())
-		runRecursion(timings[0][0], 0)
+		runRecursion(timings[lastPos][0], lastPos)
 	}
 
 	function getMetronomeTimings() {
@@ -228,7 +247,7 @@ const Clicks = ({
 	useEffect(() => {
 		// Starting
 		if (isRunning.length > 0) {
-			setTimes([1, 1, 1, 1, 1])
+			//setTimes([1, 1, 1, 1, 1])
 			miniMetronomeTest(getMetronomeTimings(), isRunningRef.current)
 		}
 
