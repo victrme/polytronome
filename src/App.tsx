@@ -1,8 +1,7 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
-import LayersTable from './components/LayersTable'
 import { isMobileOnly } from 'react-device-detect'
-
+import LayersTable from './components/LayersTable'
 import Header from './components/Header'
 import Clicks from './components/Clicks'
 import defaultLayers from './assets/layers.json'
