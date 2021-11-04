@@ -1,4 +1,4 @@
-import { useGesture } from 'react-use-gesture'
+import { useGesture } from '@use-gesture/react'
 import { useState, useRef, useEffect } from 'react'
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
 import { isWindows } from 'react-device-detect'
@@ -154,13 +154,13 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 			drag: {
 				axis: 'y',
 				rubberband: 0.1,
-				initial: () => [0, wheel.y],
+				from: () => [0, wheel.y],
 				bounds: { bottom: 0, top: maxMovement },
 			},
 			wheel: {
 				axis: 'y',
 				rubberband: 0.05,
-				initial: () => [0, wheel.y],
+				from: () => [0, wheel.y],
 				bounds: { bottom: 0, top: maxMovement },
 			},
 		}

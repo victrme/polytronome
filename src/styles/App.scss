@@ -139,8 +139,6 @@ input {
 			touch-action: none;
 			text-align: center;
 			transition: transform 0.2s;
-			will-change: transform;
-			transform: translateY(0);
 
 			&.dragging {
 				transition: transform 0s;

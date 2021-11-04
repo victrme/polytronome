@@ -1,4 +1,4 @@
-import { useGesture } from 'react-use-gesture'
+import { useGesture } from '@use-gesture/react'
 import { useState, useRef, useEffect } from 'react'
 
 // [-----|---------.-------]
@@ -66,7 +66,7 @@ function Range({ volume, i, layers, setLayers }): JSX.Element {
 			drag: {
 				axis: 'x',
 				rubberband: 0,
-				initial: () => [range.width * (range.x / 100), 0],
+				from: () => [range.width * (range.x / 100), 0],
 				bounds: { left: 0, right: range.width },
 			},
 		}
