@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
+import { useDrag } from '@use-gesture/react'
 import { useSpring, animated, config } from '@react-spring/web'
 import propTypes from 'prop-types'
 
@@ -33,20 +34,29 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 		list[list.length - 1] = '×'
 	}
 
-	const [flip, set] = useState(false)
-	const { y } = useSpring({
-		reset: true,
-		reverse: flip,
-		from: { y: 0 },
-		y: (-list.length + 1) * 50,
-		delay: 200,
-		config: config.molasses,
-		onRest: () => set(!flip),
-	})
+	const bottomPos = -(list.length - 1) * 50
+	const [{ x, y }, api] = useSpring(() => ({ x: 0, y: bottomPos, config: config.gentle }))
+
+	const bind = useDrag(
+		({ active, offset: [x, y] }) => {
+			api.start({ y })
+			if (!active) {
+				const position = Math.abs(parseInt((y / 50).toFixed(0)))
+				console.log(position)
+			}
+		},
+		{
+			bounds: { top: bottomPos, bottom: 0 },
+			axis: 'y',
+			rubberband: 0.1,
+			from: () => [0, y.get()],
+			eventOptions: { passive: true },
+		}
+	)
 
 	return (
 		<div className="immovable_wheel">
-			<animated.div className="wheel" style={{ y }}>
+			<animated.div {...bind()} className="wheel" style={{ y }}>
 				<pre>{list.join('\n')}</pre>
 			</animated.div>
 		</div>

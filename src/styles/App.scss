@@ -138,11 +138,6 @@ input {
 			cursor: grab;
 			touch-action: none;
 			text-align: center;
-			transition: transform 0.2s;
-
-			&.dragging {
-				transition: transform 0s;
-			}
 		}
 	}
 
