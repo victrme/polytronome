@@ -30,11 +30,12 @@
 		border-radius: 10px;
 		background-color: var(--dim);
 		will-change: transform;
-		transition: margin 0.2s, background-color 0.1s, width 0.2s;
-		transform: translate(0, 0);
+		transition: transform 0.2s, margin 0.2s, background-color 0.1s, width 0.2s;
+		transform: translate(0, 0) scaleY(0.8);
 
 		&.on {
 			background-color: var(--accent);
+			transform: scale(1);
 		}
 
 		&.off {
