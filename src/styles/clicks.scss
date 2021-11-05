@@ -31,7 +31,7 @@
 		background-color: var(--dim);
 		will-change: transform;
 		transition: transform 0.2s, margin 0.2s, background-color 0.1s, width 0.2s;
-		transform: translate(0, 0) scaleY(0.8);
+		transform: translate(0, 0) scaleY(0.6);
 
 		&.on {
 			background-color: var(--accent);

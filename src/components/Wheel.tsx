@@ -1,14 +1,10 @@
-import { useState, useRef } from 'react'
 import { useDrag } from '@use-gesture/react'
 import { useSpring, animated, config } from '@react-spring/web'
 import propTypes from 'prop-types'
 
-// Wheels work by getting the index of an element with wheel height divided by children height
-// Up movement uses translateY(-px), incrementing is negative, so maths are weird
-
 const freqArr = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
-const fillArray = (start: number, end: number, freq?: boolean) => {
+const fillArray = (start: number, end: number, freq?: boolean): string[] => {
 	const arr: any[] = []
 	for (let i = start; i <= end; i++)
 		arr.unshift(freq ? freqArr[i % freqArr.length].toString() : i.toString())
@@ -19,38 +15,33 @@ const fillArray = (start: number, end: number, freq?: boolean) => {
 const allLists = {
 	beats: fillArray(1, 16),
 	tempo: fillArray(30, 300),
-	frequency: fillArray(0, freqArr.length * 3, true),
+	freq: fillArray(0, freqArr.length * 3, true),
 }
 
-// https://codesandbox.io/s/github/pmndrs/react-spring/tree/master/demo/src/sandboxes/slide
+allLists.beats.push('×')
 
-function Wheel({ update, tempo, freq, beats }): JSX.Element {
-	let list: (number | string)[] = []
-
-	if (tempo !== undefined) list = allLists.tempo
-	else if (freq !== undefined) list = allLists.frequency
-	else {
-		list = allLists.beats
-		list[list.length - 1] = '×'
-	}
-
+function Wheel({ update, type, state }): JSX.Element {
+	const list: string[] = allLists[type]
 	const bottomPos = -(list.length - 1) * 50
-	const [{ x, y }, api] = useSpring(() => ({ x: 0, y: bottomPos, config: config.gentle }))
+	const initialPos = bottomPos + (state - 1) * 50
+
+	const [{ x, y }, api] = useSpring(() => ({ x: 0, y: initialPos, config: config.gentle }))
 
 	const bind = useDrag(
 		({ active, offset: [x, y] }) => {
 			api.start({ y })
 			if (!active) {
-				const position = Math.abs(parseInt((y / 50).toFixed(0)))
-				console.log(position)
+				api.start({ x, y: Math.round(y / 50) * 50 })
+				update(Math.round(y / 50) + list.length - 1)
+				console.log(Math.round(y / 50) + list.length - 1)
 			}
 		},
 		{
-			bounds: { top: bottomPos, bottom: 0 },
 			axis: 'y',
 			rubberband: 0.1,
 			from: () => [0, y.get()],
 			eventOptions: { passive: true },
+			bounds: { top: bottomPos, bottom: 0 },
 		}
 	)
 
@@ -65,9 +56,8 @@ function Wheel({ update, tempo, freq, beats }): JSX.Element {
 
 Wheel.propTypes = {
 	update: propTypes.func.isRequired,
-	tempo: propTypes.number,
-	beats: propTypes.number,
-	freq: propTypes.number,
+	type: propTypes.string.isRequired,
+	state: propTypes.number.isRequired,
 }
 
 export default Wheel

@@ -58,18 +58,14 @@ const Tempo = ({ tempo, setTempo, restart }) => {
 		}
 	}
 
-	const handleUpdate = useCallback(
-		res => {
-			changeTempo(res + 30)
-			restart()
-		},
-		[changeTempo, restart]
-	)
+	function handleUpdate(res) {
+		changeTempo(res + 30)
+		restart()
+	}
 
 	return (
 		<div className="tempo">
-			<Wheel tempo={tempo} update={handleUpdate}></Wheel>
-
+			<Wheel type="tempo" state={tempo} update={res => handleUpdate(res)}></Wheel>
 			<button className="tap" onClick={tapTempo}>
 				tap
 			</button>
