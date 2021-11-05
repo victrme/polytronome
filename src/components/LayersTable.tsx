@@ -58,7 +58,8 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome }) => {
 						key={layer.id}
 					>
 						<Wheel
-							beats={layer.beats}
+							type="beats"
+							state={layer.beats}
 							update={res => handleLayerChange('beats', res, i)}
 						></Wheel>
 
@@ -68,7 +69,8 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome }) => {
 							<div className="ls-note">
 								<div className="notes-wrap">
 									<Wheel
-										freq={layer.freq}
+										type="freq"
+										state={layer.freq}
 										update={res => handleLayerChange('freq', res, i)}
 									></Wheel>
 									<pre className="octave">
