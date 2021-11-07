@@ -19,7 +19,7 @@
 		overflow: hidden;
 		z-index: 20;
 		font-size: 12px;
-		font-weight: 500;
+		font-weight: 600;
 
 		&.shown {
 			.inner {
@@ -68,6 +68,7 @@
 				padding: 12px 30px;
 				text-align: left;
 				font-size: 16px;
+				font-weight: 600;
 				background-color: transparent;
 
 				&.on {

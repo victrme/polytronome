@@ -1,6 +1,6 @@
 $easing: cubic-bezier(0.19, 1, 0.22, 1);
 
-@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@500&family=Work+Sans:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@500&family=Nunito:wght@600;700&display=swap');
 
 body {
 	background-color: black;
@@ -17,8 +17,9 @@ body,
 input {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	font-family: 'Work Sans', sans-serif;
-	font-weight: 900;
+	font-family: 'Nunito', sans-serif;
+	line-height: 1em;
+	font-weight: 700;
 }
 
 .polytronome {
@@ -54,7 +55,7 @@ input {
 		border: 2px solid transparent;
 		border-radius: 2em;
 		font-size: 14px;
-		font-weight: 500;
+		font-weight: 700;
 		cursor: pointer;
 		outline: none;
 		transition: background-color 0.3s, color 0.3s, border 0.1s;
@@ -100,10 +101,6 @@ input {
 
 		&:hover {
 			background-color: var(--buttons);
-
-			.arrows {
-				opacity: 1;
-			}
 		}
 
 		.arrows {
@@ -114,22 +111,28 @@ input {
 			margin-left: -25px;
 			height: 50px;
 			z-index: 2;
-			opacity: 0.3;
 
-			span {
+			svg {
 				width: 16px;
 				padding: 0 4px;
 				text-align: center;
 				font-size: 15px;
-				font-weight: 500;
 				line-height: 20px;
 				cursor: pointer;
 				border-radius: 5px;
-				transition: filter 0.1s;
+				opacity: 0.2;
+				transition: opacity 0.2s;
+
+				&:first-child {
+					transform: rotate(180deg);
+				}
 
 				&:hover {
-					background-color: var(--dimmer);
-					filter: brightness(0.9);
+					opacity: 0.5;
+				}
+
+				&:active {
+					opacity: 1;
 				}
 			}
 		}
@@ -138,6 +141,7 @@ input {
 			cursor: grab;
 			touch-action: none;
 			text-align: center;
+			font-weight: 900;
 		}
 	}
 
