@@ -3,6 +3,19 @@ import { useSpring, animated, config } from '@react-spring/web'
 import propTypes from 'prop-types'
 import { inRange } from 'lodash'
 
+const Arrow = props => {
+	return (
+		<svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="-1 -2 10 9">
+			<path
+				d="M4.866 6.5C4.4811 7.1667 3.5189 7.1667 3.134 6.5L.5359 2C.151 1.3333.6321.5 1.4019.5L6.5981.5C7.3679.5 7.849 1.3333 7.4641 2L4.866 6.5Z"
+				stroke="transparent"
+				strokeWidth="1"
+				fill="var(--accent)"
+			/>
+		</svg>
+	)
+}
+
 const freqArr = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
 const fillArray = (start: number, end: number, freq?: boolean): string[] => {
@@ -29,6 +42,7 @@ function Wheel({ update, type, state }): JSX.Element {
 	const getClosest = (y: number) => Math.round(y / 50) * 50
 	const getUserVal = (y: number) => Math.round(y / 50) + list.length - 1
 
+	// eslint-disable-next-line
 	const [{ x, y }, api] = useSpring(() => ({
 		x: 0,
 		y: initialPos,
@@ -52,19 +66,36 @@ function Wheel({ update, type, state }): JSX.Element {
 		}
 	)
 
-	const wheeling = useWheel(({ wheeling, direction }) => {
-		if (wheeling) {
-			const snapped = getClosest(y.get() + 50 * direction[1])
+	const handleWheelChange = (sign: number) => {
+		const snapped = getClosest(y.get() + 50 * sign)
 
-			if (inRange(snapped, bottomPos)) {
-				api.start({ y: snapped })
-				update(getUserVal(snapped))
-			}
+		if (inRange(snapped, 50, bottomPos)) {
+			api.start({ y: snapped })
+			update(getUserVal(snapped))
 		}
+	}
+
+	const wheeling = useWheel(({ wheeling, direction }) => {
+		if (wheeling) handleWheelChange(direction[1])
 	})
 
 	return (
 		<div className="immovable_wheel">
+			<div className="arrows">
+				<Arrow
+					className="up"
+					onClick={() => handleWheelChange(1)}
+					// onMouseDown={() => console.log('yo')}
+					// onMouseUp={() => console.log('yo')}
+				/>
+
+				<Arrow
+					className="down"
+					onClick={() => handleWheelChange(-1)}
+					// onMouseDown={() => console.log('yo')}
+					// onMouseUp={() => console.log('yo')}
+				/>
+			</div>
 			<animated.div {...dragging()} {...wheeling()} className="wheel" style={{ y }}>
 				<pre>{list.join('\n')}</pre>
 			</animated.div>
