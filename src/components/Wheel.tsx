@@ -2,6 +2,7 @@ import { useDrag, useWheel } from '@use-gesture/react'
 import { useSpring, animated, config } from '@react-spring/web'
 import propTypes from 'prop-types'
 import { inRange } from 'lodash'
+import { useRef } from 'react'
 
 const Arrow = props => {
 	return (
@@ -34,7 +35,7 @@ const allLists = {
 
 allLists.beats[allLists.beats.length - 1] = '×'
 
-function Wheel({ update, type, state }): JSX.Element {
+const Wheel = ({ update, type, state }): JSX.Element => {
 	const list: string[] = allLists[type]
 	const bottomPos = -(list.length - 1) * 50
 	const initialPos = bottomPos + (state - 1) * 50
@@ -43,17 +44,35 @@ function Wheel({ update, type, state }): JSX.Element {
 	const getUserVal = (y: number) => Math.round(y / 50) + list.length - 1
 
 	// eslint-disable-next-line
-	const [{ x, y }, api] = useSpring(() => ({
+	const [{ y }, setSpring] = useSpring(() => ({
 		x: 0,
 		y: initialPos,
 		config: config.stiff,
 	}))
 
+	const handleWheelMove = (sign: number, noUpdate?: boolean) => {
+		const snapped = getClosest(y.get() + 50 * sign)
+
+		if (inRange(snapped, 50, bottomPos)) {
+			setSpring.start({ y: snapped })
+			if (!noUpdate) update(getUserVal(snapped))
+		}
+		// Arrow overflow
+		else if (inRange(snapped, 100, bottomPos - 50)) {
+			setSpring.start({ y: snapped - 40 * sign })
+			setTimeout(() => setSpring.start({ y: snapped - 50 * sign }), 120)
+		}
+	}
+
+	//
+	// Gestures
+	//
+
 	const dragging = useDrag(
 		({ active, offset: [x, y] }) => {
-			api.start({ y })
+			setSpring.start({ y })
 			if (!active) {
-				api.start({ x, y: getClosest(y) })
+				setSpring.start({ y: getClosest(y) })
 				update(getUserVal(y))
 			}
 		},
@@ -66,34 +85,66 @@ function Wheel({ update, type, state }): JSX.Element {
 		}
 	)
 
-	const handleWheelChange = (sign: number) => {
-		const snapped = getClosest(y.get() + 50 * sign)
-
-		if (inRange(snapped, 50, bottomPos)) {
-			api.start({ y: snapped })
-			update(getUserVal(snapped))
-		}
-	}
-
 	const wheeling = useWheel(({ wheeling, direction }) => {
-		if (wheeling) handleWheelChange(direction[1])
+		if (wheeling) handleWheelMove(direction[1])
 	})
+
+	//
+	// Arrows
+	//
+
+	const detectAutoTimeout = useRef(setTimeout(() => {}, 1))
+	const autoScrollTimeout = useRef(setTimeout(() => {}, 1))
+	const timeOfClick = useRef(0)
+
+	const handleArrowDown = (sign: number, enter: boolean) => {
+		//
+		function autoScrollRecursion(ms: number) {
+			autoScrollTimeout.current = setTimeout(() => {
+				// dont update state if its tempo
+				handleWheelMove(sign, type === 'tempo')
+
+				// Increase speed if held
+				const timeScrolling = performance.now() - timeOfClick.current
+				if (timeScrolling > 1600) ms = 100
+				if (timeScrolling > 3200) ms = 50
+				if (timeScrolling > 4800) ms = 10
+
+				autoScrollRecursion(ms)
+			}, ms)
+		}
+
+		if (enter) {
+			timeOfClick.current = performance.now()
+			handleWheelMove(sign)
+
+			detectAutoTimeout.current = setTimeout(() => {
+				handleWheelMove(sign)
+				autoScrollRecursion(200)
+			}, 400)
+		} else {
+			clearTimeout(detectAutoTimeout.current)
+			clearTimeout(autoScrollTimeout.current)
+		}
+
+		return false
+	}
 
 	return (
 		<div className="immovable_wheel">
 			<div className="arrows">
 				<Arrow
 					className="up"
-					onClick={() => handleWheelChange(1)}
-					// onMouseDown={() => console.log('yo')}
-					// onMouseUp={() => console.log('yo')}
+					onMouseDown={() => handleArrowDown(1, true)}
+					onMouseLeave={() => handleArrowDown(1, false)}
+					onMouseUp={() => handleArrowDown(1, false)}
 				/>
 
 				<Arrow
 					className="down"
-					onClick={() => handleWheelChange(-1)}
-					// onMouseDown={() => console.log('yo')}
-					// onMouseUp={() => console.log('yo')}
+					onMouseDown={() => handleArrowDown(-1, true)}
+					onMouseLeave={() => handleArrowDown(-1, false)}
+					onMouseUp={() => handleArrowDown(-1, false)}
 				/>
 			</div>
 			<animated.div {...dragging()} {...wheeling()} className="wheel" style={{ y }}>

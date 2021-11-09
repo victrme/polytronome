@@ -84,46 +84,42 @@ const App = (): JSX.Element => {
 	//
 	//
 
-	useEffect(() => {
-		document.addEventListener('keydown', (e: KeyboardEvent) => {
-			//
-			// Lose focus before firing
-			if (document.activeElement) {
-				const el = document.activeElement as HTMLButtonElement
-				el.blur()
-			}
-
-			// Spacebar control metronome
-			if (e.code === 'Space' && !IsTypingRef.current)
-				isRunningRef.current ? stopMetronome() : startMetronome()
-
-			// Tempo up by 10 if shift
-			if (e.code === 'ArrowUp') setTempo(tempoRef.current + (e.shiftKey ? 10 : 1))
-
-			// Tempo down by 10 if shift
-			if (e.code === 'ArrowDown') setTempo(tempoRef.current - (e.shiftKey ? 10 : 1))
-
-			e.stopPropagation()
-			return false
-		})
-
-		// Updates fullscreen if left by something else than toggle
-		document.onfullscreenchange = () => {
-			if (document.fullscreenElement === null)
-				setMoreSettings(prev => ({
-					...prev,
-					fullscreen: false,
-				}))
+	function handleKeyMapping(e: KeyboardEvent) {
+		//
+		// Lose focus before firing
+		if (document.activeElement) {
+			const el = document.activeElement as HTMLButtonElement
+			el.blur()
 		}
 
+		// Spacebar control metronome
+		if (e.code === 'Space' && !IsTypingRef.current)
+			isRunningRef.current ? stopMetronome() : startMetronome()
+
+		// Tempo up by 10 if shift
+		// Tempo down by 10 if shift
+		if (e.code === 'ArrowUp') setTempo(tempoRef.current + (e.shiftKey ? 10 : 1))
+		if (e.code === 'ArrowDown') setTempo(tempoRef.current - (e.shiftKey ? 10 : 1))
+
+		e.stopPropagation()
+	}
+
+	function handleFullscreen() {
+		if (document.fullscreenElement === null)
+			setMoreSettings(prev => ({
+				...prev,
+				fullscreen: false,
+			}))
+	}
+
+	useEffect(() => {
+		//
+		// Profile save
 		sessionStorage.layers = JSON.stringify(layers)
 
 		// Apply saved settings
 		if (localStorage.sleep) {
 			const savedCode = importCode(localStorage.sleep)
-
-			console.log(localStorage.sleep, savedCode)
-
 			setMoreSettings({ ...savedCode.moreSettings })
 			setLayers([...savedCode.layers])
 			setTempo(savedCode.tempo)
@@ -132,6 +128,19 @@ const App = (): JSX.Element => {
 		} else {
 			applyTheme(moreSettings.theme)
 		}
+
+		//
+		// Window Events
+
+		function cleanupEvents() {
+			window.removeEventListener('keydown', handleKeyMapping)
+			window.removeEventListener('fullscreenchange', handleFullscreen)
+		}
+
+		window.addEventListener('fullscreenchange', handleFullscreen)
+		window.addEventListener('keydown', handleKeyMapping)
+
+		return cleanupEvents
 
 		// eslint-disable-next-line
 	}, [])
