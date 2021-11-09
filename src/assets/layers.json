@@ -6,7 +6,8 @@
 		"release": false,
 		"duration": false,
 		"type": "triangle",
-		"volume": 0.4
+		"volume": 0.4,
+		"muted": false
 	},
 	{
 		"id": "qjvwpqgw",
@@ -15,7 +16,8 @@
 		"release": false,
 		"duration": false,
 		"type": "triangle",
-		"volume": 0.4
+		"volume": 0.4,
+		"muted": false
 	},
 	{
 		"id": "asgwvubm",
@@ -24,7 +26,8 @@
 		"release": false,
 		"duration": false,
 		"type": "triangle",
-		"volume": 0.4
+		"volume": 0.4,
+		"muted": false
 	},
 	{
 		"id": "inraqysp",
@@ -33,7 +36,8 @@
 		"release": false,
 		"duration": false,
 		"type": "triangle",
-		"volume": 0.4
+		"volume": 0.4,
+		"muted": false
 	},
 	{
 		"id": "ksunnmej",
@@ -42,6 +46,7 @@
 		"release": false,
 		"duration": false,
 		"type": "triangle",
-		"volume": 0.4
+		"volume": 0.4,
+		"muted": false
 	}
 ]

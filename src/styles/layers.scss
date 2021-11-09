@@ -74,28 +74,35 @@
 		}
 	}
 
-	.range-wrap {
-		display: inline-block;
-		width: 100px;
-		height: 15px;
-		background-color: var(--dim);
-		border-radius: 5px;
-		overflow: hidden;
-		cursor: grab;
-		user-select: none;
+	.note-volume {
+		display: flex;
 
-		&:focus,
-		&:active {
-			cursor: grabbing;
+		.mute {
+			background-color: var(--dim);
+			border-radius: 5px;
+			padding: 0 5px;
+			margin-right: 5px;
+			cursor: pointer;
 		}
 
-		.inner-range {
-			background-color: var(--accent);
-			height: 20px;
-			transition: width 0.2s;
+		.range-wrap {
+			display: inline-block;
+			width: 100px;
+			height: 15px;
+			background-color: var(--dim);
+			border-radius: 5px;
+			overflow: hidden;
+			cursor: pointer;
+			user-select: none;
+			transition: opacity 0.1s;
 
-			&.moving {
-				transition: width 0s;
+			.inner-range {
+				background-color: var(--accent);
+				height: 20px;
+			}
+
+			&.muted {
+				opacity: 0.3;
 			}
 		}
 	}

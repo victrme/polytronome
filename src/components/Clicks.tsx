@@ -33,7 +33,7 @@ const Clicks = ({ isRunning, segment, layers, setSegment, tempoRef, isRunningRef
 				source: 'wave',
 				options: {
 					type: layer.type,
-					volume: vol,
+					volume: layer.muted ? 0 : vol,
 					frequency: freq,
 					attack: 0,
 					release: layer.release ? 0.6 : null,
