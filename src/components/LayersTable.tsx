@@ -159,12 +159,25 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome }) => {
 						{easy ? (
 							''
 						) : (
-							<div>
+							<div className="note-volume">
+								<span
+									className="mute"
+									onClick={() => {
+										const newLayers = [...layers]
+										newLayers[i].muted = !newLayers[i].muted
+										setLayers([...newLayers])
+									}}
+								>
+									&times;
+								</span>
 								<Range
 									volume={layer.volume}
-									setLayers={setLayers}
-									layers={layers}
-									i={i}
+									muted={layer.muted}
+									update={res => {
+										const newLayers = [...layers]
+										newLayers[i].volume = res
+										setLayers([...newLayers])
+									}}
 								></Range>
 							</div>
 						)}

@@ -1,99 +1,29 @@
-import { useGesture } from '@use-gesture/react'
-import { useState, useRef, useEffect } from 'react'
+import useMeasure from 'react-use-measure'
+import { useSpring, animated, config } from '@react-spring/web'
+import { useEffect } from 'react'
 
-// [-----|---------.-------]
-// a     z         x       b
+function Range({ volume, muted, update }): JSX.Element {
+	const [wrapRef, bounds] = useMeasure()
+	const [styles, api] = useSpring(() => ({ width: 0, config: config.stiff }))
 
-function Range({ volume, i, layers, setLayers }): JSX.Element {
-	const rangeRef = useRef(document.createElement('div'))
-	const [dontClick, setDontClick] = useState(false)
-	const [range, setRange] = useState({
-		width: 0,
-		x: volume * 100,
-		moving: false,
-	})
-
-	const saveTimeoutRef = useRef(setTimeout(() => {}, 0))
-
-	const stayPositive = (n: number) => (n > 0 ? n : 0)
-
-	const movingAction = state => {
-		const moving = state.dragging || state.wheeling
-
-		if (moving) {
-			const percent = state.movement[0] / range.width
-			setRange({ x: percent * 100, moving, width: range.width })
-
-			clearTimeout(saveTimeoutRef.current)
-			setDontClick(true)
-
-			//update
-			saveTimeoutRef.current = setTimeout(() => {
-				const newLayers = [...layers]
-				newLayers[i].volume = stayPositive(percent)
-				setLayers(newLayers)
-			}, 100)
-		}
+	const handleVolumeChange = (e: any) => {
+		const percent = e.pageX - bounds.left
+		api.start({ width: percent })
+		update(percent / 100)
 	}
-
-	const clickAction = state => {
-		if (!dontClick) {
-			const childXpos = rangeRef.current.children[0].getBoundingClientRect().x
-			const childWidth = state.event.clientX - childXpos
-			const percent = childWidth / range.width
-
-			setRange({ x: percent * 100, moving: false, width: range.width })
-
-			//update
-			const newLayers = [...layers]
-			newLayers[i].volume = stayPositive(percent)
-			setLayers(newLayers)
-		}
-	}
-
-	// const wheelingTest = (state: any) => {
-	// 	console.log(state)
-	// }
-
-	const bind = useGesture(
-		{
-			onDrag: state => movingAction(state),
-			onClick: state => clickAction(state),
-			// onWheel: state => wheelingTest(state),
-			onMouseDown: () => setDontClick(false),
-		},
-		{
-			drag: {
-				axis: 'x',
-				rubberband: 0,
-				from: () => [range.width * (range.x / 100), 0],
-				bounds: { left: 0, right: range.width },
-			},
-		}
-	)
-
-	const updateRangeWidth = () =>
-		setRange(prev => ({
-			...prev,
-			width: rangeRef.current.getBoundingClientRect().width,
-		}))
 
 	useEffect(() => {
-		//
-		// Only calculate bounding on start or on resize
-		// Range dragging is laggy if not
-		//
-
-		updateRangeWidth()
-		window.addEventListener('resize', updateRangeWidth)
-	}, [])
+		api.start({ width: volume * 100 })
+		// eslint-disable-next-line
+	}, [volume])
 
 	return (
-		<div className="range-wrap" {...bind()} ref={rangeRef}>
-			<div
-				className={'inner-range' + (range.moving ? ' moving' : '')}
-				style={{ width: range.x + '%' }}
-			></div>
+		<div
+			ref={wrapRef}
+			className={'range-wrap ' + (muted ? 'muted' : '')}
+			onClick={e => handleVolumeChange(e)}
+		>
+			<animated.div className="inner-range" style={styles} />
 		</div>
 	)
 }

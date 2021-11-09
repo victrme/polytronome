@@ -17,6 +17,7 @@ export type Layer = {
 	duration: boolean
 	type: string
 	volume: number
+	muted: boolean
 }
 
 export type Sounds = {
