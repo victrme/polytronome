@@ -21,18 +21,6 @@ export const setRandomID = () => {
 //
 
 export const waveformsList = ['triangle', 'sawtooth', 'square', 'sine']
-const binaryToInt = arr => arr.reduce((a, v) => (a << 1) | v)
-const intToBinary = (int, size) => [...Array(size)].map((x, i) => (int >> i) & 1)
-
-const compareLayers = (stateLayer: Layer, defaultLayer: Layer) => {
-	let result = true
-
-	Object.values(stateLayer).forEach((val, index) => {
-		if (val !== Object.values(defaultLayer)[index]) result = false
-	})
-
-	return result
-}
 
 export const createExportCode = (
 	tempo: number,
@@ -40,124 +28,57 @@ export const createExportCode = (
 	moreSettings: MoreSettings,
 	easy: boolean
 ) => {
-	//
-	//	Stackers uses steps for saving different settings in one character
-	//
-	//	To stack:
-	// 	[a.len: 3, b.len: 4] => to get the a[2] and b[1]
-	// 	a * b.len + b ---> 3 * 4 + 2 = 14th character
-	//
-	// 	To destack:
-	// 	b: stack % b.length
-	// 	a: (stack - b) / b.length
-	//
+	const minifiedLayers: Number[][] = []
+	const minifiedSettings: Number[] = []
 
-	let layerCode = ''
-	let bools: boolean[] = []
-	let activeLayers: boolean[] = []
-
-	// Stack freq with beats, type with volume
-	// (Duration + release) * 5 in binary array
-	layers.forEach((layer: Layer, i: number) => {
-		const savedLayer = JSON.parse(sessionStorage.layers)[i]
-		const layerIsNotDefault = !compareLayers(layer, savedLayer)
-
-		if (layerIsNotDefault) {
-			const filteredVolume = parseInt(((layer.volume / 2) * 10 + 1).toPrecision(1))
-			const fbStack = layer.freq * 16 + layer.beats
-			const tvStack = filteredVolume * 4 + waveformsList.indexOf(layer.type)
-
-			layerCode += (fbStack < 36 ? '0' : '') + fbStack.toString(36) + tvStack.toString(36)
-		}
-
-		activeLayers.push(layerIsNotDefault)
-		bools.push(layer.duration, layer.release)
+	layers.forEach(layer => {
+		minifiedLayers.push([
+			layer.beats,
+			layer.freq,
+			waveformsList.indexOf(layer.type),
+			+layer.duration,
+			+layer.release,
+			layer.volume,
+			+layer.muted,
+		])
 	})
 
-	// Add more settings
-	// Stack themes with layers/settings bool
-	bools.push(easy, moreSettings.performance)
-	const boolsInt = binaryToInt(bools)
-	const tbStack = boolsInt * Themes.length + moreSettings.theme
+	Object.values(moreSettings).forEach(setting => {
+		minifiedSettings.push(+setting)
+	})
 
-	return (
-		tempo.toString(36) +
-		binaryToInt(activeLayers).toString(36) +
-		layerCode +
-		':' +
-		tbStack.toString(36)
-	)
+	return [+easy, tempo, minifiedLayers, minifiedSettings]
 }
 
-// In export: if layers are defaults, add binary after tempo to indicate which are activated
-// t: tempo, a: active layers, l: layers, m: more settings
-// [ttallllllllll:mm]
-
-export const importCode = (code: string) => {
-	//
-
-	const split = code.split(':')
-	const [tempoFreqBeats, boolsAndTheme] = split
-
-	const defaultLayers = JSON.parse(sessionStorage.layers)
-	const newLayers = defaultLayers
-	let layersChars = ''
-	let countActivated = 0
-	let activesArray: number[] = []
-
-	// Separate tempo & active layers from actual layer settings
-	layersChars = tempoFreqBeats.slice(3, tempoFreqBeats.length)
-	activesArray = intToBinary(parseInt(tempoFreqBeats.slice(2, 3), 36), 5).reverse()
-
-	const theme = parseInt(boolsAndTheme, 36) % Themes.length
-	const boolsInt = (parseInt(boolsAndTheme, 36) - theme) / Themes.length
-	const boolsArray = intToBinary(boolsInt, 12)
-
-	//
-	// Decoding
-	//
-
-	// For all 5 layers
-	for (let i = 0; i < 5; i++) {
-		let { beats, freq, volume, type } = defaultLayers[i]
-
-		// If changed layer, apply destackment
-		if (activesArray[i]) {
-			const typeVolumeCode = layersChars.charAt(countActivated * 3 + 2)
-			const beatsFreqCode = layersChars.slice(countActivated * 3, countActivated * 3 + 2)
-			beats = parseInt(beatsFreqCode, 36) % 16
-			freq = (parseInt(beatsFreqCode, 36) - beats) / 16
-
-			type = parseInt(typeVolumeCode, 36) % 4
-			volume = (parseInt(typeVolumeCode, 36) - type) / 4
-			volume = ((volume - 1) * 2) / 10
-
-			countActivated++
-		}
-
-		newLayers[i] = {
-			id: setRandomID(),
-			beats,
-			freq,
-			volume,
-			type: waveformsList[type],
-			duration: !!boolsArray[i * 2],
-			release: !!boolsArray[i * 2 + 1],
-		}
-	}
-
-	// Add tempo
-	const newTempo = parseInt(tempoFreqBeats.slice(0, 2), 36)
-	const newMoreSettings: MoreSettings = {
-		theme,
-		performance: !!boolsArray[0],
+export const importCode = (code: any[]) => {
+	const parsedLayers: Layer[] = []
+	const parsedSettings: MoreSettings = {
+		theme: 0,
 		fullscreen: false,
+		performance: false,
 	}
+
+	code[2].forEach((minified: number[]) => {
+		parsedLayers.push({
+			id: setRandomID(),
+			beats: minified[0],
+			freq: minified[1],
+			type: waveformsList[minified[2]],
+			duration: !!minified[3],
+			release: !!minified[4],
+			volume: minified[5],
+			muted: !!minified[6],
+		})
+	})
+
+	Object.keys(parsedSettings).forEach((key: string, i: number) => {
+		parsedSettings[key] = code[3][i]
+	})
 
 	return {
-		layers: newLayers,
-		tempo: newTempo,
-		moreSettings: newMoreSettings,
-		easy: !!boolsArray[1],
+		easy: !!code[0],
+		tempo: code[1],
+		layers: parsedLayers,
+		moreSettings: parsedSettings,
 	}
 }

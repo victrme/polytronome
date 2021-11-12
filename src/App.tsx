@@ -119,7 +119,7 @@ const App = (): JSX.Element => {
 
 		// Apply saved settings
 		if (localStorage.sleep) {
-			const savedCode = importCode(localStorage.sleep)
+			const savedCode = importCode(JSON.parse(localStorage.sleep))
 			setMoreSettings({ ...savedCode.moreSettings })
 			setLayers([...savedCode.layers])
 			setTempo(savedCode.tempo)
@@ -146,7 +146,7 @@ const App = (): JSX.Element => {
 	}, [])
 
 	useBeforeunload(() => {
-		localStorage.sleep = createExportCode(tempo, layers, moreSettings, easy)
+		localStorage.sleep = JSON.stringify(createExportCode(tempo, layers, moreSettings, easy))
 	})
 
 	//
