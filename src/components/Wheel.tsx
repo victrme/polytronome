@@ -2,7 +2,7 @@ import { useDrag, useWheel } from '@use-gesture/react'
 import { useSpring, animated, config } from '@react-spring/web'
 import propTypes from 'prop-types'
 import { inRange } from 'lodash'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 const Arrow = props => {
 	return (
@@ -35,32 +35,36 @@ const allLists = {
 
 allLists.beats[allLists.beats.length - 1] = '×'
 
-const Wheel = ({ update, type, state }): JSX.Element => {
+const Wheel = ({ update, type, state, perfMode }): JSX.Element => {
 	const list: string[] = allLists[type]
-	const bottomPos = -(list.length - 1) * 50
-	const initialPos = bottomPos + (state - 1) * 50
 
+	const offsetState = (state: number) => (type === 'tempo' ? state - 30 : state - 1)
 	const getClosest = (y: number) => Math.round(y / 50) * 50
 	const getUserVal = (y: number) => Math.round(y / 50) + list.length - 1
 
+	const bottomPos = -(list.length - 1) * 50
+	const initialPos = bottomPos + offsetState(state) * 50
+
 	// eslint-disable-next-line
-	const [{ y }, setSpring] = useSpring(() => ({
+	const [{ y }, api] = useSpring(() => ({
 		x: 0,
 		y: initialPos,
 		config: config.stiff,
 	}))
 
+	const setSpring = (y: number) => (!perfMode ? api.set({ y }) : api.start({ y }))
+
 	const handleWheelMove = (sign: number, noUpdate?: boolean) => {
 		const snapped = getClosest(y.get() + 50 * sign)
 
 		if (inRange(snapped, 50, bottomPos)) {
-			setSpring.start({ y: snapped })
-			if (!noUpdate) update(getUserVal(snapped))
+			if (noUpdate) setSpring(snapped)
+			else update(getUserVal(snapped))
 		}
 		// Arrow overflow
 		else if (inRange(snapped, 100, bottomPos - 50)) {
-			setSpring.start({ y: snapped - 40 * sign })
-			setTimeout(() => setSpring.start({ y: snapped - 50 * sign }), 120)
+			setSpring(snapped - 40 * sign)
+			setTimeout(() => setSpring(snapped - 50 * sign), 120)
 		}
 	}
 
@@ -70,9 +74,9 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 
 	const dragging = useDrag(
 		({ active, offset: [x, y] }) => {
-			setSpring.start({ y })
+			setSpring(y)
 			if (!active) {
-				setSpring.start({ y: getClosest(y) })
+				setSpring(getClosest(y))
 				update(getUserVal(y))
 			}
 		},
@@ -129,6 +133,18 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 
 		return false
 	}
+
+	//
+	// Effects
+	//
+
+	useEffect(
+		() => {
+			setSpring(bottomPos + offsetState(state) * 50)
+		},
+		// eslint-disable-next-line
+		[state]
+	)
 
 	return (
 		<div className="immovable_wheel">

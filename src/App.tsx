@@ -184,6 +184,7 @@ const App = (): JSX.Element => {
 					easy={easy}
 					layers={layers}
 					setLayers={setLayers}
+					moreSettings={moreSettings}
 					restartMetronome={restartMetronome}
 				></LayersTable>
 

@@ -39,7 +39,12 @@ const Header = props => {
 
 			<div></div>
 
-			<Tempo restart={restart} tempo={tempo} setTempo={setTempo}></Tempo>
+			<Tempo
+				restart={restart}
+				tempo={tempo}
+				setTempo={setTempo}
+				perfMode={moreSettings.performance}
+			></Tempo>
 		</div>
 	)
 }
