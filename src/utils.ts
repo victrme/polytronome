@@ -65,7 +65,7 @@ export const importCode = (code: any[]) => {
 			freq: minified[1],
 			type: waveformsList[minified[2]],
 			duration: !!minified[3],
-			release: !!minified[4],
+			release: minified[4],
 			volume: minified[5],
 			muted: !!minified[6],
 		})

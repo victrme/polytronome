@@ -12,6 +12,15 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome, moreSettings }
 		square: 'M 10 2 H 30 V 18 H 50',
 	}
 
+	const handleNote = (which: string, i: number) => {
+		const newLayers = [...layers]
+
+		if (which === 'release') newLayers[i].release = (newLayers[i].release + 1) % 3
+		else newLayers[i].duration = !newLayers[i].duration
+
+		setLayers([...newLayers])
+	}
+
 	const handleLayerChange = useCallback(
 		(cat: 'wave' | 'beats' | 'freq', res: any, index: number) => {
 			let newLayers = [...layers]
@@ -119,11 +128,7 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome, moreSettings }
 							<div className="note-length">
 								<button
 									title="Click duration"
-									onClick={() => {
-										const newLayers = [...layers]
-										newLayers[i].duration = !newLayers[i].duration
-										setLayers([...newLayers])
-									}}
+									onClick={() => handleNote('duration', i)}
 								>
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="1 1 10 6">
 										<path
@@ -137,12 +142,8 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome, moreSettings }
 									{layer.duration ? '⅓ bpm' : '50ms'}
 								</button>
 								<button
-									className={layer.release ? 'on' : ''}
-									onClick={() => {
-										const newLayers = [...layers]
-										newLayers[i].release = !newLayers[i].release
-										setLayers([...newLayers])
-									}}
+									className={layer.release > 0 ? 'on' : ''}
+									onClick={() => handleNote('release', i)}
 								>
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="1 1 8 6">
 										<path
@@ -153,7 +154,11 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome, moreSettings }
 											fill="none"
 										/>
 									</svg>
-									{layer.release ? 'on' : 'off'}
+									{layer.release === 0
+										? 'off'
+										: layer.release === 1
+										? 'short'
+										: 'long'}
 								</button>
 							</div>
 						)}

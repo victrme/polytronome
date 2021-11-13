@@ -13,7 +13,7 @@ export type Layer = {
 	id: string
 	beats: number
 	freq: number
-	release: boolean
+	release: number
 	duration: boolean
 	type: string
 	volume: number
