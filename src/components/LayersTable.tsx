@@ -48,7 +48,7 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome, moreSettings }
 				}
 
 				case 'freq':
-					newLayers[index].freq = res
+					newLayers[index].freq = res + 1
 					break
 			}
 

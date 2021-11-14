@@ -101,7 +101,7 @@ const Wheel = ({ update, type, state, perfMode }): JSX.Element => {
 	const autoScrollTimeout = useRef(setTimeout(() => {}, 1))
 	const timeOfClick = useRef(0)
 
-	const handleArrowDown = (sign: number, enter: boolean) => {
+	const handleArrow = (sign: number, enter: boolean) => {
 		//
 		function autoScrollRecursion(ms: number) {
 			autoScrollTimeout.current = setTimeout(() => {
@@ -151,16 +151,16 @@ const Wheel = ({ update, type, state, perfMode }): JSX.Element => {
 			<div className="arrows">
 				<Arrow
 					className="up"
-					onMouseDown={() => handleArrowDown(1, true)}
-					onMouseLeave={() => handleArrowDown(1, false)}
-					onMouseUp={() => handleArrowDown(1, false)}
+					onMouseDown={() => handleArrow(1, true)}
+					onMouseLeave={() => handleArrow(1, false)}
+					onMouseUp={() => handleArrow(1, false)}
 				/>
 
 				<Arrow
 					className="down"
-					onMouseDown={() => handleArrowDown(-1, true)}
-					onMouseLeave={() => handleArrowDown(-1, false)}
-					onMouseUp={() => handleArrowDown(-1, false)}
+					onMouseDown={() => handleArrow(-1, true)}
+					onMouseLeave={() => handleArrow(-1, false)}
+					onMouseUp={() => handleArrow(-1, false)}
 				/>
 			</div>
 			<animated.div {...dragging()} {...wheeling()} className="wheel" style={{ y }}>

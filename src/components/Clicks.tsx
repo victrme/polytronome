@@ -4,6 +4,12 @@ import Pizzicato from 'pizzicato'
 import { Layer } from '../Types'
 
 const Clicks = ({ isRunning, segment, layers, setSegment, tempoRef, isRunningRef }) => {
+	function usePrevious(value) {
+		const ref = useRef()
+		useEffect(() => (ref.current = value), [value])
+		return ref.current
+	}
+	const getBeats = () => layers.map((x: Layer) => x.beats)
 	const clicksRef = useRef(document.createElement('div'))
 	const [lateSegmentChange, setLateSegmentChange] = useState(false)
 	const [times, setTimes] = useState<number[]>([1, 1, 1, 1, 1])
@@ -13,6 +19,7 @@ const Clicks = ({ isRunning, segment, layers, setSegment, tempoRef, isRunningRef
 	const segmentRef = useRef(segment)
 	const layersRef = useRef(layers)
 	const segmentPosRef = useRef(segmentPos)
+	const previousBeats = usePrevious(getBeats()) || [1, 1, 1, 1, 1]
 
 	timesRef.current = times
 	layersRef.current = layers
@@ -20,6 +27,8 @@ const Clicks = ({ isRunning, segment, layers, setSegment, tempoRef, isRunningRef
 	segmentPosRef.current = segmentPos
 
 	type Timings = [number, number[]][]
+
+	Pizzicato.volume = 0.3
 
 	function playSound(layerArray: Layer[]) {
 		const fixedMsSounds: Pizzicato[] = []
@@ -204,14 +213,24 @@ const Clicks = ({ isRunning, segment, layers, setSegment, tempoRef, isRunningRef
 		// Previous layer pour update que
 		// quand les beats changent
 		//
-		if (true) {
+
+		let changeClicks = false
+
+		getBeats().forEach((beat, i) => {
+			if (beat !== previousBeats[i]) changeClicks = !0
+		})
+
+		if (changeClicks) {
 			const tempTimes = [...times]
 			const concatdTimes = times.reduce((a, b) => a + b)
 			const maxTime = layers.map(a => a.beats).reduce((a, b) => a + b)
 			const percent = concatdTimes / maxTime
+			let rounded = 1
 
-			for (let i = 0; i < times.length; i++)
-				tempTimes[i] = Math.ceil(layers[i].beats * percent)
+			for (let i = 0; i < times.length; i++) {
+				rounded = Math.round(layers[i].beats * percent)
+				tempTimes[i] = rounded === 0 ? 1 : rounded
+			}
 
 			setTimes([...tempTimes])
 		}
