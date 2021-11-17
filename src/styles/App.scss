@@ -100,7 +100,7 @@ input {
 		transition: opacity 0.2s, background-color 0.2s;
 
 		&:hover {
-			background-color: var(--buttons);
+			background-color: var(--dimmer);
 		}
 
 		.arrows {

@@ -76,13 +76,15 @@
 
 	.note-volume {
 		display: flex;
+		align-items: center;
 
 		.mute {
 			background-color: var(--dim);
 			border-radius: 5px;
-			padding: 0 5px;
+			padding: 5px;
 			margin-right: 5px;
 			cursor: pointer;
+			width: 24px;
 		}
 
 		.range-wrap {
@@ -99,10 +101,6 @@
 			.inner-range {
 				background-color: var(--accent);
 				height: 20px;
-			}
-
-			&.muted {
-				opacity: 0.3;
 			}
 		}
 	}

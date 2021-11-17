@@ -175,7 +175,7 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome, moreSettings }
 										setLayers([...newLayers])
 									}}
 								>
-									&times;
+									{layer.muted ? '🔈' : '🔊'}
 								</span>
 								<Range
 									volume={layer.volume}

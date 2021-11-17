@@ -1,21 +1,14 @@
 [
 	{
-		"name": "black",
-		"background": "#000000",
-		"accent": "#bbbbbb",
-		"dim": "#171717",
-		"dimmer": "#111111",
-		"buttons": "#111111",
-		"menu": "#222222"
-	},
-	{
 		"name": "night",
 		"background": "#0d1117",
 		"accent": "#a9b59e",
 		"dim": "#21262d",
 		"dimmer": "#161b22",
 		"buttons": "#2b323b",
-		"menu": "#161b22"
+		"menu": "#161b22",
+		"clicks-on": "",
+		"clicks-off": ""
 	},
 	{
 		"name": "monokai",
@@ -24,7 +17,20 @@
 		"dim": "#523e21",
 		"dimmer": "#413425",
 		"buttons": "#FD971F60",
-		"menu": "#383a2d"
+		"menu": "#383a2d",
+		"clicks-on": "",
+		"clicks-off": ""
+	},
+	{
+		"name": "pastels",
+		"background": "#363a49",
+		"accent": "#7dc9ea",
+		"dim": "#ba5964",
+		"dimmer": "#ba5964",
+		"buttons": "#ba5964",
+		"menu": "#484f61",
+		"clicks-on": "#e7c690",
+		"clicks-off": "#484f61"
 	},
 	{
 		"name": "silver",
@@ -33,16 +39,20 @@
 		"dim": "#a5b2c5",
 		"dimmer": "#cad4e3",
 		"buttons": "#c9d6be",
-		"menu": "#f7f8fd"
+		"menu": "#f7f8fd",
+		"clicks-on": "",
+		"clicks-off": ""
 	},
 	{
 		"name": "cosy",
-		"background": "#dcbdc5",
-		"accent": "#885d5e",
-		"dim": "#ffd8cc",
-		"dimmer": "#ebd4da",
-		"buttons": "#ffd8cc",
-		"menu": "#fff5ed"
+		"background": "#eaebea",
+		"accent": "#717b83",
+		"dim": "#c7ccd1",
+		"dimmer": "#e4dedc",
+		"buttons": "#d9c5bf",
+		"menu": "#e2e4e3",
+		"clicks-on": "#b57e7d",
+		"clicks-off": "#8f99a3"
 	},
 	{
 		"name": "wood",
@@ -50,8 +60,10 @@
 		"accent": "#83542d",
 		"dim": "#edc9a0",
 		"dimmer": "#ffebd3",
-		"buttons": "#edc9a0",
-		"menu": "#ffe5c8"
+		"buttons": "#d7c6c1",
+		"menu": "#ffe5c8",
+		"clicks-on": "",
+		"clicks-off": ""
 	},
 	{
 		"name": "coffee",
@@ -59,8 +71,10 @@
 		"accent": "#8d6852",
 		"dim": "#dac6b5",
 		"dimmer": "#dac6b52a",
-		"buttons": "#dac6b52a",
-		"menu": "#f5e7d6"
+		"buttons": "#e8d8c9",
+		"menu": "#f5e7d6",
+		"clicks-on": "#8d5853",
+		"clicks-off": "#d6b99f"
 	},
 
 	{
@@ -70,7 +84,9 @@
 		"dim": "#e8dfb3",
 		"dimmer": "#f3f4d6",
 		"buttons": "#ecefc7",
-		"menu": "#faf6e5"
+		"menu": "#faf6e5",
+		"clicks-on": "",
+		"clicks-off": ""
 	},
 	{
 		"name": "beach",
@@ -79,6 +95,8 @@
 		"dim": "#f6dbbc",
 		"dimmer": "#f6dbbc50",
 		"buttons": "#f6dbbc50",
-		"menu": "#fdf3e0"
+		"menu": "#fdf3e0",
+		"clicks-on": "",
+		"clicks-off": ""
 	}
 ]
