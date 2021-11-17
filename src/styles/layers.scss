@@ -11,15 +11,16 @@
 
 .layers-table {
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
 	width: 100%;
 	margin: 40px 0;
 
 	.ls-row {
-		padding: 10px 30px;
 		display: flex;
+		flex-direction: row;
 		align-items: flex-start;
-		flex-direction: column;
+		padding: 10px 30px;
 		transition: opacity 0.2s, filter 0.2s;
 
 		> div {
@@ -107,6 +108,7 @@
 
 	.note-length {
 		width: 100%;
+		max-width: 120px;
 
 		svg {
 			width: 15px;
@@ -114,9 +116,8 @@
 		}
 
 		button {
-			width: 100%;
 			margin: 4px 0;
-			padding: 3px 10px;
+			padding: 3px 20px;
 			text-align: left;
 			background-color: transparent;
 
@@ -124,10 +125,6 @@
 				opacity: 1;
 				background-color: var(--buttons);
 				border-color: transparent;
-			}
-
-			&.on {
-				background-color: var(--buttons);
 			}
 		}
 	}

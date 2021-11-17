@@ -95,6 +95,7 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome, moreSettings }
 							''
 						) : (
 							<div
+								title={'sound type'}
 								className="ls-type"
 								onClick={() =>
 									handleLayerChange('wave', { type: layer.type, sign: 1 }, i)
@@ -115,8 +116,6 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome, moreSettings }
 										stroke="var(--accent)"
 										strokeWidth="4"
 										strokeLinecap="round"
-										// strokeDasharray="120"
-										// strokeDashoffset="180"
 									/>
 								</svg>
 							</div>
@@ -127,7 +126,7 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome, moreSettings }
 						) : (
 							<div className="note-length">
 								<button
-									title="Click duration"
+									title="sound duration"
 									onClick={() => handleNote('duration', i)}
 								>
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="1 1 10 6">
@@ -142,7 +141,7 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome, moreSettings }
 									{layer.duration ? '⅓ bpm' : '50ms'}
 								</button>
 								<button
-									className={layer.release > 0 ? 'on' : ''}
+									title="sound release"
 									onClick={() => handleNote('release', i)}
 								>
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="1 1 8 6">
@@ -166,8 +165,9 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome, moreSettings }
 						{easy ? (
 							''
 						) : (
-							<div className="note-volume">
+							<div title={'volume: ' + layer.volume} className="note-volume">
 								<span
+									title="mute"
 									className="mute"
 									onClick={() => {
 										const newLayers = [...layers]

@@ -1,6 +1,6 @@
-$easing: cubic-bezier(0.19, 1, 0.22, 1);
-
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@500&family=Nunito:wght@600;700&display=swap');
+
+$easing: cubic-bezier(0.19, 1, 0.22, 1);
 
 body {
 	background-color: black;
@@ -85,7 +85,6 @@ input {
 
 	pre {
 		margin: 0;
-
 		font-family: 'Source Code Pro', 'Courier New', Courier, monospace;
 	}
 
@@ -165,6 +164,7 @@ input {
 
 		.layers-table-wrap {
 			justify-content: center;
+
 			.layers-table {
 				flex-direction: row;
 				margin-left: 0;
@@ -233,3 +233,5 @@ input {
 	&.mobile {
 	}
 }
+
+@import 'responsive';
