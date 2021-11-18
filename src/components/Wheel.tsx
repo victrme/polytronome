@@ -2,7 +2,7 @@ import { useDrag, useWheel } from '@use-gesture/react'
 import { useSpring, animated, config } from '@react-spring/web'
 import propTypes from 'prop-types'
 import { inRange } from 'lodash'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const Arrow = props => {
 	return (
@@ -35,8 +35,9 @@ const allLists = {
 
 allLists.beats[allLists.beats.length - 1] = '×'
 
-const Wheel = ({ update, type, state, perfMode }): JSX.Element => {
+const Wheel = ({ update, type, state }): JSX.Element => {
 	const list: string[] = allLists[type]
+	const [dragRelease, setDragRelease] = useState(false)
 
 	const offsetState = (state: number) => (type === 'tempo' ? state - 30 : state - 1)
 	const getClosest = (y: number) => Math.round(y / 50) * 50
@@ -52,21 +53,23 @@ const Wheel = ({ update, type, state, perfMode }): JSX.Element => {
 		config: config.stiff,
 	}))
 
-	const setSpring = (y: number) => (!perfMode ? api.set({ y }) : api.start({ y }))
-
 	const handleWheelMove = (sign: number, noUpdate?: boolean) => {
 		const snapped = getClosest(y.get() + 50 * sign)
 
 		if (inRange(snapped, 50, bottomPos)) {
-			if (noUpdate) setSpring(snapped)
+			if (noUpdate) api.set({ y: snapped })
 			else update(getUserVal(snapped))
 		}
-		// Arrow overflow
-		else if (inRange(snapped, 100, bottomPos - 50)) {
-			setSpring(snapped - 40 * sign)
-			setTimeout(() => setSpring(snapped - 50 * sign), 120)
-		}
 	}
+
+	useEffect(
+		() => {
+			if (!dragRelease) api.set({ y: bottomPos + offsetState(state) * 50 })
+			else setDragRelease(false)
+		},
+		// eslint-disable-next-line
+		[state]
+	)
 
 	//
 	// Gestures
@@ -74,9 +77,11 @@ const Wheel = ({ update, type, state, perfMode }): JSX.Element => {
 
 	const dragging = useDrag(
 		({ active, offset: [x, y] }) => {
-			setSpring(y)
+			api.start({ y })
+
 			if (!active) {
-				setSpring(getClosest(y))
+				setDragRelease(true)
+				api.start({ y: getClosest(y) })
 				update(getUserVal(y))
 			}
 		},
@@ -110,9 +115,9 @@ const Wheel = ({ update, type, state, perfMode }): JSX.Element => {
 
 				// Increase speed if held
 				const timeScrolling = performance.now() - timeOfClick.current
-				if (timeScrolling > 1600) ms = 100
-				if (timeScrolling > 3200) ms = 50
-				if (timeScrolling > 4800) ms = 10
+				if (timeScrolling > 1600) ms = 80
+				if (timeScrolling > 3200) ms = 40
+				if (timeScrolling > 4800) ms = 20
 
 				autoScrollRecursion(ms)
 			}, ms)
@@ -124,7 +129,7 @@ const Wheel = ({ update, type, state, perfMode }): JSX.Element => {
 
 			detectAutoTimeout.current = setTimeout(() => {
 				handleWheelMove(sign)
-				autoScrollRecursion(200)
+				autoScrollRecursion(160)
 			}, 400)
 		} else {
 			clearTimeout(detectAutoTimeout.current)
@@ -133,18 +138,6 @@ const Wheel = ({ update, type, state, perfMode }): JSX.Element => {
 
 		return false
 	}
-
-	//
-	// Effects
-	//
-
-	useEffect(
-		() => {
-			setSpring(bottomPos + offsetState(state) * 50)
-		},
-		// eslint-disable-next-line
-		[state]
-	)
 
 	return (
 		<div className="immovable_wheel">

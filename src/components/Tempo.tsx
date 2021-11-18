@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import Wheel from './Wheel'
 
-const Tempo = ({ tempo, setTempo, restart, perfMode }) => {
+const Tempo = ({ tempo, setTempo, restart }) => {
 	const [tap, setTap] = useState([
 		{
 			date: 0,
@@ -64,12 +64,7 @@ const Tempo = ({ tempo, setTempo, restart, perfMode }) => {
 
 	return (
 		<div className="tempo">
-			<Wheel
-				type="tempo"
-				state={tempo}
-				update={res => handleUpdate(res)}
-				perfMode={perfMode}
-			></Wheel>
+			<Wheel type="tempo" state={tempo} update={res => handleUpdate(res)}></Wheel>
 			<button className="tap" onClick={tapTempo}>
 				tap
 			</button>

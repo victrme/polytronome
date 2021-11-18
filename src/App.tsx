@@ -168,15 +168,7 @@ const App = (): JSX.Element => {
 			></Menu>
 
 			<main>
-				<Header
-					easy={easy}
-					tempo={tempo}
-					moreSettings={moreSettings}
-					setEasy={setEasy}
-					setTempo={setTempo}
-					restart={restartMetronome}
-					setMoreSettings={setMoreSettings}
-				></Header>
+				<Header tempo={tempo} setTempo={setTempo} restart={restartMetronome}></Header>
 
 				<Clicks
 					layers={layers}

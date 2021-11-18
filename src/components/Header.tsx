@@ -1,7 +1,7 @@
 import Tempo from './Tempo'
 
 const Header = props => {
-	const { moreSettings, restart, tempo, setTempo } = props
+	const { restart, tempo, setTempo } = props
 
 	return (
 		<div className="header">
@@ -20,12 +20,7 @@ const Header = props => {
 
 			<div></div>
 
-			<Tempo
-				restart={restart}
-				tempo={tempo}
-				setTempo={setTempo}
-				perfMode={moreSettings.performance}
-			></Tempo>
+			<Tempo restart={restart} tempo={tempo} setTempo={setTempo}></Tempo>
 		</div>
 	)
 }

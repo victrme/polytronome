@@ -70,7 +70,6 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome, moreSettings }
 							type="beats"
 							state={layer.beats}
 							update={res => handleLayerChange('beats', res, i)}
-							perfMode={moreSettings.performance}
 						></Wheel>
 
 						{easy ? (
@@ -82,7 +81,6 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome, moreSettings }
 										type="freq"
 										state={layer.freq}
 										update={res => handleLayerChange('freq', res, i)}
-										perfMode={moreSettings.performance}
 									></Wheel>
 									<pre className="octave">
 										{Math.floor(layer.freq / 12) + 1}
