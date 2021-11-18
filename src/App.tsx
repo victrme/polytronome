@@ -4,6 +4,7 @@ import { isMobileOnly } from 'react-device-detect'
 import LayersTable from './components/LayersTable'
 import Header from './components/Header'
 import Clicks from './components/Clicks'
+import Menu from './components/Menu'
 import defaultLayers from './assets/layers.json'
 import { MoreSettings, Layer } from './Types'
 import { setRandomID, importCode, applyTheme, createExportCode } from './utils'
@@ -159,7 +160,13 @@ const App = (): JSX.Element => {
 		<div
 			className={'polytronome' + (isMobileOnly ? ' mobile' : '') + (easy ? ' easy' : '')}
 		>
-			<div className="ad"></div>
+			<Menu
+				easy={easy}
+				setEasy={setEasy}
+				moreSettings={moreSettings}
+				setMoreSettings={setMoreSettings}
+			></Menu>
+
 			<main>
 				<Header
 					easy={easy}
@@ -240,7 +247,6 @@ const App = (): JSX.Element => {
 					)}
 				</div>
 			</main>
-			<div className="ad"></div>
 		</div>
 	)
 }

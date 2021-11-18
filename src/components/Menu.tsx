@@ -1,13 +1,28 @@
 import Themes from '../assets/themes.json'
 import propTypes from 'prop-types'
-import Button from './Button'
 import { useState } from 'react'
 import { applyTheme } from '../utils'
 
-const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, menuShown, menuHovered }) => {
+interface ButtonProps {
+	style?: Object
+	name: string
+	func: any
+	state: boolean
+}
+
+const Button = ({ name, func, state, style }: ButtonProps) => {
+	return (
+		<button style={style} name={name} onClick={func}>
+			<span>{name}</span>
+			<span className="optionState">{state.toString()}</span>
+		</button>
+	)
+}
+
+const Menu = ({ moreSettings, setMoreSettings, easy, setEasy }) => {
 	const [openedTheme, setOpenedTheme] = useState(false)
-	const [openedSettings, setOpenedSettings] = useState(false)
 	const [fullscreen, setFullscreen] = useState(false)
+	const [menuShown, setMenuShown] = useState(false)
 
 	const changeAnimations = () => {
 		const appDOM = document.querySelector('.polytronome') as HTMLDivElement
@@ -38,38 +53,39 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, menuShown, menuHov
 		localStorage.theme = index
 	}
 
+	const handleMenu = () => {
+		if (menuShown) setOpenedTheme(false)
+		setMenuShown(!menuShown)
+	}
+
 	return (
-		<div className={'menu' + (menuShown ? ' shown' : menuHovered ? ' hovered' : '')}>
-			<div className={'overlay'}></div>
+		<aside>
+			<button onClick={handleMenu}>menu</button>
 
-			<div className="inner">
-				<Button
-					name="show all settings"
-					on={!easy}
-					func={() => setEasy(!easy)}
-				></Button>
+			<div className={'menu' + (menuShown ? ' shown' : '')}>
+				<Button name="advanced mode" state={!easy} func={() => setEasy(!easy)}></Button>
 
 				<Button
-					name="performance mode"
-					on={!moreSettings.performance}
+					name="animations"
+					state={!moreSettings.performance}
 					func={changeAnimations}
 				></Button>
 
-				<Button name="fullscreen" on={fullscreen} func={changeFullscreen}></Button>
+				<Button name="fullscreen" state={fullscreen} func={changeFullscreen}></Button>
 
 				<Button
 					name="themes"
-					on={openedTheme}
+					state={moreSettings.theme}
 					func={e => setOpenedTheme(!openedTheme)}
 				></Button>
 
 				<div
 					className="theme-list"
 					style={{
-						maxHeight: openedTheme ? 80 : 0,
+						maxHeight: openedTheme ? 100 : 0,
 						paddingTop: openedTheme ? 20 : 0,
 						paddingBottom: openedTheme ? 20 : 0,
-						transition: 'max-height .5s, padding-top .4s',
+						transition: 'max-height .5s, padding .4s',
 						overflow: 'hidden',
 					}}
 				>
@@ -93,16 +109,14 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, menuShown, menuHov
 				</div>
 
 				<Button
-					name="settings"
-					on={openedSettings}
-					func={e => setOpenedSettings(!openedSettings)}
+					name="sound offset"
+					state={true}
+					func={e => {
+						console.log(e)
+					}}
 				></Button>
-
-				<p className="credit">
-					<a href="https://victr.me">created by victr</a>
-				</p>
 			</div>
-		</div>
+		</aside>
 	)
 }
 
@@ -111,8 +125,6 @@ Menu.propTypes = {
 	setMoreSettings: propTypes.func.isRequired,
 	easy: propTypes.bool.isRequired,
 	setEasy: propTypes.func.isRequired,
-	menuShown: propTypes.bool.isRequired,
-	menuHovered: propTypes.bool.isRequired,
 }
 
 export default Menu

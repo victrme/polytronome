@@ -23,10 +23,10 @@ input {
 }
 
 .polytronome {
+	position: relative;
 	display: flex;
-	flex-direction: column;
-	align-items: center;
-	max-width: 1000px;
+	align-items: flex-start;
+	max-width: 900px;
 	min-height: 1000px;
 	padding-top: 10vh;
 	width: 100%;
@@ -152,6 +152,57 @@ input {
 
 		.start {
 			width: 300px;
+		}
+	}
+
+	aside {
+		position: absolute;
+		width: 300px;
+		left: -300px;
+		top: 15vh;
+		text-align: center;
+
+		> button {
+			margin: 40px auto;
+		}
+
+		.menu {
+			display: flex;
+			flex-direction: column;
+			visibility: hidden;
+
+			button {
+				text-align: left;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 10px;
+
+				.optionState {
+					background-color: var(--background);
+					border-radius: 8px;
+					padding: 5px 10px;
+				}
+			}
+
+			.theme-list {
+				display: flex;
+				flex-wrap: wrap;
+
+				span {
+					width: auto;
+					font-size: 12px;
+					padding: 5px 15px;
+					border-radius: 15px;
+					margin: 3px;
+					transition: border-radius 0.4s;
+					cursor: pointer;
+				}
+			}
+
+			&.shown {
+				visibility: visible;
+			}
 		}
 	}
 
