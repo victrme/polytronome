@@ -22,7 +22,7 @@ const Button = ({ name, func, state, style }: ButtonProps) => {
 const Menu = ({ moreSettings, setMoreSettings, easy, setEasy }) => {
 	const [openedTheme, setOpenedTheme] = useState(false)
 	const [fullscreen, setFullscreen] = useState(false)
-	const [menuShown, setMenuShown] = useState(false)
+	// const [menuShown, setMenuShown] = useState(false)
 
 	const changeAnimations = () => {
 		const appDOM = document.querySelector('.polytronome') as HTMLDivElement
@@ -53,16 +53,17 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy }) => {
 		localStorage.theme = index
 	}
 
-	const handleMenu = () => {
-		if (menuShown) setOpenedTheme(false)
-		setMenuShown(!menuShown)
-	}
+	// const handleMenu = () => {
+	// 	if (menuShown) setOpenedTheme(false)
+	// 	setMenuShown(!menuShown)
+	// }
 
 	return (
 		<aside>
-			<button onClick={handleMenu}>menu</button>
+			{/* <button onClick={handleMenu}>menu</button> */}
 
-			<div className={'menu' + (menuShown ? ' shown' : '')}>
+			{/* <div className={'menu' + (menuShown ? ' shown' : '')}> */}
+			<div className="menu shown">
 				<Button name="advanced mode" state={!easy} func={() => setEasy(!easy)}></Button>
 
 				<Button

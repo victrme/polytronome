@@ -89,7 +89,7 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 			axis: 'y',
 			rubberband: 0.1,
 			from: () => [0, y.get()],
-			eventOptions: { passive: true },
+			// eventOptions: { passive: true },
 			bounds: { top: bottomPos, bottom: 0 },
 		}
 	)

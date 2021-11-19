@@ -8,6 +8,8 @@ import Menu from './components/Menu'
 import defaultLayers from './assets/layers.json'
 import { MoreSettings, Layer } from './Types'
 import { setRandomID, importCode, applyTheme, createExportCode } from './utils'
+import { useDrag } from '@use-gesture/react'
+import { animated, useSpring, config } from '@react-spring/web'
 
 const App = (): JSX.Element => {
 	//
@@ -156,9 +158,32 @@ const App = (): JSX.Element => {
 	//
 	//
 
+	// eslint-disable-next-line
+	const [{ x }, api] = useSpring(() => ({
+		x: 50,
+		y: 0,
+		config: config.stiff,
+	}))
+
+	const drag = useDrag(
+		({ active, offset: [ox, oy], tap }) => {
+			api.start({ x: ox })
+			if (tap) {
+				api.start({ x: x.get() === 360 ? 0 : 360 })
+			}
+		},
+		{
+			axis: 'x',
+			rubberband: 0.1,
+			filterTaps: true,
+			bounds: { left: 0, right: 360 },
+		}
+	)
+
 	return (
-		<div
+		<animated.div
 			className={'polytronome' + (isMobileOnly ? ' mobile' : '') + (easy ? ' easy' : '')}
+			style={{ x }}
 		>
 			<Menu
 				easy={easy}
@@ -166,6 +191,10 @@ const App = (): JSX.Element => {
 				moreSettings={moreSettings}
 				setMoreSettings={setMoreSettings}
 			></Menu>
+
+			<div {...drag()} className="settings-drag">
+				<span></span>
+			</div>
 
 			<main>
 				<Header tempo={tempo} setTempo={setTempo} restart={restartMetronome}></Header>
@@ -239,7 +268,7 @@ const App = (): JSX.Element => {
 					)}
 				</div>
 			</main>
-		</div>
+		</animated.div>
 	)
 }
 

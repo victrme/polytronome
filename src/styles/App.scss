@@ -6,6 +6,7 @@ body {
 	background-color: black;
 	margin: 0;
 	transition: background-color 1s $easing;
+	overflow-x: hidden;
 }
 body,
 body:fullscreen::backdrop {
@@ -156,10 +157,10 @@ input {
 	}
 
 	aside {
-		position: absolute;
-		width: 300px;
-		left: -300px;
-		top: 15vh;
+		position: fixed;
+		width: 320px;
+		left: -320px;
+		top: 25vh;
 		text-align: center;
 
 		> button {
@@ -176,10 +177,10 @@ input {
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
-				margin-bottom: 10px;
+				background-color: var(--background);
 
 				.optionState {
-					background-color: var(--background);
+					background-color: var(--dim);
 					border-radius: 8px;
 					padding: 5px 10px;
 				}
@@ -188,6 +189,8 @@ input {
 			.theme-list {
 				display: flex;
 				flex-wrap: wrap;
+				width: 80%;
+				margin: auto;
 
 				span {
 					width: auto;
@@ -202,6 +205,32 @@ input {
 
 			&.shown {
 				visibility: visible;
+			}
+		}
+	}
+
+	.settings-drag {
+		border-radius: 20px;
+		height: 20vh;
+		padding: 10vh 0 0 0;
+		width: 60px;
+		cursor: grab;
+		touch-action: none;
+		color: var(--accent);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		span {
+			border: 2px dotted;
+			height: 42px;
+			width: 2px;
+			transition: height 0.2s;
+		}
+
+		&:hover {
+			span {
+				height: 82px;
 			}
 		}
 	}
