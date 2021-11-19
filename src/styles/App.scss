@@ -95,6 +95,7 @@ input {
 		line-height: 50px;
 		font-size: 50px;
 		height: 50px;
+		min-width: 80px;
 		padding: 2px 5px 2px 30px;
 		border-radius: 10px;
 		transition: opacity 0.2s, background-color 0.2s;
@@ -162,6 +163,8 @@ input {
 		left: -320px;
 		top: 25vh;
 		text-align: center;
+		background-color: var(--background);
+		z-index: 4;
 
 		> button {
 			margin: 40px auto;
@@ -210,6 +213,8 @@ input {
 	}
 
 	.settings-drag {
+		position: fixed;
+		left: 20px;
 		border-radius: 20px;
 		height: 20vh;
 		padding: 10vh 0 0 0;
@@ -222,15 +227,15 @@ input {
 		align-items: center;
 
 		span {
-			border: 2px dotted;
-			height: 42px;
+			border: 4px dotted;
+			height: 44px;
 			width: 2px;
-			transition: height 0.2s;
+			transition: height 0.4s $easing;
 		}
 
 		&:hover {
 			span {
-				height: 82px;
+				height: 84px;
 			}
 		}
 	}

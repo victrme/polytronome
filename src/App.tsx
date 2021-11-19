@@ -10,6 +10,7 @@ import { MoreSettings, Layer } from './Types'
 import { setRandomID, importCode, applyTheme, createExportCode } from './utils'
 import { useDrag } from '@use-gesture/react'
 import { animated, useSpring, config } from '@react-spring/web'
+import useMeasure from 'react-use-measure'
 
 const App = (): JSX.Element => {
 	//
@@ -159,17 +160,34 @@ const App = (): JSX.Element => {
 	//
 
 	// eslint-disable-next-line
-	const [{ x }, api] = useSpring(() => ({
-		x: 50,
+	const [{ x }, menuAPI] = useSpring(() => ({
+		x: 0,
 		y: 0,
 		config: config.stiff,
 	}))
 
+	const [xy, mainAPI] = useSpring(() => ({
+		x: 0,
+		y: 0,
+		config: config.stiff,
+	}))
+
+	const [mainRef, bounds] = useMeasure()
+
 	const drag = useDrag(
 		({ active, offset: [ox, oy], tap }) => {
-			api.start({ x: ox })
+			menuAPI.start({ x: ox })
+
+			if (bounds.left <= ox + 60) mainAPI.start({ x: ox + 60 - bounds.left })
+
 			if (tap) {
-				api.start({ x: x.get() === 360 ? 0 : 360 })
+				const toOpen = x.get() === 0
+
+				menuAPI.start({ x: toOpen ? 360 : 0 })
+
+				if (bounds.left <= ox + 60) {
+					mainAPI.start({ x: 420 - bounds.left })
+				}
 			}
 		},
 		{
@@ -181,22 +199,22 @@ const App = (): JSX.Element => {
 	)
 
 	return (
-		<animated.div
+		<div
 			className={'polytronome' + (isMobileOnly ? ' mobile' : '') + (easy ? ' easy' : '')}
-			style={{ x }}
 		>
 			<Menu
 				easy={easy}
 				setEasy={setEasy}
 				moreSettings={moreSettings}
 				setMoreSettings={setMoreSettings}
+				dragX={x}
 			></Menu>
 
-			<div {...drag()} className="settings-drag">
+			<animated.div {...drag()} className="settings-drag" style={{ x }}>
 				<span></span>
-			</div>
+			</animated.div>
 
-			<main>
+			<animated.main ref={mainRef} style={{ x: xy.x }}>
 				<Header tempo={tempo} setTempo={setTempo} restart={restartMetronome}></Header>
 
 				<Clicks
@@ -267,8 +285,8 @@ const App = (): JSX.Element => {
 						</div>
 					)}
 				</div>
-			</main>
-		</animated.div>
+			</animated.main>
+		</div>
 	)
 }
 

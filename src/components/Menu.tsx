@@ -1,7 +1,7 @@
 import Themes from '../assets/themes.json'
-import propTypes from 'prop-types'
 import { useState } from 'react'
 import { applyTheme } from '../utils'
+import { animated, useSpring } from '@react-spring/web'
 
 interface ButtonProps {
 	style?: Object
@@ -19,7 +19,7 @@ const Button = ({ name, func, state, style }: ButtonProps) => {
 	)
 }
 
-const Menu = ({ moreSettings, setMoreSettings, easy, setEasy }) => {
+const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, dragX }) => {
 	const [openedTheme, setOpenedTheme] = useState(false)
 	const [fullscreen, setFullscreen] = useState(false)
 	// const [menuShown, setMenuShown] = useState(false)
@@ -59,10 +59,10 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy }) => {
 	// }
 
 	return (
-		<aside>
-			{/* <button onClick={handleMenu}>menu</button> */}
+		<animated.aside style={{ x: dragX }}>
+			{/* <button onClick={handleMenu}>menu</button>
+			<div className={'menu' + (menuShown ? ' shown' : '')}> */}
 
-			{/* <div className={'menu' + (menuShown ? ' shown' : '')}> */}
 			<div className="menu shown">
 				<Button name="advanced mode" state={!easy} func={() => setEasy(!easy)}></Button>
 
@@ -117,15 +117,8 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy }) => {
 					}}
 				></Button>
 			</div>
-		</aside>
+		</animated.aside>
 	)
-}
-
-Menu.propTypes = {
-	moreSettings: propTypes.object.isRequired,
-	setMoreSettings: propTypes.func.isRequired,
-	easy: propTypes.bool.isRequired,
-	setEasy: propTypes.func.isRequired,
 }
 
 export default Menu
