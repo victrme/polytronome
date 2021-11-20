@@ -1,14 +1,21 @@
 @media only screen and (max-width: 768px) {
 	.polytronome {
 		.header {
-			.menu {
-				width: 300px;
-			}
-
 			.tempo .tap {
 				width: 80px;
 				padding: 7px 0;
 			}
+		}
+
+		.settings-drag {
+			padding-top: 0;
+			width: 30px;
+			justify-content: flex-end;
+		}
+
+		aside {
+			width: 300px;
+			top: 15vh;
 		}
 
 		.click-row .click {
@@ -16,8 +23,6 @@
 		}
 
 		&.easy {
-			padding-top: 5vh;
-
 			.layers-table-wrap .layers-table {
 				display: grid;
 				grid-template-columns: 1fr 1fr 1fr;

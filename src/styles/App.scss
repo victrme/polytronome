@@ -25,9 +25,9 @@ input {
 
 .polytronome {
 	position: relative;
-	display: flex;
+	display: grid;
+	grid-template-columns: 0.1fr 1fr 0.1fr;
 	align-items: flex-start;
-	max-width: 900px;
 	min-height: 1000px;
 	padding-top: 10vh;
 	width: 100%;
@@ -45,6 +45,8 @@ input {
 		flex-direction: column;
 		align-items: center;
 		width: 100%;
+		max-width: 900px;
+		margin: 0 auto;
 	}
 
 	button {
@@ -161,10 +163,8 @@ input {
 		position: fixed;
 		width: 320px;
 		left: -320px;
-		top: 25vh;
+		top: 15vh;
 		text-align: center;
-		background-color: var(--background);
-		z-index: 4;
 
 		> button {
 			margin: 40px auto;
@@ -173,14 +173,13 @@ input {
 		.menu {
 			display: flex;
 			flex-direction: column;
-			visibility: hidden;
 
 			button {
 				text-align: left;
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
-				background-color: var(--background);
+				background-color: transparent;
 
 				.optionState {
 					background-color: var(--dim);
@@ -205,38 +204,25 @@ input {
 					cursor: pointer;
 				}
 			}
-
-			&.shown {
-				visibility: visible;
-			}
 		}
 	}
 
 	.settings-drag {
-		position: fixed;
-		left: 20px;
 		border-radius: 20px;
 		height: 20vh;
-		padding: 10vh 0 0 0;
 		width: 60px;
-		cursor: grab;
+		cursor: ew-resize;
 		touch-action: none;
 		color: var(--accent);
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		transition: background-color 0.4s $easing;
 
 		span {
 			border: 4px dotted;
 			height: 44px;
 			width: 2px;
-			transition: height 0.4s $easing;
-		}
-
-		&:hover {
-			span {
-				height: 84px;
-			}
 		}
 	}
 

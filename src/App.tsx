@@ -116,6 +116,50 @@ const App = (): JSX.Element => {
 			}))
 	}
 
+	function handleMenuClose() {
+		menuSpring.start({ x: 0 })
+		mainSpring.start({ x: 0 })
+	}
+
+	// eslint-disable-next-line
+	const springProps = { x: 0, y: 0, config: config.stiff }
+	const [menuStyles, menuSpring] = useSpring(() => springProps)
+	const [mainStyles, mainSpring] = useSpring(() => springProps)
+
+	const [mainRef, mainBounds] = useMeasure()
+	const menuSize = 360
+	const padding = 60
+
+	const drag = useDrag(
+		({ active, offset: [ox], tap }) => {
+			//
+			// Only move main as to not overlap on opened menu
+			// or menu click to close: close
+			const handleMenuOverlap = (menuOffset: number, close?: boolean) => {
+				if (mainBounds.left <= menuOffset + 60) {
+					mainSpring.start({ x: Math.max(0, menuOffset + padding - mainBounds.left) })
+				} else if (close) mainSpring.start({ x: 0 })
+			}
+
+			menuSpring.start({ x: ox })
+			handleMenuOverlap(ox)
+
+			// Open or close menu
+			if (tap) {
+				const toOpen = menuStyles.x.get() === 0
+
+				menuSpring.start({ x: toOpen ? menuSize : 0 })
+				handleMenuOverlap(toOpen ? menuSize : 0, !toOpen)
+			}
+		},
+		{
+			axis: 'x',
+			rubberband: 0.1,
+			filterTaps: true,
+			bounds: { left: 0, right: menuSize },
+		}
+	)
+
 	useEffect(() => {
 		//
 		// Profile save
@@ -139,10 +183,12 @@ const App = (): JSX.Element => {
 		function cleanupEvents() {
 			window.removeEventListener('keydown', handleKeyMapping)
 			window.removeEventListener('fullscreenchange', handleFullscreen)
+			window.addEventListener('resize', handleMenuClose)
 		}
 
 		window.addEventListener('fullscreenchange', handleFullscreen)
 		window.addEventListener('keydown', handleKeyMapping)
+		window.addEventListener('resize', handleMenuClose)
 
 		return cleanupEvents
 
@@ -159,62 +205,25 @@ const App = (): JSX.Element => {
 	//
 	//
 
-	// eslint-disable-next-line
-	const [{ x }, menuAPI] = useSpring(() => ({
-		x: 0,
-		y: 0,
-		config: config.stiff,
-	}))
-
-	const [xy, mainAPI] = useSpring(() => ({
-		x: 0,
-		y: 0,
-		config: config.stiff,
-	}))
-
-	const [mainRef, bounds] = useMeasure()
-
-	const drag = useDrag(
-		({ active, offset: [ox, oy], tap }) => {
-			menuAPI.start({ x: ox })
-
-			if (bounds.left <= ox + 60) mainAPI.start({ x: ox + 60 - bounds.left })
-
-			if (tap) {
-				const toOpen = x.get() === 0
-
-				menuAPI.start({ x: toOpen ? 360 : 0 })
-
-				if (bounds.left <= ox + 60) {
-					mainAPI.start({ x: 420 - bounds.left })
-				}
-			}
-		},
-		{
-			axis: 'x',
-			rubberband: 0.1,
-			filterTaps: true,
-			bounds: { left: 0, right: 360 },
-		}
-	)
-
 	return (
 		<div
 			className={'polytronome' + (isMobileOnly ? ' mobile' : '') + (easy ? ' easy' : '')}
 		>
-			<Menu
-				easy={easy}
-				setEasy={setEasy}
-				moreSettings={moreSettings}
-				setMoreSettings={setMoreSettings}
-				dragX={x}
-			></Menu>
+			<div>
+				<Menu
+					easy={easy}
+					setEasy={setEasy}
+					moreSettings={moreSettings}
+					setMoreSettings={setMoreSettings}
+					dragX={menuStyles.x}
+				></Menu>
 
-			<animated.div {...drag()} className="settings-drag" style={{ x }}>
-				<span></span>
-			</animated.div>
+				<animated.div {...drag()} className="settings-drag" style={{ x: menuStyles.x }}>
+					<span></span>
+				</animated.div>
+			</div>
 
-			<animated.main ref={mainRef} style={{ x: xy.x }}>
+			<animated.main ref={mainRef} style={{ x: mainStyles.x }}>
 				<Header tempo={tempo} setTempo={setTempo} restart={restartMetronome}></Header>
 
 				<Clicks
@@ -286,6 +295,7 @@ const App = (): JSX.Element => {
 					)}
 				</div>
 			</animated.main>
+			<div></div>
 		</div>
 	)
 }

@@ -1,7 +1,7 @@
 import Themes from '../assets/themes.json'
 import { useState } from 'react'
 import { applyTheme } from '../utils'
-import { animated, useSpring } from '@react-spring/web'
+import { animated } from '@react-spring/web'
 
 interface ButtonProps {
 	style?: Object
@@ -53,17 +53,9 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, dragX }) => {
 		localStorage.theme = index
 	}
 
-	// const handleMenu = () => {
-	// 	if (menuShown) setOpenedTheme(false)
-	// 	setMenuShown(!menuShown)
-	// }
-
 	return (
 		<animated.aside style={{ x: dragX }}>
-			{/* <button onClick={handleMenu}>menu</button>
-			<div className={'menu' + (menuShown ? ' shown' : '')}> */}
-
-			<div className="menu shown">
+			<div className="menu">
 				<Button name="advanced mode" state={!easy} func={() => setEasy(!easy)}></Button>
 
 				<Button
