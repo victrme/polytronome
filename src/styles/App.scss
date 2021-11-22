@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@500&family=Nunito:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@500&family=Dosis:wght@600;700&display=swap');
 
 $easing: cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -18,9 +18,15 @@ body,
 input {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	font-family: 'Nunito', sans-serif;
+	font-family: 'Dosis', sans-serif;
 	line-height: 1em;
 	font-weight: 700;
+	letter-spacing: 1.2px;
+}
+
+pre {
+	margin: 0;
+	font-family: 'Source Code Pro', 'Courier New', Courier, monospace;
 }
 
 .polytronome {
@@ -84,11 +90,6 @@ input {
 			font-size: 1em;
 			padding: 10px;
 		}
-	}
-
-	pre {
-		margin: 0;
-		font-family: 'Source Code Pro', 'Courier New', Courier, monospace;
 	}
 
 	.immovable_wheel {
@@ -180,6 +181,7 @@ input {
 				justify-content: space-between;
 				align-items: center;
 				background-color: transparent;
+				font-size: inherit;
 
 				.optionState {
 					background-color: var(--dim);
@@ -205,6 +207,20 @@ input {
 				}
 			}
 		}
+
+		.links {
+			display: flex;
+			flex-direction: column;
+			padding-left: 30px;
+			margin-top: 5em;
+
+			a {
+				color: var(--accent);
+				text-decoration: none;
+				text-align: left;
+				margin: 10px 0;
+			}
+		}
 	}
 
 	.settings-drag {
@@ -220,9 +236,8 @@ input {
 		transition: background-color 0.4s $easing;
 
 		span {
-			border: 4px dotted;
-			height: 44px;
-			width: 2px;
+			border-left: 8px dotted;
+			height: 60px;
 		}
 	}
 
@@ -238,6 +253,7 @@ input {
 
 			.layers-table {
 				flex-direction: row;
+				margin: 40px 0;
 				margin-left: 0;
 				width: auto;
 			}

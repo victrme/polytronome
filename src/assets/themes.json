@@ -7,19 +7,19 @@
 		"dimmer": "#161b22",
 		"buttons": "#2b323b",
 		"menu": "#161b22",
-		"clicks-on": "",
-		"clicks-off": ""
+		"clicks-on": "#a9b59e",
+		"clicks-off": "#2b323b"
 	},
 	{
-		"name": "monokai",
-		"background": "#272822",
-		"accent": "#a6e22e",
+		"name": "rosa",
+		"background": "#2D2A2E",
+		"accent": "#FF6188",
 		"dim": "#523e21",
 		"dimmer": "#413425",
-		"buttons": "#FD971F60",
-		"menu": "#383a2d",
-		"clicks-on": "",
-		"clicks-off": ""
+		"buttons": "#433946",
+		"menu": "#383aaa",
+		"clicks-on": "#FFD866",
+		"clicks-off": "#433946"
 	},
 	{
 		"name": "pastels",
@@ -40,8 +40,8 @@
 		"dimmer": "#cad4e3",
 		"buttons": "#c9d6be",
 		"menu": "#f7f8fd",
-		"clicks-on": "",
-		"clicks-off": ""
+		"clicks-on": "#666c6d",
+		"clicks-off": "#a5b2c5"
 	},
 	{
 		"name": "cosy",
@@ -62,8 +62,8 @@
 		"dimmer": "#ffebd3",
 		"buttons": "#d7c6c1",
 		"menu": "#ffe5c8",
-		"clicks-on": "",
-		"clicks-off": ""
+		"clicks-on": "#9a6d37",
+		"clicks-off": "#d7c6c1"
 	},
 	{
 		"name": "coffee",
@@ -85,8 +85,8 @@
 		"dimmer": "#f3f4d6",
 		"buttons": "#ecefc7",
 		"menu": "#faf6e5",
-		"clicks-on": "",
-		"clicks-off": ""
+		"clicks-on": "#8fb67f",
+		"clicks-off": "#e8dfb3"
 	},
 	{
 		"name": "beach",
@@ -96,7 +96,7 @@
 		"dimmer": "#f6dbbc50",
 		"buttons": "#f6dbbc50",
 		"menu": "#fdf3e0",
-		"clicks-on": "",
-		"clicks-off": ""
+		"clicks-on": "#4b9ab4",
+		"clicks-off": "#f6dbbc"
 	}
 ]

@@ -3,26 +3,9 @@ import { useState } from 'react'
 import { applyTheme } from '../utils'
 import { animated } from '@react-spring/web'
 
-interface ButtonProps {
-	style?: Object
-	name: string
-	func: any
-	state: boolean
-}
-
-const Button = ({ name, func, state, style }: ButtonProps) => {
-	return (
-		<button style={style} name={name} onClick={func}>
-			<span>{name}</span>
-			<span className="optionState">{state.toString()}</span>
-		</button>
-	)
-}
-
 const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, dragX }) => {
 	const [openedTheme, setOpenedTheme] = useState(false)
 	const [fullscreen, setFullscreen] = useState(false)
-	// const [menuShown, setMenuShown] = useState(false)
 
 	const changeAnimations = () => {
 		const appDOM = document.querySelector('.polytronome') as HTMLDivElement
@@ -56,21 +39,32 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, dragX }) => {
 	return (
 		<animated.aside style={{ x: dragX }}>
 			<div className="menu">
-				<Button name="advanced mode" state={!easy} func={() => setEasy(!easy)}></Button>
+				<button onClick={() => setEasy(!easy)}>
+					<span>advanced mode</span>
+					<span className="optionState">{easy ? 'off' : 'on'}</span>
+				</button>
 
-				<Button
-					name="animations"
-					state={!moreSettings.performance}
-					func={changeAnimations}
-				></Button>
+				<button onClick={changeAnimations}>
+					<span>animations</span>
+					<span className="optionState">
+						{moreSettings.performance ? 'on' : 'off'}
+					</span>
+				</button>
 
-				<Button name="fullscreen" state={fullscreen} func={changeFullscreen}></Button>
+				<button onClick={changeFullscreen}>
+					<span>fullscreen</span>
+					<span className="optionState">{fullscreen ? 'on' : 'off'}</span>
+				</button>
 
-				<Button
-					name="themes"
-					state={moreSettings.theme}
-					func={e => setOpenedTheme(!openedTheme)}
-				></Button>
+				<button onClick={e => console.log(e)}>
+					<span>sound offset</span>
+					<span className="optionState">soon</span>
+				</button>
+
+				<button onClick={e => setOpenedTheme(!openedTheme)}>
+					<span>themes</span>
+					<span className="optionState">{Themes[moreSettings.theme].name}</span>
+				</button>
 
 				<div
 					className="theme-list"
@@ -88,7 +82,6 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, dragX }) => {
 							style={{
 								backgroundColor: theme.background,
 								color: theme.accent,
-								// borderTopLeftRadius: moreSettings.theme === i ? 0 : 20,
 							}}
 							onClick={e => {
 								e.stopPropagation()
@@ -100,14 +93,13 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, dragX }) => {
 						</span>
 					))}
 				</div>
+			</div>
 
-				<Button
-					name="sound offset"
-					state={true}
-					func={e => {
-						console.log(e)
-					}}
-				></Button>
+			<div className="links">
+				<a href="https://polytronome.com/docs">documentation</a>
+				<a href="https://github.com/victrme/polytronome">github</a>
+				<a href="https://ko-fi.com/victr">donate</a>
+				<a href="mailto:mail@victr.me">contact</a>
 			</div>
 		</animated.aside>
 	)

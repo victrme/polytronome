@@ -10,6 +10,25 @@
 
 	.logo {
 		margin: 20px;
+		display: flex;
+		align-items: center;
+
+		svg {
+			transform: scale(0.8);
+			margin-right: 10px;
+		}
+
+		h1 {
+			font-size: 28px;
+			margin: 0;
+			margin-bottom: 5px;
+			color: var(--clicks-on);
+		}
+
+		p {
+			font-size: 14px;
+			margin: 0;
+		}
 	}
 
 	.tempo {
