@@ -10,6 +10,18 @@
 	.layers {
 		width: 100%;
 	}
+
+	.block {
+		width: 80%;
+		margin: auto;
+
+		.click-row {
+			max-height: 90px;
+			span {
+				height: 80px;
+			}
+		}
+	}
 }
 
 .click-row {

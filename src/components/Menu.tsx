@@ -1,9 +1,10 @@
-import Themes from '../assets/themes.json'
 import { useState } from 'react'
-import { applyTheme } from '../utils'
 import { animated } from '@react-spring/web'
+import Themes from '../assets/themes.json'
+import defaultLayers from '../assets/layers.json'
+import { applyTheme, createExportCode, importCode } from '../utils'
 
-const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, dragX }) => {
+const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport, dragX }) => {
 	const [openedTheme, setOpenedTheme] = useState(false)
 	const [fullscreen, setFullscreen] = useState(false)
 
@@ -36,31 +37,17 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, dragX }) => {
 		localStorage.theme = index
 	}
 
+	const changeClickType = () => {
+		setMoreSettings(prev => ({ ...prev, clickType: (moreSettings.clickType + 1) % 3 }))
+	}
+
+	const resetToDefault = () => {
+		setImport(importCode(createExportCode(80, defaultLayers, moreSettings, easy)))
+	}
+
 	return (
 		<animated.aside style={{ x: dragX }}>
 			<div className="menu">
-				<button onClick={() => setEasy(!easy)}>
-					<span>advanced mode</span>
-					<span className="optionState">{easy ? 'off' : 'on'}</span>
-				</button>
-
-				<button onClick={changeAnimations}>
-					<span>animations</span>
-					<span className="optionState">
-						{moreSettings.performance ? 'on' : 'off'}
-					</span>
-				</button>
-
-				<button onClick={changeFullscreen}>
-					<span>fullscreen</span>
-					<span className="optionState">{fullscreen ? 'on' : 'off'}</span>
-				</button>
-
-				<button onClick={e => console.log(e)}>
-					<span>sound offset</span>
-					<span className="optionState">soon</span>
-				</button>
-
 				<button onClick={e => setOpenedTheme(!openedTheme)}>
 					<span>themes</span>
 					<span className="optionState">{Themes[moreSettings.theme].name}</span>
@@ -93,6 +80,68 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, dragX }) => {
 						</span>
 					))}
 				</div>
+
+				<button onClick={() => setEasy(!easy)}>
+					<span>advanced mode</span>
+					<span className="optionState">{easy ? 'off' : 'on'}</span>
+				</button>
+
+				<button onClick={changeAnimations}>
+					<span>animations</span>
+					<span className="optionState">
+						{moreSettings.performance ? 'on' : 'off'}
+					</span>
+				</button>
+
+				<button onClick={changeClickType}>
+					<span>click view</span>
+					<span className="optionState">
+						{moreSettings.clickType === 0
+							? 'layers'
+							: moreSettings.clickType === 1
+							? 'segment'
+							: 'block'}
+					</span>
+				</button>
+
+				{/* <button
+					className="clickview"
+					onClick={() =>
+						setSegment(prev => ({
+							...prev,
+							on: !prev.on,
+						}))
+					}
+				>
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7 3.5">
+						<path
+							d={
+								segment.on
+									? 'M1 1.75 1.5 1.75M2.5 1.75 4 1.75M5 1.75 6 1.75'
+									: 'M1 1 2 1M3 1 4 1M5 1 6 1M1 2.5 3 2.5M4 2.5 6 2.5'
+							}
+							stroke="var(--accent)"
+							strokeWidth="1"
+							strokeLinecap="round"
+							fill="none"
+						/>
+					</svg>
+					click view
+				</button> */}
+
+				<button onClick={changeFullscreen}>
+					<span>fullscreen</span>
+					<span className="optionState">{fullscreen ? 'on' : 'off'}</span>
+				</button>
+
+				<button onClick={() => alert('why click on it, it says "soon"')}>
+					<span>sound offset</span>
+					<span className="optionState">soon</span>
+				</button>
+
+				<button onClick={resetToDefault}>
+					<span>reset to default</span>
+				</button>
 			</div>
 
 			<div className="links">

@@ -56,6 +56,7 @@ export const importCode = (code: any[]) => {
 		theme: 0,
 		fullscreen: false,
 		performance: false,
+		clickType: 0,
 	}
 
 	code[2].forEach((minified: number[]) => {

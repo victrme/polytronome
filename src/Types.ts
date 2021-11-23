@@ -2,6 +2,7 @@ export type MoreSettings = {
 	theme: number
 	fullscreen: boolean
 	performance: boolean
+	clickType: number
 }
 
 export type Segment = {
@@ -23,4 +24,11 @@ export type Layer = {
 export type Sounds = {
 	wood: [any]
 	drum: [any]
+}
+
+export type Code = {
+	easy: boolean
+	tempo: number
+	layers: Layer[]
+	moreSettings: MoreSettings
 }

@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import propTypes from 'prop-types'
 import Pizzicato from 'pizzicato'
 import { Layer } from '../Types'
 
-const Clicks = ({ isRunning, segment, layers, setSegment, tempoRef, isRunningRef }) => {
+const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef }) => {
 	function usePrevious(value) {
 		const ref = useRef()
 		useEffect(() => (ref.current = value), [value])
@@ -11,19 +10,17 @@ const Clicks = ({ isRunning, segment, layers, setSegment, tempoRef, isRunningRef
 	}
 	const getBeats = () => layers.map((x: Layer) => x.beats)
 	const clicksRef = useRef(document.createElement('div'))
-	const [lateSegmentChange, setLateSegmentChange] = useState(false)
 	const [times, setTimes] = useState<number[]>([1, 1, 1, 1, 1])
 	const [segmentPos, setSegmentPos] = useState(0)
+	const [segmentRatio, setSegmentRatio] = useState([0])
 
 	const timesRef = useRef(times)
-	const segmentRef = useRef(segment)
 	const layersRef = useRef(layers)
 	const segmentPosRef = useRef(segmentPos)
 	const previousBeats = usePrevious(getBeats()) || [1, 1, 1, 1, 1]
 
 	timesRef.current = times
 	layersRef.current = layers
-	segmentRef.current = segment
 	segmentPosRef.current = segmentPos
 
 	type Timings = [number, number[]][]
@@ -106,7 +103,7 @@ const Clicks = ({ isRunning, segment, layers, setSegment, tempoRef, isRunningRef
 					position = 0
 				}
 
-				if (segmentRef.current.on) setSegmentPos(position)
+				if (clickType > 0) setSegmentPos(position)
 
 				runRecursion(preventLatency(nextDelay, perfStart), position)
 			}, nextDelay)
@@ -184,9 +181,7 @@ const Clicks = ({ isRunning, segment, layers, setSegment, tempoRef, isRunningRef
 		const ratiosOnly: number[] = []
 
 		timings.forEach(click => ratiosOnly.push(click[0] / (24e4 / tempoRef.current)))
-		setSegment({ ...segment, ratios: ratiosOnly })
-
-		// eslint-disable-next-line
+		setSegmentRatio(ratiosOnly)
 	}
 
 	//
@@ -195,10 +190,6 @@ const Clicks = ({ isRunning, segment, layers, setSegment, tempoRef, isRunningRef
 	//
 	//
 
-	useEffect(() => {
-		setLateSegmentChange(segment.on)
-	}, [segment.on])
-
 	// Starting
 	useEffect(() => {
 		if (isRunning.length > 0) metronome(getMetronomeTimings(), isRunningRef.current)
@@ -206,21 +197,11 @@ const Clicks = ({ isRunning, segment, layers, setSegment, tempoRef, isRunningRef
 	}, [isRunning])
 
 	useEffect(() => {
-		if (segment.on) initSegment()
+		if (clickType === 1) initSegment()
 
-		//
-		// TODO:
-		// Previous layer pour update que
-		// quand les beats changent
-		//
-
-		let changeClicks = false
-
-		getBeats().forEach((beat, i) => {
-			if (beat !== previousBeats[i]) changeClicks = !0
-		})
-
-		if (changeClicks) {
+		// This averages clicks on beat change
+		// to prevent skipping beats on restart
+		function averageClicks() {
 			const tempTimes = [...times]
 			const concatdTimes = times.reduce((a, b) => a + b)
 			const maxTime = layers.map(a => a.beats).reduce((a, b) => a + b)
@@ -235,8 +216,17 @@ const Clicks = ({ isRunning, segment, layers, setSegment, tempoRef, isRunningRef
 			setTimes([...tempTimes])
 		}
 
+		let changeClicks = false
+		getBeats().forEach((beat, i) => (beat !== previousBeats[i] ? (changeClicks = !0) : ''))
+		if (changeClicks) averageClicks()
+
 		// eslint-disable-next-line
 	}, [layers])
+
+	useEffect(() => {
+		initSegment()
+		// eslint-disable-next-line
+	}, [])
 
 	//
 	//
@@ -246,26 +236,8 @@ const Clicks = ({ isRunning, segment, layers, setSegment, tempoRef, isRunningRef
 
 	let clicks = <div ref={clicksRef} className="clicks"></div>
 
-	switch (lateSegmentChange) {
-		case true:
-			clicks = (
-				<div className="segment">
-					<div className="click-row">
-						{segment.ratios.map((ratio, i) => (
-							<span
-								key={i}
-								className={'click' + (segmentPos === i ? ' on' : '')}
-								style={{
-									width: `calc(${ratio * 100}% - 10px)`,
-								}}
-							/>
-						))}
-					</div>
-				</div>
-			)
-			break
-
-		case false: {
+	switch (clickType) {
+		case 0: {
 			clicks = (
 				<div className="layers">
 					{layers.map((layer, row) => {
@@ -302,6 +274,37 @@ const Clicks = ({ isRunning, segment, layers, setSegment, tempoRef, isRunningRef
 			)
 			break
 		}
+
+		case 1:
+			clicks = (
+				<div className="segment">
+					<div className="click-row">
+						{segmentRatio.map((ratio, i) => (
+							<span
+								key={i}
+								className={'click' + (segmentPos === i ? ' on' : '')}
+								style={{
+									width: `calc(${ratio * 100}% - 10px)`,
+								}}
+							/>
+						))}
+					</div>
+				</div>
+			)
+			break
+
+		case 2:
+			clicks = (
+				<div className="block">
+					<div className="click-row">
+						<span
+							className={'click' + (segmentPos % 2 === 0 ? ' on' : '')}
+							style={{ width: `100%` }}
+						/>
+					</div>
+				</div>
+			)
+			break
 	}
 
 	return (
@@ -309,15 +312,6 @@ const Clicks = ({ isRunning, segment, layers, setSegment, tempoRef, isRunningRef
 			{clicks}
 		</div>
 	)
-}
-
-Clicks.propTypes = {
-	segment: propTypes.any.isRequired,
-	setSegment: propTypes.any.isRequired,
-	layers: propTypes.any.isRequired,
-	isRunning: propTypes.any.isRequired,
-	isRunningRef: propTypes.any.isRequired,
-	tempoRef: propTypes.any.isRequired,
 }
 
 export default Clicks
