@@ -11,6 +11,7 @@ import { setRandomID, importCode, applyTheme, createExportCode } from './utils'
 import { useDrag } from '@use-gesture/react'
 import { animated, useSpring, config } from '@react-spring/web'
 import useMeasure from 'react-use-measure'
+import { ResizeObserver } from '@juggle/resize-observer'
 
 const App = (): JSX.Element => {
 	//
@@ -119,7 +120,7 @@ const App = (): JSX.Element => {
 	const [menuStyles, menuSpring] = useSpring(() => springProps)
 	const [mainStyles, mainSpring] = useSpring(() => springProps)
 
-	const [mainRef, mainBounds] = useMeasure()
+	const [mainRef, mainBounds] = useMeasure({ polyfill: ResizeObserver })
 	const menuSize = 360
 	const padding = 60
 
@@ -167,8 +168,14 @@ const App = (): JSX.Element => {
 		sessionStorage.layers = JSON.stringify(layers)
 
 		// Apply saved settings
-		if (localStorage.sleep) setSettingsFromCode(importCode(JSON.parse(localStorage.sleep)))
-		else applyTheme(moreSettings.theme)
+		try {
+			if (localStorage.sleep)
+				setSettingsFromCode(importCode(JSON.parse(localStorage.sleep)))
+			else applyTheme(moreSettings.theme)
+		} catch (error) {
+			localStorage.removeItem('sleep')
+			applyTheme(moreSettings.theme)
+		}
 
 		//
 		// Window Events

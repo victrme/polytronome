@@ -4,6 +4,7 @@
 	"homepage": "/",
 	"private": true,
 	"dependencies": {
+		"@juggle/resize-observer": "^3.3.1",
 		"@react-spring/web": "^9.3.0",
 		"@testing-library/jest-dom": "^5.15.0",
 		"@testing-library/react": "^12.1.2",

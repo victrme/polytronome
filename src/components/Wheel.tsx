@@ -3,6 +3,8 @@ import { useSpring, animated, config } from '@react-spring/web'
 import propTypes from 'prop-types'
 import { inRange } from 'lodash'
 import { useEffect, useRef, useState } from 'react'
+import useMeasure from 'react-use-measure'
+import { ResizeObserver } from '@juggle/resize-observer'
 
 const Arrow = props => {
 	return (
@@ -38,13 +40,17 @@ allLists.beats[allLists.beats.length - 1] = '×'
 const Wheel = ({ update, type, state }): JSX.Element => {
 	const list: string[] = allLists[type]
 	const [dragRelease, setDragRelease] = useState(false)
+	const [wheelWrapRef, bounds] = useMeasure({ polyfill: ResizeObserver })
+	const height = bounds.height - 4 === -4 ? 50 : bounds.height - 4
+
+	console.log(bounds.height - 4)
 
 	const offsetState = (state: number) => (type === 'tempo' ? state - 30 : state - 1)
-	const getClosest = (y: number) => Math.round(y / 50) * 50
-	const getUserVal = (y: number) => Math.round(y / 50) + list.length - 1
+	const getClosest = (y: number) => Math.round(y / height) * height
+	const getUserVal = (y: number) => Math.round(y / height) + list.length - 1
 
-	const bottomPos = -(list.length - 1) * 50
-	const initialPos = bottomPos + offsetState(state) * 50
+	const bottomPos = -(list.length - 1) * height
+	const initialPos = bottomPos + offsetState(state) * height
 
 	// eslint-disable-next-line
 	const [{ y }, api] = useSpring(() => ({
@@ -54,9 +60,9 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 	}))
 
 	const handleWheelMove = (sign: number, noUpdate?: boolean) => {
-		const snapped = getClosest(y.get() + 50 * sign)
+		const snapped = getClosest(y.get() + height * sign)
 
-		if (inRange(snapped, 50, bottomPos)) {
+		if (inRange(snapped, height, bottomPos)) {
 			if (noUpdate) api.set({ y: snapped })
 			else update(getUserVal(snapped))
 		}
@@ -64,7 +70,7 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 
 	useEffect(
 		() => {
-			if (!dragRelease) api.set({ y: bottomPos + offsetState(state) * 50 })
+			if (!dragRelease) api.set({ y: bottomPos + offsetState(state) * height })
 			else setDragRelease(false)
 		},
 		// eslint-disable-next-line
@@ -140,7 +146,7 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 	}
 
 	return (
-		<div className="immovable_wheel">
+		<div className="immovable_wheel" ref={wheelWrapRef}>
 			<div className="arrows">
 				<Arrow
 					className="up"
