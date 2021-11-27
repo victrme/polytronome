@@ -12,6 +12,7 @@ import { useDrag } from '@use-gesture/react'
 import { animated, useSpring, config } from '@react-spring/web'
 import useMeasure from 'react-use-measure'
 import { ResizeObserver } from '@juggle/resize-observer'
+import Tutorial from './components/Tutorial'
 
 const App = (): JSX.Element => {
 	//
@@ -25,7 +26,7 @@ const App = (): JSX.Element => {
 	const [isRunning, setIsRunning] = useState('')
 	const [easy, setEasy] = useState(true)
 	const [layers, setLayers] = useState<Layer[]>([...defaultLayers])
-	const [tutorial, setTutorial] = useState(-1)
+	const [tutoStage, setTutoStage] = useState(0)
 
 	const [moreSettings, setMoreSettings] = useState<MoreSettings>({
 		theme: 2,
@@ -61,7 +62,7 @@ const App = (): JSX.Element => {
 		setIsRunning('')
 		setStartTime(0)
 
-		if (tutorial === 2) setTutorial(tutorial + 1)
+		if (tutoStage === 5) setTutoStage(tutoStage + 1)
 	}
 
 	const restartMetronome = useCallback(() => {
@@ -169,42 +170,27 @@ const App = (): JSX.Element => {
 	// tutorial effects
 
 	useEffect(() => {
-		const tutoStageDialog = [
-			"Polyrtonome t'aide a visualiser les polytythmes",
-			'Fais moi donc un 5 temps sur 7',
-			'Parfait, ecoutons ce que ca donne',
-			'Maintenant un 4 temps, sur un 5 temps, sur un 9',
-			'a 60 battements par minutes',
-			"Qu'est ce que ca donne",
-			'Ca commence a devenir complique',
-		]
-		console.log(tutoStageDialog[tutorial])
-	}, [tutorial])
-
-	useEffect(() => {
-		if (tutorial > 0) {
+		if (tutoStage > 0) {
 			const beats = layers.map(x => x.beats)
 			const reduced = beats.reduce((a, b) => a + b)
 
-			if (tutorial === 1) {
-				if (beats.indexOf(5) !== -1 && beats.indexOf(7) !== -1 && reduced === 15)
-					setTutorial(tutorial + 1)
-			} else if (tutorial === 3) {
-				if (
-					beats.indexOf(4) !== -1 &&
-					beats.indexOf(5) !== -1 &&
-					beats.indexOf(9) !== -1 &&
-					reduced === 20
-				)
-					setTutorial(tutorial + 1)
-			}
+			if (beats.indexOf(5) !== -1 && beats.indexOf(7) !== -1 && reduced === 15)
+				setTutoStage(tutoStage + 1)
+			else if (
+				tutoStage > 3 &&
+				beats.indexOf(5) !== -1 &&
+				beats.indexOf(7) !== -1 &&
+				beats.indexOf(12) !== -1 &&
+				reduced === 25
+			)
+				setTutoStage(tutoStage + 1)
 		}
 
 		// eslint-disable-next-line
 	}, [layers])
 
 	useEffect(() => {
-		if (tutorial === 4 && tempo === 60) setTutorial(tutorial + 1)
+		if (tutoStage === 6 && tempo === 60) setTutoStage(tutoStage + 1)
 		// eslint-disable-next-line
 	}, [tempo])
 
@@ -225,11 +211,6 @@ const App = (): JSX.Element => {
 			localStorage.removeItem('sleep')
 			applyTheme(moreSettings.theme)
 		}
-
-		//
-		// Tutorial start
-		setTutorial(0)
-		setTimeout(() => setTutorial(1), 2000)
 
 		//
 		// Window Events
@@ -263,6 +244,8 @@ const App = (): JSX.Element => {
 		<div
 			className={'polytronome' + (isMobileOnly ? ' mobile' : '') + (easy ? ' easy' : '')}
 		>
+			<Tutorial tutoStage={tutoStage} setTutoStage={setTutoStage}></Tutorial>
+
 			<div>
 				<Menu
 					easy={easy}

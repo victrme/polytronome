@@ -243,6 +243,33 @@ pre {
 	}
 
 	/*
+	TUTORIAL
+	*/
+
+	.tutorial {
+		display: flex;
+		align-items: center;
+		position: fixed;
+		top: 3em;
+		left: 3em;
+		padding: 1em 2em;
+		border-radius: 20px;
+		border: 2px solid var(--dim);
+		background-color: var(--menu);
+		z-index: 3;
+
+		.dialog {
+			width: 160px;
+			margin-right: 20px;
+		}
+
+		.interactions {
+			display: flex;
+			flex-direction: column;
+		}
+	}
+
+	/*
 	EASY MODE
 	*/
 
