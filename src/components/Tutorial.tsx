@@ -1,76 +1,104 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const Tutorial = ({ tutoStage, setTutoStage }) => {
-	const [leave, setLeave] = useState(false)
-	const tutorial: {
+	const [removeTuto, setRemoveTuto] = useState(false)
+
+	type tutoNode = {
 		text: string
-		yay?: string
-		nay?: string
-		leave?: number
-	}[] = [
-		{
+		yes?: {
+			to: string | Boolean
+			text: string
+		}
+		no?: {
+			to: string
+			text: string
+		}
+	}
+
+	const tutorial: any = {
+		intro: {
 			text: "Salut 👋 C'est ta premiere fois ici ?",
-			yay: 'Oui !',
-			nay: 'Non',
-			leave: 0,
+			yes: { to: 'nextIntro', text: 'Oui !' },
+			no: { to: 'leaveIntro', text: 'Non' },
 		},
-		{
+		leaveIntro: {
+			text: 'Ok, amuse-toi bien !',
+			yes: { to: false, text: 'Merci' },
+		},
+		nextIntro: {
 			text: "Tu veux que je t'explique comment ca marche ?",
-			yay: 'Je veux bien',
-			nay: "Non c'est cool",
-			leave: 1,
+			yes: { to: 'explainGoal', text: 'Je veux bien' },
+			no: { to: 'leaveNextIntro', text: "Non c'est cool" },
 		},
-		{ text: "Polyrtonome t'aide a visualiser les polytythmes", yay: "D'accord" },
-		{
+		leaveNextIntro: {
+			text: 'Pas de soucis, tu peux toujours me retrouver dans le menu',
+			yes: { to: false, text: 'Ok merci' },
+		},
+		explainGoal: {
+			text: "Polytronome t'aide a visualiser different rythmes en meme temps",
+			yes: { to: 'explainWheel', text: "D'accord" },
+			no: { to: 'explainRythms', text: 'Comment ?' },
+		},
+		explainRythms: {
+			text: 'Avec les cliques que tu vois juste la au milieu, les lignes se remplissent a la meme vitesse',
+			yes: { to: 'explainWheel', text: "Ah d'accord c'est cool" },
+			no: { to: 'explainBeep', text: 'Toujours pas compris' },
+		},
+		explainBeep: {
+			text: 'Ca fait beep boop, beep beep beep quoi',
+			yes: { to: 'explainWheel', text: 'merci compris a 100%' },
+			no: { to: 'explainEnerve', text: 'hmm...' },
+		},
+		explainEnerve: {
+			text: 'Genre ta pas compris ?',
+			yes: { to: 'explainBeep', text: 'je te jure' },
+			no: { to: 'explainOk', text: 'C bon je te taquine' },
+		},
+		explainOk: {
+			text: 'ok 😭',
+		},
+		explainWheel: {
 			text: 'Tu peux changer de temps en faisant dérouler les chiffres plus bas',
-			yay: 'Compris',
+			yes: { to: 'testBeats', text: 'Compris' },
 		},
-		{ text: 'Pour commencer, fais moi donc un 5 temps sur 7' },
-		{ text: 'Parfait, lance le metronome. Stop quand tu veux' },
-		{ text: 'Le tempo est à gauche, tu peux le baisser à 60 ?' },
-		{ text: 'Rajoute maintenant un rhytme de 12 temps, et ecoutons ca' },
-		{ text: 'Tu peux tirer les boutons à gauche pour acceder au menu' },
-	]
+		testBeats: {
+			text: 'Pour commencer, fais moi donc un 5 temps sur 7',
+		},
+		testLaunch: { text: 'Parfait 😄 Lance le metronome !' },
+		testTempo: { text: 'Tu aussi modifier le tempo, tu peux le baisser à 60 ?' },
+		endEasy: {
+			text: 'Voila pour les bases ! Tu peux tirer les boutons à gauche pour acceder au menu',
+			yes: { to: false, text: 'Merci, a plus' },
+		},
+	}
 
-	const tutoLeave = [
-		'Ok, amuse-toi bien !',
-		'Pas de soucis, tu peux toujours me retrouver dans le menu',
-		"C'est pas exactement ça",
-	]
+	useEffect(() => {
+		if (tutoStage === 'explainOk') setTimeout(() => setRemoveTuto(true), 1000)
+	}, [tutoStage, setTutoStage])
 
-	// useEffect(() => {
-	// 	if (leave) setLeave(false)
-	// }, [leave])
+	const { yes, no, text } = tutorial[tutoStage]
+	const buttons: JSX.Element[] = []
+
+	const handleYay = () => {
+		if (yes) {
+			if (yes.to === false) setRemoveTuto(true)
+			else setTutoStage(yes.to)
+		}
+	}
+
+	const handleNay = () => {
+		if (no) setTutoStage(no.to)
+	}
+
+	if (yes) buttons.push(<button onClick={handleYay}>{yes.text}</button>)
+	if (no) buttons.push(<button onClick={handleNay}>{no.text}</button>)
 
 	return (
-		<div className="tutorial">
+		<div className="tutorial" style={{ display: removeTuto ? 'none' : 'flex' }}>
 			<div className="dialog">
-				<p>
-					{leave
-						? tutoLeave[tutorial[tutoStage].leave || 0]
-						: tutorial[tutoStage].text}
-				</p>
+				<p>{text}</p>
 			</div>
-			{leave ? (
-				''
-			) : (
-				<div className="interactions">
-					{tutorial[tutoStage].yay ? (
-						<button onClick={() => setTutoStage(tutoStage + 1)}>
-							{tutorial[tutoStage].yay}
-						</button>
-					) : (
-						''
-					)}
-					{tutorial[tutoStage].nay ? (
-						<button onClick={() => setLeave(true)}>
-							{tutorial[tutoStage].nay}
-						</button>
-					) : (
-						''
-					)}
-				</div>
-			)}
+			<div className="interactions">{buttons}</div>
 		</div>
 	)
 }

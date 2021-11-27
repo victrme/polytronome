@@ -26,7 +26,7 @@ const App = (): JSX.Element => {
 	const [isRunning, setIsRunning] = useState('')
 	const [easy, setEasy] = useState(true)
 	const [layers, setLayers] = useState<Layer[]>([...defaultLayers])
-	const [tutoStage, setTutoStage] = useState(0)
+	const [tutoStage, setTutoStage] = useState('intro')
 
 	const [moreSettings, setMoreSettings] = useState<MoreSettings>({
 		theme: 2,
@@ -62,7 +62,7 @@ const App = (): JSX.Element => {
 		setIsRunning('')
 		setStartTime(0)
 
-		if (tutoStage === 5) setTutoStage(tutoStage + 1)
+		if (tutoStage === 'testLaunch') setTutoStage('testTempo')
 	}
 
 	const restartMetronome = useCallback(() => {
@@ -170,27 +170,28 @@ const App = (): JSX.Element => {
 	// tutorial effects
 
 	useEffect(() => {
-		if (tutoStage > 0) {
+		if (tutoStage === 'testBeats') {
 			const beats = layers.map(x => x.beats)
 			const reduced = beats.reduce((a, b) => a + b)
 
 			if (beats.indexOf(5) !== -1 && beats.indexOf(7) !== -1 && reduced === 15)
-				setTutoStage(tutoStage + 1)
-			else if (
-				tutoStage > 3 &&
-				beats.indexOf(5) !== -1 &&
-				beats.indexOf(7) !== -1 &&
-				beats.indexOf(12) !== -1 &&
-				reduced === 25
-			)
-				setTutoStage(tutoStage + 1)
+				setTutoStage('testLaunch')
+
+			// else if (
+			// 	tutoStage > 3 &&
+			// 	beats.indexOf(5) !== -1 &&
+			// 	beats.indexOf(7) !== -1 &&
+			// 	beats.indexOf(12) !== -1 &&
+			// 	reduced === 25
+			// )
+			// 	setTutoStage(tutoStage + 1)
 		}
 
 		// eslint-disable-next-line
 	}, [layers])
 
 	useEffect(() => {
-		if (tutoStage === 6 && tempo === 60) setTutoStage(tutoStage + 1)
+		if (tutoStage === 'testTempo' && tempo === 60) setTutoStage('endEasy')
 		// eslint-disable-next-line
 	}, [tempo])
 
