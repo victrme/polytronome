@@ -43,8 +43,6 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 	const [wheelWrapRef, bounds] = useMeasure({ polyfill: ResizeObserver })
 	const height = bounds.height - 4 === -4 ? 50 : bounds.height - 4
 
-	console.log(bounds.height - 4)
-
 	const offsetState = (state: number) => (type === 'tempo' ? state - 30 : state - 1)
 	const getClosest = (y: number) => Math.round(y / height) * height
 	const getUserVal = (y: number) => Math.round(y / height) + list.length - 1

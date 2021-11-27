@@ -25,6 +25,7 @@ const App = (): JSX.Element => {
 	const [isRunning, setIsRunning] = useState('')
 	const [easy, setEasy] = useState(true)
 	const [layers, setLayers] = useState<Layer[]>([...defaultLayers])
+	const [tutorial, setTutorial] = useState(-1)
 
 	const [moreSettings, setMoreSettings] = useState<MoreSettings>({
 		theme: 2,
@@ -59,6 +60,8 @@ const App = (): JSX.Element => {
 	const stopMetronome = () => {
 		setIsRunning('')
 		setStartTime(0)
+
+		if (tutorial === 2) setTutorial(tutorial + 1)
 	}
 
 	const restartMetronome = useCallback(() => {
@@ -162,6 +165,52 @@ const App = (): JSX.Element => {
 		applyTheme(code.moreSettings.theme)
 	}, [])
 
+	//
+	// tutorial effects
+
+	useEffect(() => {
+		const tutoStageDialog = [
+			"Polyrtonome t'aide a visualiser les polytythmes",
+			'Fais moi donc un 5 temps sur 7',
+			'Parfait, ecoutons ce que ca donne',
+			'Maintenant un 4 temps, sur un 5 temps, sur un 9',
+			'a 60 battements par minutes',
+			"Qu'est ce que ca donne",
+			'Ca commence a devenir complique',
+		]
+		console.log(tutoStageDialog[tutorial])
+	}, [tutorial])
+
+	useEffect(() => {
+		if (tutorial > 0) {
+			const beats = layers.map(x => x.beats)
+			const reduced = beats.reduce((a, b) => a + b)
+
+			if (tutorial === 1) {
+				if (beats.indexOf(5) !== -1 && beats.indexOf(7) !== -1 && reduced === 15)
+					setTutorial(tutorial + 1)
+			} else if (tutorial === 3) {
+				if (
+					beats.indexOf(4) !== -1 &&
+					beats.indexOf(5) !== -1 &&
+					beats.indexOf(9) !== -1 &&
+					reduced === 20
+				)
+					setTutorial(tutorial + 1)
+			}
+		}
+
+		// eslint-disable-next-line
+	}, [layers])
+
+	useEffect(() => {
+		if (tutorial === 4 && tempo === 60) setTutorial(tutorial + 1)
+		// eslint-disable-next-line
+	}, [tempo])
+
+	//
+	// Main Effect
+
 	useEffect(() => {
 		//
 		// Profile save
@@ -176,6 +225,11 @@ const App = (): JSX.Element => {
 			localStorage.removeItem('sleep')
 			applyTheme(moreSettings.theme)
 		}
+
+		//
+		// Tutorial start
+		setTutorial(0)
+		setTimeout(() => setTutorial(1), 2000)
 
 		//
 		// Window Events
