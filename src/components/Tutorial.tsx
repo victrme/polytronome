@@ -1,18 +1,23 @@
 import { useEffect, useState } from 'react'
+import Pizzicato from 'pizzicato'
 
 const Tutorial = ({ tutoStage, setTutoStage }) => {
 	const [removeTuto, setRemoveTuto] = useState(false)
 
-	type tutoNode = {
-		text: string
-		yes?: {
-			to: string | Boolean
-			text: string
-		}
-		no?: {
-			to: string
-			text: string
-		}
+	const playNotifSound = (from: 'yes' | 'no' | 'test') => {
+		const wave = new Pizzicato.Sound({
+			source: 'wave',
+			options: {
+				type: 'sine',
+				volume: 0.4,
+				frequency: from === 'yes' ? 220 : from === 'no' ? 140 : 180,
+				attack: 0.04,
+				release: 0.4,
+			},
+		})
+
+		wave.play()
+		setTimeout(() => wave.stop(), 50)
 	}
 
 	const tutorial: any = {
@@ -65,6 +70,7 @@ const Tutorial = ({ tutoStage, setTutoStage }) => {
 			text: 'Pour commencer, fais moi donc un 5 temps sur 7',
 		},
 		testLaunch: { text: 'Parfait 😄 Lance le metronome !' },
+		waitLaunch: { text: 'Parfait 😄 Lance le metronome !' },
 		testTempo: { text: 'Tu aussi modifier le tempo, tu peux le baisser à 60 ?' },
 		endEasy: {
 			text: 'Voila pour les bases ! Tu peux tirer les boutons à gauche pour acceder au menu',
@@ -74,9 +80,10 @@ const Tutorial = ({ tutoStage, setTutoStage }) => {
 
 	useEffect(() => {
 		if (tutoStage === 'explainOk') setTimeout(() => setRemoveTuto(true), 1000)
+		playNotifSound('test')
 	}, [tutoStage, setTutoStage])
 
-	const { yes, no, text } = tutorial[tutoStage]
+	const { yes, no, text } = tutorial[tutoStage] || { yes: '', no: '', text: '' }
 	const buttons: JSX.Element[] = []
 
 	const handleYay = () => {
@@ -90,8 +97,18 @@ const Tutorial = ({ tutoStage, setTutoStage }) => {
 		if (no) setTutoStage(no.to)
 	}
 
-	if (yes) buttons.push(<button onClick={handleYay}>{yes.text}</button>)
-	if (no) buttons.push(<button onClick={handleNay}>{no.text}</button>)
+	if (yes)
+		buttons.push(
+			<button key={'yes'} onClick={handleYay}>
+				{yes.text}
+			</button>
+		)
+	if (no)
+		buttons.push(
+			<button key={'no'} onClick={handleNay}>
+				{no.text}
+			</button>
+		)
 
 	return (
 		<div className="tutorial" style={{ display: removeTuto ? 'none' : 'flex' }}>

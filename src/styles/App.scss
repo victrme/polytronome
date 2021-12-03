@@ -254,9 +254,9 @@ pre {
 		left: 3em;
 		padding: 1em 2em;
 		border-radius: 20px;
-		border: 2px solid var(--dim);
 		background-color: var(--menu);
 		z-index: 3;
+		font-weight: 600;
 
 		.dialog {
 			width: 220px;
@@ -266,6 +266,46 @@ pre {
 		.interactions {
 			display: flex;
 			flex-direction: column;
+		}
+	}
+
+	&.testBeats {
+		.header,
+		.clicks,
+		.bottom-buttons {
+			opacity: 0.4;
+			filter: grayscale(1);
+		}
+
+		.layers-table-wrap {
+			opacity: 1;
+		}
+	}
+
+	&.testLaunch {
+		.header,
+		.clicks,
+		.layers-table-wrap {
+			opacity: 0.4;
+			filter: grayscale(1);
+		}
+
+		.bottom-buttons {
+			opacity: 1;
+		}
+	}
+
+	&.testTempo {
+		.logo,
+		.clicks,
+		.bottom-buttons,
+		.layers-table-wrap {
+			opacity: 0.4;
+			filter: grayscale(1);
+		}
+
+		.tempo {
+			opacity: 1;
 		}
 	}
 

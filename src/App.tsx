@@ -52,22 +52,24 @@ const App = (): JSX.Element => {
 	//
 	//
 
-	const startMetronome = useCallback(() => {
+	const startMetronome = () => {
 		// Update to start state
 		setStartTime(Date.now())
 		setIsRunning(setRandomID())
-	}, [])
+
+		if (tutoStage === 'testLaunch') setTutoStage('waitLaunch')
+	}
 
 	const stopMetronome = () => {
 		setIsRunning('')
 		setStartTime(0)
 
-		if (tutoStage === 'testLaunch') setTutoStage('testTempo')
+		if (tutoStage === 'waitLaunch') setTutoStage('testTempo')
 	}
 
-	const restartMetronome = useCallback(() => {
+	const restartMetronome = () => {
 		if (isRunning !== '') startMetronome()
-	}, [isRunning, startMetronome])
+	}
 
 	const randomizeLayers = () => {
 		const rand = (a: number, b: number) => Math.random() * (b - a) + a
@@ -243,7 +245,12 @@ const App = (): JSX.Element => {
 
 	return (
 		<div
-			className={'polytronome' + (isMobileOnly ? ' mobile' : '') + (easy ? ' easy' : '')}
+			className={
+				'polytronome' +
+				(isMobileOnly ? ' mobile' : '') +
+				(easy ? ' easy ' : ' ') +
+				(tutoStage !== 'intro' ? tutoStage : '')
+			}
 		>
 			<Tutorial tutoStage={tutoStage} setTutoStage={setTutoStage}></Tutorial>
 
