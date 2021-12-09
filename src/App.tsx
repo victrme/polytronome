@@ -125,32 +125,40 @@ const App = (): JSX.Element => {
 	const springProps = { x: 0, y: 0, config: config.stiff }
 	const [menuStyles, menuSpring] = useSpring(() => springProps)
 	const [mainStyles, mainSpring] = useSpring(() => springProps)
-
 	const [mainRef, mainBounds] = useMeasure({ polyfill: ResizeObserver })
+
 	const menuSize = 360
 	const padding = 60
 
+	// Ugly session storage to always save main left position
+	// EXCEPT when App redraws main while menu is open
+	// (because main left would be set to 420px or menuSize + padding)
+	useEffect(() => {
+		if (mainBounds.left !== menuSize + padding) sessionStorage.leftBound = mainBounds.left
+	}, [mainBounds])
+
 	const drag = useDrag(
 		({ active, offset: [ox], tap }) => {
-			//
-			// Only move main as to not overlap on opened menu
-			// or menu click to close: close
-			const handleMenuOverlap = (menuOffset: number, close?: boolean) => {
-				if (mainBounds.left <= menuOffset + 60) {
-					mainSpring.start({ x: Math.max(0, menuOffset + padding - mainBounds.left) })
-				} else if (close) mainSpring.start({ x: 0 })
+			// Moves main and menu together
+			const moveElements = (moves: number[]) => {
+				menuSpring.start({ x: moves[0] })
+				mainSpring.start({ x: moves[1] })
 			}
 
-			menuSpring.start({ x: ox })
-			handleMenuOverlap(ox)
+			// sets offsets between main and menu
+			const left = sessionStorage.leftBound || 0
+			const dragMainOffest = ox + padding - left
+			const clickMainOffset = menuSize + padding - left
 
-			// Open or close menu
-			if (tap) {
-				const toOpen = menuStyles.x.get() === 0
+			// moves on drag
+			moveElements([ox, dragMainOffest < 0 ? 0 : dragMainOffest])
 
-				menuSpring.start({ x: toOpen ? menuSize : 0 })
-				handleMenuOverlap(toOpen ? menuSize : 0, !toOpen)
-			}
+			// release drag, finds rest position
+			if (!active) moveElements(ox > menuSize / 2 ? [menuSize, clickMainOffset] : [0, 0])
+
+			// clicking dragbar, === 0 is click to open
+			// if (tap)
+			// moveElements(menuStyles.x.get() === 0 ? [menuSize, clickMainOffset] : [0, 0])
 		},
 		{
 			axis: 'x',
@@ -178,15 +186,6 @@ const App = (): JSX.Element => {
 
 			if (beats.indexOf(5) !== -1 && beats.indexOf(7) !== -1 && reduced === 15)
 				setTutoStage('testLaunch')
-
-			// else if (
-			// 	tutoStage > 3 &&
-			// 	beats.indexOf(5) !== -1 &&
-			// 	beats.indexOf(7) !== -1 &&
-			// 	beats.indexOf(12) !== -1 &&
-			// 	reduced === 25
-			// )
-			// 	setTutoStage(tutoStage + 1)
 		}
 
 		// eslint-disable-next-line
