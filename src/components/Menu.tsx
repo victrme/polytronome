@@ -41,6 +41,10 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport, dragX }
 		setMoreSettings(prev => ({ ...prev, clickType: (moreSettings.clickType + 1) % 3 }))
 	}
 
+	const changeOffset = () => {
+		setMoreSettings(prev => ({ ...prev, offset: (moreSettings.offset + 50) % 500 }))
+	}
+
 	const resetToDefault = () => {
 		setImport(importCode(createExportCode(80, defaultLayers, moreSettings, easy)))
 	}
@@ -134,9 +138,9 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport, dragX }
 					<span className="optionState">{fullscreen ? 'on' : 'off'}</span>
 				</button>
 
-				<button onClick={() => alert('why click on it, it says "soon"')}>
+				<button onClick={changeOffset}>
 					<span>sound offset</span>
-					<span className="optionState">soon</span>
+					<span className="optionState">{moreSettings.offset}ms</span>
 				</button>
 
 				<button onClick={resetToDefault}>

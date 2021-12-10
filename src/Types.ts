@@ -3,6 +3,7 @@ export type MoreSettings = {
 	fullscreen: boolean
 	performance: boolean
 	clickType: number
+	offset: number
 }
 
 export type Segment = {

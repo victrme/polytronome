@@ -32,6 +32,7 @@ const App = (): JSX.Element => {
 		theme: 2,
 		fullscreen: false,
 		performance: false,
+		offset: 0,
 		clickType: 0,
 	})
 
@@ -147,8 +148,8 @@ const App = (): JSX.Element => {
 
 			// sets offsets between main and menu
 			const left = sessionStorage.leftBound || 0
-			const dragMainOffest = ox + padding - left
-			const clickMainOffset = menuSize + padding - left
+			const dragMainOffest = Math.max(0, ox + padding - left)
+			const clickMainOffset = Math.max(0, menuSize + padding - left)
 
 			// moves on drag
 			moveElements([ox, dragMainOffest < 0 ? 0 : dragMainOffest])
@@ -277,6 +278,7 @@ const App = (): JSX.Element => {
 					isRunning={isRunning}
 					isRunningRef={isRunningRef}
 					clickType={moreSettings.clickType}
+					offset={moreSettings.offset}
 				></Clicks>
 
 				<LayersTable

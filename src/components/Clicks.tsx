@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import Pizzicato from 'pizzicato'
 import { Layer } from '../Types'
 
-const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef }) => {
+const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }) => {
 	function usePrevious(value) {
 		const ref = useRef()
 		useEffect(() => (ref.current = value), [value])
@@ -75,8 +75,7 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef }) => {
 				//
 				// Quit recursion if stopped or removed
 				if (isRunningRef.current !== runId) {
-					clearTimeout(m_timeout)
-					return false
+					return clearTimeout(m_timeout)
 				}
 
 				const currentTiming = timings[position]
@@ -234,82 +233,92 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef }) => {
 	//
 	//
 
-	let clicks = <div ref={clicksRef} className="clicks"></div>
+	const [offsetTimes, setOffsetTimes] = useState([1, 1, 1, 1, 1])
 
-	switch (clickType) {
-		case 0: {
-			clicks = (
-				<div className="layers">
-					{layers.map((layer, row) => {
-						// Add clicks for each layers
+	useEffect(() => {
+		setTimeout(() => setOffsetTimes([...times]), offset)
+	}, [times])
 
-						const children: JSX.Element[] = []
-						for (let beat = 0; beat < 16; beat++) {
-							children.push(
+	const Clicks = () => {
+		let clicks = <div ref={clicksRef} className="clicks"></div>
+
+		switch (clickType) {
+			case 0: {
+				clicks = (
+					<div className="layers">
+						{layers.map((layer, row) => {
+							// Add clicks for each layers
+
+							const children: JSX.Element[] = []
+							for (let beat = 0; beat < 16; beat++) {
+								children.push(
+									<div
+										key={beat}
+										className={
+											'click' +
+											(beat >= layer.beats
+												? ' off'
+												: beat < offsetTimes[row]
+												? ' on'
+												: '')
+										}
+									/>
+								)
+							}
+
+							// Wrap in rows & return
+							return (
 								<div
-									key={beat}
-									className={
-										'click' +
-										(beat >= layer.beats
-											? ' off'
-											: beat < times[row]
-											? ' on'
-											: '')
-									}
-								/>
+									key={row}
+									className={'click-row' + (layer.beats === 1 ? ' off' : '')}
+								>
+									{children}
+								</div>
 							)
-						}
+						})}
+					</div>
+				)
+				break
+			}
 
-						// Wrap in rows & return
-						return (
-							<div
-								key={row}
-								className={'click-row' + (layer.beats === 1 ? ' off' : '')}
-							>
-								{children}
-							</div>
-						)
-					})}
-				</div>
-			)
-			break
+			case 1:
+				clicks = (
+					<div className="segment">
+						<div className="click-row">
+							{segmentRatio.map((ratio, i) => (
+								<span
+									key={i}
+									className={'click' + (segmentPos === i ? ' on' : '')}
+									style={{
+										width: `calc(${ratio * 100}% - 10px)`,
+									}}
+								/>
+							))}
+						</div>
+					</div>
+				)
+				break
+
+			case 2:
+				clicks = (
+					<div className="block">
+						<div className="click-row">
+							<span
+								className={'click' + (segmentPos % 2 === 0 ? ' on' : '')}
+								style={{ width: `100%` }}
+							/>
+						</div>
+					</div>
+				)
+				break
 		}
 
-		case 1:
-			clicks = (
-				<div className="segment">
-					<div className="click-row">
-						{segmentRatio.map((ratio, i) => (
-							<span
-								key={i}
-								className={'click' + (segmentPos === i ? ' on' : '')}
-								style={{
-									width: `calc(${ratio * 100}% - 10px)`,
-								}}
-							/>
-						))}
-					</div>
-				</div>
-			)
-			break
-
-		case 2:
-			clicks = (
-				<div className="block">
-					<div className="click-row">
-						<span
-							className={'click' + (segmentPos % 2 === 0 ? ' on' : '')}
-							style={{ width: `100%` }}
-						/>
-					</div>
-				</div>
-			)
-			break
+		return clicks
 	}
 
 	return (
 		<div ref={clicksRef} className="clicks">
-			{clicks}
+			<Clicks></Clicks>
 		</div>
 	)
 }
