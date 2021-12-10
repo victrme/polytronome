@@ -329,6 +329,10 @@ pre {
 			.ls-row {
 				padding: 10px;
 
+				&.off {
+					display: flex;
+				}
+
 				.immovable_wheel {
 					width: 80px;
 					margin: 0;

@@ -31,6 +31,10 @@
 			opacity: 0.4;
 			filter: grayscale(0.6);
 		}
+
+		&.off ~ .off {
+			display: none;
+		}
 	}
 
 	.ls-type {

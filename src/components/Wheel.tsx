@@ -1,10 +1,10 @@
-import { useDrag, useWheel } from '@use-gesture/react'
 import { useSpring, animated, config } from '@react-spring/web'
-import propTypes from 'prop-types'
-import { inRange } from 'lodash'
+import { ResizeObserver } from '@juggle/resize-observer'
+import { useDrag, useWheel } from '@use-gesture/react'
 import { useEffect, useRef, useState } from 'react'
 import useMeasure from 'react-use-measure'
-import { ResizeObserver } from '@juggle/resize-observer'
+import { inRange } from 'lodash'
+import { enableBodyScroll, disableBodyScroll } from 'body-scroll-lock'
 
 const Arrow = props => {
 	return (
@@ -144,7 +144,12 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 	}
 
 	return (
-		<div className="immovable_wheel" ref={wheelWrapRef}>
+		<div
+			className="immovable_wheel"
+			ref={wheelWrapRef}
+			onMouseEnter={disableBodyScroll}
+			onMouseLeave={enableBodyScroll}
+		>
 			<div className="arrows">
 				<Arrow
 					className="up"
@@ -165,12 +170,6 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 			</animated.div>
 		</div>
 	)
-}
-
-Wheel.propTypes = {
-	update: propTypes.func.isRequired,
-	type: propTypes.string.isRequired,
-	state: propTypes.number.isRequired,
 }
 
 export default Wheel

@@ -236,7 +236,8 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 	const [offsetTimes, setOffsetTimes] = useState([1, 1, 1, 1, 1])
 
 	useEffect(() => {
-		setTimeout(() => setOffsetTimes([...times]), offset)
+		if (offset !== 0) setTimeout(() => setOffsetTimes([...times]), offset)
+		else setOffsetTimes([...times])
 	}, [times])
 
 	const Clicks = () => {
