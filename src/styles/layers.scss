@@ -73,7 +73,12 @@
 			bottom: -4px;
 			padding: 2px 8px;
 			border-radius: 8px;
-			background-color: var(--background);
+			background-color: transparent;
+			transition: background-color 0.2s;
+		}
+
+		&:hover pre.octave {
+			background-color: var(--dimmer);
 		}
 
 		.immovable_wheel {

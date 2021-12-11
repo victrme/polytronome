@@ -98,14 +98,31 @@ const App = (): JSX.Element => {
 			el.blur()
 		}
 
-		// Spacebar control metronome
-		if (e.code === 'Space' && !IsTypingRef.current)
-			isRunningRef.current ? stopMetronome() : startMetronome()
+		switch (e.code) {
+			case 'Space':
+				isRunningRef.current ? stopMetronome() : startMetronome()
+				break
 
-		// Tempo up by 10 if shift
-		// Tempo down by 10 if shift
-		if (e.code === 'ArrowUp') setTempo(tempoRef.current + (e.shiftKey ? 10 : 1))
-		if (e.code === 'ArrowDown') setTempo(tempoRef.current - (e.shiftKey ? 10 : 1))
+			case 'ArrowUp':
+				setTempo(tempoRef.current + (e.ctrlKey ? 50 : e.shiftKey ? 10 : 1))
+				break
+
+			case 'ArrowDown':
+				setTempo(tempoRef.current - (e.ctrlKey ? 50 : e.shiftKey ? 10 : 1))
+				break
+
+			case 'Escape':
+				console.log('Toggle Menu')
+				break
+
+			case 'KeyV': {
+				setMoreSettings(prev => ({
+					...prev,
+					clickType: (moreSettingsRef.current.clickType + 1) % 3,
+				}))
+				break
+			}
+		}
 
 		e.stopPropagation()
 	}
@@ -132,6 +149,11 @@ const App = (): JSX.Element => {
 	const menuSize = 360
 	const padding = 60
 
+	const moveElements = (moves: number[]) => {
+		menuSpring.start({ x: moves[0] })
+		mainSpring.start({ x: moves[1] })
+	}
+
 	// Ugly session storage to always save main left position
 	// EXCEPT when App redraws main while menu is open
 	// (because main left would be set to 420px or menuSize + padding)
@@ -142,10 +164,6 @@ const App = (): JSX.Element => {
 	const drag = useDrag(
 		({ active, offset: [ox], tap }) => {
 			// Moves main and menu together
-			const moveElements = (moves: number[]) => {
-				menuSpring.start({ x: moves[0] })
-				mainSpring.start({ x: moves[1] })
-			}
 
 			// sets offsets between main and menu
 			const left = sessionStorage.leftBound || 0

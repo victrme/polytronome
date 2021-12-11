@@ -6,7 +6,7 @@ body {
 	background-color: black;
 	margin: 0;
 	transition: background-color 1s $easing;
-	overflow-x: hidden;
+	overflow: hidden;
 }
 body,
 body:fullscreen::backdrop {
@@ -51,6 +51,7 @@ pre {
 		flex-direction: column;
 		align-items: center;
 		width: 100%;
+		max-width: 1450px;
 		margin: 0 auto;
 	}
 
@@ -104,7 +105,7 @@ pre {
 		transition: opacity 0.2s, background-color 0.2s;
 
 		&:hover {
-			background-color: var(--dimmer);
+			background-color: var(--buttons);
 		}
 
 		.arrows {

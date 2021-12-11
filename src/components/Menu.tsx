@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { animated } from '@react-spring/web'
 import Themes from '../assets/themes.json'
 import defaultLayers from '../assets/layers.json'
@@ -48,6 +48,14 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport, dragX }
 	const resetToDefault = () => {
 		setImport(importCode(createExportCode(80, defaultLayers, moreSettings, easy)))
 	}
+
+	useEffect(() => {
+		const keymappings = e => (e.code === 'KeyF' ? changeFullscreen() : '')
+		const cleanupEvents = () => window.removeEventListener('keypress', keymappings)
+
+		window.addEventListener('keypress', keymappings)
+		return cleanupEvents
+	}, [])
 
 	return (
 		<animated.aside style={{ x: dragX }}>
