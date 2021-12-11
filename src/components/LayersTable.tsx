@@ -69,7 +69,7 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome, moreSettings }
 						<Wheel
 							type="beats"
 							state={layer.beats}
-							update={res => handleLayerChange('beats', res, i)}
+							update={(res: number) => handleLayerChange('beats', res, i)}
 						></Wheel>
 
 						{easy ? (

@@ -240,86 +240,82 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 		else setOffsetTimes([...times])
 	}, [times])
 
-	const Clicks = () => {
-		let clicks = <div ref={clicksRef} className="clicks"></div>
+	let clicks = <div ref={clicksRef} className="clicks"></div>
 
-		switch (clickType) {
-			case 0: {
-				clicks = (
-					<div className="layers">
-						{layers.map((layer, row) => {
-							// Add clicks for each layers
+	switch (clickType) {
+		case 0: {
+			clicks = (
+				<div className="layers">
+					{layers.map((layer, row) => {
+						// Add clicks for each layers
 
-							const children: JSX.Element[] = []
-							for (let beat = 0; beat < 16; beat++) {
-								children.push(
-									<div
-										key={beat}
-										className={
-											'click' +
-											(beat >= layer.beats
-												? ' off'
-												: beat < offsetTimes[row]
-												? ' on'
-												: '')
-										}
-									/>
-								)
-							}
-
-							// Wrap in rows & return
-							return (
+						const children: JSX.Element[] = []
+						for (let beat = 0; beat < 16; beat++) {
+							children.push(
 								<div
-									key={row}
-									className={'click-row' + (layer.beats === 1 ? ' off' : '')}
-								>
-									{children}
-								</div>
-							)
-						})}
-					</div>
-				)
-				break
-			}
-
-			case 1:
-				clicks = (
-					<div className="segment">
-						<div className="click-row">
-							{segmentRatio.map((ratio, i) => (
-								<span
-									key={i}
-									className={'click' + (segmentPos === i ? ' on' : '')}
-									style={{
-										width: `calc(${ratio * 100}% - 10px)`,
-									}}
+									key={beat}
+									className={
+										'click' +
+										(beat >= layer.beats
+											? ' off'
+											: beat < offsetTimes[row]
+											? ' on'
+											: '')
+									}
 								/>
-							))}
-						</div>
-					</div>
-				)
-				break
+							)
+						}
 
-			case 2:
-				clicks = (
-					<div className="block">
-						<div className="click-row">
-							<span
-								className={'click' + (segmentPos % 2 === 0 ? ' on' : '')}
-								style={{ width: `100%` }}
-							/>
-						</div>
-					</div>
-				)
-				break
+						// Wrap in rows & return
+						return (
+							<div
+								key={row}
+								className={'click-row' + (layer.beats === 1 ? ' off' : '')}
+							>
+								{children}
+							</div>
+						)
+					})}
+				</div>
+			)
+			break
 		}
 
-		return clicks
+		case 1:
+			clicks = (
+				<div className="segment">
+					<div className="click-row">
+						{segmentRatio.map((ratio, i) => (
+							<span
+								key={i}
+								className={'click' + (segmentPos === i ? ' on' : '')}
+								style={{
+									width: `calc(${ratio * 100}% - 10px)`,
+								}}
+							/>
+						))}
+					</div>
+				</div>
+			)
+			break
+
+		case 2:
+			clicks = (
+				<div className="block">
+					<div className="click-row">
+						<span
+							className={'click' + (segmentPos % 2 === 0 ? ' on' : '')}
+							style={{ width: `100%` }}
+						/>
+					</div>
+				</div>
+			)
+			break
 	}
 
 	return (
 		<div ref={clicksRef} className="clicks">
-			<Clicks></Clicks>
+			{clicks}
 		</div>
 	)
 }
