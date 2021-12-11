@@ -51,7 +51,6 @@ pre {
 		flex-direction: column;
 		align-items: center;
 		width: 100%;
-		max-width: 900px;
 		margin: 0 auto;
 	}
 
@@ -247,11 +246,13 @@ pre {
 	*/
 
 	.tutorial {
+		position: fixed;
 		display: flex;
 		align-items: center;
-		position: fixed;
-		top: 3em;
-		left: 3em;
+		justify-content: space-between;
+		top: 2em;
+		left: calc(50% - 250px);
+		width: 500px;
 		padding: 1em 2em;
 		border-radius: 20px;
 		background-color: var(--menu);
@@ -259,8 +260,9 @@ pre {
 		font-weight: 600;
 
 		.dialog {
-			width: 220px;
 			margin-right: 20px;
+			width: 100%;
+			text-align: center;
 		}
 
 		.interactions {
@@ -295,7 +297,8 @@ pre {
 		}
 	}
 
-	&.testTempo {
+	&.testTempoUp,
+	&.testTempoDown {
 		.logo,
 		.clicks,
 		.bottom-buttons,
@@ -327,6 +330,7 @@ pre {
 			}
 
 			.ls-row {
+				backdrop-filter: none;
 				padding: 10px;
 
 				&.off {

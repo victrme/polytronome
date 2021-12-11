@@ -70,11 +70,12 @@ const Tutorial = ({ tutoStage, setTutoStage }) => {
 			text: 'Pour commencer, fais moi donc un 5 temps sur 7',
 		},
 		testLaunch: { text: 'Parfait 😄 Lance le metronome !' },
-		waitLaunch: { text: 'Parfait 😄 Lance le metronome !' },
-		testTempo: { text: 'Tu aussi modifier le tempo, tu peux le baisser à 60 ?' },
+		waitLaunch: { text: 'Stop quand tu veux' },
+		testTempoUp: { text: 'Tu aussi modifier le tempo, tu peux le monter à 120 bpm ?' },
+		testTempoDown: { text: 'Tu aussi modifier le tempo, tu peux le baisser à 120 bpm ?' },
 		endEasy: {
-			text: 'Voila pour les bases ! Tu peux tirer les boutons à gauche pour acceder au menu',
-			yes: { to: false, text: 'Merci, a plus' },
+			text: "Voila pour les bases ! Tu peux acceder à plus d'option avec le menu à gauche",
+			yes: { to: false, text: 'Merci mon brave' },
 		},
 	}
 

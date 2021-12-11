@@ -65,7 +65,8 @@ const App = (): JSX.Element => {
 		setIsRunning('')
 		setStartTime(0)
 
-		if (tutoStage === 'waitLaunch') setTutoStage('testTempo')
+		if (tutoStage === 'waitLaunch')
+			setTutoStage(tempo > 120 ? 'testTempoDown' : 'testTempoUp')
 	}
 
 	const restartMetronome = () => {
@@ -193,7 +194,7 @@ const App = (): JSX.Element => {
 	}, [layers])
 
 	useEffect(() => {
-		if (tutoStage === 'testTempo' && tempo === 60) setTutoStage('endEasy')
+		if (tutoStage.startsWith('testTempo') && tempo === 120) setTutoStage('endEasy')
 		// eslint-disable-next-line
 	}, [tempo])
 
@@ -294,7 +295,7 @@ const App = (): JSX.Element => {
 						className="start"
 						onClick={() => (isRunning ? stopMetronome() : startMetronome())}
 					>
-						{isRunning ? '◼' : '▶'}
+						{isRunning ? '◼ stop' : '▶ start'}
 					</button>
 
 					{easy ? (

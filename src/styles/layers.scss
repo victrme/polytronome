@@ -1,8 +1,6 @@
 .layers-table-wrap {
 	display: flex;
 	align-items: center;
-	width: 90%;
-	max-width: 800px;
 
 	.ls-buttons {
 		width: 100px;
@@ -11,15 +9,20 @@
 
 .layers-table {
 	display: flex;
-	flex-direction: column;
+	flex-wrap: wrap;
 	justify-content: center;
 	width: 100%;
+	margin: 40px 0;
 
 	.ls-row {
 		display: flex;
 		flex-direction: row;
 		align-items: center;
+		background-color: rgba(0, 0, 0, 0.02);
 		justify-content: space-evenly;
+		max-width: 700px;
+		margin: 20px;
+		border-radius: 20px;
 		padding: 10px 30px;
 		transition: opacity 0.2s, filter 0.2s;
 
@@ -62,7 +65,6 @@
 	.notes-wrap {
 		display: flex;
 		align-items: center;
-		justify-content: center;
 		position: relative;
 
 		pre.octave {
