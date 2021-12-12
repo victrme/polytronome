@@ -1,6 +1,25 @@
-@media only screen and (max-width: 1700px) {
+@media only screen and (max-height: 900px) {
 	.polytronome {
-		.layers-table .ls-row {
+		.layers-table-wrap {
+			max-width: 1000px;
+			overflow-x: auto;
+
+			.layers-table {
+				max-width: 100%;
+				overflow-x: auto;
+				flex-wrap: nowrap;
+
+				margin: 20px;
+
+				.ls-row {
+					display: grid;
+					grid-template-columns: 1fr 1fr;
+				}
+			}
+		}
+
+		.bottom-buttons {
+			margin-top: 0;
 		}
 	}
 }

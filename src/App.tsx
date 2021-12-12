@@ -40,7 +40,6 @@ const App = (): JSX.Element => {
 	const startTimeRef = useRef(startTime)
 	const isRunningRef = useRef(isRunning)
 	const moreSettingsRef = useRef(moreSettings)
-	const IsTypingRef = useRef(false)
 
 	tempoRef.current = tempo
 	startTimeRef.current = startTime
@@ -125,6 +124,7 @@ const App = (): JSX.Element => {
 		}
 
 		e.stopPropagation()
+		e.preventDefault()
 	}
 
 	function handleFullscreen() {
