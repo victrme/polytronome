@@ -13,6 +13,7 @@ import { animated, useSpring, config } from '@react-spring/web'
 import useMeasure from 'react-use-measure'
 import { ResizeObserver } from '@juggle/resize-observer'
 import Tutorial from './components/Tutorial'
+import Keymapping from './components/Keymapping'
 
 const App = (): JSX.Element => {
 	//
@@ -52,24 +53,29 @@ const App = (): JSX.Element => {
 	//
 	//
 
-	const startMetronome = () => {
-		// Update to start state
-		setStartTime(Date.now())
-		setIsRunning(setRandomID())
+	const toggleMetronome = (restart?: boolean) => {
+		const start = () => {
+			setStartTime(Date.now())
+			setIsRunning(setRandomID())
+			if (tutoStage === 'testLaunch') setTutoStage('waitLaunch')
+		}
 
-		if (tutoStage === 'testLaunch') setTutoStage('waitLaunch')
-	}
+		const stop = () => {
+			setIsRunning('')
+			setStartTime(0)
 
-	const stopMetronome = () => {
-		setIsRunning('')
-		setStartTime(0)
+			if (tutoStage === 'waitLaunch')
+				setTutoStage(`testTempo${tempo > 120 ? 'Down' : 'Up'}`)
+		}
 
-		if (tutoStage === 'waitLaunch')
-			setTutoStage(tempo > 120 ? 'testTempoDown' : 'testTempoUp')
-	}
+		const running = isRunningRef.current !== ''
 
-	const restartMetronome = () => {
-		if (isRunning !== '') startMetronome()
+		if (restart) {
+			if (running) start()
+		}
+
+		// Not restart, Normal toggle
+		else running ? stop() : start()
 	}
 
 	const randomizeLayers = () => {
@@ -80,7 +86,7 @@ const App = (): JSX.Element => {
 			if (l.beats > 1) newLayers[i].beats = +rand(2, 16).toFixed(0)
 		})
 		setLayers([...newLayers])
-		restartMetronome()
+		toggleMetronome(true)
 	}
 
 	//
@@ -88,44 +94,6 @@ const App = (): JSX.Element => {
 	//	Effects
 	//
 	//
-
-	function handleKeyMapping(e: KeyboardEvent) {
-		//
-		// Lose focus before firing
-		if (document.activeElement) {
-			const el = document.activeElement as HTMLButtonElement
-			el.blur()
-		}
-
-		switch (e.code) {
-			case 'Space':
-				isRunningRef.current ? stopMetronome() : startMetronome()
-				break
-
-			case 'ArrowUp':
-				setTempo(tempoRef.current + (e.ctrlKey ? 50 : e.shiftKey ? 10 : 1))
-				break
-
-			case 'ArrowDown':
-				setTempo(tempoRef.current - (e.ctrlKey ? 50 : e.shiftKey ? 10 : 1))
-				break
-
-			case 'Escape':
-				console.log('Toggle Menu')
-				break
-
-			case 'KeyV': {
-				setMoreSettings(prev => ({
-					...prev,
-					clickType: (moreSettingsRef.current.clickType + 1) % 3,
-				}))
-				break
-			}
-		}
-
-		e.stopPropagation()
-		e.preventDefault()
-	}
 
 	function handleFullscreen() {
 		if (document.fullscreenElement === null)
@@ -238,13 +206,11 @@ const App = (): JSX.Element => {
 		// Window Events
 
 		function cleanupEvents() {
-			window.removeEventListener('keydown', handleKeyMapping)
 			window.removeEventListener('fullscreenchange', handleFullscreen)
 			window.addEventListener('resize', handleMenuClose)
 		}
 
 		window.addEventListener('fullscreenchange', handleFullscreen)
-		window.addEventListener('keydown', handleKeyMapping)
 		window.addEventListener('resize', handleMenuClose)
 
 		return cleanupEvents
@@ -273,6 +239,14 @@ const App = (): JSX.Element => {
 		>
 			<Tutorial tutoStage={tutoStage} setTutoStage={setTutoStage}></Tutorial>
 
+			<Keymapping
+				setTempo={setTempo}
+				tempoRef={tempoRef}
+				toggleMetronome={toggleMetronome}
+				setMoreSettings={setMoreSettings}
+				moreSettings={moreSettingsRef.current}
+			></Keymapping>
+
 			<div>
 				<Menu
 					easy={easy}
@@ -289,7 +263,11 @@ const App = (): JSX.Element => {
 			</div>
 
 			<animated.main ref={mainRef} style={{ x: mainStyles.x }}>
-				<Header tempo={tempo} setTempo={setTempo} restart={restartMetronome}></Header>
+				<Header
+					tempo={tempo}
+					setTempo={setTempo}
+					toggleMetronome={toggleMetronome}
+				></Header>
 
 				<Clicks
 					layers={layers}
@@ -304,15 +282,11 @@ const App = (): JSX.Element => {
 					easy={easy}
 					layers={layers}
 					setLayers={setLayers}
-					moreSettings={moreSettings}
-					restartMetronome={restartMetronome}
+					toggleMetronome={toggleMetronome}
 				></LayersTable>
 
 				<div className="bottom-buttons">
-					<button
-						className="start"
-						onClick={() => (isRunning ? stopMetronome() : startMetronome())}
-					>
+					<button className="start" onClick={() => toggleMetronome()}>
 						{isRunning ? '◼ stop' : '▶ start'}
 					</button>
 

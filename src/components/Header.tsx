@@ -1,8 +1,6 @@
 import Tempo from './Tempo'
 
-const Header = props => {
-	const { restart, tempo, setTempo } = props
-
+const Header = ({ toggleMetronome, tempo, setTempo }) => {
 	return (
 		<div className="header">
 			<div className="logo">
@@ -31,7 +29,7 @@ const Header = props => {
 
 			<div></div>
 
-			<Tempo restart={restart} tempo={tempo} setTempo={setTempo}></Tempo>
+			<Tempo toggleMetronome={toggleMetronome} tempo={tempo} setTempo={setTempo}></Tempo>
 		</div>
 	)
 }

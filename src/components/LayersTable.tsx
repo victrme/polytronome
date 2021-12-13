@@ -2,9 +2,10 @@ import Wheel from './Wheel'
 import Range from './Range'
 import { useCallback } from 'react'
 
-const LayersTable = ({ easy, layers, setLayers, restartMetronome, moreSettings }) => {
+const LayersTable = ({ easy, layers, setLayers, toggleMetronome }) => {
 	//
 
+	const release = ['off', 'short', 'long']
 	const wavetypes = {
 		sine: 'M 10 10 Q 20 -6 30 10 V 10 Q 40 26 50 10',
 		triangle: 'M 10 10 L 20 2 L 40 18 L 50 10',
@@ -53,9 +54,9 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome, moreSettings }
 			}
 
 			setLayers(newLayers)
-			if (cat === 'beats') restartMetronome()
+			if (cat === 'beats') toggleMetronome(true)
 		},
-		[layers, setLayers, restartMetronome]
+		[toggleMetronome, layers, setLayers]
 	)
 
 	return (
@@ -151,11 +152,7 @@ const LayersTable = ({ easy, layers, setLayers, restartMetronome, moreSettings }
 											fill="none"
 										/>
 									</svg>
-									{layer.release === 0
-										? 'off'
-										: layer.release === 1
-										? 'short'
-										: 'long'}
+									{release[layer.release]}
 								</button>
 							</div>
 						)}

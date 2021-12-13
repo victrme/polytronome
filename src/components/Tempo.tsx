@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import Wheel from './Wheel'
 
-const Tempo = ({ tempo, setTempo, restart }) => {
+const Tempo = ({ tempo, setTempo, toggleMetronome }) => {
 	const [tap, setTap] = useState([
 		{
 			date: 0,
@@ -53,13 +53,13 @@ const Tempo = ({ tempo, setTempo, restart }) => {
 			changeTempo(averageTempo)
 
 			setTap(currTap)
-			restart()
+			toggleMetronome(true)
 		}
 	}
 
 	function handleUpdate(res) {
 		changeTempo(res + 30)
-		restart()
+		toggleMetronome(true)
 	}
 
 	return (

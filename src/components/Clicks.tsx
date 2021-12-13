@@ -225,7 +225,7 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 	useEffect(() => {
 		initSegment()
 		// eslint-disable-next-line
-	}, [])
+	}, [clickType])
 
 	//
 	//
@@ -238,6 +238,7 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 	useEffect(() => {
 		if (offset !== 0) setTimeout(() => setOffsetTimes([...times]), offset)
 		else setOffsetTimes([...times])
+		// eslint-disable-next-line
 	}, [times])
 
 	let clicks = <div ref={clicksRef} className="clicks"></div>
