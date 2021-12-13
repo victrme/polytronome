@@ -1,19 +1,19 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
 import { isMobileOnly } from 'react-device-detect'
+import defaultLayers from './assets/layers.json'
+import { ResizeObserver } from '@juggle/resize-observer'
+import { animated, useSpring, config } from '@react-spring/web'
+import useMeasure from 'react-use-measure'
+
 import LayersTable from './components/LayersTable'
 import Header from './components/Header'
 import Clicks from './components/Clicks'
 import Menu from './components/Menu'
-import defaultLayers from './assets/layers.json'
-import { MoreSettings, Layer, Code } from './Types'
-import { setRandomID, importCode, applyTheme, createExportCode } from './utils'
-import { useDrag } from '@use-gesture/react'
-import { animated, useSpring, config } from '@react-spring/web'
-import useMeasure from 'react-use-measure'
-import { ResizeObserver } from '@juggle/resize-observer'
 import Tutorial from './components/Tutorial'
 import Keymapping from './components/Keymapping'
+import { MoreSettings, Layer, Code } from './Types'
+import { setRandomID, importCode, applyTheme, createExportCode } from './utils'
 
 const App = (): JSX.Element => {
 	//
@@ -89,6 +89,10 @@ const App = (): JSX.Element => {
 		toggleMetronome(true)
 	}
 
+	const springProps = { x: 0, y: 0, config: config.stiff }
+	const [mainStyles, mainSpring] = useSpring(() => springProps)
+	const [mainRef, mainBounds] = useMeasure({ polyfill: ResizeObserver })
+
 	//
 	//
 	//	Effects
@@ -102,59 +106,6 @@ const App = (): JSX.Element => {
 				fullscreen: false,
 			}))
 	}
-
-	function handleMenuClose() {
-		menuSpring.start({ x: 0 })
-		mainSpring.start({ x: 0 })
-	}
-
-	// eslint-disable-next-line
-	const springProps = { x: 0, y: 0, config: config.stiff }
-	const [menuStyles, menuSpring] = useSpring(() => springProps)
-	const [mainStyles, mainSpring] = useSpring(() => springProps)
-	const [mainRef, mainBounds] = useMeasure({ polyfill: ResizeObserver })
-
-	const menuSize = 360
-	const padding = 60
-
-	const moveElements = (moves: number[]) => {
-		menuSpring.start({ x: moves[0] })
-		mainSpring.start({ x: moves[1] })
-	}
-
-	// Ugly session storage to always save main left position
-	// EXCEPT when App redraws main while menu is open
-	// (because main left would be set to 420px or menuSize + padding)
-	useEffect(() => {
-		if (mainBounds.left !== menuSize + padding) sessionStorage.leftBound = mainBounds.left
-	}, [mainBounds])
-
-	const drag = useDrag(
-		({ active, offset: [ox], tap }) => {
-			// Moves main and menu together
-
-			// sets offsets between main and menu
-			const left = sessionStorage.leftBound || 0
-			const dragMainOffest = Math.max(0, ox + padding - left)
-			const clickMainOffset = Math.max(0, menuSize + padding - left)
-
-			// moves on drag
-			moveElements([ox, dragMainOffest < 0 ? 0 : dragMainOffest])
-
-			// release drag, finds rest position
-			if (!active) moveElements(ox > menuSize / 2 ? [menuSize, clickMainOffset] : [0, 0])
-
-			// clicking dragbar, === 0 is click to open
-			// if (tap)
-			// moveElements(menuStyles.x.get() === 0 ? [menuSize, clickMainOffset] : [0, 0])
-		},
-		{
-			axis: 'x',
-			rubberband: 0.1,
-			filterTaps: true,
-			bounds: { left: 0, right: menuSize },
-		}
-	)
 
 	const setSettingsFromCode = useCallback((code: Code) => {
 		setMoreSettings({ ...code.moreSettings })
@@ -207,11 +158,11 @@ const App = (): JSX.Element => {
 
 		function cleanupEvents() {
 			window.removeEventListener('fullscreenchange', handleFullscreen)
-			window.addEventListener('resize', handleMenuClose)
+			// window.addEventListener('resize', handleMenuClose)
 		}
 
 		window.addEventListener('fullscreenchange', handleFullscreen)
-		window.addEventListener('resize', handleMenuClose)
+		// window.addEventListener('resize', handleMenuClose)
 
 		return cleanupEvents
 
@@ -247,20 +198,15 @@ const App = (): JSX.Element => {
 				moreSettings={moreSettingsRef.current}
 			></Keymapping>
 
-			<div>
-				<Menu
-					easy={easy}
-					setEasy={setEasy}
-					dragX={menuStyles.x}
-					moreSettings={moreSettings}
-					setMoreSettings={setMoreSettings}
-					setImport={setSettingsFromCode}
-				></Menu>
-
-				<animated.div {...drag()} className="settings-drag" style={{ x: menuStyles.x }}>
-					<span></span>
-				</animated.div>
-			</div>
+			<Menu
+				easy={easy}
+				setEasy={setEasy}
+				moreSettings={moreSettings}
+				setMoreSettings={setMoreSettings}
+				setImport={setSettingsFromCode}
+				mainSpring={mainSpring}
+				mainBounds={mainBounds}
+			></Menu>
 
 			<animated.main ref={mainRef} style={{ x: mainStyles.x }}>
 				<Header
@@ -290,24 +236,20 @@ const App = (): JSX.Element => {
 						{isRunning ? '◼ stop' : '▶ start'}
 					</button>
 
-					{easy ? (
-						''
-					) : (
-						<div>
-							<button className="randomize" onClick={randomizeLayers}>
-								<svg xmlns="http://www.w3.org/2000/svg" viewBox="3 -1 10 8">
-									<path
-										d="M4 1C7 1 7 5 10 5M4 5C7 5 7 1 10 1M10 1 10 .5 12 1 10 1.5zM10 5 10 4.5 12 5 10 5.5z"
-										stroke="var(--accent)"
-										strokeWidth="1"
-										strokeLinecap="round"
-										fill="none"
-									/>
-								</svg>
-								shuffle
-							</button>
-						</div>
-					)}
+					<div>
+						<button className="randomize" onClick={randomizeLayers}>
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="3 -1 10 8">
+								<path
+									d="M4 1C7 1 7 5 10 5M4 5C7 5 7 1 10 1M10 1 10 .5 12 1 10 1.5zM10 5 10 4.5 12 5 10 5.5z"
+									stroke="var(--accent)"
+									strokeWidth="1"
+									strokeLinecap="round"
+									fill="none"
+								/>
+							</svg>
+							shuffle
+						</button>
+					</div>
 				</div>
 			</animated.main>
 			<div></div>
