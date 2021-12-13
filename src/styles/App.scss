@@ -250,8 +250,22 @@ pre {
 	.keylog {
 		position: fixed;
 		display: flex;
+		flex-direction: column;
 		bottom: 2em;
 		right: 2em;
+		text-align: right;
+
+		li {
+			list-style-type: none;
+			margin-bottom: 10px;
+
+			code {
+				background-color: var(--dim);
+				border-radius: 20px;
+				padding: 2px 10px;
+				margin-left: 20px;
+			}
+		}
 	}
 
 	/*
