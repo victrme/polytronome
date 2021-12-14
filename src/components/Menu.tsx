@@ -1,19 +1,9 @@
 import { useEffect, useState } from 'react'
-import { useDrag } from '@use-gesture/react'
 import Themes from '../assets/themes.json'
 import defaultLayers from '../assets/layers.json'
-import { animated, useSpring, config } from '@react-spring/web'
 import { applyTheme, createExportCode, importCode } from '../utils'
 
-const Menu = ({
-	moreSettings,
-	setMoreSettings,
-	easy,
-	setEasy,
-	setImport,
-	mainSpring,
-	mainBounds,
-}) => {
+const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 	const [openedTheme, setOpenedTheme] = useState(false)
 	const [fullscreen, setFullscreen] = useState(false)
 	const [extended, setExtended] = useState(false)
@@ -71,52 +61,6 @@ const Menu = ({
 		window.addEventListener('keypress', keymappings)
 		return cleanupEvents
 	}, [])
-
-	// eslint-disable-next-line
-	const springProps = { x: 0, y: 0, config: config.stiff }
-	const [menuStyles, menuSpring] = useSpring(() => springProps)
-
-	const menuSize = 360
-	const padding = 60
-
-	const moveElements = (moves: number[]) => {
-		menuSpring.start({ x: moves[0] })
-		mainSpring.start({ x: moves[1] })
-	}
-
-	// Ugly session storage to always save main left position
-	// EXCEPT when App redraws main while menu is open
-	// (because main left would be set to 420px or menuSize + padding)
-	useEffect(() => {
-		if (mainBounds.left !== menuSize + padding) sessionStorage.leftBound = mainBounds.left
-	}, [mainBounds])
-
-	const drag = useDrag(
-		({ active, offset: [ox], tap }) => {
-			// Moves main and menu together
-
-			// sets offsets between main and menu
-			const left = sessionStorage.leftBound || 0
-			const dragMainOffest = Math.max(0, ox + padding - left)
-			const clickMainOffset = Math.max(0, menuSize + padding - left)
-
-			// moves on drag
-			moveElements([ox, dragMainOffest < 0 ? 0 : dragMainOffest])
-
-			// release drag, finds rest position
-			if (!active) moveElements(ox > menuSize / 2 ? [menuSize, clickMainOffset] : [0, 0])
-
-			// clicking dragbar, === 0 is click to open
-			if (tap)
-				moveElements(menuStyles.x.get() === 0 ? [menuSize, clickMainOffset] : [0, 0])
-		},
-		{
-			axis: 'x',
-			rubberband: 0.1,
-			filterTaps: true,
-			bounds: { left: 0, right: menuSize },
-		}
-	)
 
 	const links = [
 		{ url: 'https://polytronome.com/docs', icon: '📚', text: 'documentation' },
@@ -195,10 +139,7 @@ const Menu = ({
 		<div className="menu">
 			<button onClick={() => setExtended(!extended)}>Menu</button>
 
-			<animated.aside
-				style={{ x: menuStyles.x }}
-				className={extended ? 'extended' : 'closed'}
-			>
+			<aside className={extended ? 'extended' : 'closed'}>
 				<div className="inner-menu">
 					<div
 						className="theme-list"
@@ -247,7 +188,7 @@ const Menu = ({
 						))}
 					</div>
 				</div>
-			</animated.aside>
+			</aside>
 		</div>
 	)
 

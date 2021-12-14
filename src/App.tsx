@@ -2,9 +2,6 @@ import { useRef, useState, useEffect, useCallback } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
 import { isMobileOnly } from 'react-device-detect'
 import defaultLayers from './assets/layers.json'
-import { ResizeObserver } from '@juggle/resize-observer'
-import { animated, useSpring, config } from '@react-spring/web'
-import useMeasure from 'react-use-measure'
 
 import LayersTable from './components/LayersTable'
 import Header from './components/Header'
@@ -88,10 +85,6 @@ const App = (): JSX.Element => {
 		setLayers([...newLayers])
 		toggleMetronome(true)
 	}
-
-	const springProps = { x: 0, y: 0, config: config.stiff }
-	const [mainStyles, mainSpring] = useSpring(() => springProps)
-	const [mainRef, mainBounds] = useMeasure({ polyfill: ResizeObserver })
 
 	//
 	//
@@ -204,11 +197,9 @@ const App = (): JSX.Element => {
 				moreSettings={moreSettings}
 				setMoreSettings={setMoreSettings}
 				setImport={setSettingsFromCode}
-				mainSpring={mainSpring}
-				mainBounds={mainBounds}
 			></Menu>
 
-			<animated.main ref={mainRef} style={{ x: mainStyles.x }}>
+			<main>
 				<Header
 					tempo={tempo}
 					setTempo={setTempo}
@@ -251,7 +242,7 @@ const App = (): JSX.Element => {
 						</button>
 					</div>
 				</div>
-			</animated.main>
+			</main>
 			<div></div>
 		</div>
 	)
