@@ -51,7 +51,7 @@ pre {
 		flex-direction: column;
 		align-items: center;
 		width: 100%;
-		max-width: 1450px;
+		max-width: 1200px;
 		margin: 0 auto;
 	}
 
@@ -162,33 +162,58 @@ pre {
 		}
 	}
 
+	/*
+	MENU
+	*/
+
+	.menu > button {
+		width: 100px;
+		margin: 30px 0 0 40px;
+	}
+
 	aside {
-		position: fixed;
 		width: 320px;
-		left: -320px;
-		top: 15vh;
-		text-align: center;
+		margin: 40px;
+		overflow: hidden;
+		transition: width 0.4s 0s;
 
 		> button {
 			margin: 40px auto;
 		}
 
-		.menu {
+		.inner-menu {
 			display: flex;
 			flex-direction: column;
 
+			a span:last-child,
+			button span:last-child {
+				margin-left: 10px;
+				transition: opacity 0.2s 0.2s;
+			}
+
 			button {
+				min-height: 44px;
 				text-align: left;
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
-				background-color: transparent;
 				font-size: inherit;
+				background-color: transparent;
+
+				p {
+					margin: 0;
+				}
 
 				.optionState {
-					background-color: var(--dim);
 					border-radius: 8px;
 					padding: 5px 10px;
+					background-color: rgba(0, 0, 0, 0.04);
+				}
+
+				&.on {
+					.optionState {
+						background-color: var(--buttons);
+					}
 				}
 			}
 
@@ -213,33 +238,50 @@ pre {
 		.links {
 			display: flex;
 			flex-direction: column;
-			padding-left: 30px;
-			margin-top: 5em;
+			margin-top: 60px;
 
 			a {
+				height: 36px;
+				line-height: 36px;
+				border: 2px solid transparent;
+				margin: 5px 5px 0 0;
+				white-space: pre;
 				color: var(--accent);
 				text-decoration: none;
 				text-align: left;
-				margin: 10px 0;
+				border-radius: 30px;
+				padding: 0 30px;
+
+				&:hover {
+					border-color: var(--dim);
+				}
 			}
 		}
-	}
 
-	.settings-drag {
-		border-radius: 20px;
-		height: 20vh;
-		width: 60px;
-		cursor: ew-resize;
-		touch-action: none;
-		color: var(--accent);
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		transition: background-color 0.4s $easing;
+		&.closed {
+			width: 90px;
+			transition: width 0.4s 0.16s;
 
-		span {
-			border-left: 8px dotted;
-			height: 60px;
+			.theme-list {
+				display: none;
+			}
+
+			button.on {
+				background-color: var(--buttons);
+				transition: border 0.3s, color 0.3s, background-color 0.3s 0.2s;
+			}
+
+			.links {
+				padding-left: 0;
+			}
+
+			a,
+			button {
+				span:last-child {
+					opacity: 0;
+					transition: opacity 0.2s 0s;
+				}
+			}
 		}
 	}
 
@@ -248,6 +290,7 @@ pre {
 	*/
 
 	.keylog {
+		visibility: hidden;
 		position: fixed;
 		display: flex;
 		flex-direction: column;

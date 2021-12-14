@@ -9,14 +9,13 @@
 
 .layers-table {
 	display: flex;
-	flex-wrap: wrap;
 	justify-content: center;
 	width: 100%;
 	margin: 40px 0;
 
 	.ls-row {
 		display: flex;
-		flex-direction: row;
+		flex-direction: column;
 		align-items: center;
 		background-color: rgba(0, 0, 0, 0.04);
 		justify-content: space-evenly;
@@ -33,10 +32,6 @@
 		&.off {
 			opacity: 0.4;
 			filter: grayscale(0.6);
-		}
-
-		&.off ~ .off {
-			display: none;
 		}
 	}
 

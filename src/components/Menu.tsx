@@ -16,6 +16,8 @@ const Menu = ({
 }) => {
 	const [openedTheme, setOpenedTheme] = useState(false)
 	const [fullscreen, setFullscreen] = useState(false)
+	const [extended, setExtended] = useState(false)
+	const isOn = bool => (bool ? 'on' : '')
 
 	const changeAnimations = () => {
 		const appDOM = document.querySelector('.polytronome') as HTMLDivElement
@@ -40,10 +42,14 @@ const Menu = ({
 		}
 	}
 
-	const changeTheme = (index: number) => {
-		applyTheme(index)
-		setMoreSettings(prev => ({ ...prev, theme: index }))
-		localStorage.theme = index
+	const changeTheme = (index?: number) => {
+		let nextTheme = index || 0
+
+		if (!extended) nextTheme = (moreSettings.theme + 1) % Themes.length
+
+		setMoreSettings(prev => ({ ...prev, theme: nextTheme }))
+		localStorage.theme = nextTheme
+		applyTheme(nextTheme)
 	}
 
 	const changeClickType = () => {
@@ -51,7 +57,7 @@ const Menu = ({
 	}
 
 	const changeOffset = () => {
-		setMoreSettings(prev => ({ ...prev, offset: (moreSettings.offset + 50) % 500 }))
+		setMoreSettings(prev => ({ ...prev, offset: (moreSettings.offset + 50) % 550 }))
 	}
 
 	const resetToDefault = () => {
@@ -112,15 +118,88 @@ const Menu = ({
 		}
 	)
 
-	return (
-		<div>
-			<animated.aside style={{ x: menuStyles.x }}>
-				<div className="menu">
-					<button onClick={e => setOpenedTheme(!openedTheme)}>
-						<span>themes</span>
-						<span className="optionState">{Themes[moreSettings.theme].name}</span>
-					</button>
+	const links = [
+		{ url: 'https://polytronome.com/docs', icon: '📚', text: 'documentation' },
+		{ url: 'https://github.com/victrme/polytronome', icon: '⌨️', text: 'github' },
+		{ url: 'https://ko-fi.com/victr', icon: '❤️', text: 'donate' },
+		{ url: 'mailto:mail@victr.me', icon: '🗨️', text: 'contact' },
+	]
 
+	const texts = {
+		advanced: ['on', 'off'],
+		animations: ['off', 'on'],
+		fullscreen: ['off', 'on'],
+		view: ['layers', 'segment', 'block'],
+	}
+
+	const options = [
+		{
+			icon: '🎨',
+			text: 'themes',
+			title: 'change theme',
+			func: () => (extended ? setOpenedTheme(!openedTheme) : changeTheme()),
+			css: '',
+			state: Themes[moreSettings.theme].name,
+		},
+		{
+			icon: '🌀',
+			text: 'advanced mode',
+			title: 'advanced mode',
+			func: () => setEasy(!easy),
+			css: isOn(!easy),
+			state: texts.advanced[+easy],
+		},
+		{
+			icon: '💫',
+			text: 'animations',
+			title: 'enable animations',
+			func: changeAnimations,
+			css: isOn(moreSettings.performance),
+			state: texts.advanced[+moreSettings.performance],
+		},
+		{
+			icon: '📱',
+			text: 'click view',
+			title: 'change click view',
+			func: changeClickType,
+			css: '',
+			state: texts.view[moreSettings.clickType],
+		},
+		{
+			icon: '➕',
+			text: 'fullscreen',
+			title: 'fullscreen',
+			func: changeFullscreen,
+			css: isOn(fullscreen),
+			state: texts.fullscreen[+fullscreen],
+		},
+		{
+			icon: '🔉',
+			text: 'sound offset',
+			title: 'sound offset',
+			func: changeOffset,
+			css: '',
+			state: moreSettings.offset + 'ms',
+		},
+		{
+			icon: '🔥',
+			text: 'reset to default',
+			title: 'reset to default',
+			func: resetToDefault,
+			css: '',
+			state: '',
+		},
+	]
+
+	return (
+		<div className="menu">
+			<button onClick={() => setExtended(!extended)}>Menu</button>
+
+			<animated.aside
+				style={{ x: menuStyles.x }}
+				className={extended ? 'extended' : 'closed'}
+			>
+				<div className="inner-menu">
 					<div
 						className="theme-list"
 						style={{
@@ -149,82 +228,42 @@ const Menu = ({
 						))}
 					</div>
 
-					<button onClick={() => setEasy(!easy)}>
-						<span>advanced mode</span>
-						<span className="optionState">{easy ? 'off' : 'on'}</span>
-					</button>
+					{options.map(({ func, title, icon, css, text, state }) => (
+						<button key={title} title={title} onClick={func} className={css}>
+							<p>
+								<span>{icon}</span>
+								<span>{text}</span>
+							</p>
+							<span className="optionState">{state}</span>
+						</button>
+					))}
 
-					<button onClick={changeAnimations}>
-						<span>animations</span>
-						<span className="optionState">
-							{moreSettings.performance ? 'on' : 'off'}
-						</span>
-					</button>
-
-					<button onClick={changeClickType}>
-						<span>click view</span>
-						<span className="optionState">
-							{moreSettings.clickType === 0
-								? 'layers'
-								: moreSettings.clickType === 1
-								? 'segment'
-								: 'block'}
-						</span>
-					</button>
-
-					{/* <button
-					className="clickview"
-					onClick={() =>
-						setSegment(prev => ({
-							...prev,
-							on: !prev.on,
-						}))
-					}
-				>
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7 3.5">
-						<path
-							d={
-								segment.on
-									? 'M1 1.75 1.5 1.75M2.5 1.75 4 1.75M5 1.75 6 1.75'
-									: 'M1 1 2 1M3 1 4 1M5 1 6 1M1 2.5 3 2.5M4 2.5 6 2.5'
-							}
-							stroke="var(--accent)"
-							strokeWidth="1"
-							strokeLinecap="round"
-							fill="none"
-						/>
-					</svg>
-					click view
-				</button> */}
-
-					<button onClick={changeFullscreen}>
-						<span>fullscreen</span>
-						<span className="optionState">{fullscreen ? 'on' : 'off'}</span>
-					</button>
-
-					<button onClick={changeOffset}>
-						<span>sound offset</span>
-						<span className="optionState">{moreSettings.offset}ms</span>
-					</button>
-
-					<button onClick={resetToDefault}>
-						<span>reset to default</span>
-					</button>
-				</div>
-
-				<div className="links">
-					<a href="https://polytronome.com/docs">documentation</a>
-					<a href="https://github.com/victrme/polytronome">github</a>
-					<a href="https://ko-fi.com/victr">donate</a>
-					<a href="mailto:mail@victr.me">contact</a>
+					<div className="links">
+						{links.map(link => (
+							<a key={link.text} title="documentation" href={link.url}>
+								<span>{link.icon}</span>
+								<span>{link.text}</span>
+							</a>
+						))}
+					</div>
 				</div>
 			</animated.aside>
-
-			<animated.div {...drag()} className="settings-drag" style={{ x: menuStyles.x }}>
-				<span></span>
-			</animated.div>
 		</div>
 	)
+
+	/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7 3.5">
+	<path
+		d={
+			segment.on
+				? 'M1 1.75 1.5 1.75M2.5 1.75 4 1.75M5 1.75 6 1.75'
+				: 'M1 1 2 1M3 1 4 1M5 1 6 1M1 2.5 3 2.5M4 2.5 6 2.5'
+		}
+		stroke="var(--accent)"
+		strokeWidth="1"
+		strokeLinecap="round"
+		fill="none"
+	/>
+</svg> */
 }
 
 export default Menu
