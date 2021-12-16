@@ -155,7 +155,6 @@ pre {
 		display: flex;
 		justify-content: center;
 		text-align: center;
-		margin-top: 40px;
 
 		.start {
 			width: 300px;
@@ -172,18 +171,46 @@ pre {
 	}
 
 	aside {
-		width: 320px;
+		display: flex;
 		margin: 40px;
 		overflow: hidden;
-		transition: width 0.4s 0s;
 
 		> button {
 			margin: 40px auto;
 		}
 
-		.inner-menu {
+		.theme-list {
 			display: flex;
 			flex-direction: column;
+			margin: 14px 0 0 14px;
+			overflow: hidden;
+			width: 0;
+			transition: width 0.4s;
+
+			&.opened {
+				width: 100px;
+			}
+
+			span {
+				width: auto;
+				margin: 3px;
+				font-size: 12px;
+				padding: 5px 15px;
+				border-radius: 15px;
+				cursor: pointer;
+				transition: filter 0.1s, border-radius 0.4s;
+
+				&:hover {
+					filter: brightness(0.9);
+				}
+			}
+		}
+
+		.inner-menu {
+			display: flex;
+			width: 360px;
+			flex-direction: column;
+			transition: width 0.4s 0s;
 
 			a span:last-child,
 			button span:last-child {
@@ -216,23 +243,6 @@ pre {
 					}
 				}
 			}
-
-			.theme-list {
-				display: flex;
-				flex-wrap: wrap;
-				width: 80%;
-				margin: auto;
-
-				span {
-					width: auto;
-					font-size: 12px;
-					padding: 5px 15px;
-					border-radius: 15px;
-					margin: 3px;
-					transition: border-radius 0.4s;
-					cursor: pointer;
-				}
-			}
 		}
 
 		.links {
@@ -259,11 +269,9 @@ pre {
 		}
 
 		&.closed {
-			width: 90px;
-			transition: width 0.4s 0.16s;
-
-			.theme-list {
-				display: none;
+			.inner-menu {
+				width: 90px;
+				transition: width 0.4s 0.16s;
 			}
 
 			button.on {

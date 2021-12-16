@@ -42,17 +42,19 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 		applyTheme(nextTheme)
 	}
 
-	const changeClickType = () => {
+	const toggleMenu = () => {
+		setExtended(!extended)
+		setOpenedTheme(false)
+	}
+
+	const changeClickType = () =>
 		setMoreSettings(prev => ({ ...prev, clickType: (moreSettings.clickType + 1) % 3 }))
-	}
 
-	const changeOffset = () => {
+	const changeOffset = () =>
 		setMoreSettings(prev => ({ ...prev, offset: (moreSettings.offset + 50) % 550 }))
-	}
 
-	const resetToDefault = () => {
+	const resetToDefault = () =>
 		setImport(importCode(createExportCode(80, defaultLayers, moreSettings, easy)))
-	}
 
 	useEffect(() => {
 		const keymappings = e => (e.code === 'KeyF' ? changeFullscreen() : '')
@@ -137,38 +139,10 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 
 	return (
 		<div className="menu">
-			<button onClick={() => setExtended(!extended)}>Menu</button>
+			<button onClick={toggleMenu}>Menu</button>
 
 			<aside className={extended ? 'extended' : 'closed'}>
 				<div className="inner-menu">
-					<div
-						className="theme-list"
-						style={{
-							maxHeight: openedTheme ? 100 : 0,
-							paddingTop: openedTheme ? 20 : 0,
-							paddingBottom: openedTheme ? 20 : 0,
-							transition: 'max-height .5s, padding .4s',
-							overflow: 'hidden',
-						}}
-					>
-						{Themes.map((theme, i) => (
-							<span
-								key={i}
-								style={{
-									backgroundColor: theme.background,
-									color: theme.accent,
-								}}
-								onClick={e => {
-									e.stopPropagation()
-									e.nativeEvent.stopImmediatePropagation()
-									changeTheme(i)
-								}}
-							>
-								{theme.name}
-							</span>
-						))}
-					</div>
-
 					{options.map(({ func, title, icon, css, text, state }) => (
 						<button key={title} title={title} onClick={func} className={css}>
 							<p>
@@ -187,6 +161,25 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 							</a>
 						))}
 					</div>
+				</div>
+
+				<div className={'theme-list' + (openedTheme ? ' opened' : '')}>
+					{Themes.map((theme, i) => (
+						<span
+							key={i}
+							style={{
+								backgroundColor: theme.background,
+								color: theme.accent,
+							}}
+							onClick={e => {
+								e.stopPropagation()
+								e.nativeEvent.stopImmediatePropagation()
+								changeTheme(i)
+							}}
+						>
+							{theme.name}
+						</span>
+					))}
 				</div>
 			</aside>
 		</div>

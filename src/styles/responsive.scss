@@ -1,5 +1,22 @@
+@media screen and (max-height: 1100px), screen and (max-height: 780px) {
+	.polytronome {
+		padding-top: 5vh;
+	}
+}
+
 @media only screen and (max-height: 900px) {
 	.polytronome {
+		.immovable_wheel {
+			line-height: 45px;
+			font-size: 45px;
+			height: 45px;
+			width: 80px;
+		}
+
+		.header {
+			margin-bottom: 20px;
+		}
+
 		.layers-table-wrap {
 			max-width: 1000px;
 			overflow-x: auto;
@@ -14,12 +31,30 @@
 				.ls-row {
 					display: grid;
 					grid-template-columns: 1fr 1fr;
+
+					> div {
+						margin: 15px 0;
+					}
+				}
+
+				.ls-type svg {
+					width: 55px;
+					height: 55px;
+					padding: 0 15px;
 				}
 			}
 		}
 
+		aside .links {
+			margin-top: 30px;
+		}
+
 		.bottom-buttons {
 			margin-top: 0;
+		}
+
+		&.easy .layers-table-wrap .layers-table .ls-row {
+			display: flex;
 		}
 	}
 }

@@ -17,13 +17,13 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		background-color: rgba(0, 0, 0, 0.04);
+		background-color: var(--dimmer);
 		justify-content: space-evenly;
 		max-width: 700px;
 		margin: 20px;
 		border-radius: 20px;
 		padding: 10px 30px;
-		transition: opacity 0.2s, filter 0.2s;
+		transition: opacity 0.2s, filter 0.2s, background-color 0.3s;
 
 		> div {
 			margin: 20px 0;
