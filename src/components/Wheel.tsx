@@ -4,7 +4,23 @@ import { useDrag, useWheel } from '@use-gesture/react'
 import { useEffect, useRef, useState } from 'react'
 import useMeasure from 'react-use-measure'
 import { inRange } from 'lodash'
-import { enableBodyScroll, disableBodyScroll } from 'body-scroll-lock'
+
+const freqArr = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+
+const fillArray = (start: number, end: number, freq?: boolean): string[] => {
+	const arr: any[] = []
+	for (let i = start; i <= end; i++)
+		arr.unshift(freq ? freqArr[i % freqArr.length].toString() : i.toString())
+	return arr
+}
+// Init all wheels text before JSX Element
+const allLists = {
+	beats: fillArray(1, 16),
+	tempo: fillArray(30, 300),
+	freq: fillArray(0, freqArr.length * 3, true),
+}
+
+allLists.beats[allLists.beats.length - 1] = '×'
 
 const Arrow = props => {
 	return (
@@ -19,61 +35,54 @@ const Arrow = props => {
 	)
 }
 
-const freqArr = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
-
-const fillArray = (start: number, end: number, freq?: boolean): string[] => {
-	const arr: any[] = []
-	for (let i = start; i <= end; i++)
-		arr.unshift(freq ? freqArr[i % freqArr.length].toString() : i.toString())
-	return arr
-}
-
-// Init all wheels text before JSX Element
-const allLists = {
-	beats: fillArray(1, 16),
-	tempo: fillArray(30, 300),
-	freq: fillArray(0, freqArr.length * 3, true),
-}
-
-allLists.beats[allLists.beats.length - 1] = '×'
-
 const Wheel = ({ update, type, state }): JSX.Element => {
 	const list: string[] = allLists[type]
 	const [dragRelease, setDragRelease] = useState(false)
 	const [wheelWrapRef, bounds] = useMeasure({ polyfill: ResizeObserver })
-	const height = bounds.height - 4 === -4 ? 50 : bounds.height - 4
+	const heightRef = useRef(bounds.height)
+	heightRef.current = bounds.height
 
+	// -4 is 2px immovableWheel vertical padding
+	const getHeight = () => (heightRef.current - 4 === -4 ? 50 : heightRef.current - 4)
 	const offsetState = (state: number) => (type === 'tempo' ? state - 30 : state - 1)
-	const getClosest = (y: number) => Math.round(y / height) * height
-	const getUserVal = (y: number) => Math.round(y / height) + list.length - 1
+	const getClosest = (y: number) => Math.round(y / getHeight()) * getHeight()
+	const getUserVal = (y: number) => Math.round(y / getHeight()) + list.length - 1
 
-	const bottomPos = -(list.length - 1) * height
-	const initialPos = bottomPos + offsetState(state) * height
+	const getBottomPos = () => -(list.length - 1) * getHeight()
+	const getInitalPos = () => getBottomPos() + offsetState(state) * getHeight()
 
 	// eslint-disable-next-line
 	const [{ y }, api] = useSpring(() => ({
 		x: 0,
-		y: initialPos,
+		y: getInitalPos(),
 		config: config.stiff,
 	}))
 
 	const handleWheelMove = (sign: number, noUpdate?: boolean) => {
-		const snapped = getClosest(y.get() + height * sign)
+		const snapped = getClosest(y.get() + getHeight() * sign)
 
-		if (inRange(snapped, height, bottomPos)) {
+		if (inRange(snapped, getHeight(), getBottomPos())) {
 			if (noUpdate) api.set({ y: snapped })
 			else update(getUserVal(snapped))
 		}
 	}
 
-	useEffect(
-		() => {
-			if (!dragRelease) api.set({ y: bottomPos + offsetState(state) * height })
-			else setDragRelease(false)
-		},
+	const snapWheel = () => api.set({ y: getBottomPos() + offsetState(state) * getHeight() })
+
+	useEffect(() => {
+		!dragRelease ? snapWheel() : setDragRelease(false)
+
+		const removeResize = () => window.removeEventListener('resize', snapWheel)
+		window.addEventListener('resize', snapWheel)
+		return removeResize
+
 		// eslint-disable-next-line
-		[state]
-	)
+	}, [state])
+
+	useEffect(() => {
+		snapWheel()
+		// eslint-disable-next-line
+	}, [])
 
 	//
 	// Gestures
@@ -93,8 +102,8 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 			axis: 'y',
 			rubberband: 0.1,
 			from: () => [0, y.get()],
-			// eventOptions: { passive: true },
-			bounds: { top: bottomPos, bottom: 0 },
+			eventOptions: { passive: true },
+			bounds: { top: getBottomPos(), bottom: 0 },
 		}
 	)
 
@@ -144,12 +153,7 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 	}
 
 	return (
-		<div
-			className="immovable_wheel"
-			ref={wheelWrapRef}
-			onMouseEnter={disableBodyScroll}
-			onMouseLeave={enableBodyScroll}
-		>
+		<div className="immovable_wheel" ref={wheelWrapRef}>
 			<div className="arrows">
 				<Arrow
 					className="up"
