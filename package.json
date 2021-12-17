@@ -4,6 +4,8 @@
 	"homepage": "/",
 	"private": true,
 	"dependencies": {
+		"@fortawesome/free-solid-svg-icons": "^5.15.4",
+		"@fortawesome/react-fontawesome": "^0.1.16",
 		"@juggle/resize-observer": "^3.3.1",
 		"@react-spring/web": "^9.3.0",
 		"@testing-library/jest-dom": "^5.15.0",

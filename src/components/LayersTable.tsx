@@ -1,6 +1,26 @@
 import Wheel from './Wheel'
 import Range from './Range'
 import { useCallback } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faVolumeMute, faVolumeUp } from '@fortawesome/free-solid-svg-icons'
+
+const EffectIcon = ({ type }): JSX.Element => {
+	const props = {
+		release: { view: '1 1 8 6', path: 'M 2 2 V 6 M 2 2 Q 3 6 8 6' },
+		duration: { view: '1 1 10 6', path: 'M 2 2 V 6 M 2 4 H 10' },
+	}
+	return (
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox={props[type].view}>
+			<path
+				d={props[type].path}
+				stroke="var(--accent)"
+				strokeWidth="1"
+				strokeLinecap="round"
+				fill="none"
+			/>
+		</svg>
+	)
+}
 
 const LayersTable = ({ easy, layers, setLayers, toggleMetronome }) => {
 	//
@@ -23,33 +43,43 @@ const LayersTable = ({ easy, layers, setLayers, toggleMetronome }) => {
 	}
 
 	const handleLayerChange = useCallback(
-		(cat: 'wave' | 'beats' | 'freq', res: any, index: number) => {
+		(cat: string, result: any, index: number) => {
 			let newLayers = [...layers]
 
 			switch (cat) {
 				case 'wave': {
 					const clickTypeList = ['triangle', 'sawtooth', 'square', 'sine']
 					clickTypeList.forEach((x, _i) => {
-						if (x === res.type) {
+						if (x === result.type) {
 							const nextIndex = {
 								neg: _i === 0 ? clickTypeList.length - 1 : _i - 1,
 								pos: _i === clickTypeList.length - 1 ? 0 : _i + 1,
 							}
 
 							newLayers[index].type =
-								clickTypeList[res.sign === -1 ? nextIndex.neg : nextIndex.pos]
+								clickTypeList[
+									result.sign === -1 ? nextIndex.neg : nextIndex.pos
+								]
 						}
 					})
 					break
 				}
 
 				case 'beats': {
-					newLayers[index].beats = res + 1
+					newLayers[index].beats = result + 1
 					break
 				}
 
 				case 'freq':
-					newLayers[index].freq = res + 1
+					newLayers[index].freq = result + 1
+					break
+
+				case 'mute':
+					newLayers[index].muted = !newLayers[index].muted
+					break
+
+				case 'vol':
+					newLayers[index].volume = result
 					break
 			}
 
@@ -128,30 +158,14 @@ const LayersTable = ({ easy, layers, setLayers, toggleMetronome }) => {
 									title="sound duration"
 									onClick={() => handleNote('duration', i)}
 								>
-									<svg xmlns="http://www.w3.org/2000/svg" viewBox="1 1 10 6">
-										<path
-											d="M 2 2 V 6 M 2 4 H 10"
-											stroke="var(--accent)"
-											strokeWidth="1"
-											strokeLinecap="round"
-											fill="none"
-										/>
-									</svg>
+									<EffectIcon type={'duration'} />
 									{layer.duration ? '⅓ bpm' : '50ms'}
 								</button>
 								<button
 									title="sound release"
 									onClick={() => handleNote('release', i)}
 								>
-									<svg xmlns="http://www.w3.org/2000/svg" viewBox="1 1 8 6">
-										<path
-											d="M 2 2 V 6 M 2 2 Q 3 6 8 6"
-											stroke="var(--accent)"
-											strokeWidth="1"
-											strokeLinecap="round"
-											fill="none"
-										/>
-									</svg>
+									<EffectIcon type={'release'} />
 									{release[layer.release]}
 								</button>
 							</div>
@@ -164,22 +178,16 @@ const LayersTable = ({ easy, layers, setLayers, toggleMetronome }) => {
 								<span
 									title="mute"
 									className="mute"
-									onClick={() => {
-										const newLayers = [...layers]
-										newLayers[i].muted = !newLayers[i].muted
-										setLayers([...newLayers])
-									}}
+									onClick={() => handleLayerChange('mute', null, i)}
 								>
-									{layer.muted ? '🔈' : '🔊'}
+									<FontAwesomeIcon
+										icon={layer.muted ? faVolumeMute : faVolumeUp}
+									/>
 								</span>
 								<Range
 									volume={layer.volume}
 									muted={layer.muted}
-									update={res => {
-										const newLayers = [...layers]
-										newLayers[i].volume = res
-										setLayers([...newLayers])
-									}}
+									update={res => handleLayerChange('vol', res, i)}
 								></Range>
 							</div>
 						)}

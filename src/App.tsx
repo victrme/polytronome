@@ -1,8 +1,10 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
 import { isMobileOnly } from 'react-device-detect'
-import defaultLayers from './assets/layers.json'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlay, faStop, faRandom } from '@fortawesome/free-solid-svg-icons'
 
+import defaultLayers from './assets/layers.json'
 import LayersTable from './components/LayersTable'
 import Header from './components/Header'
 import Clicks from './components/Clicks'
@@ -149,14 +151,9 @@ const App = (): JSX.Element => {
 		//
 		// Window Events
 
-		function cleanupEvents() {
+		const cleanupEvents = () =>
 			window.removeEventListener('fullscreenchange', handleFullscreen)
-			// window.addEventListener('resize', handleMenuClose)
-		}
-
 		window.addEventListener('fullscreenchange', handleFullscreen)
-		// window.addEventListener('resize', handleMenuClose)
-
 		return cleanupEvents
 
 		// eslint-disable-next-line
@@ -224,21 +221,14 @@ const App = (): JSX.Element => {
 
 				<div className="bottom-buttons">
 					<button className="start" onClick={() => toggleMetronome()}>
-						{isRunning ? '◼ stop' : '▶ start'}
+						<FontAwesomeIcon icon={isRunning ? faStop : faPlay} />
+						<span>{isRunning ? 'stop' : 'start'}</span>
 					</button>
 
 					<div>
 						<button className="randomize" onClick={randomizeLayers}>
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="3 -1 10 8">
-								<path
-									d="M4 1C7 1 7 5 10 5M4 5C7 5 7 1 10 1M10 1 10 .5 12 1 10 1.5zM10 5 10 4.5 12 5 10 5.5z"
-									stroke="var(--accent)"
-									strokeWidth="1"
-									strokeLinecap="round"
-									fill="none"
-								/>
-							</svg>
-							shuffle
+							<FontAwesomeIcon icon={faRandom} />
+							<span>shuffle</span>
 						</button>
 					</div>
 				</div>

@@ -1,0 +1,131 @@
+.menu {
+	padding-top: 10vh;
+}
+
+.menu > button {
+	width: 100px;
+	margin: 30px 0 0 40px;
+}
+
+aside {
+	display: flex;
+	margin: 40px;
+	overflow: hidden;
+
+	> button {
+		margin: 40px auto;
+	}
+
+	.theme-list {
+		display: flex;
+		flex-direction: column;
+		margin: 14px 0 0 14px;
+		overflow: hidden;
+		width: 0;
+		transition: width 0.4s;
+
+		&.opened {
+			width: 100px;
+		}
+
+		span {
+			width: auto;
+			margin: 3px;
+			font-size: 12px;
+			padding: 5px 15px;
+			border-radius: 15px;
+			cursor: pointer;
+			transition: filter 0.1s, border-radius 0.4s;
+
+			&:hover {
+				filter: brightness(0.9);
+			}
+		}
+	}
+
+	.inner-menu {
+		display: flex;
+		width: 360px;
+		flex-direction: column;
+		transition: width 0.4s 0s;
+
+		a span:last-child,
+		button span:last-child {
+			margin-left: 20px;
+			transition: opacity 0.2s 0.2s;
+		}
+
+		button {
+			min-height: 44px;
+			text-align: left;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			font-size: inherit;
+			background-color: transparent;
+
+			p {
+				margin: 0;
+			}
+
+			.optionState {
+				border-radius: 8px;
+				padding: 5px 10px;
+				background-color: rgba(0, 0, 0, 0.04);
+			}
+
+			&.on {
+				.optionState {
+					background-color: var(--buttons);
+				}
+			}
+		}
+	}
+
+	.links {
+		display: flex;
+		flex-direction: column;
+		margin-top: 60px;
+
+		a {
+			height: 36px;
+			line-height: 36px;
+			border: 2px solid transparent;
+			margin: 5px 5px 0 0;
+			white-space: pre;
+			color: var(--accent);
+			text-decoration: none;
+			text-align: left;
+			border-radius: 30px;
+			padding: 0 30px;
+
+			&:hover {
+				border-color: var(--dim);
+			}
+		}
+	}
+
+	&.closed {
+		.inner-menu {
+			width: 85px;
+			transition: width 0.4s 0.16s;
+		}
+
+		button.on {
+			background-color: var(--buttons);
+			transition: border 0.3s, color 0.3s, background-color 0.3s 0.2s;
+		}
+
+		.links {
+			padding-left: 0;
+		}
+
+		a,
+		button {
+			span:last-child {
+				opacity: 0;
+				transition: opacity 0.2s 0s;
+			}
+		}
+	}
+}

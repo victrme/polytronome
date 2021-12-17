@@ -35,16 +35,15 @@ pre {
 	grid-template-columns: 0.1fr 1fr 0.1fr;
 	align-items: flex-start;
 	min-height: 1000px;
-	padding-top: 10vh;
 	width: 100%;
 	margin: auto;
 	color: var(--accent);
 	user-select: none;
-	transition: padding 1s $easing;
 
 	@import 'header';
 	@import 'clicks';
 	@import 'layers';
+	@import 'menu';
 
 	main {
 		display: flex;
@@ -53,6 +52,8 @@ pre {
 		width: 100%;
 		max-width: 1200px;
 		margin: 0 auto;
+		padding-top: 10vh;
+		transition: padding 1s $easing;
 	}
 
 	button {
@@ -72,7 +73,6 @@ pre {
 
 		svg {
 			width: 16px;
-			margin-right: 10px;
 		}
 
 		&:hover {
@@ -156,140 +156,12 @@ pre {
 		justify-content: center;
 		text-align: center;
 
+		svg {
+			margin-right: 10px;
+		}
+
 		.start {
 			width: 300px;
-		}
-	}
-
-	/*
-	MENU
-	*/
-
-	.menu > button {
-		width: 100px;
-		margin: 30px 0 0 40px;
-	}
-
-	aside {
-		display: flex;
-		margin: 40px;
-		overflow: hidden;
-
-		> button {
-			margin: 40px auto;
-		}
-
-		.theme-list {
-			display: flex;
-			flex-direction: column;
-			margin: 14px 0 0 14px;
-			overflow: hidden;
-			width: 0;
-			transition: width 0.4s;
-
-			&.opened {
-				width: 100px;
-			}
-
-			span {
-				width: auto;
-				margin: 3px;
-				font-size: 12px;
-				padding: 5px 15px;
-				border-radius: 15px;
-				cursor: pointer;
-				transition: filter 0.1s, border-radius 0.4s;
-
-				&:hover {
-					filter: brightness(0.9);
-				}
-			}
-		}
-
-		.inner-menu {
-			display: flex;
-			width: 360px;
-			flex-direction: column;
-			transition: width 0.4s 0s;
-
-			a span:last-child,
-			button span:last-child {
-				margin-left: 10px;
-				transition: opacity 0.2s 0.2s;
-			}
-
-			button {
-				min-height: 44px;
-				text-align: left;
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				font-size: inherit;
-				background-color: transparent;
-
-				p {
-					margin: 0;
-				}
-
-				.optionState {
-					border-radius: 8px;
-					padding: 5px 10px;
-					background-color: rgba(0, 0, 0, 0.04);
-				}
-
-				&.on {
-					.optionState {
-						background-color: var(--buttons);
-					}
-				}
-			}
-		}
-
-		.links {
-			display: flex;
-			flex-direction: column;
-			margin-top: 60px;
-
-			a {
-				height: 36px;
-				line-height: 36px;
-				border: 2px solid transparent;
-				margin: 5px 5px 0 0;
-				white-space: pre;
-				color: var(--accent);
-				text-decoration: none;
-				text-align: left;
-				border-radius: 30px;
-				padding: 0 30px;
-
-				&:hover {
-					border-color: var(--dim);
-				}
-			}
-		}
-
-		&.closed {
-			.inner-menu {
-				width: 90px;
-				transition: width 0.4s 0.16s;
-			}
-
-			button.on {
-				background-color: var(--buttons);
-				transition: border 0.3s, color 0.3s, background-color 0.3s 0.2s;
-			}
-
-			.links {
-				padding-left: 0;
-			}
-
-			a,
-			button {
-				span:last-child {
-					opacity: 0;
-					transition: opacity 0.2s 0s;
-				}
-			}
 		}
 	}
 
@@ -395,7 +267,9 @@ pre {
 	*/
 
 	&.easy {
-		padding-top: 15vh;
+		main {
+			padding-top: 15vh;
+		}
 
 		.layers-table-wrap {
 			justify-content: center;

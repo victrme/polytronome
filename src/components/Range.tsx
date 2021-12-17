@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 import { useSpring, animated, config } from '@react-spring/web'
-import { ResizeObserver } from '@juggle/resize-observer'
 import useMeasure from 'react-use-measure'
 
 function Range({ volume, muted, update }): JSX.Element {
-	const [wrapRef, bounds] = useMeasure({ polyfill: ResizeObserver })
+	const [wrapRef, bounds] = useMeasure()
+
 	const [styles, api] = useSpring(() => ({
 		width: 0,
 		config: config.stiff,

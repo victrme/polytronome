@@ -2,6 +2,21 @@ import { useEffect, useState } from 'react'
 import Themes from '../assets/themes.json'
 import defaultLayers from '../assets/layers.json'
 import { applyTheme, createExportCode, importCode } from '../utils'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+import {
+	faBars,
+	faPalette,
+	faExpand,
+	faEye,
+	faHeadphones,
+	faFire,
+	faStar,
+	faBookOpen,
+	faCode,
+	faHandHoldingHeart,
+	faComment,
+} from '@fortawesome/free-solid-svg-icons'
 
 const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 	const [openedTheme, setOpenedTheme] = useState(false)
@@ -65,10 +80,10 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 	}, [])
 
 	const links = [
-		{ url: 'https://polytronome.com/docs', icon: '📚', text: 'documentation' },
-		{ url: 'https://github.com/victrme/polytronome', icon: '⌨️', text: 'github' },
-		{ url: 'https://ko-fi.com/victr', icon: '❤️', text: 'donate' },
-		{ url: 'mailto:mail@victr.me', icon: '🗨️', text: 'contact' },
+		{ url: 'https://polytronome.com/docs', icon: faBookOpen, text: 'documentation' },
+		{ url: 'https://github.com/victrme/polytronome', icon: faCode, text: 'github' },
+		{ url: 'https://ko-fi.com/victr', icon: faHandHoldingHeart, text: 'donate' },
+		{ url: 'mailto:mail@victr.me', icon: faComment, text: 'contact' },
 	]
 
 	const texts = {
@@ -80,7 +95,7 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 
 	const options = [
 		{
-			icon: '🎨',
+			icon: faPalette,
 			text: 'themes',
 			title: 'change theme',
 			func: () => (extended ? setOpenedTheme(!openedTheme) : changeTheme()),
@@ -88,7 +103,7 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 			state: Themes[moreSettings.theme].name,
 		},
 		{
-			icon: '🌀',
+			icon: faBars,
 			text: 'advanced mode',
 			title: 'advanced mode',
 			func: () => setEasy(!easy),
@@ -96,7 +111,7 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 			state: texts.advanced[+easy],
 		},
 		{
-			icon: '💫',
+			icon: faStar,
 			text: 'animations',
 			title: 'enable animations',
 			func: changeAnimations,
@@ -104,7 +119,7 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 			state: texts.advanced[+moreSettings.performance],
 		},
 		{
-			icon: '📱',
+			icon: faEye,
 			text: 'click view',
 			title: 'change click view',
 			func: changeClickType,
@@ -112,7 +127,7 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 			state: texts.view[moreSettings.clickType],
 		},
 		{
-			icon: '➕',
+			icon: faExpand,
 			text: 'fullscreen',
 			title: 'fullscreen',
 			func: changeFullscreen,
@@ -120,7 +135,7 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 			state: texts.fullscreen[+fullscreen],
 		},
 		{
-			icon: '🔉',
+			icon: faHeadphones,
 			text: 'sound offset',
 			title: 'sound offset',
 			func: changeOffset,
@@ -128,7 +143,7 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 			state: moreSettings.offset + 'ms',
 		},
 		{
-			icon: '🔥',
+			icon: faFire,
 			text: 'reset to default',
 			title: 'reset to default',
 			func: resetToDefault,
@@ -146,7 +161,9 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 					{options.map(({ func, title, icon, css, text, state }) => (
 						<button key={title} title={title} onClick={func} className={css}>
 							<p>
-								<span>{icon}</span>
+								<span>
+									<FontAwesomeIcon icon={icon} />
+								</span>
 								<span>{text}</span>
 							</p>
 							<span className="optionState">{state}</span>
@@ -154,10 +171,12 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 					))}
 
 					<div className="links">
-						{links.map(link => (
-							<a key={link.text} title="documentation" href={link.url}>
-								<span>{link.icon}</span>
-								<span>{link.text}</span>
+						{links.map(({ icon, text, url }) => (
+							<a key={text} title="documentation" href={url}>
+								<span>
+									<FontAwesomeIcon icon={icon} />
+								</span>
+								<span>{text}</span>
 							</a>
 						))}
 					</div>
@@ -184,20 +203,6 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 			</aside>
 		</div>
 	)
-
-	/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7 3.5">
-	<path
-		d={
-			segment.on
-				? 'M1 1.75 1.5 1.75M2.5 1.75 4 1.75M5 1.75 6 1.75'
-				: 'M1 1 2 1M3 1 4 1M5 1 6 1M1 2.5 3 2.5M4 2.5 6 2.5'
-		}
-		stroke="var(--accent)"
-		strokeWidth="1"
-		strokeLinecap="round"
-		fill="none"
-	/>
-</svg> */
 }
 
 export default Menu
