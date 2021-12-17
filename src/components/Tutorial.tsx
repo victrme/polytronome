@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
 import Pizzicato from 'pizzicato'
+import TutoFR from '../assets/tutorials/fr.json'
 
 const Tutorial = ({ tutoStage, setTutoStage }) => {
 	const [removeTuto, setRemoveTuto] = useState(false)
+
+	const doNotShowTuto = () => removeTuto || (tutoStage === 'intro' && localStorage.sleep)
 
 	const playNotifSound = (from: 'yes' | 'no' | 'test') => {
 		const wave = new Pizzicato.Sound({
@@ -20,71 +23,12 @@ const Tutorial = ({ tutoStage, setTutoStage }) => {
 		setTimeout(() => wave.stop(), 50)
 	}
 
-	const tutorial: any = {
-		intro: {
-			text: "Salut 👋 C'est ta premiere fois ici ?",
-			yes: { to: 'nextIntro', text: 'Oui !' },
-			no: { to: 'leaveIntro', text: 'Non' },
-		},
-		leaveIntro: {
-			text: 'Ok, amuse-toi bien !',
-			yes: { to: false, text: 'Merci' },
-		},
-		nextIntro: {
-			text: "Tu veux que je t'explique comment ca marche ?",
-			yes: { to: 'explainGoal', text: 'Je veux bien' },
-			no: { to: 'leaveNextIntro', text: "Non c'est cool" },
-		},
-		leaveNextIntro: {
-			text: 'Pas de soucis, tu peux toujours me retrouver dans le menu',
-			yes: { to: false, text: 'Ok merci' },
-		},
-		explainGoal: {
-			text: "Polytronome t'aide a visualiser different rythmes en meme temps",
-			yes: { to: 'explainWheel', text: "D'accord" },
-			no: { to: 'explainRythms', text: 'Comment ?' },
-		},
-		explainRythms: {
-			text: 'Avec les cliques que tu vois juste la au milieu, les lignes se remplissent a la meme vitesse',
-			yes: { to: 'explainWheel', text: "Ah d'accord c'est cool" },
-			no: { to: 'explainBeep', text: 'Toujours pas compris' },
-		},
-		explainBeep: {
-			text: 'Ca fait beep boop, beep beep beep quoi',
-			yes: { to: 'explainWheel', text: 'merci compris a 100%' },
-			no: { to: 'explainEnerve', text: 'hmm...' },
-		},
-		explainEnerve: {
-			text: 'Genre ta pas compris ?',
-			yes: { to: 'explainBeep', text: 'je te jure' },
-			no: { to: 'explainOk', text: 'C bon je te taquine' },
-		},
-		explainOk: {
-			text: 'ok 😭',
-		},
-		explainWheel: {
-			text: 'Tu peux changer de temps en faisant dérouler les chiffres plus bas',
-			yes: { to: 'testBeats', text: 'Compris' },
-		},
-		testBeats: {
-			text: 'Pour commencer, fais moi donc un 5 temps sur 7',
-		},
-		testLaunch: { text: 'Parfait 😄 Lance le metronome !' },
-		waitLaunch: { text: 'Stop quand tu veux' },
-		testTempoUp: { text: 'Tu aussi modifier le tempo, tu peux le monter à 120 bpm ?' },
-		testTempoDown: { text: 'Tu aussi modifier le tempo, tu peux le baisser à 120 bpm ?' },
-		endEasy: {
-			text: "Voila pour les bases ! Tu peux acceder à plus d'option avec le menu à gauche",
-			yes: { to: false, text: 'Merci mon brave' },
-		},
-	}
-
 	useEffect(() => {
 		if (tutoStage === 'explainOk') setTimeout(() => setRemoveTuto(true), 1000)
 		playNotifSound('test')
 	}, [tutoStage, setTutoStage])
 
-	const { yes, no, text } = tutorial[tutoStage] || { yes: '', no: '', text: '' }
+	const { yes, no, text } = TutoFR[tutoStage] || { yes: '', no: '', text: '' }
 	const buttons: JSX.Element[] = []
 
 	const handleYay = () => {
@@ -112,7 +56,7 @@ const Tutorial = ({ tutoStage, setTutoStage }) => {
 		)
 
 	return (
-		<div className="tutorial" style={{ display: removeTuto ? 'none' : 'flex' }}>
+		<div className="tutorial" style={{ display: doNotShowTuto() ? 'none' : 'flex' }}>
 			<div className="dialog">
 				<p>{text}</p>
 			</div>
