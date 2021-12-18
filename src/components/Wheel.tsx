@@ -17,7 +17,7 @@ const fillArray = (start: number, end: number, freq?: boolean): string[] => {
 const allLists = {
 	beats: fillArray(1, 16),
 	tempo: fillArray(30, 300),
-	freq: fillArray(0, freqArr.length * 3, true),
+	freq: fillArray(0, freqArr.length * 4 - 1, true),
 }
 
 allLists.beats[allLists.beats.length - 1] = '×'

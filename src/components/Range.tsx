@@ -19,12 +19,16 @@ function Range({ volume, muted, update }): JSX.Element {
 	}
 
 	useEffect(() => {
-		api.start({ width: muted ? 0 : volume * 100 })
+		api.start({ width: volume * 100 })
 		// eslint-disable-next-line
 	}, [volume, muted])
 
 	return (
-		<div ref={wrapRef} className={'range-wrap'} onClick={e => handleVolumeChange(e)}>
+		<div
+			ref={wrapRef}
+			className={'range-wrap' + (muted ? ' muted' : '')}
+			onClick={e => handleVolumeChange(e)}
+		>
 			<animated.div className="inner-range" style={styles} />
 		</div>
 	)

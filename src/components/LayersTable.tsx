@@ -2,8 +2,15 @@ import Wheel from './Wheel'
 import Range from './Range'
 import { useCallback } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faVolumeMute, faVolumeUp } from '@fortawesome/free-solid-svg-icons'
+import {
+	faVolumeMute,
+	faVolumeUp,
+	faVolumeDown,
+	faVolumeOff,
+	IconDefinition,
+} from '@fortawesome/free-solid-svg-icons'
 import { useEffect, useState } from 'react'
+import { clamp } from 'lodash'
 
 const EffectIcon = ({ type }): JSX.Element => {
 	const props = {
@@ -113,6 +120,8 @@ const LayersTable = ({ easy, layers, setLayers, toggleMetronome }) => {
 				{ key: 'Digit3', cat: 'select', val: 2 },
 				{ key: 'Digit4', cat: 'select', val: 3 },
 				{ key: 'Digit5', cat: 'select', val: 4 },
+				{ key: 'ArrowRight', cat: 'select', val: (selected + 1) % 5 },
+				{ key: 'ArrowLeft', cat: 'select', val: selected === 0 ? 4 : selected - 1 },
 				{ key: 'KeyA', cat: 'freq', val: 0 },
 				{ key: 'KeyW', cat: 'freq', val: 1 },
 				{ key: 'KeyS', cat: 'freq', val: 2 },
@@ -125,40 +134,69 @@ const LayersTable = ({ easy, layers, setLayers, toggleMetronome }) => {
 				{ key: 'KeyH', cat: 'freq', val: 9 },
 				{ key: 'KeyU', cat: 'freq', val: 10 },
 				{ key: 'KeyJ', cat: 'freq', val: 11 },
-				{ key: 'KeyK', cat: 'freq', val: 12 },
-				{ key: 'KeyO', cat: 'freq', val: 13 },
-				{ key: 'KeyL', cat: 'freq', val: 14 },
 				{ key: 'KeyZ', cat: 'octave', val: -1 },
 				{ key: 'KeyX', cat: 'octave', val: 1 },
+				{ key: 'KeyB', cat: 'volume', val: -0.1 },
+				{ key: 'KeyN', cat: 'volume', val: 0.1 },
+				{ key: 'KeyM', cat: 'mute', val: 1 },
+				{ key: 'ArrowUp', cat: 'beats', val: 1 },
+				{ key: 'ArrowDown', cat: 'beats', val: -1 },
 			]
 
 			const hitKey = mappings.filter(elem => elem.key === e.code)[0]
 
-			if (hitKey !== undefined && selected > -1) {
-				switch (hitKey.cat) {
-					case 'freq':
-						handleLayerChange('freq', hitKey.val, selected)
-						break
+			if (hitKey !== undefined) {
+				if (selected > -1) {
+					let layer = layers[selected]
 
-					case 'select':
-						setSelected(hitKey.val)
-						break
+					// 0, 12, 24 ...etc
+					const octavedFreq = Math.floor((layer.freq - 1) / 12) * 12
 
-					case 'octave': {
-						handleLayerChange(
-							'freq',
-							11 * hitKey.val + layers[selected].freq,
-							selected
-						)
-						break
+					switch (hitKey.cat) {
+						case 'beats':
+							handleLayerChange(
+								'beats',
+								clamp(layer.beats - 1 + hitKey.val, 0, 15),
+								selected
+							)
+							break
+
+						case 'freq':
+							handleLayerChange(
+								'freq',
+								clamp(octavedFreq + hitKey.val, 0, 47),
+								selected
+							)
+							break
+
+						case 'octave':
+							handleLayerChange(
+								'freq',
+								clamp(12 * hitKey.val + layer.freq - 1, 0, 47),
+								selected
+							)
+							break
+
+						case 'volume':
+							handleLayerChange(
+								'vol',
+								clamp(layer.volume + hitKey.val, 0, 1),
+								selected
+							)
+							break
+
+						case 'mute':
+							handleLayerChange('mute', !layer.muted, selected)
+							break
 					}
+
+					console.log()
 				}
 
-				console.log(
-					hitKey.val,
-					Math.floor(layers[selected].freq / 12) * 12 + hitKey.val
-				)
+				if (hitKey.cat === 'select') setSelected(hitKey.val)
 			}
+
+			console.log(e.code)
 		}
 
 		const removeEvent = () => window.removeEventListener('keydown', handleKeyMapping)
@@ -167,6 +205,16 @@ const LayersTable = ({ easy, layers, setLayers, toggleMetronome }) => {
 
 		// eslint-disable-next-line
 	}, [selected, layers])
+
+	const volumeIconControl = (volume: number, muted: boolean): IconDefinition => {
+		let icon = faVolumeUp
+
+		if (muted) icon = faVolumeMute
+		else if (volume < 0.2) icon = faVolumeOff
+		else if (volume < 0.6) icon = faVolumeDown
+
+		return icon
+	}
 
 	return (
 		<div className="layers-table-wrap">
@@ -197,7 +245,7 @@ const LayersTable = ({ easy, layers, setLayers, toggleMetronome }) => {
 										update={res => handleLayerChange('freq', res, i)}
 									></Wheel>
 									<pre className="octave">
-										{Math.floor(layer.freq / 12) + 1}
+										{Math.floor((layer.freq - 1) / 12) + 1}
 									</pre>
 								</div>
 							</div>
@@ -264,7 +312,7 @@ const LayersTable = ({ easy, layers, setLayers, toggleMetronome }) => {
 									onClick={() => handleLayerChange('mute', null, i)}
 								>
 									<FontAwesomeIcon
-										icon={layer.muted ? faVolumeMute : faVolumeUp}
+										icon={volumeIconControl(layer.volume, layer.muted)}
 									/>
 								</span>
 								<Range

@@ -109,6 +109,11 @@
 			user-select: none;
 			transition: opacity 0.1s;
 
+			&.muted {
+				opacity: 0.1;
+				filter: grayscale(1);
+			}
+
 			.inner-range {
 				background-color: var(--accent);
 				height: 20px;
