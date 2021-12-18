@@ -71,13 +71,13 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 	const resetToDefault = () =>
 		setImport(importCode(createExportCode(80, defaultLayers, moreSettings, easy)))
 
-	useEffect(() => {
-		const keymappings = e => (e.code === 'KeyF' ? changeFullscreen() : '')
-		const cleanupEvents = () => window.removeEventListener('keypress', keymappings)
+	// useEffect(() => {
+	// 	const keymappings = e => (e.code === 'KeyF' ? changeFullscreen() : '')
+	// 	const cleanupEvents = () => window.removeEventListener('keypress', keymappings)
 
-		window.addEventListener('keypress', keymappings)
-		return cleanupEvents
-	}, [])
+	// 	window.addEventListener('keypress', keymappings)
+	// 	return cleanupEvents
+	// }, [])
 
 	const links = [
 		{ url: 'https://polytronome.com/docs', icon: faBookOpen, text: 'documentation' },

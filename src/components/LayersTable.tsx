@@ -3,6 +3,7 @@ import Range from './Range'
 import { useCallback } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faVolumeMute, faVolumeUp } from '@fortawesome/free-solid-svg-icons'
+import { useEffect, useState } from 'react'
 
 const EffectIcon = ({ type }): JSX.Element => {
 	const props = {
@@ -46,55 +47,137 @@ const LayersTable = ({ easy, layers, setLayers, toggleMetronome }) => {
 		(cat: string, result: any, index: number) => {
 			let newLayers = [...layers]
 
-			switch (cat) {
-				case 'wave': {
-					const clickTypeList = ['triangle', 'sawtooth', 'square', 'sine']
-					clickTypeList.forEach((x, _i) => {
-						if (x === result.type) {
-							const nextIndex = {
-								neg: _i === 0 ? clickTypeList.length - 1 : _i - 1,
-								pos: _i === clickTypeList.length - 1 ? 0 : _i + 1,
+			if (newLayers[index]) {
+				switch (cat) {
+					case 'wave': {
+						const clickTypeList = ['triangle', 'sawtooth', 'square', 'sine']
+						clickTypeList.forEach((x, _i) => {
+							if (x === result.type) {
+								const nextIndex = {
+									neg: _i === 0 ? clickTypeList.length - 1 : _i - 1,
+									pos: _i === clickTypeList.length - 1 ? 0 : _i + 1,
+								}
+
+								newLayers[index].type =
+									clickTypeList[
+										result.sign === -1 ? nextIndex.neg : nextIndex.pos
+									]
 							}
+						})
+						break
+					}
 
-							newLayers[index].type =
-								clickTypeList[
-									result.sign === -1 ? nextIndex.neg : nextIndex.pos
-								]
-						}
-					})
-					break
+					case 'beats': {
+						newLayers[index].beats = result + 1
+						break
+					}
+
+					case 'freq':
+						newLayers[index].freq = result + 1
+						break
+
+					case 'mute':
+						newLayers[index].muted = !newLayers[index].muted
+						break
+
+					case 'vol':
+						newLayers[index].volume = result
+						break
 				}
 
-				case 'beats': {
-					newLayers[index].beats = result + 1
-					break
-				}
-
-				case 'freq':
-					newLayers[index].freq = result + 1
-					break
-
-				case 'mute':
-					newLayers[index].muted = !newLayers[index].muted
-					break
-
-				case 'vol':
-					newLayers[index].volume = result
-					break
+				setLayers(newLayers)
+				if (cat === 'beats') toggleMetronome(true)
 			}
-
-			setLayers(newLayers)
-			if (cat === 'beats') toggleMetronome(true)
 		},
 		[toggleMetronome, layers, setLayers]
 	)
+
+	//
+	// Keymaps
+	//
+
+	const [selected, setSelected] = useState(-1)
+
+	useEffect(() => {
+		function handleKeyMapping(e: KeyboardEvent) {
+			if (document.activeElement) {
+				// Lose focus before firing
+				const el = document.activeElement as HTMLButtonElement
+				el.blur()
+			}
+
+			const mappings = [
+				{ key: 'Escape', cat: 'select', val: -1 },
+				{ key: 'Digit1', cat: 'select', val: 0 },
+				{ key: 'Digit2', cat: 'select', val: 1 },
+				{ key: 'Digit3', cat: 'select', val: 2 },
+				{ key: 'Digit4', cat: 'select', val: 3 },
+				{ key: 'Digit5', cat: 'select', val: 4 },
+				{ key: 'KeyA', cat: 'freq', val: 0 },
+				{ key: 'KeyW', cat: 'freq', val: 1 },
+				{ key: 'KeyS', cat: 'freq', val: 2 },
+				{ key: 'KeyE', cat: 'freq', val: 3 },
+				{ key: 'KeyD', cat: 'freq', val: 4 },
+				{ key: 'KeyF', cat: 'freq', val: 5 },
+				{ key: 'KeyT', cat: 'freq', val: 6 },
+				{ key: 'KeyG', cat: 'freq', val: 7 },
+				{ key: 'KeyY', cat: 'freq', val: 8 },
+				{ key: 'KeyH', cat: 'freq', val: 9 },
+				{ key: 'KeyU', cat: 'freq', val: 10 },
+				{ key: 'KeyJ', cat: 'freq', val: 11 },
+				{ key: 'KeyK', cat: 'freq', val: 12 },
+				{ key: 'KeyO', cat: 'freq', val: 13 },
+				{ key: 'KeyL', cat: 'freq', val: 14 },
+				{ key: 'KeyZ', cat: 'octave', val: -1 },
+				{ key: 'KeyX', cat: 'octave', val: 1 },
+			]
+
+			const hitKey = mappings.filter(elem => elem.key === e.code)[0]
+
+			if (hitKey !== undefined && selected > -1) {
+				switch (hitKey.cat) {
+					case 'freq':
+						handleLayerChange('freq', hitKey.val, selected)
+						break
+
+					case 'select':
+						setSelected(hitKey.val)
+						break
+
+					case 'octave': {
+						handleLayerChange(
+							'freq',
+							11 * hitKey.val + layers[selected].freq,
+							selected
+						)
+						break
+					}
+				}
+
+				console.log(
+					hitKey.val,
+					Math.floor(layers[selected].freq / 12) * 12 + hitKey.val
+				)
+			}
+		}
+
+		const removeEvent = () => window.removeEventListener('keydown', handleKeyMapping)
+		window.addEventListener('keydown', handleKeyMapping)
+		return removeEvent
+
+		// eslint-disable-next-line
+	}, [selected, layers])
 
 	return (
 		<div className="layers-table-wrap">
 			<div className="layers-table">
 				{layers.map((layer, i) => (
 					<div
-						className={'ls-row' + (layer.beats === 1 ? ' off' : '')}
+						className={
+							'ls-row' +
+							(selected === i ? ' selected ' : ' ') +
+							(layer.beats === 1 ? ' off' : '')
+						}
 						key={layer.id}
 					>
 						<Wheel

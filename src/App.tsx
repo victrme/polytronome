@@ -10,9 +10,9 @@ import Header from './components/Header'
 import Clicks from './components/Clicks'
 import Menu from './components/Menu'
 import Tutorial from './components/Tutorial'
-import Keymapping from './components/Keymapping'
 import { MoreSettings, Layer, Code } from './Types'
 import { setRandomID, importCode, applyTheme, createExportCode } from './utils'
+// import Keymapping from './components/Keymapping'
 
 const App = (): JSX.Element => {
 	//
@@ -180,13 +180,13 @@ const App = (): JSX.Element => {
 		>
 			<Tutorial tutoStage={tutoStage} setTutoStage={setTutoStage}></Tutorial>
 
-			<Keymapping
+			{/* <Keymapping
 				setTempo={setTempo}
 				tempoRef={tempoRef}
 				toggleMetronome={toggleMetronome}
 				setMoreSettings={setMoreSettings}
 				moreSettings={moreSettingsRef.current}
-			></Keymapping>
+			></Keymapping> */}
 
 			<Menu
 				easy={easy}

@@ -18,6 +18,7 @@
 		flex-direction: column;
 		align-items: center;
 		background-color: var(--dimmer);
+		border: 2px solid transparent;
 		justify-content: space-evenly;
 		max-width: 700px;
 		margin: 20px;
@@ -27,6 +28,10 @@
 
 		> div {
 			margin: 20px 0;
+		}
+
+		&.selected {
+			border: 2px solid var(--accent);
 		}
 
 		&.off {

@@ -43,7 +43,8 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 	heightRef.current = bounds.height
 
 	// -4 is 2px immovableWheel vertical padding
-	const getHeight = () => (heightRef.current - 4 === -4 ? 50 : heightRef.current - 4)
+	const getHeight = () =>
+		heightRef.current - 4 === -4 ? 50 : Math.round(heightRef.current) - 4
 	const offsetState = (state: number) => (type === 'tempo' ? state - 30 : state - 1)
 	const getClosest = (y: number) => Math.round(y / getHeight()) * getHeight()
 	const getUserVal = (y: number) => Math.round(y / getHeight()) + list.length - 1
