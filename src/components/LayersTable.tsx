@@ -1,6 +1,5 @@
-import Wheel from './Wheel'
-import Range from './Range'
-import { useCallback } from 'react'
+import { useEffect, useState, useCallback } from 'react'
+import { clamp } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
 	faVolumeMute,
@@ -9,8 +8,9 @@ import {
 	faVolumeOff,
 	IconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
-import { useEffect, useState } from 'react'
-import { clamp } from 'lodash'
+
+import Wheel from './Wheel'
+import Range from './Range'
 
 const EffectIcon = ({ type }): JSX.Element => {
 	const props = {
@@ -41,20 +41,12 @@ const LayersTable = ({ easy, layers, setLayers, toggleMetronome }) => {
 		square: 'M 10 2 H 30 V 18 H 50',
 	}
 
-	const handleNote = (which: string, i: number) => {
-		const newLayers = [...layers]
-
-		if (which === 'release') newLayers[i].release = (newLayers[i].release + 1) % 3
-		else newLayers[i].duration = !newLayers[i].duration
-
-		setLayers([...newLayers])
-	}
-
 	const handleLayerChange = useCallback(
 		(cat: string, result: any, index: number) => {
 			let newLayers = [...layers]
+			let thisLayer = newLayers[index]
 
-			if (newLayers[index]) {
+			if (thisLayer) {
 				switch (cat) {
 					case 'wave': {
 						const clickTypeList = ['triangle', 'sawtooth', 'square', 'sine']
@@ -65,7 +57,7 @@ const LayersTable = ({ easy, layers, setLayers, toggleMetronome }) => {
 									pos: _i === clickTypeList.length - 1 ? 0 : _i + 1,
 								}
 
-								newLayers[index].type =
+								thisLayer.type =
 									clickTypeList[
 										result.sign === -1 ? nextIndex.neg : nextIndex.pos
 									]
@@ -75,23 +67,32 @@ const LayersTable = ({ easy, layers, setLayers, toggleMetronome }) => {
 					}
 
 					case 'beats': {
-						newLayers[index].beats = result + 1
+						thisLayer.beats = result + 1
 						break
 					}
 
 					case 'freq':
-						newLayers[index].freq = result + 1
+						thisLayer.freq = result + 1
+						break
+
+					case 'duration':
+						thisLayer.duration = !thisLayer.duration
+						break
+
+					case 'release':
+						thisLayer.release = (thisLayer.release + 1) % 3
 						break
 
 					case 'mute':
-						newLayers[index].muted = !newLayers[index].muted
+						thisLayer.muted = !thisLayer.muted
 						break
 
 					case 'vol':
-						newLayers[index].volume = result
+						thisLayer.volume = result
 						break
 				}
 
+				newLayers[index] = thisLayer
 				setLayers(newLayers)
 				if (cat === 'beats') toggleMetronome(true)
 			}
@@ -100,20 +101,24 @@ const LayersTable = ({ easy, layers, setLayers, toggleMetronome }) => {
 	)
 
 	//
-	// Keymaps
+	// Keybinds
 	//
 
 	const [selected, setSelected] = useState(-1)
 
 	useEffect(() => {
 		function handleKeyMapping(e: KeyboardEvent) {
+			// Lose focus before firing, (like a preventDefault)
+			// Not preventDefault, because it would prevent
+			// Browser accessibility keybindings
 			if (document.activeElement) {
-				// Lose focus before firing
 				const el = document.activeElement as HTMLButtonElement
 				el.blur()
 			}
 
-			const mappings = [
+			console.log(e.code)
+
+			const bindings = [
 				{ key: 'Escape', cat: 'select', val: -1 },
 				{ key: 'Digit1', cat: 'select', val: 0 },
 				{ key: 'Digit2', cat: 'select', val: 1 },
@@ -143,62 +148,38 @@ const LayersTable = ({ easy, layers, setLayers, toggleMetronome }) => {
 				{ key: 'ArrowDown', cat: 'beats', val: -1 },
 			]
 
-			const hitKey = mappings.filter(elem => elem.key === e.code)[0]
-
+			// Finds corresponding key
+			const hitKey = bindings.filter(elem => elem.key === e.code)[0]
 			if (hitKey !== undefined) {
+				//
+				// Keybinds when focused on layers
 				if (selected > -1) {
 					let layer = layers[selected]
 
 					// 0, 12, 24 ...etc
 					const octavedFreq = Math.floor((layer.freq - 1) / 12) * 12
 
-					switch (hitKey.cat) {
-						case 'beats':
-							handleLayerChange(
-								'beats',
-								clamp(layer.beats - 1 + hitKey.val, 0, 15),
-								selected
-							)
-							break
-
-						case 'freq':
-							handleLayerChange(
-								'freq',
-								clamp(octavedFreq + hitKey.val, 0, 47),
-								selected
-							)
-							break
-
-						case 'octave':
-							handleLayerChange(
-								'freq',
-								clamp(12 * hitKey.val + layer.freq - 1, 0, 47),
-								selected
-							)
-							break
-
-						case 'volume':
-							handleLayerChange(
-								'vol',
-								clamp(layer.volume + hitKey.val, 0, 1),
-								selected
-							)
-							break
-
-						case 'mute':
-							handleLayerChange('mute', !layer.muted, selected)
-							break
+					const filteredVals = {
+						beats: clamp(layer.beats - 1 + hitKey.val, 0, 15),
+						freq: clamp(octavedFreq + hitKey.val, 0, 47),
+						octave: clamp(12 * hitKey.val + layer.freq - 1, 0, 47),
+						volume: clamp(layer.volume + hitKey.val, 0, 1),
+						mute: !layer.muted,
 					}
 
-					console.log()
+					handleLayerChange(hitKey.cat, filteredVals[hitKey.cat], selected)
 				}
 
+				// (Maybe) Keybinds only used when not focused on layers
+				else {
+				}
+
+				// Keybinds that works anywhere
 				if (hitKey.cat === 'select') setSelected(hitKey.val)
 			}
-
-			console.log(e.code)
 		}
 
+		// Retire event when effect dies
 		const removeEvent = () => window.removeEventListener('keydown', handleKeyMapping)
 		window.addEventListener('keydown', handleKeyMapping)
 		return removeEvent
@@ -287,14 +268,14 @@ const LayersTable = ({ easy, layers, setLayers, toggleMetronome }) => {
 							<div className="note-length">
 								<button
 									title="sound duration"
-									onClick={() => handleNote('duration', i)}
+									onClick={() => handleLayerChange('duration', null, i)}
 								>
 									<EffectIcon type={'duration'} />
 									{layer.duration ? '⅓ bpm' : '50ms'}
 								</button>
 								<button
 									title="sound release"
-									onClick={() => handleNote('release', i)}
+									onClick={() => handleLayerChange('release', null, i)}
 								>
 									<EffectIcon type={'release'} />
 									{release[layer.release]}
@@ -318,7 +299,7 @@ const LayersTable = ({ easy, layers, setLayers, toggleMetronome }) => {
 								<Range
 									volume={layer.volume}
 									muted={layer.muted}
-									update={res => handleLayerChange('vol', res, i)}
+									update={(res: number) => handleLayerChange('vol', res, i)}
 								></Range>
 							</div>
 						)}
