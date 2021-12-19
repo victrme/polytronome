@@ -5,15 +5,18 @@
 ## Todo
 
 ### Bugs
-- [ ] Resize wheels on launch
-- [ ] Sound offset for segment / block
-- [ ] Reset to default on Firefox
-- [ ] Update off animations
-- [ ] Volume breaking after moving
+
+-   [ ] Resize wheels on launch
+-   [ ] Sound offset for segment / block
+-   [ ] Reset to default on Firefox
+-   [ ] Update off animations
+-   [ ] Volume breaking after moving
+-   [ ] Tempo keyboard change doesn't reset metronome
 
 ### Features
-- [ ] Keymappings
-- [ ] documentation
-- [ ] advanced tutorial
-- [ ] tutorial translation
-- [ ] Better mute animation
+
+-   [ ] Keymappings
+-   [ ] documentation
+-   [ ] advanced tutorial
+-   [ ] tutorial translation
+-   [ ] Better mute animation

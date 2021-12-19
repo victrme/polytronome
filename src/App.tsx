@@ -12,7 +12,7 @@ import Menu from './components/Menu'
 import Tutorial from './components/Tutorial'
 import { MoreSettings, Layer, Code } from './Types'
 import { setRandomID, importCode, applyTheme, createExportCode } from './utils'
-// import Keymapping from './components/Keymapping'
+import Keybindings from './components/Keybindings'
 
 const App = (): JSX.Element => {
 	//
@@ -21,6 +21,7 @@ const App = (): JSX.Element => {
 	//
 	//
 
+	const [selected, setSelected] = useState(-1)
 	const [tempo, setTempo] = useState(80)
 	const [startTime, setStartTime] = useState(Date.now)
 	const [isRunning, setIsRunning] = useState('')
@@ -52,30 +53,33 @@ const App = (): JSX.Element => {
 	//
 	//
 
-	const toggleMetronome = (restart?: boolean) => {
-		const start = () => {
-			setStartTime(Date.now())
-			setIsRunning(setRandomID())
-			if (tutoStage === 'testLaunch') setTutoStage('waitLaunch')
-		}
+	const toggleMetronome = useCallback(
+		(restart?: boolean) => {
+			const start = () => {
+				setStartTime(Date.now())
+				setIsRunning(setRandomID())
+				if (tutoStage === 'testLaunch') setTutoStage('waitLaunch')
+			}
 
-		const stop = () => {
-			setIsRunning('')
-			setStartTime(0)
+			const stop = () => {
+				setIsRunning('')
+				setStartTime(0)
 
-			if (tutoStage === 'waitLaunch')
-				setTutoStage(`testTempo${tempo > 120 ? 'Down' : 'Up'}`)
-		}
+				if (tutoStage === 'waitLaunch')
+					setTutoStage(`testTempo${tempo > 120 ? 'Down' : 'Up'}`)
+			}
 
-		const running = isRunningRef.current !== ''
+			const running = isRunningRef.current !== ''
 
-		if (restart) {
-			if (running) start()
-		}
+			if (restart) {
+				if (running) start()
+			}
 
-		// Not restart, Normal toggle
-		else running ? stop() : start()
-	}
+			// Not restart, Normal toggle
+			else running ? stop() : start()
+		},
+		[tempo, tutoStage]
+	)
 
 	const randomizeLayers = () => {
 		const rand = (a: number, b: number) => Math.random() * (b - a) + a
@@ -88,18 +92,54 @@ const App = (): JSX.Element => {
 		toggleMetronome(true)
 	}
 
-	//
-	//
-	//	Effects
-	//
-	//
+	const handleLayerChange = (cat: string, result: any, index: number) => {
+		let newLayers = [...layers]
 
-	function handleFullscreen() {
-		if (document.fullscreenElement === null)
-			setMoreSettings(prev => ({
-				...prev,
-				fullscreen: false,
-			}))
+		switch (cat) {
+			case 'wave': {
+				const clickTypeList = ['triangle', 'sawtooth', 'square', 'sine']
+				clickTypeList.forEach((x, _i) => {
+					if (x === result.type) {
+						const nextIndex = {
+							neg: _i === 0 ? clickTypeList.length - 1 : _i - 1,
+							pos: _i === clickTypeList.length - 1 ? 0 : _i + 1,
+						}
+
+						newLayers[index].type =
+							clickTypeList[result.sign === -1 ? nextIndex.neg : nextIndex.pos]
+					}
+				})
+				break
+			}
+
+			case 'beats': {
+				newLayers[index].beats = result + 1
+				break
+			}
+
+			case 'freq':
+				newLayers[index].freq = result + 1
+				break
+
+			case 'duration':
+				newLayers[index].duration = !newLayers[index].duration
+				break
+
+			case 'release':
+				newLayers[index].release = (newLayers[index].release + 1) % 3
+				break
+
+			case 'mute':
+				newLayers[index].muted = !newLayers[index].muted
+				break
+
+			case 'vol':
+				newLayers[index].volume = result
+				break
+		}
+
+		setLayers([...newLayers])
+		if (cat === 'beats') toggleMetronome(true)
 	}
 
 	const setSettingsFromCode = useCallback((code: Code) => {
@@ -109,6 +149,30 @@ const App = (): JSX.Element => {
 		setEasy(code.easy)
 		applyTheme(code.moreSettings.theme)
 	}, [])
+
+	const handleFullscreen = () => {
+		if (document.fullscreenElement === null)
+			setMoreSettings(prev => ({
+				...prev,
+				fullscreen: false,
+			}))
+	}
+
+	const handleClasses = () => {
+		let result = 'polytronome'
+
+		if (isMobileOnly) result += ' mobile'
+		if (easy) result += ' easy '
+		if (tutoStage !== 'intro') result += tutoStage
+
+		return result
+	}
+
+	//
+	//
+	//	Effects
+	//
+	//
 
 	//
 	// tutorial effects
@@ -170,23 +234,20 @@ const App = (): JSX.Element => {
 	//
 
 	return (
-		<div
-			className={
-				'polytronome' +
-				(isMobileOnly ? ' mobile' : '') +
-				(easy ? ' easy ' : ' ') +
-				(tutoStage !== 'intro' ? tutoStage : '')
-			}
-		>
+		<div className={handleClasses()}>
 			<Tutorial tutoStage={tutoStage} setTutoStage={setTutoStage}></Tutorial>
 
-			{/* <Keymapping
+			<Keybindings
 				setTempo={setTempo}
 				tempoRef={tempoRef}
+				layers={layers}
+				selected={selected}
+				setSelected={setSelected}
+				handleLayerChange={handleLayerChange}
 				toggleMetronome={toggleMetronome}
 				setMoreSettings={setMoreSettings}
 				moreSettings={moreSettingsRef.current}
-			></Keymapping> */}
+			></Keybindings>
 
 			<Menu
 				easy={easy}
@@ -215,8 +276,8 @@ const App = (): JSX.Element => {
 				<LayersTable
 					easy={easy}
 					layers={layers}
-					setLayers={setLayers}
-					toggleMetronome={toggleMetronome}
+					selected={selected}
+					handleLayerChange={handleLayerChange}
 				></LayersTable>
 
 				<div className="bottom-buttons">

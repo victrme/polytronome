@@ -7,20 +7,15 @@ import { inRange } from 'lodash'
 
 const freqArr = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
-const fillArray = (start: number, end: number, freq?: boolean): string[] => {
-	const arr: any[] = []
-	for (let i = start; i <= end; i++)
-		arr.unshift(freq ? freqArr[i % freqArr.length].toString() : i.toString())
-	return arr
-}
-// Init all wheels text before JSX Element
-const allLists = {
-	beats: fillArray(1, 16),
-	tempo: fillArray(30, 300),
-	freq: fillArray(0, freqArr.length * 4 - 1, true),
-}
+const allLists: {
+	beats: string[]
+	tempo: string[]
+	freq: string[]
+} = { beats: ['×'], tempo: [], freq: [] }
 
-allLists.beats[allLists.beats.length - 1] = '×'
+for (let i = 1; i <= 16; i++) allLists.beats.unshift(i.toString())
+for (let i = 30; i <= 300; i++) allLists.tempo.unshift(i.toString())
+for (let i = 0; i <= 54; i++) allLists.freq.unshift(freqArr[i % freqArr.length])
 
 const Arrow = props => {
 	return (
