@@ -4,6 +4,7 @@ import { isMobileOnly } from 'react-device-detect'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlay, faStop, faRandom } from '@fortawesome/free-solid-svg-icons'
 
+import defaultSettings from './assets/settings.json'
 import defaultLayers from './assets/layers.json'
 import LayersTable from './components/LayersTable'
 import Header from './components/Header'
@@ -21,21 +22,14 @@ const App = (): JSX.Element => {
 	//
 	//
 
-	const [selected, setSelected] = useState(-1)
-	const [tempo, setTempo] = useState(80)
-	const [startTime, setStartTime] = useState(Date.now)
-	const [isRunning, setIsRunning] = useState('')
 	const [easy, setEasy] = useState(true)
-	const [layers, setLayers] = useState<Layer[]>([...defaultLayers])
+	const [tempo, setTempo] = useState(80)
+	const [selected, setSelected] = useState(-1)
+	const [isRunning, setIsRunning] = useState('')
 	const [tutoStage, setTutoStage] = useState('intro')
-
-	const [moreSettings, setMoreSettings] = useState<MoreSettings>({
-		theme: 2,
-		fullscreen: false,
-		performance: false,
-		offset: 0,
-		clickType: 0,
-	})
+	const [startTime, setStartTime] = useState(Date.now)
+	const [layers, setLayers] = useState<Layer[]>([...defaultLayers])
+	const [moreSettings, setMoreSettings] = useState<MoreSettings>({ ...defaultSettings })
 
 	const tempoRef = useRef(tempo)
 	const startTimeRef = useRef(startTime)

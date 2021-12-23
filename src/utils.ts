@@ -1,11 +1,15 @@
 import Themes from './assets/themes.json'
+import defaultLayers from './assets/layers.json'
+import defaultSettings from './assets/settings.json'
 import { Layer, MoreSettings } from './Types'
 
 export const applyTheme = (index: number) => {
 	const root = document.querySelector(':root')! as HTMLBodyElement
-	Object.entries(Themes[index]).forEach(([key, val]) =>
-		val !== undefined ? root.style.setProperty('--' + key, val) : ''
-	)
+
+	if (index >= 0 && index < Themes.length)
+		Object.entries(Themes[index]).forEach(([key, val]) =>
+			val !== undefined ? root.style.setProperty('--' + key, val) : ''
+		)
 }
 
 export const setRandomID = () => {
@@ -51,6 +55,14 @@ export const createExportCode = (
 }
 
 export const importCode = (code: any[]) => {
+	if (code.length === 0)
+		return {
+			easy: true,
+			tempo: 80,
+			layers: defaultLayers,
+			moreSettings: defaultSettings,
+		}
+
 	const parsedLayers: Layer[] = []
 	const parsedSettings: MoreSettings = {
 		theme: 0,
