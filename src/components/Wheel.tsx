@@ -76,7 +76,7 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 	}, [state])
 
 	useEffect(() => {
-		snapWheel()
+		setTimeout(() => snapWheel(), 10)
 		// eslint-disable-next-line
 	}, [])
 
