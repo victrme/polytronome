@@ -72,15 +72,18 @@ const Keymapping = ({
 				// Keybinds when focused on layers
 				if (selected > -1) {
 					let layer = layers[selected]
+					const { cat, val } = hitKey
 
 					const filteredVals = {
-						beats: clamp(layer.beats - 1 + hitKey.val, 0, 15),
-						freq: clamp(12 * octave + hitKey.val, 0, 53),
-						vol: clamp(layer.volume + hitKey.val, 0, 1),
+						beats: clamp(layer.beats - 1 + val, 0, 15),
+						freq: clamp(12 * octave + val, 0, 53),
+						vol: clamp(layer.volume + val, 0, 1),
 						mute: !layer.muted,
 					}
 
-					handleLayerChange(hitKey.cat, filteredVals[hitKey.cat], selected)
+					if (cat === 'select') e.preventDefault()
+
+					handleLayerChange(cat, filteredVals[cat], selected)
 				}
 
 				// (Maybe) Keybinds only used when not focused on layers

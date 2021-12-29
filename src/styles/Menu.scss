@@ -108,7 +108,12 @@ aside {
 	&.closed {
 		.inner-menu {
 			width: 85px;
-			transition: width 0.4s 0.16s;
+			opacity: 0.6;
+			transition: opacity 0.2s, width 0.4s 0.16s;
+
+			&:hover {
+				opacity: 1;
+			}
 		}
 
 		button.on {

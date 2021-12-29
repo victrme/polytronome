@@ -3,14 +3,14 @@
 $easing: cubic-bezier(0.19, 1, 0.22, 1);
 
 body {
-	background-color: black;
+	background-color: var(--background);
 	margin: 0;
 	transition: background-color 1s $easing;
 	overflow: hidden;
 }
 body,
 body:fullscreen::backdrop {
-	background: var(--background);
+	background-color: var(--background);
 }
 
 button,
@@ -72,7 +72,7 @@ pre {
 		transition: background-color 0.3s, color 0.3s, border 0.1s;
 
 		svg {
-			width: 16px;
+			width: 16px !important;
 		}
 
 		&:hover {
@@ -101,7 +101,7 @@ pre {
 		font-size: 50px;
 		height: 50px;
 		min-width: 80px;
-		padding: 2px 5px 2px 30px;
+		padding: 0 5px 0 30px;
 		border-radius: 10px;
 		transition: opacity 0.2s, background-color 0.2s;
 

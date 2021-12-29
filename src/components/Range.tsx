@@ -1,9 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useSpring, animated, config } from '@react-spring/web'
-import useMeasure from 'react-use-measure'
 
 function Range({ volume, muted, update }): JSX.Element {
-	const [wrapRef, bounds] = useMeasure()
+	const rangeWrap = useRef<HTMLDivElement>(null)
 
 	const [styles, api] = useSpring(() => ({
 		width: 0,
@@ -11,8 +10,10 @@ function Range({ volume, muted, update }): JSX.Element {
 	}))
 
 	const handleVolumeChange = (e: any) => {
-		if (!muted) {
-			const percent = e.pageX - bounds.left
+		if (!muted && rangeWrap.current) {
+			const wrap = rangeWrap.current
+			const percent = e.pageX - wrap.getBoundingClientRect().x
+
 			api.start({ width: percent })
 			update(percent / 100)
 		}
@@ -25,7 +26,7 @@ function Range({ volume, muted, update }): JSX.Element {
 
 	return (
 		<div
-			ref={wrapRef}
+			ref={rangeWrap}
 			className={'range-wrap' + (muted ? ' muted' : '')}
 			onClick={e => handleVolumeChange(e)}
 		>
