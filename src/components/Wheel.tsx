@@ -13,7 +13,7 @@ const allLists: {
 	freq: string[]
 } = { beats: ['×'], tempo: [], freq: [] }
 
-for (let i = 1; i <= 16; i++) allLists.beats.unshift(i.toString())
+for (let i = 2; i <= 16; i++) allLists.beats.unshift(i.toString())
 for (let i = 30; i <= 300; i++) allLists.tempo.unshift(i.toString())
 for (let i = 0; i <= 54; i++) allLists.freq.unshift(freqArr[i % freqArr.length])
 
@@ -37,7 +37,6 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 	const heightRef = useRef(bounds.height)
 	heightRef.current = bounds.height
 
-	// -4 is 2px immovableWheel vertical padding
 	const getHeight = () => (heightRef.current === 0 ? 50 : Math.round(heightRef.current))
 	const offsetState = (state: number) => (type === 'tempo' ? state - 30 : state - 1)
 	const getClosest = (y: number) => Math.round(y / getHeight()) * getHeight()
@@ -53,6 +52,7 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 		config: config.stiff,
 	}))
 
+	// Update logic for wheel (for everywhere except drag)
 	const handleWheelMove = (sign: number, noUpdate?: boolean) => {
 		const snapped = getClosest(y.get() + getHeight() * sign)
 
@@ -62,6 +62,7 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 		}
 	}
 
+	// Puts back wheel in place after drag move
 	const snapWheel = () => api.set({ y: getBottomPos() + offsetState(state) * getHeight() })
 
 	useEffect(() => {
