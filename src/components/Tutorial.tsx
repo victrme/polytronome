@@ -1,12 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import Pizzicato from 'pizzicato'
+import { Stage, Interaction } from '../Types'
 import TutoFR from '../assets/tutorials/fr.json'
 
 const Tutorial = ({ tutoStage, setTutoStage }) => {
-	const [removeTuto, setRemoveTuto] = useState(false)
-
-	const doNotShowTuto = () => removeTuto || (tutoStage === 'intro' && localStorage.sleep)
-
 	const playNotifSound = (from: 'yes' | 'no' | 'test') => {
 		const wave = new Pizzicato.Sound({
 			source: 'wave',
@@ -23,42 +20,42 @@ const Tutorial = ({ tutoStage, setTutoStage }) => {
 		setTimeout(() => wave.stop(), 50)
 	}
 
+	//
+	// Buttons logic
+
+	const stage: Stage = TutoFR[tutoStage] || { yes: '', no: '', text: '' }
+	const buttons: JSX.Element[] = []
+
+	const interactionButton = (choice: Interaction) => (
+		<button key={choice.text} onClick={() => setTutoStage(choice.to)}>
+			{choice.text}
+		</button>
+	)
+
+	if (stage.yes) buttons.push(interactionButton(stage.yes))
+	if (stage.no) buttons.push(interactionButton(stage.no))
+
+	//
+	// Effects
+
+	// Play sound & remove tuto if necessary
 	useEffect(() => {
-		if (tutoStage === 'explainOk') setTimeout(() => setRemoveTuto(true), 1000)
+		if (tutoStage === 'explainOk') setTimeout(() => setTutoStage('removed'), 1000)
 		playNotifSound('test')
 	}, [tutoStage, setTutoStage])
 
-	const { yes, no, text } = TutoFR[tutoStage] || { yes: '', no: '', text: '' }
-	const buttons: JSX.Element[] = []
-
-	const handleYay = () => {
-		if (yes) {
-			if (yes.to === false) setRemoveTuto(true)
-			else setTutoStage(yes.to)
-		}
-	}
-
-	const handleNay = () => {
-		if (no) setTutoStage(no.to)
-	}
-
-	if (yes)
-		buttons.push(
-			<button key={'yes'} onClick={handleYay}>
-				{yes.text}
-			</button>
-		)
-	if (no)
-		buttons.push(
-			<button key={'no'} onClick={handleNay}>
-				{no.text}
-			</button>
-		)
+	// Only show tutorial if first time polytronoming
+	useEffect(() => {
+		if (!localStorage.sleep) setTimeout(() => setTutoStage('intro'), 1000)
+	}, [])
 
 	return (
-		<div className="tutorial" style={{ display: doNotShowTuto() ? 'none' : 'flex' }}>
+		<div
+			className="tutorial"
+			style={{ display: tutoStage === 'removed' ? 'none' : 'flex' }}
+		>
 			<div className="dialog">
-				<p>{text}</p>
+				<p>{stage.text}</p>
 			</div>
 			<div className="interactions">{buttons}</div>
 		</div>

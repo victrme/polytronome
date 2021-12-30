@@ -6,7 +6,7 @@
 	},
 	"leaveIntro": {
 		"text": "Ok, amuse-toi bien !",
-		"yes": { "to": false, "text": "Merci" }
+		"yes": { "to": "removed", "text": "Merci" }
 	},
 	"nextIntro": {
 		"text": "Tu veux que je t'explique comment ca marche ?",
@@ -15,7 +15,7 @@
 	},
 	"leaveNextIntro": {
 		"text": "Pas de soucis, tu peux toujours me retrouver dans le menu",
-		"yes": { "to": false, "text": "Ok merci" }
+		"yes": { "to": "removed", "text": "Ok merci" }
 	},
 	"explainGoal": {
 		"text": "Polytronome t'aide a visualiser different rythmes en meme temps",
@@ -53,6 +53,6 @@
 	"testTempoDown": { "text": "Tu aussi modifier le tempo, tu peux le baisser à 120 bpm ?" },
 	"endEasy": {
 		"text": "Voila pour les bases ! Tu peux acceder à plus d'option avec le menu à gauche",
-		"yes": { "to": false, "text": "Merci mon brave" }
+		"yes": { "to": "removed", "text": "Merci mon brave" }
 	}
 }

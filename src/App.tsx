@@ -26,7 +26,7 @@ const App = (): JSX.Element => {
 	const [tempo, setTempo] = useState(80)
 	const [selected, setSelected] = useState(-1)
 	const [isRunning, setIsRunning] = useState('')
-	const [tutoStage, setTutoStage] = useState('intro')
+	const [tutoStage, setTutoStage] = useState('removed')
 	const [startTime, setStartTime] = useState(Date.now)
 	const [layers, setLayers] = useState<Layer[]>([...defaultLayers])
 	const [moreSettings, setMoreSettings] = useState<MoreSettings>({ ...defaultSettings })
@@ -157,7 +157,7 @@ const App = (): JSX.Element => {
 
 		if (isMobileOnly) result += ' mobile'
 		if (easy) result += ' easy '
-		if (tutoStage !== 'intro') result += tutoStage
+		if (tutoStage !== 'intro') result += ` ` + tutoStage
 
 		return result
 	}
@@ -176,7 +176,9 @@ const App = (): JSX.Element => {
 			const beats = layers.map(x => x.beats)
 			const reduced = beats.reduce((a, b) => a + b)
 
-			if (beats.indexOf(5) !== -1 && beats.indexOf(7) !== -1 && reduced === 15)
+			console.log(beats)
+
+			if (beats.includes(5) && beats.includes(7) && reduced === 15)
 				setTutoStage('testLaunch')
 		}
 
