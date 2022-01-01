@@ -35,6 +35,7 @@ pre {
 	grid-template-columns: 0.1fr 1fr 0.1fr;
 	align-items: flex-start;
 	min-height: 1000px;
+	max-width: 2000px;
 	width: 100%;
 	margin: auto;
 	color: var(--accent);
@@ -195,34 +196,8 @@ pre {
 	TUTORIAL
 	*/
 
-	.tutorial {
-		position: fixed;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		top: 2em;
-		left: calc(50% - 250px);
-		width: 500px;
-		padding: 1em 2em;
-		border-radius: 20px;
-		background-color: var(--menu);
-		z-index: 3;
-		font-weight: 600;
-
-		.dialog {
-			margin-right: 20px;
-			width: 100%;
-			text-align: center;
-		}
-
-		.interactions {
-			display: flex;
-			flex-direction: column;
-		}
-	}
-
 	&.testBeats {
-		.header,
+		.tempo,
 		.clicks,
 		.bottom-buttons {
 			opacity: 0.4;
@@ -235,7 +210,7 @@ pre {
 	}
 
 	&.testLaunch {
-		.header,
+		.tempo,
 		.clicks,
 		.layers-table-wrap {
 			opacity: 0.4;

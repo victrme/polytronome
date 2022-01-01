@@ -7,13 +7,12 @@ import { faPlay, faStop, faRandom } from '@fortawesome/free-solid-svg-icons'
 import defaultSettings from './assets/settings.json'
 import defaultLayers from './assets/layers.json'
 import LayersTable from './components/LayersTable'
+import Keybindings from './components/Keybindings'
 import Header from './components/Header'
 import Clicks from './components/Clicks'
 import Menu from './components/Menu'
-import Tutorial from './components/Tutorial'
 import { MoreSettings, Layer, Code } from './Types'
 import { setRandomID, importCode, applyTheme, createExportCode } from './utils'
-import Keybindings from './components/Keybindings'
 
 const App = (): JSX.Element => {
 	//
@@ -231,8 +230,6 @@ const App = (): JSX.Element => {
 
 	return (
 		<div className={handleClasses()}>
-			<Tutorial tutoStage={tutoStage} setTutoStage={setTutoStage}></Tutorial>
-
 			<Keybindings
 				setTempo={setTempo}
 				tempoRef={tempoRef}
@@ -251,12 +248,15 @@ const App = (): JSX.Element => {
 				moreSettings={moreSettings}
 				setMoreSettings={setMoreSettings}
 				setImport={setSettingsFromCode}
+				setTutoStage={setTutoStage}
 			></Menu>
 
 			<main>
 				<Header
 					tempo={tempo}
 					setTempo={setTempo}
+					tutoStage={tutoStage}
+					setTutoStage={setTutoStage}
 					toggleMetronome={toggleMetronome}
 				></Header>
 

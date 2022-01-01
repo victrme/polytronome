@@ -5,7 +5,6 @@
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 40px;
-	font-size: 30px;
 	width: 90%;
 	max-width: 1000px;
 
@@ -31,6 +30,31 @@
 			margin: 0;
 		}
 	}
+
+	/*
+	TUTORIAL
+	*/
+
+	.tutorial {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		font-weight: 600;
+
+		.dialog {
+			margin-right: 40px;
+			width: 300px;
+		}
+
+		.interactions {
+			display: flex;
+			flex-direction: column;
+		}
+	}
+
+	/*
+	TEMPO
+	*/
 
 	.tempo {
 		display: flex;

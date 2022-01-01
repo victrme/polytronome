@@ -47,6 +47,7 @@ const Tutorial = ({ tutoStage, setTutoStage }) => {
 	// Only show tutorial if first time polytronoming
 	useEffect(() => {
 		if (!localStorage.sleep) setTimeout(() => setTutoStage('intro'), 1000)
+		// eslint-disable-next-line
 	}, [])
 
 	return (

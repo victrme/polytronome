@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Themes from '../assets/themes.json'
 import defaultLayers from '../assets/layers.json'
 import { applyTheme, createExportCode, importCode } from '../utils'
@@ -16,9 +16,11 @@ import {
 	faCode,
 	faHandHoldingHeart,
 	faComment,
+	faSlidersH,
+	faChalkboardTeacher,
 } from '@fortawesome/free-solid-svg-icons'
 
-const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
+const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport, setTutoStage }) => {
 	const [openedTheme, setOpenedTheme] = useState(false)
 	const [fullscreen, setFullscreen] = useState(false)
 	const [extended, setExtended] = useState(false)
@@ -97,15 +99,15 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 		{
 			icon: faPalette,
 			text: 'themes',
-			title: 'change theme',
+			title: 'change theme\nCycles through themes when menu is closed,\nopens theme list when menu is open',
 			func: () => (extended ? setOpenedTheme(!openedTheme) : changeTheme()),
 			css: '',
 			state: Themes[moreSettings.theme].name,
 		},
 		{
-			icon: faBars,
+			icon: faSlidersH,
 			text: 'advanced mode',
-			title: 'advanced mode',
+			title: `toggle advanced mode\nAdds note, wave type, note time, release & volume control`,
 			func: () => setEasy(!easy),
 			css: isOn(!easy),
 			state: texts.advanced[+easy],
@@ -113,7 +115,7 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 		{
 			icon: faStar,
 			text: 'animations',
-			title: 'enable animations',
+			title: `toggle animations\nunchecking this option will improve performances`,
 			func: changeAnimations,
 			css: isOn(moreSettings.performance),
 			state: texts.advanced[+moreSettings.performance],
@@ -121,7 +123,7 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 		{
 			icon: faEye,
 			text: 'click view',
-			title: 'change click view',
+			title: `change click view\nCycles through layers, segment & block`,
 			func: changeClickType,
 			css: '',
 			state: texts.view[moreSettings.clickType],
@@ -129,7 +131,7 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 		{
 			icon: faExpand,
 			text: 'fullscreen',
-			title: 'fullscreen',
+			title: 'toggle fullscreen',
 			func: changeFullscreen,
 			css: isOn(fullscreen),
 			state: texts.fullscreen[+fullscreen],
@@ -137,10 +139,18 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 		{
 			icon: faHeadphones,
 			text: 'sound offset',
-			title: 'sound offset',
+			title: 'sound offset\nUseful for bluetooth devices with latency\n50ms increment, 500ms max',
 			func: changeOffset,
 			css: '',
 			state: moreSettings.offset + 'ms',
+		},
+		{
+			icon: faChalkboardTeacher,
+			text: 'show tutorial',
+			title: 'show tutorial',
+			func: () => setTutoStage('intro'),
+			css: '',
+			state: '',
 		},
 		{
 			icon: faFire,
@@ -154,12 +164,15 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 
 	return (
 		<div className="menu">
-			<button onClick={toggleMenu}>Menu</button>
+			<button onClick={toggleMenu}>
+				<FontAwesomeIcon icon={faBars} />
+				<span>Menu</span>
+			</button>
 
 			<aside className={extended ? 'extended' : 'closed'}>
 				<div className="inner-menu">
 					{options.map(({ func, title, icon, css, text, state }) => (
-						<button key={title} title={title} onClick={func} className={css}>
+						<button key={text} title={title} onClick={func} className={css}>
 							<p>
 								<span>
 									<FontAwesomeIcon icon={icon} />
@@ -172,7 +185,7 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport }) => {
 
 					<div className="links">
 						{links.map(({ icon, text, url }) => (
-							<a key={text} title="documentation" href={url}>
+							<a key={text} href={url}>
 								<span>
 									<FontAwesomeIcon icon={icon} />
 								</span>

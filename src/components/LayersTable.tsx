@@ -39,7 +39,7 @@ const LayersTable = ({ easy, layers, selected, handleLayerChange }) => {
 						className={
 							'ls-row' +
 							(selected === i ? ' selected ' : ' ') +
-							(layer.beats === 0 ? ' off' : '')
+							(layer.beats === 1 ? ' off' : '')
 						}
 						key={layer.id}
 					>
