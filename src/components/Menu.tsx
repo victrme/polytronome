@@ -73,14 +73,6 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport, setTuto
 	const resetToDefault = () =>
 		setImport(importCode(createExportCode(80, defaultLayers, moreSettings, easy)))
 
-	// useEffect(() => {
-	// 	const keymappings = e => (e.code === 'KeyF' ? changeFullscreen() : '')
-	// 	const cleanupEvents = () => window.removeEventListener('keypress', keymappings)
-
-	// 	window.addEventListener('keypress', keymappings)
-	// 	return cleanupEvents
-	// }, [])
-
 	const links = [
 		{ url: 'https://polytronome.com/docs', icon: faBookOpen, text: 'documentation' },
 		{ url: 'https://github.com/victrme/polytronome', icon: faCode, text: 'github' },

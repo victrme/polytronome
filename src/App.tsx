@@ -75,14 +75,11 @@ const App = (): JSX.Element => {
 	)
 
 	const randomizeLayers = () => {
-		const rand = (a: number, b: number) => Math.random() * (b - a) + a
-
-		const newLayers = [...layers]
-		newLayers.forEach((l, i) => {
-			if (l.beats > 1) newLayers[i].beats = +rand(2, 16).toFixed(0)
-		})
-		setLayers([...newLayers])
 		toggleMetronome(true)
+
+		// Only randomizes activated layers
+		const randBeats = () => +(Math.random() * (16 - 2) + 2).toFixed(0)
+		setLayers([...layers].map(l => (l.beats > 1 ? { ...l, beats: randBeats() } : { ...l })))
 	}
 
 	const handleLayerChange = (cat: string, result: any, index: number) => {
@@ -237,6 +234,7 @@ const App = (): JSX.Element => {
 				selected={selected}
 				setSelected={setSelected}
 				handleLayerChange={handleLayerChange}
+				randomizeLayers={randomizeLayers}
 				toggleMetronome={toggleMetronome}
 				setMoreSettings={setMoreSettings}
 				moreSettings={moreSettingsRef.current}

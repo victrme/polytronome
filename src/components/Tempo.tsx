@@ -1,4 +1,5 @@
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
+import { clamp } from 'lodash'
 import Wheel from './Wheel'
 
 const Tempo = ({ tempo, setTempo, toggleMetronome }) => {
@@ -9,16 +10,7 @@ const Tempo = ({ tempo, setTempo, toggleMetronome }) => {
 		},
 	])
 
-	const changeTempo = useCallback(
-		(amount: number) => {
-			const up = amount > tempo
-			const max = up ? 300 : 30
-			const outOfBound = up ? amount > max : amount < max
-
-			setTempo(outOfBound ? max : amount)
-		},
-		[tempo, setTempo]
-	)
+	const changeTempo = (amount: number) => setTempo(clamp(amount, 30, 300))
 
 	const tapTempo = () => {
 		// Reset tap after 2s
