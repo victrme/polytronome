@@ -1,10 +1,11 @@
 {
 	"short_name": "Polytronome",
 	"name": "Polytronome",
+	"description": "Polytronome helps you visualize polyrythms by layering multiple metronomes. Use it to discover new rythms, challenge yourself to play along difficult beats, or simply enjoy the melodies you created !",
 	"icons": [
 		{
 			"src": "favicon.ico",
-			"sizes": "64x64 32x32 24x24 16x16",
+			"sizes": "64x64 48x48 32x32 24x24 16x16",
 			"type": "image/x-icon"
 		},
 		{
@@ -15,6 +16,6 @@
 	],
 	"start_url": "/polytronome",
 	"display": "standalone",
-	"theme_color": "#666c6d",
-	"background_color": "#dae3f0"
+	"theme_color": "#b57e7d",
+	"background_color": "#EAEBEA"
 }
