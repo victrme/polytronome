@@ -1,10 +1,20 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/victrme/polytronome/main/banner-1800x600.png" width="50%"></img>
-</p>
+<div align="center">
+  <a href="https://polytronome.com">
+    <img src="public/apple-touch-icon.png" alt="Logo" width="90" height="90">
+  </a>
+  
+  <h3 align="center">Polytronome</h3>
+  <p align="center">Train your polyrythms !<br />
+     <a href="https://github.com/victrme/polytronome/issues">Contribute</a> · 
+     <a href="https://github.com/victrme/polytronome#contact">Contact</a> · 
+     <a href="https://github.com/victrme/polytronome#keybindings">Documentation</a>
+     
+  </p>
+</div>
 
-#
+# About 
+Polytronome helps you visualize polyrythms by layering multiple metronomes. Use it to discover new rythms, challenge yourself to play along difficult beats, or simply enjoy the melodies you created !
 
-**Polytronome** helps you visualize polyrythms by layering multiple metronomes. Use it to discover new rythms, challenge yourself to play along difficult beats, or simply enjoy the melodies you created !
 
 You can:
 
@@ -22,7 +32,6 @@ You can:
 -   [ ] tutorial translation
 -   [ ] Better mute animation
 -   [ ] Tempo tapping keymapping
-
 -   [x] Keymappings
 -   [x] documentation
 
@@ -31,7 +40,6 @@ You can:
 -   [ ] Sound offset for segment / block
 -   [ ] Update off animations
 -   [ ] Tempo keyboard change doesn't reset metronome
-
 -   [x] Resize wheels on launch
 -   [x] Reset to default on Firefox
 -   [x] Volume breaking after moving
@@ -75,3 +83,8 @@ You can:
 | `P`                           | D#+1                 |
 | `Quote` (french iso: `M`)     | E+1                  |
 | `Semicolon` (french iso: `ù`) | F+1                  |
+
+# Contact
+
+- [Telegram - @victrm](https://t.me/victrm)
+- [Email - mail@victr.me](mailto:mail@victr.me)
