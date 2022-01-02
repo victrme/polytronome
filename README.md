@@ -2,54 +2,76 @@
   <img src="https://raw.githubusercontent.com/victrme/polytronome/main/banner-1800x600.png" width="50%"></img>
 </p>
 
-## Keybindings
+#
 
-| Key                           | Function               |
-| ----------------------------- | ---------------------- |
-| `Space`                       | Start / Stop Metronome |
-| `NumpadMinus`                 | Tempo down             |
-| `NumpadPlus`                  | Tempo Up               |
-| `shift + NumpadPlus/Minus`    | +/-10 tempo            |
-| `1` `2` `3` `4` `5`, `←` `→`  | Select layers          |
-| `Escape`                      | Deselect layers        |
-| `↑` `↓`                       | Chage beats            |
-| `B`                           | Volume down            |
-| `N`                           | Volume up              |
-| `M` (french iso: `?`)         | Volume mute            |
-| `Z` (french iso: `W`)         | Keyboard octave down   |
-| `X`                           | Keyboard octave up     |
-| `A`                           | C                      |
-| `W`                           | C#                     |
-| `S`                           | D                      |
-| `E`                           | D#                     |
-| `D`                           | E                      |
-| `F`                           | F                      |
-| `T`                           | F#                     |
-| `G`                           | G                      |
-| `Y`                           | G#                     |
-| `H`                           | A                      |
-| `U`                           | A#                     |
-| `J`                           | B                      |
-| `K`                           | C                      |
-| `O`                           | C#                     |
-| `L`                           | D                      |
-| `P`                           | D#                     |
-| `Quote` (french iso: `M`)     | E                      |
-| `Semicolon` (french iso: `ù`) | F                      |
+**Polytronome** helps you visualize polyrythms by layering multiple metronomes. Use it to discover new rythms, challenge yourself to play along difficult beats, or simply enjoy the melodies you created !
 
-### Todo: Bugs
+You can:
 
--   [x] Resize wheels on launch
--   [x] Reset to default on Firefox
--   [x] Volume breaking after moving
+-   Add up to five rythms, and up to sixteen note
+-   Change the note, type, release & volume for each rythms
+-   Use the keyboard as a MIDI controller
+-   Toggle between different views
+
+# Todo
+
+### Features
+
+-   [ ] import / export rythms
+-   [ ] advanced tutorial
+-   [ ] tutorial translation
+-   [ ] Better mute animation
+-   [ ] Tempo tapping keymapping
+
+-   [x] Keymappings
+-   [x] documentation
+
+### Bugs
+
 -   [ ] Sound offset for segment / block
 -   [ ] Update off animations
 -   [ ] Tempo keyboard change doesn't reset metronome
 
-### Todo: Features
+-   [x] Resize wheels on launch
+-   [x] Reset to default on Firefox
+-   [x] Volume breaking after moving
 
--   [ ] Keymappings
--   [ ] documentation
--   [ ] advanced tutorial
--   [ ] tutorial translation
--   [ ] Better mute animation
+# Keybindings
+
+| Key                          | Function               |
+| ---------------------------- | ---------------------- |
+| `Space`                      | Start / Stop Metronome |
+| `NumpadMinus` `Minus`        | Tempo down             |
+| `NumpadPlus` `Equal`         | Tempo Up               |
+| `shift + Tempo up / down`    | +/-10 tempo            |
+| `V`                          | Change rythm view      |
+| `AltRight`                   | Shuffle rythms         |
+| `1` `2` `3` `4` `5`, `←` `→` | Select rythm           |
+| `Backspace`                  | Deselect rythm         |
+
+| Key (with rythm selected)     | Function             |
+| ----------------------------- | -------------------- |
+| `↑` `↓`                       | Chage beats          |
+| `B`                           | Volume down          |
+| `N`                           | Volume up            |
+| `M` (french iso: `?`)         | Volume mute          |
+| `Z` (french iso: `W`)         | Keyboard octave down |
+| `X`                           | Keyboard octave up   |
+| `A`                           | C                    |
+| `W`                           | C#                   |
+| `S`                           | D                    |
+| `E`                           | D#                   |
+| `D`                           | E                    |
+| `F`                           | F                    |
+| `T`                           | F#                   |
+| `G`                           | G                    |
+| `Y`                           | G#                   |
+| `H`                           | A                    |
+| `U`                           | A#                   |
+| `J`                           | B                    |
+| `K`                           | C+1                  |
+| `O`                           | C#+1                 |
+| `L`                           | D+1                  |
+| `P`                           | D#+1                 |
+| `Quote` (french iso: `M`)     | E+1                  |
+| `Semicolon` (french iso: `ù`) | F+1                  |
