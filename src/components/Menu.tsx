@@ -29,14 +29,11 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport, setTuto
 	const changeAnimations = () => {
 		const appDOM = document.querySelector('.polytronome') as HTMLDivElement
 
-		moreSettings.performance
-			? appDOM.classList.add('performance')
-			: appDOM.classList.remove('performance')
+		moreSettings.animations
+			? appDOM.classList.remove('performance')
+			: appDOM.classList.add('performance')
 
-		setMoreSettings(prev => ({
-			...prev,
-			performance: moreSettings.performance ? false : true,
-		}))
+		setMoreSettings(prev => ({ ...prev, animations: !moreSettings.animations }))
 	}
 
 	const changeFullscreen = () => {
@@ -82,20 +79,12 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport, setTuto
 
 	const texts = {
 		advanced: ['on', 'off'],
-		animations: ['off', 'on'],
+		animations: ['on', 'off'],
 		fullscreen: ['off', 'on'],
 		view: ['layers', 'segment', 'block'],
 	}
 
 	const options = [
-		{
-			icon: faPalette,
-			text: 'themes',
-			title: 'change theme\nCycles through themes when menu is closed,\nopens theme list when menu is open',
-			func: () => (extended ? setOpenedTheme(!openedTheme) : changeTheme()),
-			css: '',
-			state: Themes[moreSettings.theme].name,
-		},
 		{
 			icon: faSlidersH,
 			text: 'advanced mode',
@@ -109,8 +98,16 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport, setTuto
 			text: 'animations',
 			title: `toggle animations\nunchecking this option will improve performances`,
 			func: changeAnimations,
-			css: isOn(moreSettings.performance),
-			state: texts.advanced[+moreSettings.performance],
+			css: isOn(!moreSettings.animations),
+			state: texts.advanced[+moreSettings.animations],
+		},
+		{
+			icon: faPalette,
+			text: 'themes',
+			title: 'change theme\nCycles through themes when menu is closed,\nopens theme list when menu is open',
+			func: () => (extended ? setOpenedTheme(!openedTheme) : changeTheme()),
+			css: '',
+			state: Themes[moreSettings.theme].name,
 		},
 		{
 			icon: faEye,

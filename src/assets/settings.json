@@ -1,7 +1,7 @@
 {
 	"theme": 0,
 	"fullscreen": false,
-	"performance": false,
+	"animations": true,
 	"clickType": 0,
 	"offset": 0
 }

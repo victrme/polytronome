@@ -302,25 +302,8 @@ pre {
 	PERFORMANCE
 	*/
 
-	&.performance {
-		button,
-		.clicks,
-		.theme-preview > div,
-		.theme-preview > div .tp-mini-click,
-		.setting.sound .css-waves svg path,
-		.setting .range-wrap .inner-range,
-		.click.on,
-		.click,
-		.wheel {
-			transition: none;
-		}
-	}
-
-	/*
-	MOBILE
-	*/
-
-	&.mobile {
+	&.performance * {
+		transition: none !important;
 	}
 }
 

@@ -152,8 +152,9 @@ const App = (): JSX.Element => {
 		let result = 'polytronome'
 
 		if (isMobileOnly) result += ' mobile'
-		if (easy) result += ' easy '
-		if (tutoStage !== 'intro') result += ` ` + tutoStage
+		if (easy) result += ' easy'
+		if (tutoStage !== 'removed') result += ` ${tutoStage}`
+		if (moreSettings.animations) result += ' performance'
 
 		return result
 	}
@@ -164,9 +165,7 @@ const App = (): JSX.Element => {
 	//
 	//
 
-	//
-	// tutorial effects
-
+	// tutorial
 	useEffect(() => {
 		if (tutoStage === 'testBeats') {
 			const beats = layers.map(x => x.beats)
@@ -186,9 +185,7 @@ const App = (): JSX.Element => {
 		// eslint-disable-next-line
 	}, [tempo])
 
-	//
-	// Main Effect
-
+	// Main
 	useEffect(() => {
 		//
 		// Profile save

@@ -67,7 +67,7 @@ export const importCode = (code: any[]) => {
 	const parsedSettings: MoreSettings = {
 		theme: 0,
 		fullscreen: false,
-		performance: false,
+		animations: false,
 		clickType: 0,
 		offset: 0,
 	}

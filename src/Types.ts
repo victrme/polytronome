@@ -1,7 +1,7 @@
 export type MoreSettings = {
 	theme: number
 	fullscreen: boolean
-	performance: boolean
+	animations: boolean
 	clickType: number
 	offset: number
 }
