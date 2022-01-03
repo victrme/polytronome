@@ -15,7 +15,7 @@
 		"background": "#2D2A2E",
 		"accent": "#FF6188",
 		"dim": "#523e21",
-		"dimmer": "#413425",
+		"dimmer": "#352f37",
 		"buttons": "#433946",
 		"menu": "#383aaa",
 		"clicks-on": "#FFD866",
@@ -26,7 +26,7 @@
 		"background": "#363a49",
 		"accent": "#7dc9ea",
 		"dim": "#ba5964",
-		"dimmer": "#ba5964",
+		"dimmer": "#414658",
 		"buttons": "#ba5964",
 		"menu": "#484f61",
 		"clicks-on": "#e7c690",
@@ -55,15 +55,15 @@
 		"clicks-off": "#8f99a3"
 	},
 	{
-		"name": "wood",
-		"background": "#f8dec0",
-		"accent": "#83542d",
-		"dim": "#edc9a0",
-		"dimmer": "#ffebd3",
-		"buttons": "#d7c6c1",
-		"menu": "#ffe5c8",
-		"clicks-on": "#9a6d37",
-		"clicks-off": "#d7c6c1"
+		"name": "indus",
+		"background": "#e4dfd3",
+		"accent": "#504e47",
+		"dim": "#e4dfd3",
+		"dimmer": "#d9d1bf",
+		"buttons": "#c7c4ba",
+		"menu": "#424443",
+		"clicks-on": "#e7a125",
+		"clicks-off": "#bab7ab"
 	},
 	{
 		"name": "coffee",
@@ -79,14 +79,14 @@
 
 	{
 		"name": "jungle",
-		"background": "#FFFBF1",
-		"accent": "#8fb67f",
-		"dim": "#e8dfb3",
-		"dimmer": "#f3f4d6",
-		"buttons": "#ecefc7",
+		"background": "#fbf6e5",
+		"accent": "#77936c",
+		"dim": "#e2d69d",
+		"dimmer": "#f3edce",
+		"buttons": "#e7dfac",
 		"menu": "#faf6e5",
-		"clicks-on": "#8fb67f",
-		"clicks-off": "#e8dfb3"
+		"clicks-on": "#7e9060",
+		"clicks-off": "#e2d69d"
 	},
 	{
 		"name": "beach",
@@ -96,7 +96,7 @@
 		"dimmer": "#f6dbbc50",
 		"buttons": "#f6dbbc50",
 		"menu": "#fdf3e0",
-		"clicks-on": "#4b9ab4",
+		"clicks-on": "#527cad",
 		"clicks-off": "#f6dbbc"
 	}
 ]
