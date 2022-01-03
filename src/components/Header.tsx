@@ -1,7 +1,13 @@
-import Tempo from './Tempo'
+import { clamp } from 'lodash'
 import Tutorial from './Tutorial'
+import Wheel from './Wheel'
 
-const Header = ({ toggleMetronome, tempo, setTempo, tutoStage, setTutoStage }) => {
+const Header = ({ toggleMetronome, tempo, setTempo, tapTempo, tutoStage, setTutoStage }) => {
+	const handleTempo = (res: number) => {
+		setTempo(clamp(res + 30, 30, 300))
+		toggleMetronome(true)
+	}
+
 	return (
 		<div className="header">
 			{tutoStage === 'removed' ? (
@@ -34,7 +40,12 @@ const Header = ({ toggleMetronome, tempo, setTempo, tutoStage, setTutoStage }) =
 
 			<div></div>
 
-			<Tempo toggleMetronome={toggleMetronome} tempo={tempo} setTempo={setTempo}></Tempo>
+			<div className="tempo">
+				<Wheel type="tempo" state={tempo} update={res => handleTempo(res)}></Wheel>
+				<button className="tap" onClick={tapTempo}>
+					tap
+				</button>
+			</div>
 		</div>
 	)
 }

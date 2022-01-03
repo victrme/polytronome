@@ -3,6 +3,7 @@ import { useBeforeunload } from 'react-beforeunload'
 import { isMobileOnly } from 'react-device-detect'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlay, faStop, faRandom } from '@fortawesome/free-solid-svg-icons'
+import { clamp } from 'lodash'
 
 import defaultSettings from './assets/settings.json'
 import defaultLayers from './assets/layers.json'
@@ -23,6 +24,7 @@ const App = (): JSX.Element => {
 
 	const [easy, setEasy] = useState(true)
 	const [tempo, setTempo] = useState(80)
+	const [tap, setTap] = useState([{ date: 0, wait: 600 }])
 	const [selected, setSelected] = useState(-1)
 	const [isRunning, setIsRunning] = useState('')
 	const [tutoStage, setTutoStage] = useState('removed')
@@ -132,6 +134,29 @@ const App = (): JSX.Element => {
 		if (cat === 'beats') toggleMetronome(true)
 	}
 
+	const tapTempo = () => {
+		const now = Date.now()
+
+		// Reset tap after 2s
+		if (now - tap[0].date > 2000) {
+			setTap([{ date: now, wait: 600 }])
+		}
+
+		// Wait is offset between two taps
+		else {
+			const tempTap = [...tap]
+			tempTap.unshift({ date: now, wait: now - tap[0].date })
+
+			// Array of taps in milliseconds
+			const tappedMs: number[] = tempTap.map(tap => tap.wait).slice(0, 5)
+			const averageMs = tappedMs.reduce((a, b) => a + b) / tappedMs.length
+
+			setTap(tempTap)
+			setTempo(clamp(Math.floor(60000 / averageMs), 30, 300))
+			toggleMetronome(true)
+		}
+	}
+
 	const setSettingsFromCode = useCallback((code: Code) => {
 		setMoreSettings({ ...code.moreSettings })
 		setLayers([...code.layers])
@@ -226,6 +251,7 @@ const App = (): JSX.Element => {
 		<div className={handleClasses()}>
 			<Keybindings
 				setTempo={setTempo}
+				tapTempo={tapTempo}
 				tempoRef={tempoRef}
 				layers={layers}
 				selected={selected}
@@ -250,6 +276,7 @@ const App = (): JSX.Element => {
 				<Header
 					tempo={tempo}
 					setTempo={setTempo}
+					tapTempo={tapTempo}
 					tutoStage={tutoStage}
 					setTutoStage={setTutoStage}
 					toggleMetronome={toggleMetronome}

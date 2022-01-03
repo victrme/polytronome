@@ -10,18 +10,19 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 	}
 	const getBeats = () => layers.map((x: Layer) => x.beats)
 	const clicksRef = useRef(document.createElement('div'))
+
 	const [times, setTimes] = useState<number[]>([1, 1, 1, 1, 1])
+	const [offsetTimes, setOffsetTimes] = useState([1, 1, 1, 1, 1])
+	const [offsetSegmentPos, setOffsetSegmentPos] = useState(0)
 	const [segmentPos, setSegmentPos] = useState(0)
 	const [segmentRatio, setSegmentRatio] = useState([0])
 
 	const timesRef = useRef(times)
 	const layersRef = useRef(layers)
-	const segmentPosRef = useRef(segmentPos)
 	const previousBeats = usePrevious(getBeats()) || [1, 1, 1, 1, 1]
 
 	timesRef.current = times
 	layersRef.current = layers
-	segmentPosRef.current = segmentPos
 
 	type Timings = [number, number[]][]
 
@@ -227,19 +228,24 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 		// eslint-disable-next-line
 	}, [clickType])
 
+	useEffect(() => {
+		// Sound latency works by
+		// assigning times to another identical state after a setTimeout (if not zero)
+		const updateTimes = () => {
+			!clickType ? setOffsetTimes([...times]) : setOffsetSegmentPos(segmentPos)
+		}
+
+		if (offset !== 0) setTimeout(updateTimes, offset)
+		else updateTimes()
+
+		// eslint-disable-next-line
+	}, [times, segmentPos])
+
 	//
 	//
 	// RENDER
 	//
 	//
-
-	const [offsetTimes, setOffsetTimes] = useState([1, 1, 1, 1, 1])
-
-	useEffect(() => {
-		if (offset !== 0) setTimeout(() => setOffsetTimes([...times]), offset)
-		else setOffsetTimes([...times])
-		// eslint-disable-next-line
-	}, [times])
 
 	let clicks = <div ref={clicksRef} className="clicks"></div>
 
@@ -289,7 +295,7 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 						{segmentRatio.map((ratio, i) => (
 							<span
 								key={i}
-								className={'click' + (segmentPos === i ? ' on' : '')}
+								className={'click' + (offsetSegmentPos === i ? ' on' : '')}
 								style={{
 									width: `calc(${ratio * 100}% - 10px)`,
 								}}
@@ -305,7 +311,7 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 				<div className="block">
 					<div className="click-row">
 						<span
-							className={'click' + (segmentPos % 2 === 0 ? ' on' : '')}
+							className={'click' + (offsetSegmentPos % 2 === 0 ? ' on' : '')}
 							style={{ width: `100%` }}
 						/>
 					</div>

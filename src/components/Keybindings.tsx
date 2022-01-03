@@ -6,6 +6,7 @@ const Keymapping = ({
 	toggleMetronome,
 	tempoRef,
 	setTempo,
+	tapTempo,
 	selected,
 	setSelected,
 	setMoreSettings,
@@ -114,6 +115,7 @@ const Keymapping = ({
 						octave: () => setOctave(clamp(octave + hitKey.val, 0, 3)),
 						view: () => toggleClickView(),
 						shuffle: () => randomizeLayers(),
+						tempoTap: () => tapTempo(),
 						tempo: () => {
 							const updatedTempo =
 								tempoRef.current + hitKey.val * (e.shiftKey ? 10 : 1)

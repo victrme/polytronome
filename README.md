@@ -12,9 +12,9 @@
   </p>
 </div>
 
-# About 
-Polytronome helps you visualize polyrythms by layering multiple metronomes. Use it to discover new rythms, challenge yourself to play along difficult beats, or simply enjoy the melodies you created !
+# About
 
+Polytronome helps you visualize polyrythms by layering multiple metronomes. Use it to discover new rythms, challenge yourself to play along difficult beats, or simply enjoy the melodies you created !
 
 You can:
 
@@ -22,27 +22,6 @@ You can:
 -   Change the note, type, release & volume for each rythms
 -   Use the keyboard as a MIDI controller
 -   Toggle between different views
-
-# Todo
-
-### Features
-
--   [ ] import / export rythms
--   [ ] advanced tutorial
--   [ ] tutorial translation
--   [ ] Better mute animation
--   [ ] Tempo tapping keymapping
--   [x] Keymappings
--   [x] documentation
-
-### Bugs
-
--   [ ] Sound offset for segment / block
--   [ ] Update off animations
--   [ ] Tempo keyboard change doesn't reset metronome
--   [x] Resize wheels on launch
--   [x] Reset to default on Firefox
--   [x] Volume breaking after moving
 
 # Keybindings
 
@@ -86,5 +65,26 @@ You can:
 
 # Contact
 
-- [Telegram - @victrm](https://t.me/victrm)
-- [Email - mail@victr.me](mailto:mail@victr.me)
+-   [Telegram - @victrm](https://t.me/victrm)
+-   [Email - mail@victr.me](mailto:mail@victr.me)
+
+# Todo
+
+### Features
+
+-   [ ] import / export rythms
+-   [ ] advanced tutorial
+-   [ ] tutorial translation
+-   [ ] Tempo tapping keymapping
+-   [x] Better mute animation
+-   [x] Keymappings
+-   [x] documentation
+
+### Bugs
+
+-   [ ] Tempo keyboard change doesn't reset metronome
+-   [x] Sound offset for segment / block
+-   [x] Update off animations
+-   [x] Resize wheels on launch
+-   [x] Reset to default on Firefox
+-   [x] Volume breaking after moving

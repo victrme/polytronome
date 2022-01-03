@@ -10,17 +10,7 @@
 		"clicks-on": "#a9b59e",
 		"clicks-off": "#2b323b"
 	},
-	{
-		"name": "rosa",
-		"background": "#2D2A2E",
-		"accent": "#FF6188",
-		"dim": "#523e21",
-		"dimmer": "#352f37",
-		"buttons": "#433946",
-		"menu": "#383aaa",
-		"clicks-on": "#FFD866",
-		"clicks-off": "#433946"
-	},
+
 	{
 		"name": "pastels",
 		"background": "#363a49",
@@ -54,28 +44,6 @@
 		"clicks-on": "#b57e7d",
 		"clicks-off": "#8f99a3"
 	},
-	{
-		"name": "indus",
-		"background": "#e4dfd3",
-		"accent": "#504e47",
-		"dim": "#e4dfd3",
-		"dimmer": "#d9d1bf",
-		"buttons": "#c7c4ba",
-		"menu": "#424443",
-		"clicks-on": "#e7a125",
-		"clicks-off": "#bab7ab"
-	},
-	{
-		"name": "coffee",
-		"background": "#fbefdf",
-		"accent": "#8d6852",
-		"dim": "#dac6b5",
-		"dimmer": "#dac6b52a",
-		"buttons": "#e8d8c9",
-		"menu": "#f5e7d6",
-		"clicks-on": "#8d5853",
-		"clicks-off": "#d6b99f"
-	},
 
 	{
 		"name": "jungle",
@@ -98,5 +66,38 @@
 		"menu": "#fdf3e0",
 		"clicks-on": "#527cad",
 		"clicks-off": "#f6dbbc"
+	},
+	{
+		"name": "coffee",
+		"background": "#fbefdf",
+		"accent": "#8d6852",
+		"dim": "#dac6b5",
+		"dimmer": "#dac6b52a",
+		"buttons": "#e8d8c9",
+		"menu": "#f5e7d6",
+		"clicks-on": "#8d5853",
+		"clicks-off": "#d6b99f"
+	},
+	{
+		"name": "indus",
+		"background": "#e4dfd3",
+		"accent": "#504e47",
+		"dim": "#e4dfd3",
+		"dimmer": "#d9d1bf",
+		"buttons": "#c7c4ba",
+		"menu": "#424443",
+		"clicks-on": "#e7a125",
+		"clicks-off": "#bab7ab"
+	},
+	{
+		"name": "rosa",
+		"background": "#2D2A2E",
+		"accent": "#FF6188",
+		"dim": "#523e21",
+		"dimmer": "#352f37",
+		"buttons": "#433946",
+		"menu": "#383aaa",
+		"clicks-on": "#FFD866",
+		"clicks-off": "#433946"
 	}
 ]
