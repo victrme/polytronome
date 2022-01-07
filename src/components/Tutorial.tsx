@@ -1,7 +1,10 @@
-import { useEffect } from 'react'
 import Pizzicato from 'pizzicato'
-import { Stage, Interaction } from '../Types'
+import { useEffect } from 'react'
+import { useTransition, animated } from '@react-spring/web'
+
 import TutoFR from '../assets/tutorials/fr.json'
+import { Stage, Interaction } from '../Types'
+import { transitionConfig } from '../utils'
 
 const Tutorial = ({ tutoStage, setTutoStage }) => {
 	const playNotifSound = (from: 'yes' | 'no' | 'test') => {
@@ -50,16 +53,20 @@ const Tutorial = ({ tutoStage, setTutoStage }) => {
 		// eslint-disable-next-line
 	}, [])
 
-	return (
-		<div
-			className="tutorial"
-			style={{ display: tutoStage === 'removed' ? 'none' : 'flex' }}
-		>
-			<div className="dialog">
-				<p>{stage.text}</p>
-			</div>
-			<div className="interactions">{buttons}</div>
-		</div>
+	// Transition config
+	const toggle = tutoStage !== 'removed'
+	const transitions = useTransition(toggle, { ...transitionConfig(toggle) })
+
+	return transitions(
+		(styles, item) =>
+			item && (
+				<animated.div className="tutorial" style={styles}>
+					<div className="dialog">
+						<p>{stage.text}</p>
+					</div>
+					<div className="interactions">{buttons}</div>
+				</animated.div>
+			)
 	)
 }
 

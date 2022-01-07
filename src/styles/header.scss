@@ -4,12 +4,12 @@
 	align-items: center;
 	justify-content: space-between;
 	align-items: center;
-	margin-bottom: 40px;
 	width: 90%;
 	max-width: 1000px;
 
 	.logo {
 		margin: 20px;
+		height: 100px;
 		display: flex;
 		align-items: center;
 
@@ -40,10 +40,14 @@
 		align-items: center;
 		justify-content: space-between;
 		font-weight: 600;
+		height: 100px;
+		padding: 12px 2em;
+		border-radius: 20px;
+		background-color: var(--menu);
 
 		.dialog {
 			margin-right: 40px;
-			width: 300px;
+			max-width: 300px;
 		}
 
 		.interactions {

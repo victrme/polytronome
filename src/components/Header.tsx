@@ -1,17 +1,16 @@
 import { clamp } from 'lodash'
 import Tutorial from './Tutorial'
 import Wheel from './Wheel'
+import { useTransition, animated } from '@react-spring/web'
+import { transitionConfig } from '../utils'
 
-const Header = ({ toggleMetronome, tempo, setTempo, tapTempo, tutoStage, setTutoStage }) => {
-	const handleTempo = (res: number) => {
-		setTempo(clamp(res + 30, 30, 300))
-		toggleMetronome(true)
-	}
+const Logo = ({ toggle }) => {
+	const transitions = useTransition(toggle, { ...transitionConfig(toggle) })
 
-	return (
-		<div className="header">
-			{tutoStage === 'removed' ? (
-				<div className="logo">
+	return transitions(
+		(styles, item) =>
+			item && (
+				<animated.div style={styles} className="logo">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						width="61"
@@ -33,7 +32,23 @@ const Header = ({ toggleMetronome, tempo, setTempo, tapTempo, tutoStage, setTuto
 						<h1>polytronome</h1>
 						<p>train your polytrythms</p>
 					</div>
-				</div>
+				</animated.div>
+			)
+	)
+}
+
+const Header = ({ toggleMetronome, tempo, setTempo, tapTempo, tutoStage, setTutoStage }) => {
+	const handleTempo = (res: number) => {
+		setTempo(clamp(res + 30, 30, 300))
+		toggleMetronome(true)
+	}
+
+	const toggle = tutoStage === 'removed'
+
+	return (
+		<div className="header">
+			{toggle ? (
+				<Logo toggle={toggle} />
 			) : (
 				<Tutorial tutoStage={tutoStage} setTutoStage={setTutoStage}></Tutorial>
 			)}

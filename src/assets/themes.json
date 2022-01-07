@@ -61,8 +61,8 @@
 		"background": "#fff9e9",
 		"accent": "#4b9ab4",
 		"dim": "#f6dbbc",
-		"dimmer": "#f6dbbc50",
-		"buttons": "#f6dbbc50",
+		"dimmer": "#fcf0db",
+		"buttons": "#f6dbbc",
 		"menu": "#fdf3e0",
 		"clicks-on": "#527cad",
 		"clicks-off": "#f6dbbc"
