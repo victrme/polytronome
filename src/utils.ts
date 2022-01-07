@@ -2,15 +2,6 @@ import Themes from './assets/themes.json'
 import defaultLayers from './assets/layers.json'
 import defaultSettings from './assets/settings.json'
 import { Layer, MoreSettings } from './Types'
-import { config } from '@react-spring/web'
-
-export const transitionConfig = (toggle: boolean) => ({
-	from: { scale: 0.8, opacity: 0 },
-	enter: { scale: 1, opacity: 1 },
-	leave: { scale: 0.8, opacity: 0 },
-	reverse: toggle,
-	config: config.stiff,
-})
 
 export const applyTheme = (index: number) => {
 	const root = document.querySelector(':root')! as HTMLBodyElement

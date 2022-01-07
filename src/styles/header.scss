@@ -6,6 +6,7 @@
 	align-items: center;
 	width: 90%;
 	max-width: 1000px;
+	min-height: 100px;
 
 	.logo {
 		margin: 20px;
@@ -41,8 +42,9 @@
 		justify-content: space-between;
 		font-weight: 600;
 		height: 100px;
-		padding: 12px 2em;
+		padding: 0 2em;
 		border-radius: 20px;
+		min-width: 300px;
 		background-color: var(--menu);
 
 		.dialog {
