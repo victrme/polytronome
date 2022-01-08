@@ -38,7 +38,7 @@ const Keymapping = ({
 				Either,
 			}
 
-			console.log(e.code)
+			// console.log(e.code)
 
 			const incrSelect = () => (selected + 1) % 5
 			const decrSelect = () => (selected === 0 ? 4 : selected - 1)
@@ -70,8 +70,8 @@ const Keymapping = ({
 				{ key: 'KeyP', cat: 'freq', val: 15, active: When.Selected },
 				{ key: 'Semicolon', cat: 'freq', val: 16, active: When.Selected },
 				{ key: 'Quote', cat: 'freq', val: 17, active: When.Selected },
-				{ key: 'KeyZ', cat: 'octave', val: -1, active: When.Selected },
-				{ key: 'KeyX', cat: 'octave', val: 1, active: When.Selected },
+				{ key: 'KeyZ', cat: 'octave', val: -1, active: When.Either },
+				{ key: 'KeyX', cat: 'octave', val: 1, active: When.Either },
 				{ key: 'KeyB', cat: 'vol', val: -0.1, active: When.Selected },
 				{ key: 'KeyN', cat: 'vol', val: 0.1, active: When.Selected },
 				{ key: 'KeyM', cat: 'mute', val: 1, active: When.Selected },
@@ -112,10 +112,10 @@ const Keymapping = ({
 				else if (hitKey.active === When.Either) {
 					const actions = {
 						select: () => setSelected(hitKey.val),
-						octave: () => setOctave(clamp(octave + hitKey.val, 0, 3)),
 						view: () => toggleClickView(),
 						shuffle: () => randomizeLayers(),
 						tempoTap: () => tapTempo(),
+						octave: () => setOctave(clamp(octave + hitKey.val, 0, 3)),
 						tempo: () => {
 							const updatedTempo =
 								tempoRef.current + hitKey.val * (e.shiftKey ? 10 : 1)

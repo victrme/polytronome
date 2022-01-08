@@ -33,10 +33,12 @@ const App = (): JSX.Element => {
 	const [moreSettings, setMoreSettings] = useState<MoreSettings>({ ...defaultSettings })
 
 	const tempoRef = useRef(tempo)
+	const tapRef = useRef(tap)
 	const startTimeRef = useRef(startTime)
 	const isRunningRef = useRef(isRunning)
 	const moreSettingsRef = useRef(moreSettings)
 
+	tapRef.current = tap
 	tempoRef.current = tempo
 	startTimeRef.current = startTime
 	isRunningRef.current = isRunning
@@ -138,14 +140,14 @@ const App = (): JSX.Element => {
 		const now = Date.now()
 
 		// Reset tap after 2s
-		if (now - tap[0].date > 2000) {
+		if (now - tapRef.current[0].date > 2000) {
 			setTap([{ date: now, wait: 600 }])
 		}
 
 		// Wait is offset between two taps
 		else {
-			const tempTap = [...tap]
-			tempTap.unshift({ date: now, wait: now - tap[0].date })
+			const tempTap = [...tapRef.current]
+			tempTap.unshift({ date: now, wait: now - tapRef.current[0].date })
 
 			// Array of taps in milliseconds
 			const tappedMs: number[] = tempTap.map(tap => tap.wait).slice(0, 5)
