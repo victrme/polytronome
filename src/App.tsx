@@ -18,7 +18,7 @@ import { setRandomID, importCode, applyTheme, createExportCode } from './utils'
 const App = (): JSX.Element => {
 	//
 	//
-	// States
+	// States & Refs
 	//
 	//
 

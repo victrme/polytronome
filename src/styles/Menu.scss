@@ -23,13 +23,7 @@ aside {
 		display: flex;
 		flex-direction: column;
 		margin: 14px 0 0 14px;
-		overflow: hidden;
-		width: 0;
 		transition: width 0.4s;
-
-		&.opened {
-			width: 100px;
-		}
 
 		span {
 			width: auto;
@@ -38,6 +32,7 @@ aside {
 			padding: 5px 15px;
 			border-radius: 15px;
 			cursor: pointer;
+			overflow: hidden;
 			transition: filter 0.1s, border-radius 0.4s;
 
 			&:hover {

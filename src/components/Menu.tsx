@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Themes from '../assets/themes.json'
 import defaultLayers from '../assets/layers.json'
 import { applyTheme, createExportCode, importCode } from '../utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useTrail, animated } from '@react-spring/web'
 
 import {
 	faBars,
@@ -151,6 +152,21 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport, setTuto
 		},
 	]
 
+	const themeList = {
+		off: { width: 0, opacity: 0 },
+		on: { width: 60, opacity: 1 },
+	}
+
+	const [trail, api] = useTrail(Themes.length, () => ({
+		...themeList.off,
+		config: { mass: 0.1, friction: 8 },
+	}))
+
+	useEffect(() => {
+		api.start({ ...themeList[openedTheme ? 'on' : 'off'] })
+		// eslint-disable-next-line
+	}, [openedTheme])
+
 	return (
 		<div className="menu">
 			<button onClick={toggleMenu}>
@@ -185,12 +201,16 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport, setTuto
 				</div>
 
 				<div className={'theme-list' + (openedTheme ? ' opened' : '')}>
-					{Themes.map((theme, i) => (
-						<span
+					{trail.map((styles, i) => (
+						<animated.span
 							key={i}
 							style={{
-								backgroundColor: theme.background,
-								color: theme.accent,
+								...styles,
+								backgroundColor: Themes[i].background,
+								color: Themes[i].accent,
+								visibility: styles.opacity.to(o =>
+									o === 0 ? 'hidden' : 'visible'
+								),
 							}}
 							onClick={e => {
 								e.stopPropagation()
@@ -198,8 +218,8 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport, setTuto
 								changeTheme(i)
 							}}
 						>
-							{theme.name}
-						</span>
+							{Themes[i].name}
+						</animated.span>
 					))}
 				</div>
 			</aside>

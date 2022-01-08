@@ -10,6 +10,17 @@
 		"clicks-on": "#a9b59e",
 		"clicks-off": "#2b323b"
 	},
+	{
+		"name": "rosa",
+		"background": "#2D2A2E",
+		"accent": "#FF6188",
+		"dim": "#523e21",
+		"dimmer": "#352f37",
+		"buttons": "#433946",
+		"menu": "#383aaa",
+		"clicks-on": "#FFD866",
+		"clicks-off": "#433946"
+	},
 
 	{
 		"name": "pastels",
@@ -88,16 +99,5 @@
 		"menu": "#424443",
 		"clicks-on": "#e7a125",
 		"clicks-off": "#bab7ab"
-	},
-	{
-		"name": "rosa",
-		"background": "#2D2A2E",
-		"accent": "#FF6188",
-		"dim": "#523e21",
-		"dimmer": "#352f37",
-		"buttons": "#433946",
-		"menu": "#383aaa",
-		"clicks-on": "#FFD866",
-		"clicks-off": "#433946"
 	}
 ]

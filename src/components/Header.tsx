@@ -2,7 +2,6 @@ import { clamp } from 'lodash'
 import Tutorial from './Tutorial'
 import Wheel from './Wheel'
 import { useTransition, animated, config } from '@react-spring/web'
-import { useState } from 'react'
 
 const Logo = ({ styles }) => {
 	return (
