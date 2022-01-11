@@ -75,14 +75,14 @@ You can:
 -   [ ] import / export rythms
 -   [ ] advanced tutorial
 -   [ ] tutorial translation
--   [ ] Tempo tapping keymapping
+-   [x] Tempo tapping keymapping
 -   [x] Better mute animation
 -   [x] Keymappings
 -   [x] documentation
 
 ### Bugs
 
--   [ ] Tempo keyboard change doesn't reset metronome
+-   [x] Tempo keyboard change doesn't reset metronome
 -   [x] Sound offset for segment / block
 -   [x] Update off animations
 -   [x] Resize wheels on launch

@@ -1,44 +1,16 @@
 {
 	"intro": {
-		"text": "Salut 👋 C'est ta premiere fois ici ?",
-		"yes": { "to": "nextIntro", "text": "Oui !" },
-		"no": { "to": "leaveIntro", "text": "Non" }
+		"text": "Salut 👋 Tu veux que je t'explique comment polytronome marche ?",
+		"yes": { "to": "explainGoal", "text": "Je veux bien" },
+		"no": { "to": "leaveIntro", "text": "Non c'est cool" }
 	},
 	"leaveIntro": {
 		"text": "Ok, amuse-toi bien !",
 		"yes": { "to": "removed", "text": "Merci" }
 	},
-	"nextIntro": {
-		"text": "Tu veux que je t'explique comment ca marche ?",
-		"yes": { "to": "explainGoal", "text": "Je veux bien" },
-		"no": { "to": "leaveNextIntro", "text": "Non c'est cool" }
-	},
-	"leaveNextIntro": {
-		"text": "Pas de soucis, tu peux toujours me retrouver dans le menu",
-		"yes": { "to": "removed", "text": "Ok merci" }
-	},
 	"explainGoal": {
 		"text": "Polytronome t'aide a visualiser different rythmes en meme temps",
-		"yes": { "to": "explainWheel", "text": "D'accord" },
-		"no": { "to": "explainRythms", "text": "Comment ?" }
-	},
-	"explainRythms": {
-		"text": "Avec les cliques que tu vois juste la au milieu, les lignes se remplissent a la meme vitesse",
-		"yes": { "to": "explainWheel", "text": "Ah d'accord c'est cool" },
-		"no": { "to": "explainBeep", "text": "Toujours pas compris" }
-	},
-	"explainBeep": {
-		"text": "Ca fait beep boop, beep beep beep quoi",
-		"yes": { "to": "explainWheel", "text": "merci compris a 100%" },
-		"no": { "to": "explainEnerve", "text": "hmm..." }
-	},
-	"explainEnerve": {
-		"text": "Genre ta pas compris ?",
-		"yes": { "to": "explainBeep", "text": "je te jure" },
-		"no": { "to": "explainOk", "text": "C bon je te taquine" }
-	},
-	"explainOk": {
-		"text": "ok 😭"
+		"yes": { "to": "explainWheel", "text": "D'accord" }
 	},
 	"explainWheel": {
 		"text": "Tu peux changer de temps en faisant dérouler les chiffres plus bas",
@@ -49,10 +21,44 @@
 	},
 	"testLaunch": { "text": "Parfait 😄 Lance le metronome !" },
 	"waitLaunch": { "text": "Stop quand tu veux" },
-	"testTempoUp": { "text": "Tu aussi modifier le tempo, tu peux le monter à 120 bpm ?" },
-	"testTempoDown": { "text": "Tu aussi modifier le tempo, tu peux le baisser à 120 bpm ?" },
+	"showTempo": {
+		"text": "Tu aussi modifier le tempo à droite"
+	},
+	"clickMenu": {
+		"text": "Enfin, tu peux afficher le menu en cliquant sur le bouton en haut"
+	},
 	"endEasy": {
-		"text": "Voila pour les bases ! Tu peux acceder à plus d'option avec le menu à gauche",
-		"yes": { "to": "removed", "text": "Merci mon brave" }
+		"text": "Voila pour les bases ! On continue avec les paramètres avancés ?",
+		"yes": { "to": "showNotes", "text": "Oui !" },
+		"no": { "to": "removed", "text": "Non c'est bon" }
+	},
+	"showNotes": {
+		"text": "Ici tu peux changer les notes ",
+		"yes": { "to": "showWaveType", "text": "Ok" }
+	},
+	"showWaveType": {
+		"text": "Là le type de son, clique dessus pour faire défiler",
+		"yes": { "to": "showDuration", "text": "Ok" }
+	},
+	"showDuration": {
+		"text": "Le temps de la note. ''1/3 bpm'' varie selon la longueur de la note",
+		"yes": { "to": "showRelease", "text": "Ok" }
+	},
+	"showRelease": {
+		"text": "Si la note disparait instantanément, lentement ou très lentement.",
+		"yes": { "to": "showVolume", "text": "Ok" }
+	},
+	"showVolume": {
+		"text": "Enfin le volume, Tu peux mute en cliquant tu l'icone.",
+		"yes": { "to": "endAdvanced", "text": "D'accord" }
+	},
+	"endAdvanced": {
+		"text": "Voila tout les paramètres avancé ! Tu veux que je continue ?",
+		"yes": { "to": "aboutKeybindings", "text": "D'accord" },
+		"no": { "to": "removed", "text": "Non ça va" }
+	},
+	"aboutKeybindings": {
+		"text": "Tu peux aussi utiliser le clavier",
+		"yes": { "to": "removed", "text": "D'accord" }
 	}
 }

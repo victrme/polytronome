@@ -61,9 +61,7 @@ const App = (): JSX.Element => {
 			const stop = () => {
 				setIsRunning('')
 				setStartTime(0)
-
-				if (tutoStage === 'waitLaunch')
-					setTutoStage(`testTempo${tempo > 120 ? 'Down' : 'Up'}`)
+				if (tutoStage === 'waitLaunch') setTutoStage('showTempo')
 			}
 
 			const running = isRunningRef.current !== ''
@@ -75,7 +73,7 @@ const App = (): JSX.Element => {
 			// Not restart, Normal toggle
 			else running ? stop() : start()
 		},
-		[tempo, tutoStage]
+		[tutoStage]
 	)
 
 	const randomizeLayers = () => {
@@ -198,8 +196,6 @@ const App = (): JSX.Element => {
 			const beats = layers.map(x => x.beats)
 			const reduced = beats.reduce((a, b) => a + b)
 
-			console.log(beats)
-
 			if (beats.includes(5) && beats.includes(7) && reduced === 15)
 				setTutoStage('testLaunch')
 		}
@@ -208,7 +204,7 @@ const App = (): JSX.Element => {
 	}, [layers])
 
 	useEffect(() => {
-		if (tutoStage.startsWith('testTempo') && tempo === 120) setTutoStage('endEasy')
+		if (tutoStage.startsWith('showTempo')) setTutoStage('clickMenu')
 		// eslint-disable-next-line
 	}, [tempo])
 
@@ -271,6 +267,7 @@ const App = (): JSX.Element => {
 				moreSettings={moreSettings}
 				setMoreSettings={setMoreSettings}
 				setImport={setSettingsFromCode}
+				tutoStage={tutoStage}
 				setTutoStage={setTutoStage}
 			></Menu>
 

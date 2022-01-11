@@ -200,7 +200,7 @@ pre {
 		.tempo,
 		.clicks,
 		.bottom-buttons {
-			opacity: 0.4;
+			opacity: 0.1;
 			filter: grayscale(1);
 		}
 
@@ -213,7 +213,7 @@ pre {
 		.tempo,
 		.clicks,
 		.layers-table-wrap {
-			opacity: 0.4;
+			opacity: 0.1;
 			filter: grayscale(1);
 		}
 
@@ -222,18 +222,29 @@ pre {
 		}
 	}
 
-	&.testTempoUp,
-	&.testTempoDown {
+	&.showTempo {
 		.logo,
 		.clicks,
 		.bottom-buttons,
 		.layers-table-wrap {
-			opacity: 0.4;
+			opacity: 0.1;
 			filter: grayscale(1);
 		}
 
 		.tempo {
 			opacity: 1;
+		}
+	}
+
+	&.clickMenu {
+		aside,
+		.tempo,
+		.logo,
+		.clicks,
+		.bottom-buttons,
+		.layers-table-wrap {
+			opacity: 0.1;
+			filter: grayscale(1);
 		}
 	}
 

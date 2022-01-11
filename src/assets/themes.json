@@ -17,7 +17,7 @@
 		"dim": "#523e21",
 		"dimmer": "#352f37",
 		"buttons": "#433946",
-		"menu": "#383aaa",
+		"menu": "#352f37",
 		"clicks-on": "#FFD866",
 		"clicks-off": "#433946"
 	},
@@ -63,7 +63,7 @@
 		"dim": "#e2d69d",
 		"dimmer": "#f3edce",
 		"buttons": "#e7dfac",
-		"menu": "#faf6e5",
+		"menu": "#f3efd8",
 		"clicks-on": "#7e9060",
 		"clicks-off": "#e2d69d"
 	},
@@ -96,7 +96,7 @@
 		"dim": "#e4dfd3",
 		"dimmer": "#d9d1bf",
 		"buttons": "#c7c4ba",
-		"menu": "#424443",
+		"menu": "#f1efe9",
 		"clicks-on": "#e7a125",
 		"clicks-off": "#bab7ab"
 	}

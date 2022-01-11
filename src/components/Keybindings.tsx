@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { clamp } from 'lodash'
 
+let tempoWait = setTimeout(() => {}, 0)
+
 const Keymapping = ({
 	layers,
 	toggleMetronome,
@@ -37,8 +39,6 @@ const Keymapping = ({
 				NotSelected,
 				Either,
 			}
-
-			// console.log(e.code)
 
 			const incrSelect = () => (selected + 1) % 5
 			const decrSelect = () => (selected === 0 ? 4 : selected - 1)
@@ -110,17 +110,24 @@ const Keymapping = ({
 
 				// Keys that doesn't overlap with layers keys
 				else if (hitKey.active === When.Either) {
+					const updateTempo = () => {
+						const updatedTempo =
+							tempoRef.current + hitKey.val * (e.shiftKey ? 10 : 1)
+						setTempo(clamp(updatedTempo, 30, 300))
+
+						clearTimeout(tempoWait)
+						tempoWait = setTimeout(() => {
+							toggleMetronome(true)
+						}, 400)
+					}
+
 					const actions = {
 						select: () => setSelected(hitKey.val),
 						view: () => toggleClickView(),
 						shuffle: () => randomizeLayers(),
 						tempoTap: () => tapTempo(),
 						octave: () => setOctave(clamp(octave + hitKey.val, 0, 3)),
-						tempo: () => {
-							const updatedTempo =
-								tempoRef.current + hitKey.val * (e.shiftKey ? 10 : 1)
-							setTempo(clamp(updatedTempo, 30, 300))
-						},
+						tempo: () => updateTempo(),
 						metronome: () => {
 							toggleMetronome()
 							e.preventDefault()

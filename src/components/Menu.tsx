@@ -21,7 +21,15 @@ import {
 	faChalkboardTeacher,
 } from '@fortawesome/free-solid-svg-icons'
 
-const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport, setTutoStage }) => {
+const Menu = ({
+	moreSettings,
+	setMoreSettings,
+	easy,
+	setEasy,
+	setImport,
+	tutoStage,
+	setTutoStage,
+}) => {
 	const [openedTheme, setOpenedTheme] = useState(false)
 	const [fullscreen, setFullscreen] = useState(false)
 	const [extended, setExtended] = useState(false)
@@ -166,6 +174,11 @@ const Menu = ({ moreSettings, setMoreSettings, easy, setEasy, setImport, setTuto
 		api.start({ ...themeList[openedTheme ? 'on' : 'off'] })
 		// eslint-disable-next-line
 	}, [openedTheme])
+
+	useEffect(() => {
+		if (tutoStage === 'clickMenu' && extended) setTutoStage('endEasy')
+		// eslint-disable-next-line
+	}, [extended])
 
 	return (
 		<div className="menu">
