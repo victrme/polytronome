@@ -64,68 +64,76 @@
 // 	}
 // }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 1400px) {
 	.polytronome {
-		.header {
-			.tempo .tap {
-				width: 80px;
-				padding: 7px 0;
-			}
-		}
+		.layers-table-wrap {
+			overflow: auto;
 
-		.settings-drag {
-			padding-top: 0;
-			width: 30px;
-			justify-content: flex-end;
-		}
+			.layers-table {
+				width: auto;
+				flex-direction: column;
 
-		.immovable_wheel {
-			height: 40px;
-			line-height: 40px;
-			font-size: 40px;
-			min-width: 60px;
-
-			.arrows {
-				height: 40px;
-			}
-		}
-
-		.layers-table {
-			.ls-row > div {
-				margin: 5px;
-			}
-			.note-length button {
-				padding: 3px 10px;
-			}
-
-			.ls-type {
-				min-width: 70px;
-
-				svg {
-					height: 50px;
-					width: 50px;
-					padding: 0 10px;
+				.ls-row {
+					flex-direction: row;
+					margin: 10px;
+					padding: 0 20px;
 				}
 			}
-
-			.note-volume .range-wrap {
-				width: 70px;
-			}
-		}
-
-		aside {
-			width: 300px;
-			top: 15vh;
-		}
-
-		.click-row .click {
-			margin: 3px;
 		}
 
 		&.easy {
 			.layers-table-wrap .layers-table {
-				display: grid;
-				grid-template-columns: 1fr 1fr 1fr;
+				flex-wrap: wrap;
+				justify-content: flex-start;
+				width: 70vw;
+
+				.ls-row {
+					padding: 20px;
+				}
+			}
+		}
+
+		.menu,
+		main {
+			padding-top: 5vh;
+		}
+
+		aside.closed {
+			top: 15vh;
+		}
+	}
+}
+
+@media only screen and (max-width: 800px) {
+	.polytronome {
+		.header {
+			flex-direction: column;
+			height: 180px;
+
+			.logo {
+				height: 60px;
+			}
+		}
+
+		.immovable_wheel {
+			line-height: 40px;
+			font-size: 40px;
+			height: 40px;
+			min-width: 60px;
+		}
+
+		&.easy main {
+			padding-top: 5vh;
+		}
+
+		.layers-table-wrap .layers-table {
+			margin: 0;
+		}
+
+		.bottom-buttons {
+			margin-top: 20px;
+			.start {
+				width: 200px;
 			}
 		}
 	}
@@ -161,31 +169,6 @@
 
 			.click {
 				margin: 2px;
-			}
-		}
-
-		.layers-table-wrap {
-			width: 100vw;
-			overflow: auto;
-
-			.layers-table {
-				width: auto;
-				flex-direction: column;
-
-				.ls-row {
-					flex-direction: row;
-					margin: 10px;
-					padding: 0;
-				}
-			}
-		}
-
-		.bottom-buttons {
-			margin-top: 40px;
-			flex-direction: column-reverse;
-
-			> button {
-				margin: 20px 0;
 			}
 		}
 

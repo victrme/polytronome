@@ -46,6 +46,7 @@
 		border-radius: 20px;
 		min-width: 300px;
 		background-color: var(--menu);
+		z-index: 3;
 
 		.dialog {
 			margin-right: 40px;
@@ -65,6 +66,7 @@
 	.tempo {
 		display: flex;
 		align-items: center;
+		z-index: 2;
 
 		.immovable_wheel {
 			margin-right: 10px;

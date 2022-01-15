@@ -31,13 +31,12 @@ pre {
 
 .polytronome {
 	position: relative;
-	display: grid;
-	grid-template-columns: 0.1fr 1fr 0.1fr;
+	display: flex;
 	align-items: flex-start;
+	justify-content: flex-start;
 	min-height: 1000px;
 	max-width: 2000px;
 	width: 100%;
-	margin: auto;
 	color: var(--accent);
 	user-select: none;
 
@@ -45,12 +44,13 @@ pre {
 	@import 'clicks';
 	@import 'layers';
 	@import 'menu';
+	@import 'tutorial';
 
 	main {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		width: 100%;
+		width: 80%;
 		max-width: 1200px;
 		margin: 0 auto;
 		padding-top: 10vh;
@@ -189,62 +189,6 @@ pre {
 				padding: 2px 10px;
 				margin-left: 20px;
 			}
-		}
-	}
-
-	/*
-	TUTORIAL
-	*/
-
-	&.testBeats {
-		.tempo,
-		.clicks,
-		.bottom-buttons {
-			opacity: 0.1;
-			filter: grayscale(1);
-		}
-
-		.layers-table-wrap {
-			opacity: 1;
-		}
-	}
-
-	&.testLaunch {
-		.tempo,
-		.clicks,
-		.layers-table-wrap {
-			opacity: 0.1;
-			filter: grayscale(1);
-		}
-
-		.bottom-buttons {
-			opacity: 1;
-		}
-	}
-
-	&.showTempo {
-		.logo,
-		.clicks,
-		.bottom-buttons,
-		.layers-table-wrap {
-			opacity: 0.1;
-			filter: grayscale(1);
-		}
-
-		.tempo {
-			opacity: 1;
-		}
-	}
-
-	&.clickMenu {
-		aside,
-		.tempo,
-		.logo,
-		.clicks,
-		.bottom-buttons,
-		.layers-table-wrap {
-			opacity: 0.1;
-			filter: grayscale(1);
 		}
 	}
 

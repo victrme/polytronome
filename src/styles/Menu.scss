@@ -1,5 +1,6 @@
 .menu {
 	padding-top: 10vh;
+	width: 20vw;
 }
 
 .menu > button {
@@ -14,6 +15,8 @@ aside {
 	display: flex;
 	margin: 40px;
 	overflow: hidden;
+	width: 480px;
+	transition: width 0.4s;
 
 	> button {
 		margin: 40px auto;
@@ -104,6 +107,9 @@ aside {
 	}
 
 	&.closed {
+		width: 85px;
+		transition: width 0.4s 0.16s;
+
 		.inner-menu {
 			width: 85px;
 			opacity: 0.6;
