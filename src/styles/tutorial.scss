@@ -1,0 +1,122 @@
+&.explainWheel {
+	.tempo,
+	.clicks,
+	.bottom-buttons,
+	.layers-table .ls-row > div:not(:first-child) {
+		opacity: 0.1;
+		filter: grayscale(1);
+	}
+}
+
+&.testBeats {
+	.tempo,
+	.clicks,
+	.bottom-buttons,
+	.layers-table .ls-row > div:not(:first-child) {
+		opacity: 0.1;
+		filter: grayscale(1);
+	}
+}
+
+&.testLaunch {
+	.tempo,
+	.clicks,
+	.layers-table-wrap {
+		opacity: 0.1;
+		filter: grayscale(1);
+	}
+
+	.bottom-buttons {
+		opacity: 1;
+	}
+}
+
+&.showTempo {
+	.logo,
+	.clicks,
+	.bottom-buttons,
+	.layers-table-wrap {
+		opacity: 0.1;
+		filter: grayscale(1);
+	}
+
+	.tempo {
+		opacity: 1;
+	}
+}
+
+&.clickMenu {
+	aside,
+	.tempo,
+	.logo,
+	.clicks,
+	.bottom-buttons,
+	.layers-table-wrap {
+		opacity: 0.1;
+		filter: grayscale(1);
+	}
+}
+
+/* ADVANCED */
+
+&.showNotes {
+	aside,
+	.tempo,
+	.logo,
+	.clicks,
+	.bottom-buttons,
+	.layers-table .ls-row > div:not(:nth-child(2)) {
+		opacity: 0.1;
+		filter: grayscale(1);
+	}
+}
+
+&.showWaveType {
+	aside,
+	.tempo,
+	.logo,
+	.clicks,
+	.bottom-buttons,
+	.layers-table .ls-row > div:not(:nth-child(3)) {
+		opacity: 0.1;
+		filter: grayscale(1);
+	}
+}
+
+&.showDuration {
+	aside,
+	.tempo,
+	.logo,
+	.clicks,
+	.bottom-buttons,
+	.layers-table .ls-row > div:not(:nth-child(4)),
+	.layers-table .note-length button.release {
+		opacity: 0.1;
+		filter: grayscale(1);
+	}
+}
+
+&.showRelease {
+	aside,
+	.tempo,
+	.logo,
+	.clicks,
+	.bottom-buttons,
+	.layers-table .ls-row > div:not(:nth-child(4)),
+	.layers-table .note-length button.duration {
+		opacity: 0.1;
+		filter: grayscale(1);
+	}
+}
+
+&.showVolume {
+	aside,
+	.tempo,
+	.logo,
+	.clicks,
+	.bottom-buttons,
+	.layers-table .ls-row > div:not(:nth-child(5)) {
+		opacity: 0.1;
+		filter: grayscale(1);
+	}
+}

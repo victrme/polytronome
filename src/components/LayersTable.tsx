@@ -113,7 +113,7 @@ const LayersTable = ({ easy, layers, selected, handleLayerChange }) => {
 											fill="none"
 										/>
 									</svg>
-									{layer.duration ? '⅓ bpm' : '50ms'}
+									{layer.duration ? '⅓ note' : '50ms'}
 								</button>
 								<button
 									title="sound release"

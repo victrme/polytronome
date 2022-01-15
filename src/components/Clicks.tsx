@@ -34,7 +34,7 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 
 		layerArray.forEach(layer => {
 			const isAggressiveType = layer.type === 'sawtooth' || layer.type === 'square'
-			const vol = isAggressiveType ? layer.volume / 3 : layer.volume
+			const vol = isAggressiveType ? layer.volume * 0.6 : layer.volume
 			const note = layer.freq + 12
 			const freq = 32.7 * 2 ** (note / 12)
 			const wave = new Pizzicato.Sound({

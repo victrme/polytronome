@@ -146,7 +146,7 @@ const Menu = ({
 			icon: faChalkboardTeacher,
 			text: 'show tutorial',
 			title: 'show tutorial',
-			func: () => setTutoStage('intro'),
+			func: () => setTutoStage(easy ? 'intro' : 'showNotes'),
 			css: '',
 			state: '',
 		},

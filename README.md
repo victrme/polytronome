@@ -73,8 +73,9 @@ You can:
 ### Features
 
 -   [ ] import / export rythms
--   [ ] advanced tutorial
 -   [ ] tutorial translation
+-   [ ] Mobile menu responsive
+-   [x] advanced tutorial
 -   [x] Tempo tapping keymapping
 -   [x] Better mute animation
 -   [x] Keymappings
@@ -82,6 +83,7 @@ You can:
 
 ### Bugs
 
+-   [ ] Tempo doesn't save after reload
 -   [x] Tempo keyboard change doesn't reset metronome
 -   [x] Sound offset for segment / block
 -   [x] Update off animations
