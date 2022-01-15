@@ -83,7 +83,7 @@ You can:
 
 ### Bugs
 
--   [ ] Tempo doesn't save after reload
+-   [x] Tempo doesn't save after reload
 -   [x] Tempo keyboard change doesn't reset metronome
 -   [x] Sound offset for segment / block
 -   [x] Update off animations

@@ -75,11 +75,6 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 		// eslint-disable-next-line
 	}, [state])
 
-	useEffect(() => {
-		setTimeout(() => snapWheel(), 10)
-		// eslint-disable-next-line
-	}, [])
-
 	//
 	// Gestures
 	//
