@@ -134,17 +134,18 @@
 
 @media only screen and (max-width: 425px) {
 	.polytronome {
-		.header {
-			margin-bottom: 0;
-			flex-direction: column-reverse;
-			min-height: 50px;
+		button {
+			padding: 5px 20px;
+			font-size: 11px;
+		}
 
+		.header {
 			.logo {
 				height: 50px;
 			}
 
-			.tempo {
-				display: none;
+			.tempo .tap {
+				width: 80px;
 			}
 		}
 
@@ -157,21 +158,28 @@
 			width: 100vw;
 		}
 
-		.clicks .click-row {
-			height: 30px;
+		.clicks {
+			margin: 20px;
 
-			.click {
-				margin: 2px;
+			.click-row {
+				height: 30px;
+
+				.click {
+					margin: 2px;
+				}
 			}
+		}
+
+		.bottom-buttons .start {
+			width: 160px;
 		}
 
 		&.easy {
 			.layers-table-wrap .layers-table {
-				display: grid;
-			}
-
-			.bottom-buttons {
-				margin-top: 0;
+				justify-content: center;
+				width: 90vw;
+				margin: 0;
+				margin-bottom: 40px;
 			}
 		}
 	}
