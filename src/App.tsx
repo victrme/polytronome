@@ -1,8 +1,6 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
 import { isMobileOnly } from 'react-device-detect'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlay, faStop, faRandom } from '@fortawesome/free-solid-svg-icons'
 import { clamp } from 'lodash'
 
 import defaultSettings from './assets/settings.json'
@@ -14,6 +12,7 @@ import Clicks from './components/Clicks'
 import Menu from './components/Menu'
 import { MoreSettings, Layer, Code } from './Types'
 import { setRandomID, importCode, applyTheme, createExportCode } from './utils'
+import Buttons from './components/Buttons'
 
 const App = (): JSX.Element => {
 	//
@@ -184,6 +183,13 @@ const App = (): JSX.Element => {
 		return result
 	}
 
+	const tempoProps = {
+		tempo,
+		setTempo,
+		tapTempo,
+		toggleMetronome,
+	}
+
 	//
 	//
 	//	Effects
@@ -252,37 +258,34 @@ const App = (): JSX.Element => {
 	return (
 		<div className={handleClasses()}>
 			<Keybindings
+				layers={layers}
 				setTempo={setTempo}
 				tapTempo={tapTempo}
-				tempoRef={tempoRef}
-				layers={layers}
 				selected={selected}
+				tempoRef={tempoRef}
 				setSelected={setSelected}
-				handleLayerChange={handleLayerChange}
 				randomizeLayers={randomizeLayers}
 				toggleMetronome={toggleMetronome}
 				setMoreSettings={setMoreSettings}
+				handleLayerChange={handleLayerChange}
 				moreSettings={moreSettingsRef.current}
 			></Keybindings>
 
 			<Menu
 				easy={easy}
 				setEasy={setEasy}
-				moreSettings={moreSettings}
-				setMoreSettings={setMoreSettings}
-				setImport={setSettingsFromCode}
 				tutoStage={tutoStage}
+				moreSettings={moreSettings}
 				setTutoStage={setTutoStage}
+				setImport={setSettingsFromCode}
+				setMoreSettings={setMoreSettings}
 			></Menu>
 
 			<main>
 				<Header
-					tempo={tempo}
-					setTempo={setTempo}
-					tapTempo={tapTempo}
 					tutoStage={tutoStage}
+					tempoProps={tempoProps}
 					setTutoStage={setTutoStage}
-					toggleMetronome={toggleMetronome}
 				></Header>
 
 				<Clicks
@@ -290,8 +293,8 @@ const App = (): JSX.Element => {
 					tempoRef={tempoRef}
 					isRunning={isRunning}
 					isRunningRef={isRunningRef}
-					clickType={moreSettings.clickType}
 					offset={moreSettings.offset}
+					clickType={moreSettings.clickType}
 				></Clicks>
 
 				<LayersTable
@@ -301,19 +304,12 @@ const App = (): JSX.Element => {
 					handleLayerChange={handleLayerChange}
 				></LayersTable>
 
-				<div className="bottom-buttons">
-					<button className="start" onClick={() => toggleMetronome()}>
-						<FontAwesomeIcon icon={isRunning ? faStop : faPlay} />
-						<span>{isRunning ? 'stop' : 'start'}</span>
-					</button>
-
-					<div>
-						<button className="randomize" onClick={randomizeLayers}>
-							<FontAwesomeIcon icon={faRandom} />
-							<span>shuffle</span>
-						</button>
-					</div>
-				</div>
+				<Buttons
+					isRunning={isRunning}
+					tempoProps={tempoProps}
+					randomizeLayers={randomizeLayers}
+					toggleMetronome={toggleMetronome}
+				></Buttons>
 			</main>
 			<div></div>
 		</div>

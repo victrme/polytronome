@@ -34,7 +34,6 @@ pre {
 	display: flex;
 	align-items: flex-start;
 	justify-content: flex-start;
-	min-height: 1000px;
 	max-width: 2000px;
 	width: 100%;
 	color: var(--accent);
@@ -256,6 +255,30 @@ pre {
 
 	&.performance * {
 		transition: none !important;
+	}
+
+	/*
+	MOBILE
+	*/
+
+	&.mobile {
+		.header {
+			height: 60px;
+		}
+
+		.menu {
+			display: none;
+		}
+
+		.bottom-buttons {
+			flex-direction: column;
+
+			.tempo {
+				display: flex;
+				align-items: center;
+				margin-bottom: 20px;
+			}
+		}
 	}
 }
 

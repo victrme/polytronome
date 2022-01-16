@@ -139,18 +139,10 @@
 			font-size: 11px;
 		}
 
-		.header {
-			.logo {
-				height: 50px;
-			}
-
-			.tempo .tap {
-				width: 80px;
-			}
-		}
-
 		.menu {
-			display: none;
+			aside {
+				display: none;
+			}
 		}
 
 		main {
@@ -168,10 +160,6 @@
 					margin: 2px;
 				}
 			}
-		}
-
-		.bottom-buttons .start {
-			width: 160px;
 		}
 
 		&.easy {

@@ -1,7 +1,7 @@
-import { clamp } from 'lodash'
 import Tutorial from './Tutorial'
-import Wheel from './Wheel'
 import { useTransition, animated, config } from '@react-spring/web'
+import { isMobileOnly } from 'react-device-detect'
+import Tempo from './Tempo'
 
 const Logo = ({ styles }) => {
 	return (
@@ -26,12 +26,7 @@ const Logo = ({ styles }) => {
 	)
 }
 
-const Header = ({ toggleMetronome, tempo, setTempo, tapTempo, tutoStage, setTutoStage }) => {
-	const handleTempo = (res: number) => {
-		setTempo(clamp(res + 30, 30, 300))
-		toggleMetronome(true)
-	}
-
+const Header = ({ tempoProps, tutoStage, setTutoStage }) => {
 	const toggle = tutoStage === 'removed'
 
 	const transition = useTransition(toggle, {
@@ -58,12 +53,7 @@ const Header = ({ toggleMetronome, tempo, setTempo, tapTempo, tutoStage, setTuto
 
 			<div></div>
 
-			<div className="tempo">
-				<Wheel type="tempo" state={tempo} update={res => handleTempo(res)}></Wheel>
-				<button className="tap" onClick={tapTempo}>
-					tap
-				</button>
-			</div>
+			{!isMobileOnly ? <Tempo {...tempoProps}></Tempo> : ''}
 		</div>
 	)
 }
