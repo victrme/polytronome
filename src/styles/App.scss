@@ -262,6 +262,17 @@ pre {
 	*/
 
 	&.mobile {
+		.immovable_wheel {
+			padding: 0 5px;
+			height: 35px;
+			line-height: 35px;
+			font-size: 35px;
+
+			.arrows {
+				display: none;
+			}
+		}
+
 		.header {
 			height: 60px;
 		}
@@ -270,13 +281,23 @@ pre {
 			display: none;
 		}
 
+		.clicks {
+			height: 130px;
+		}
+
+		.layers-table .note-length button {
+			padding: 3px 10px;
+		}
+
 		.bottom-buttons {
-			flex-direction: column;
+			flex-wrap: wrap;
 
 			.tempo {
 				display: flex;
 				align-items: center;
+				justify-content: center;
 				margin-bottom: 20px;
+				width: 100vw;
 			}
 		}
 	}
