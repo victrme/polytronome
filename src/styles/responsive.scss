@@ -34,6 +34,7 @@
 			.layers-table-wrap .layers-table {
 				flex-wrap: wrap;
 				justify-content: flex-start;
+				justify-content: center;
 				width: 70vw;
 				margin: 60px 20px;
 
@@ -63,7 +64,7 @@
 	}
 }
 
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 880px) {
 	.polytronome {
 		.header {
 			flex-direction: column;
@@ -162,9 +163,17 @@
 			}
 		}
 
+		.layers-table-wrap .layers-table .ls-type {
+			min-width: 80px;
+			svg {
+				height: 45px;
+				width: 45px;
+				padding: 0 10px;
+			}
+		}
+
 		&.easy {
 			.layers-table-wrap .layers-table {
-				justify-content: center;
 				width: 90vw;
 				margin: 0;
 				margin-bottom: 40px;

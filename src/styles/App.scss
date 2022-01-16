@@ -34,7 +34,6 @@ pre {
 	display: flex;
 	align-items: flex-start;
 	justify-content: flex-start;
-	max-width: 2000px;
 	width: 100%;
 	color: var(--accent);
 	user-select: none;
@@ -49,8 +48,6 @@ pre {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		width: 80%;
-		max-width: 1200px;
 		margin: 0 auto;
 		padding-top: 10vh;
 		transition: padding 1s $easing;
@@ -263,10 +260,14 @@ pre {
 
 	&.mobile {
 		.immovable_wheel {
-			padding: 0 5px;
+			padding: 2.5px 5px;
 			height: 35px;
-			line-height: 35px;
+			line-height: 40px;
 			font-size: 35px;
+
+			pre {
+				margin-top: -2.5px;
+			}
 
 			.arrows {
 				display: none;
@@ -298,6 +299,10 @@ pre {
 				justify-content: center;
 				margin-bottom: 20px;
 				width: 100vw;
+
+				.tap {
+					margin-left: 10px;
+				}
 			}
 		}
 	}

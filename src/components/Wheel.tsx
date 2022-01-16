@@ -67,19 +67,13 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 
 	useEffect(() => {
 		!dragRelease ? snapWheel() : setDragRelease(false)
-
-		const removeResize = () => window.removeEventListener('resize', snapWheel)
-		window.addEventListener('resize', snapWheel)
-		return removeResize
-
 		// eslint-disable-next-line
 	}, [state])
 
-	// todo: fix tempo default state on mount
 	useEffect(() => {
-		setTimeout(() => snapWheel(), 10)
+		snapWheel()
 		// eslint-disable-next-line
-	}, [])
+	}, [heightRef.current])
 
 	//
 	// Gestures
