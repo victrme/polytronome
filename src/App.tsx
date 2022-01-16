@@ -190,6 +190,10 @@ const App = (): JSX.Element => {
 	//
 	//
 
+	useEffect(() => {
+		if (tutoStage === 'startAdvanced') setEasy(false)
+	}, [tutoStage])
+
 	// tutorial
 	useEffect(() => {
 		if (tutoStage === 'testBeats') {

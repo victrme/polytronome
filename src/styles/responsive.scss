@@ -9,61 +9,6 @@
 	}
 }
 
-// @media only screen and (max-height: 900px) {
-// 	.polytronome {
-// 		.immovable_wheel {
-// 			line-height: 45px;
-// 			font-size: 45px;
-// 			height: 45px;
-// 			width: 80px;
-// 		}
-
-// 		.header {
-// 			margin-bottom: 20px;
-// 		}
-
-// 		.layers-table-wrap {
-// 			max-width: 1000px;
-// 			overflow-x: auto;
-
-// 			.layers-table {
-// 				max-width: 100%;
-// 				overflow-x: auto;
-// 				flex-wrap: nowrap;
-// 				justify-content: flex-start;
-// 				margin: 20px;
-
-// 				.ls-row {
-// 					display: grid;
-// 					grid-template-columns: 1fr 1fr;
-
-// 					> div {
-// 						margin: 15px 0;
-// 					}
-// 				}
-
-// 				.ls-type svg {
-// 					width: 55px;
-// 					height: 55px;
-// 					padding: 0 15px;
-// 				}
-// 			}
-// 		}
-
-// 		aside .links {
-// 			margin-top: 30px;
-// 		}
-
-// 		.bottom-buttons {
-// 			margin-top: 0;
-// 		}
-
-// 		&.easy .layers-table-wrap .layers-table .ls-row {
-// 			display: flex;
-// 		}
-// 	}
-// }
-
 @media only screen and (max-width: 1400px) {
 	.polytronome {
 		.layers-table-wrap {
@@ -90,9 +35,10 @@
 				flex-wrap: wrap;
 				justify-content: flex-start;
 				width: 70vw;
+				margin: 60px 20px;
 
 				.ls-row {
-					padding: 20px;
+					padding: 0;
 				}
 			}
 		}
@@ -100,6 +46,15 @@
 		.menu,
 		main {
 			padding-top: 5vh;
+		}
+
+		.menu {
+			> button {
+				margin-left: 20px;
+			}
+			aside {
+				margin: 20px;
+			}
 		}
 
 		aside.closed {
@@ -112,7 +67,7 @@
 	.polytronome {
 		.header {
 			flex-direction: column;
-			height: 180px;
+			height: 160px;
 
 			.logo {
 				height: 60px;
@@ -124,6 +79,14 @@
 			font-size: 40px;
 			height: 40px;
 			min-width: 60px;
+
+			.arrows {
+				height: 40px;
+
+				svg:first-child {
+					transform: rotate(180deg) translateY(-2px);
+				}
+			}
 		}
 
 		&.easy main {
@@ -132,6 +95,32 @@
 
 		.layers-table-wrap .layers-table {
 			margin: 0;
+
+			.ls-row > div {
+				margin: 12px 0;
+			}
+
+			.ls-type {
+				min-width: 90px;
+				svg {
+					height: 50px;
+					width: 50px;
+					padding: 0 10px;
+				}
+			}
+
+			.note-volume {
+				flex-direction: column;
+
+				.mute {
+					padding: 10px;
+				}
+
+				.range-wrap {
+					height: 10px;
+					width: 60px;
+				}
+			}
 		}
 
 		.bottom-buttons {

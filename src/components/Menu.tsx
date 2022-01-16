@@ -86,9 +86,9 @@ const Menu = ({
 		{ url: 'mailto:mail@victr.me', icon: faComment, text: 'contact' },
 	]
 
-	const texts = {
+	const statesTexts = {
 		advanced: ['on', 'off'],
-		animations: ['on', 'off'],
+		animations: ['on', 'reduced'],
 		fullscreen: ['off', 'on'],
 		view: ['layers', 'segment', 'block'],
 	}
@@ -100,7 +100,7 @@ const Menu = ({
 			title: `toggle advanced mode\nAdds note, wave type, note time, release & volume control`,
 			func: () => setEasy(!easy),
 			css: isOn(!easy),
-			state: texts.advanced[+easy],
+			state: statesTexts.advanced[+easy],
 		},
 		{
 			icon: faStar,
@@ -108,7 +108,7 @@ const Menu = ({
 			title: `toggle animations\nunchecking this option will improve performances`,
 			func: changeAnimations,
 			css: isOn(!moreSettings.animations),
-			state: texts.advanced[+moreSettings.animations],
+			state: statesTexts.animations[+moreSettings.animations],
 		},
 		{
 			icon: faPalette,
@@ -124,7 +124,7 @@ const Menu = ({
 			title: `change click view\nCycles through layers, segment & block`,
 			func: changeClickType,
 			css: '',
-			state: texts.view[moreSettings.clickType],
+			state: statesTexts.view[moreSettings.clickType],
 		},
 		{
 			icon: faExpand,
@@ -132,7 +132,7 @@ const Menu = ({
 			title: 'toggle fullscreen',
 			func: changeFullscreen,
 			css: isOn(fullscreen),
-			state: texts.fullscreen[+fullscreen],
+			state: statesTexts.fullscreen[+fullscreen],
 		},
 		{
 			icon: faHeadphones,

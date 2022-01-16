@@ -29,11 +29,15 @@
 	},
 	"endEasy": {
 		"text": "Voila pour les bases ! On continue avec les paramètres avancés ?",
-		"yes": { "to": "showNotes", "text": "Oui !" },
+		"yes": { "to": "startAdvanced", "text": "Oui !" },
 		"no": { "to": "removed", "text": "Non c'est bon" }
 	},
+	"startAdvanced": {
+		"text": "Ici tu a accès à toute les options possible. On a déjà vu pour les rythmes, alors voyons le reste.",
+		"yes": { "to": "showNotes", "text": "D'acc" }
+	},
 	"showNotes": {
-		"text": "Ici tu peux faire défiler les notes, de C0 à F#5",
+		"text": "Ici tu peux faire défiler les notes, de C0 jusqu'à F#5",
 		"yes": { "to": "showWaveType", "text": "Ok" }
 	},
 	"showWaveType": {
