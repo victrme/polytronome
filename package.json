@@ -31,7 +31,9 @@
 		"@types/node": "^16.11.6",
 		"@types/react": "^17.0.34",
 		"@types/react-dom": "^17.0.11",
+		"follow-redirects": ">=1.14.7",
 		"jest-dom": "^4.0.0",
+		"node-forge": ">=1.0.0",
 		"react-scripts": "^5.0.0",
 		"react-test-renderer": "^17.0.2"
 	},
