@@ -83,7 +83,7 @@ You can:
 
 ### Bugs
 
--   [x] Tempo doesn't save after reload
+-   [ ] Tempo state always default on resize effect (during mount)
 -   [x] Tempo keyboard change doesn't reset metronome
 -   [x] Sound offset for segment / block
 -   [x] Update off animations

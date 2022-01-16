@@ -75,6 +75,12 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 		// eslint-disable-next-line
 	}, [state])
 
+	// todo: fix tempo default state on mount
+	useEffect(() => {
+		setTimeout(() => snapWheel(), 10)
+		// eslint-disable-next-line
+	}, [])
+
 	//
 	// Gestures
 	//
