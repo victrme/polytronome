@@ -4,6 +4,7 @@ import defaultLayers from '../assets/layers.json'
 import { applyTheme, createExportCode, importCode } from '../utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useTrail, animated } from '@react-spring/web'
+import { isMobileOnly } from 'react-device-detect'
 
 import {
 	faBars,
@@ -58,7 +59,7 @@ const Menu = ({
 	const changeTheme = (index?: number) => {
 		let nextTheme = index || 0
 
-		if (!extended) nextTheme = (moreSettings.theme + 1) % Themes.length
+		if (!extended || isMobileOnly) nextTheme = (moreSettings.theme + 1) % Themes.length
 
 		setMoreSettings(prev => ({ ...prev, theme: nextTheme }))
 		localStorage.theme = nextTheme
@@ -114,7 +115,8 @@ const Menu = ({
 			icon: faPalette,
 			text: 'themes',
 			title: 'change theme\nCycles through themes when menu is closed,\nopens theme list when menu is open',
-			func: () => (extended ? setOpenedTheme(!openedTheme) : changeTheme()),
+			func: () =>
+				isMobileOnly || !extended ? changeTheme() : setOpenedTheme(!openedTheme),
 			css: '',
 			state: Themes[moreSettings.theme].name,
 		},
@@ -184,7 +186,7 @@ const Menu = ({
 		<div className="menu">
 			<button onClick={toggleMenu}>
 				<FontAwesomeIcon icon={faBars} />
-				<span>Menu</span>
+				{!isMobileOnly ? <span>Menu</span> : ''}
 			</button>
 
 			<aside className={extended ? 'extended' : 'closed'}>

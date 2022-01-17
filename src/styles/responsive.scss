@@ -1,10 +1,7 @@
-@media screen and (max-height: 1100px), screen and (max-height: 780px) {
+@media only screen and (min-width: 1400px) {
 	.polytronome {
-		main {
-			padding-top: 5vh;
-		}
-		.menu {
-			padding-top: 1vh;
+		&.easy .clicks {
+			min-width: 1100px;
 		}
 	}
 }
@@ -60,6 +57,17 @@
 
 		aside.closed {
 			top: 15vh;
+		}
+	}
+}
+
+@media screen and (max-height: 1100px), screen and (max-height: 780px) {
+	.polytronome {
+		main {
+			padding-top: 5vh;
+		}
+		.menu {
+			padding-top: 1vh;
 		}
 	}
 }
@@ -140,35 +148,42 @@
 			font-size: 11px;
 		}
 
-		.menu {
-			aside {
-				display: none;
-			}
-		}
-
 		main {
 			padding-top: 5vh;
 			width: 100vw;
 		}
 
 		.clicks {
+			width: calc(100% - 40px);
 			margin: 20px;
 
-			.click-row {
+			.layers .click-row {
 				height: 30px;
 
 				.click {
 					margin: 2px;
+
+					&.off {
+						margin: 2px 0;
+					}
+				}
+			}
+
+			.segment {
+				.click-row .click {
+					height: 60px;
 				}
 			}
 		}
 
-		.layers-table-wrap .layers-table .ls-type {
-			min-width: 80px;
-			svg {
-				height: 45px;
-				width: 45px;
-				padding: 0 10px;
+		.layers-table-wrap .layers-table {
+			.ls-type {
+				min-width: 80px;
+				svg {
+					height: 45px;
+					width: 45px;
+					padding: 0 10px;
+				}
 			}
 		}
 

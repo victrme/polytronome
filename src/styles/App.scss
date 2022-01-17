@@ -33,8 +33,6 @@ pre {
 	position: relative;
 	display: flex;
 	align-items: flex-start;
-	justify-content: flex-start;
-	width: 100%;
 	color: var(--accent);
 	user-select: none;
 
@@ -279,7 +277,38 @@ pre {
 		}
 
 		.menu {
-			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			z-index: 5;
+
+			> button {
+				margin: 10px;
+				padding: 8px 16px;
+			}
+
+			aside {
+				display: none;
+				z-index: 5;
+				margin: 0;
+
+				&.extended {
+					display: flex;
+					width: 100vw;
+					height: 100vh;
+					background-color: var(--background);
+					opacity: 1;
+
+					.inner-menu {
+						margin: 20px;
+						width: 100%;
+					}
+
+					.theme-list {
+						display: none;
+					}
+				}
+			}
 		}
 
 		.clicks {
