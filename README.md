@@ -83,7 +83,7 @@ You can:
 
 ### Bugs
 
--   [ ] No sound on safari
+-   [x] No sound on safari
 -   [x] Tempo state always default on resize effect (during mount)
 -   [x] Tempo keyboard change doesn't reset metronome
 -   [x] Sound offset for segment / block

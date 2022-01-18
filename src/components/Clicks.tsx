@@ -65,7 +65,10 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 		if (relativeMsSounds.length > 0)
 			relativeMsSounds.forEach(({ wave, length }) => {
 				wave.play()
-				setTimeout(() => wave.stop(), length)
+				setTimeout(() => {
+					wave.stop()
+					// wave.disconnect()
+				}, length)
 			})
 	}
 
