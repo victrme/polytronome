@@ -296,12 +296,16 @@
 			height: 130px;
 		}
 
-		.layers-table .note-length button {
-			padding: 3px 10px;
-		}
+		.layers-table-wrap {
+			flex-direction: column;
 
-		.bottom-buttons {
-			flex-wrap: wrap;
+			.layers-table {
+				margin: 20px 0;
+
+				.note-length button {
+					padding: 3px 10px;
+				}
+			}
 
 			.tempo {
 				display: flex;
@@ -314,6 +318,10 @@
 					margin-left: 10px;
 				}
 			}
+		}
+
+		.bottom-buttons {
+			flex-wrap: wrap;
 		}
 	}
 }

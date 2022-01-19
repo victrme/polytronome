@@ -1,11 +1,10 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlay, faStop, faRandom } from '@fortawesome/free-solid-svg-icons'
-import { isMobileOnly, isSafari, isIOS } from 'react-device-detect'
-import Tempo from './Tempo'
+import { isSafari, isIOS } from 'react-device-detect'
 import Pizzicato from 'pizzicato'
 import { useState } from 'react'
 
-const Buttons = ({ isRunning, tempoProps, toggleMetronome, randomizeLayers }) => {
+const Buttons = ({ isRunning, toggleMetronome, randomizeLayers }) => {
 	const [sndOn, setSndOn] = useState(0)
 
 	const activateSound = () => {
@@ -31,8 +30,6 @@ const Buttons = ({ isRunning, tempoProps, toggleMetronome, randomizeLayers }) =>
 	}
 	return (
 		<div className="bottom-buttons">
-			{isMobileOnly ? <Tempo {...tempoProps}></Tempo> : ''}
-
 			{/* Users need gesture to activate sound on Apple browsers */}
 			{isIOS || isSafari ? (
 				<button

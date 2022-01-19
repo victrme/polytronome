@@ -255,6 +255,14 @@ const App = (): JSX.Element => {
 	//
 	//
 
+	const StartButtons = () => (
+		<Buttons
+			isRunning={isRunning}
+			randomizeLayers={randomizeLayers}
+			toggleMetronome={toggleMetronome}
+		></Buttons>
+	)
+
 	return (
 		<div className={handleClasses()}>
 			<Keybindings
@@ -297,19 +305,17 @@ const App = (): JSX.Element => {
 					clickType={moreSettings.clickType}
 				></Clicks>
 
+				{isMobileOnly ? <StartButtons /> : ''}
+
 				<LayersTable
 					easy={easy}
 					layers={layers}
 					selected={selected}
+					tempoProps={tempoProps}
 					handleLayerChange={handleLayerChange}
 				></LayersTable>
 
-				<Buttons
-					isRunning={isRunning}
-					tempoProps={tempoProps}
-					randomizeLayers={randomizeLayers}
-					toggleMetronome={toggleMetronome}
-				></Buttons>
+				{!isMobileOnly ? <StartButtons /> : ''}
 			</main>
 			<div></div>
 		</div>
