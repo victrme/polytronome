@@ -43,7 +43,7 @@ aside {
 
 	.inner-menu {
 		display: flex;
-		width: 360px;
+		max-width: 360px;
 		flex-direction: column;
 		transition: width 0.4s 0s;
 

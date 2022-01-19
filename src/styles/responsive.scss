@@ -84,9 +84,7 @@
 		}
 
 		.immovable_wheel {
-			line-height: 40px;
-			font-size: 40px;
-			height: 40px;
+			@include Wheel(50px);
 			min-width: 60px;
 
 			.arrows {
@@ -148,6 +146,10 @@
 			font-size: 11px;
 		}
 
+		.immovable_wheel {
+			@include Wheel(40px);
+		}
+
 		main {
 			padding-top: 5vh;
 			width: 100vw;
@@ -178,11 +180,20 @@
 
 		.layers-table-wrap .layers-table {
 			.ls-type {
-				min-width: 80px;
+				min-width: 70px;
 				svg {
-					height: 45px;
-					width: 45px;
+					height: 40px;
+					width: 40px;
 					padding: 0 10px;
+				}
+			}
+
+			.note-length button {
+				margin: 2px 0;
+				padding: 2px 5px;
+
+				svg {
+					margin-right: 5px;
 				}
 			}
 		}
@@ -192,6 +203,116 @@
 				width: 90vw;
 				margin: 0;
 				margin-bottom: 40px;
+
+				.ls-row .immovable_wheel {
+					width: auto;
+				}
+			}
+		}
+	}
+}
+
+.polytronome.mobile {
+	&.mobile {
+		overflow-y: auto;
+
+		main {
+			padding: 5vh 0;
+		}
+
+		.immovable_wheel {
+			padding: 2.5px 5px;
+			height: 35px;
+			line-height: 40px;
+			font-size: 35px;
+
+			pre {
+				margin-top: -2.5px;
+			}
+
+			.arrows {
+				display: none;
+			}
+		}
+
+		.header {
+			height: 60px;
+
+			.tutorial {
+				height: auto;
+				flex-direction: column;
+				padding: 1em;
+
+				.dialog {
+					margin: 0;
+				}
+			}
+		}
+
+		.menu {
+			position: fixed;
+			top: 0;
+			left: 0;
+			z-index: 5;
+
+			> button {
+				position: fixed;
+				margin: 10px;
+				padding: 8px 16px;
+				z-index: 6;
+			}
+
+			aside {
+				position: fixed;
+				display: none;
+				z-index: 5;
+				margin: 0;
+				top: 0;
+				left: 0;
+				padding: 8vh 0;
+
+				&.extended {
+					display: flex;
+					width: 100vw;
+					height: 100vh;
+					background-color: var(--background);
+					opacity: 1;
+
+					.inner-menu {
+						margin: 20px;
+						width: 100%;
+						height: 84vh;
+						overflow-y: auto;
+					}
+
+					.theme-list {
+						display: none;
+					}
+				}
+			}
+		}
+
+		.clicks {
+			height: 130px;
+		}
+
+		.layers-table .note-length button {
+			padding: 3px 10px;
+		}
+
+		.bottom-buttons {
+			flex-wrap: wrap;
+
+			.tempo {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				margin-bottom: 20px;
+				width: 100vw;
+
+				.tap {
+					margin-left: 10px;
+				}
 			}
 		}
 	}
