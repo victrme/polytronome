@@ -1,9 +1,10 @@
 .menu {
+	min-width: 300px;
 	padding-top: 10vh;
 }
 
 .menu > button {
-	margin: 30px 0 0 40px;
+	margin: 40px;
 
 	span {
 		margin-left: 10px;
@@ -12,8 +13,9 @@
 
 aside {
 	display: flex;
-	margin: 40px;
 	overflow: hidden;
+	margin-left: 40px;
+	transition: width 0.4s;
 
 	> button {
 		margin: 40px auto;
@@ -22,7 +24,7 @@ aside {
 	.theme-list {
 		display: flex;
 		flex-direction: column;
-		margin: 14px;
+		margin: 20px;
 		transition: width 0.4s;
 
 		span {
@@ -42,8 +44,8 @@ aside {
 	}
 
 	.inner-menu {
+		width: 380px;
 		display: flex;
-		max-width: 360px;
 		flex-direction: column;
 		transition: width 0.4s 0s;
 

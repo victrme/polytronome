@@ -35,8 +35,8 @@ pre {
 }
 
 .polytronome {
-	position: relative;
 	display: flex;
+	position: relative;
 	align-items: flex-start;
 	color: var(--accent);
 	user-select: none;
@@ -48,6 +48,10 @@ pre {
 	@import 'layers';
 	@import 'menu';
 	@import 'tutorial';
+
+	.spacer {
+		min-width: 300px;
+	}
 
 	main {
 		display: flex;
@@ -77,6 +81,8 @@ pre {
 			width: 16px !important;
 		}
 
+		&:active,
+		&:focus,
 		&:hover {
 			border-color: var(--dim);
 		}
@@ -194,6 +200,10 @@ pre {
 	*/
 
 	&.easy {
+		.header {
+			min-height: 140px;
+		}
+
 		main {
 			padding-top: 15vh;
 		}
@@ -203,7 +213,7 @@ pre {
 
 			.layers-table {
 				flex-direction: row;
-				margin: 40px 0;
+				margin: 60px 0;
 				margin-left: 0;
 				width: auto;
 			}

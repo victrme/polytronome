@@ -1,4 +1,4 @@
-@media only screen and (min-width: 1400px) {
+@media only screen and (min-width: 1500px) {
 	.polytronome {
 		&.easy .clicks {
 			min-width: 1100px;
@@ -6,7 +6,16 @@
 	}
 }
 
-@media only screen and (max-width: 1400px) {
+@media only screen and (max-width: 1600px) {
+	.polytronome {
+		.spacer,
+		.menu {
+			min-width: auto;
+		}
+	}
+}
+
+@media only screen and (max-width: 1500px) {
 	.polytronome {
 		.layers-table-wrap {
 			overflow: auto;
@@ -120,7 +129,8 @@
 				flex-direction: column;
 
 				.mute {
-					padding: 10px;
+					padding: 0;
+					margin-bottom: 10px;
 				}
 
 				.range-wrap {
@@ -212,6 +222,11 @@
 	}
 }
 
+/*
+MOBILE responsive with class
+specific to .mobile render changes
+*/
+
 .polytronome.mobile {
 	&.mobile {
 		overflow-y: auto;
@@ -254,10 +269,11 @@
 			top: 0;
 			left: 0;
 			z-index: 5;
+			margin: 0;
 
 			> button {
 				position: fixed;
-				margin: 10px;
+				margin: 20px;
 				padding: 8px 16px;
 				z-index: 6;
 			}
@@ -294,15 +310,27 @@
 
 		.clicks {
 			height: 130px;
+			width: 95vw;
 		}
 
 		.layers-table-wrap {
 			flex-direction: column;
 
 			.layers-table {
+				align-items: center;
 				margin: 20px 0;
 
+				.ls-row {
+					margin: 7px 0;
+					padding-left: 10px;
+
+					> div {
+						margin: 10px 0;
+					}
+				}
+
 				.note-length button {
+					margin: 0;
 					padding: 3px 10px;
 				}
 			}

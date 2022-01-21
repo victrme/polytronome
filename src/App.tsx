@@ -317,7 +317,8 @@ const App = (): JSX.Element => {
 
 				{!isMobileOnly ? <StartButtons /> : ''}
 			</main>
-			<div></div>
+
+			<div className="spacer"></div>
 		</div>
 	)
 }
