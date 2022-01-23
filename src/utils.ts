@@ -6,10 +6,14 @@ import { Layer, MoreSettings } from './Types'
 export const applyTheme = (index: number) => {
 	const root = document.querySelector(':root')! as HTMLBodyElement
 
-	if (index >= 0 && index < Themes.length)
+	if (index >= 0 && index < Themes.length) {
 		Object.entries(Themes[index]).forEach(([key, val]) =>
 			val !== undefined ? root.style.setProperty('--' + key, val) : ''
 		)
+		document
+			.querySelector('meta[name="theme-color"]')
+			?.setAttribute('content', Themes[index].background)
+	}
 }
 
 export const setRandomID = () => {
