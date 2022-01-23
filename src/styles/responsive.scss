@@ -85,7 +85,7 @@
 	.polytronome {
 		.header {
 			flex-direction: column;
-			height: 160px;
+			min-height: 160px;
 
 			.logo {
 				height: 60px;
@@ -163,10 +163,25 @@
 		main {
 			padding-top: 5vh;
 			width: 100vw;
+
+			.header {
+				min-height: 60px;
+
+				.logo {
+					margin: 0;
+
+					h1 {
+						font-size: 24px;
+					}
+
+					p {
+						font-size: 11px;
+					}
+				}
+			}
 		}
 
 		.clicks {
-			width: calc(100% - 40px);
 			margin: 20px;
 
 			.layers .click-row {
@@ -184,6 +199,7 @@
 			.segment {
 				.click-row .click {
 					height: 60px;
+					margin: 0 2px;
 				}
 			}
 		}
@@ -192,8 +208,8 @@
 			.ls-type {
 				min-width: 70px;
 				svg {
-					height: 40px;
-					width: 40px;
+					height: 35px;
+					width: 35px;
 					padding: 0 10px;
 				}
 			}
@@ -204,6 +220,18 @@
 
 				svg {
 					margin-right: 5px;
+				}
+			}
+
+			.note-volume {
+				.mute {
+					padding: 0;
+					margin-bottom: 10px;
+				}
+
+				.range-wrap {
+					height: 6px;
+					width: 50px;
 				}
 			}
 		}
@@ -228,128 +256,132 @@ specific to .mobile render changes
 */
 
 .polytronome.mobile {
-	&.mobile {
-		overflow-y: auto;
+	overflow-y: auto;
 
-		main {
-			padding: 5vh 0;
-		}
-
-		.immovable_wheel {
-			padding: 2.5px 5px;
-			height: 35px;
-			line-height: 40px;
-			font-size: 35px;
-
-			pre {
-				margin-top: -2.5px;
-			}
-
-			.arrows {
-				display: none;
+	&.easy {
+		.layers-table {
+			.immovable_wheel {
+				min-width: 40px;
 			}
 		}
 
-		.header {
-			height: 60px;
+		.tempo {
+			margin-top: 80px;
+		}
+	}
 
-			.tutorial {
-				height: auto;
-				flex-direction: column;
-				padding: 1em;
+	main {
+		padding: 5vh 0;
+	}
 
-				.dialog {
-					margin: 0;
-				}
-			}
+	.immovable_wheel {
+		padding: 2.5px 5px;
+		height: 30px;
+		line-height: 35px;
+		font-size: 30px;
+		min-width: 50px;
+
+		pre {
+			margin-top: -2.5px;
 		}
 
-		.menu {
+		.arrows {
+			display: none;
+		}
+	}
+
+	.header {
+		.tutorial {
+			height: auto;
+			flex-direction: column;
+			padding: 1em;
+
+			.dialog {
+				margin: 0;
+			}
+		}
+	}
+
+	.menu {
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 5;
+		margin: 0;
+
+		> button {
 			position: fixed;
-			top: 0;
-			left: 0;
+			margin: 20px;
+			padding: 8px 16px;
+			z-index: 6;
+		}
+
+		aside {
+			position: fixed;
+			display: none;
 			z-index: 5;
 			margin: 0;
+			top: 0;
+			left: 0;
+			padding: 8vh 0;
 
-			> button {
-				position: fixed;
-				margin: 20px;
-				padding: 8px 16px;
-				z-index: 6;
-			}
-
-			aside {
-				position: fixed;
-				display: none;
-				z-index: 5;
-				margin: 0;
-				top: 0;
-				left: 0;
-				padding: 8vh 0;
-
-				&.extended {
-					display: flex;
-					width: 100vw;
-					height: 100vh;
-					background-color: var(--background);
-					opacity: 1;
-
-					.inner-menu {
-						margin: 20px;
-						width: 100%;
-						height: 84vh;
-						overflow-y: auto;
-					}
-
-					.theme-list {
-						display: none;
-					}
-				}
-			}
-		}
-
-		.clicks {
-			height: 130px;
-			width: 95vw;
-		}
-
-		.layers-table-wrap {
-			flex-direction: column;
-
-			.layers-table {
-				align-items: center;
-				margin: 20px 0;
-
-				.ls-row {
-					margin: 7px 0;
-					padding-left: 10px;
-
-					> div {
-						margin: 10px 0;
-					}
-				}
-
-				.note-length button {
-					margin: 0;
-					padding: 3px 10px;
-				}
-			}
-
-			.tempo {
+			&.extended {
 				display: flex;
-				align-items: center;
-				justify-content: center;
-				margin-bottom: 20px;
 				width: 100vw;
+				height: 100vh;
+				background-color: var(--background);
+				opacity: 1;
 
-				.tap {
-					margin-left: 10px;
+				.inner-menu {
+					margin: 20px;
+					width: 100%;
+					height: 84vh;
+					overflow-y: auto;
+				}
+
+				.theme-list {
+					display: none;
+				}
+			}
+		}
+	}
+
+	.clicks {
+		height: 130px;
+		width: 90vw;
+	}
+
+	.layers-table-wrap {
+		flex-direction: column;
+
+		.layers-table {
+			align-items: center;
+			margin: 20px;
+
+			.ls-row {
+				margin: 8px 0;
+				padding-left: 10px;
+
+				> div {
+					margin: 5px 0;
 				}
 			}
 		}
 
-		.bottom-buttons {
-			flex-wrap: wrap;
+		.tempo {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin-bottom: 20px;
+			width: 100vw;
+
+			.tap {
+				margin-left: 10px;
+			}
 		}
+	}
+
+	.bottom-buttons {
+		flex-wrap: wrap;
 	}
 }

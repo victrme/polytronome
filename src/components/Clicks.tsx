@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { isMobileOnly } from 'react-device-detect'
 import Pizzicato from 'pizzicato'
 import { Layer } from '../Types'
 
@@ -300,7 +301,9 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 								key={i}
 								className={'click' + (offsetSegmentPos === i ? ' on' : '')}
 								style={{
-									width: `calc(${ratio * 100}% - 10px)`,
+									width: `calc(${ratio * 100}% - ${
+										isMobileOnly ? '4px' : '10px'
+									})`,
 								}}
 							/>
 						))}
