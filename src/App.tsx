@@ -214,7 +214,8 @@ const App = (): JSX.Element => {
 	}, [layers])
 
 	useEffect(() => {
-		if (tutoStage.startsWith('showTempo')) setTutoStage('clickMenu')
+		if (tutoStage.startsWith('showTempo'))
+			setTutoStage(isMobileOnly ? 'endEasy' : 'clickMenu')
 		// eslint-disable-next-line
 	}, [tempo])
 

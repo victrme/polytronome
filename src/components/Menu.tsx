@@ -148,7 +148,10 @@ const Menu = ({
 			icon: faChalkboardTeacher,
 			text: 'show tutorial',
 			title: 'show tutorial',
-			func: () => setTutoStage(easy ? 'intro' : 'showNotes'),
+			func: () => {
+				setTutoStage(easy ? 'intro' : 'showNotes')
+				if (isMobileOnly) setExtended(false)
+			},
 			css: '',
 			state: '',
 		},
@@ -163,8 +166,14 @@ const Menu = ({
 	]
 
 	const themeList = {
-		off: { width: 0, opacity: 0 },
-		on: { width: 60, opacity: 1 },
+		off: {
+			width: 0,
+			opacity: 0,
+		},
+		on: {
+			width: 60,
+			opacity: 1,
+		},
 	}
 
 	const [trail, api] = useTrail(Themes.length, () => ({
