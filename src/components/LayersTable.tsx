@@ -16,12 +16,12 @@ const LayersTable = ({ easy, layers, selected, handleLayerChange, tempoProps }) 
 	//
 
 	const release = ['off', 'short', 'long']
-	const wavetypes = {
-		sine: 'M 10 10 Q 20 -6 30 10 V 10 Q 40 26 50 10',
-		triangle: 'M 10 10 L 20 2 L 40 18 L 50 10',
-		sawtooth: 'M 10 10 L 30 2 V 18 L 50 10',
-		square: 'M 10 2 H 30 V 18 H 50',
-	}
+	const wavetypes = [
+		'M 10 10 Q 20 -6 30 10 V 10 Q 40 26 50 10', // sine
+		'M 10 10 L 20 2 L 40 18 L 50 10', // triangle
+		'M 10 10 L 30 2 V 18 L 50 10', // sawtooth
+		'M 10 2 H 30 V 18 H 50', // square
+	]
 
 	const volumeIconControl = (volume: number, muted: boolean): IconDefinition => {
 		let icon = faVolumeUp
@@ -74,13 +74,7 @@ const LayersTable = ({ easy, layers, selected, handleLayerChange, tempoProps }) 
 							<div
 								title={'sound type'}
 								className="ls-type"
-								onClick={() =>
-									handleLayerChange('wave', { type: layer.type, sign: 1 }, i)
-								}
-								onContextMenu={e => {
-									e.preventDefault()
-									handleLayerChange('wave', { type: layer.type, sign: -1 }, i)
-								}}
+								onClick={() => handleLayerChange('wave', 1, i)}
 							>
 								<svg
 									type="svg"

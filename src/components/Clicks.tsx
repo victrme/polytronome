@@ -32,16 +32,16 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 	function playSound(layerArray: Layer[]) {
 		const fixedMsSounds: Pizzicato[] = []
 		const relativeMsSounds: Pizzicato[] = []
+		const waveformsList = ['sine', 'triangle', 'sawtooth', 'square']
 
 		layerArray.forEach(layer => {
-			const isAggressiveType = layer.type === 'sawtooth' || layer.type === 'square'
-			const vol = isAggressiveType ? layer.volume * 0.6 : layer.volume
+			const vol = layer.type >= 2 ? layer.volume * 0.6 : layer.volume
 			const note = layer.freq + 12
 			const freq = 32.7 * 2 ** (note / 12)
 			const wave = new Pizzicato.Sound({
 				source: 'wave',
 				options: {
-					type: layer.type,
+					type: waveformsList[layer.type],
 					volume: layer.muted ? 0 : vol,
 					frequency: freq,
 					attack: 0,

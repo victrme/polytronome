@@ -28,8 +28,6 @@ export const setRandomID = () => {
 //
 //
 
-export const waveformsList = ['triangle', 'sawtooth', 'square', 'sine']
-
 export const createExportCode = (
 	tempo: number,
 	layers: Layer[],
@@ -43,7 +41,7 @@ export const createExportCode = (
 		minifiedLayers.push([
 			layer.beats,
 			layer.freq,
-			waveformsList.indexOf(layer.type),
+			layer.type,
 			+layer.duration,
 			+layer.release,
 			layer.volume,
@@ -81,7 +79,7 @@ export const importCode = (code: any[]) => {
 			id: setRandomID(),
 			beats: minified[0],
 			freq: minified[1],
-			type: waveformsList[minified[2]],
+			type: minified[2],
 			duration: !!minified[3],
 			release: minified[4],
 			volume: minified[5],
