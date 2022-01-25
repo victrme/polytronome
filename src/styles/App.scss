@@ -174,24 +174,25 @@ pre {
 	*/
 
 	.keylog {
-		visibility: hidden;
 		position: fixed;
 		display: flex;
 		flex-direction: column;
+		justify-content: center;
+		align-items: flex-end;
 		bottom: 2em;
 		right: 2em;
 		text-align: right;
+		z-index: 7;
 
-		li {
-			list-style-type: none;
-			margin-bottom: 10px;
+		code {
+			background-color: var(--dim);
+			border-radius: 20px;
+			padding: 2px 10px;
+			margin-left: 20px;
+		}
 
-			code {
-				background-color: var(--dim);
-				border-radius: 20px;
-				padding: 2px 10px;
-				margin-left: 20px;
-			}
+		small {
+			margin: 5px;
 		}
 	}
 

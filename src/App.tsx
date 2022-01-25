@@ -30,6 +30,7 @@ const App = (): JSX.Element => {
 	const [startTime, setStartTime] = useState(Date.now)
 	const [layers, setLayers] = useState<Layer[]>([...defaultLayers])
 	const [moreSettings, setMoreSettings] = useState<MoreSettings>({ ...defaultSettings })
+	const [fullscreen, setFullscreen] = useState(false)
 
 	const tempoRef = useRef(tempo)
 	const tapRef = useRef(tap)
@@ -87,26 +88,13 @@ const App = (): JSX.Element => {
 		let newLayers = [...layers]
 
 		switch (cat) {
-			case 'wave': {
-				const clickTypeList = ['triangle', 'sawtooth', 'square', 'sine']
-				clickTypeList.forEach((x, _i) => {
-					if (x === result.type) {
-						const nextIndex = {
-							neg: _i === 0 ? clickTypeList.length - 1 : _i - 1,
-							pos: _i === clickTypeList.length - 1 ? 0 : _i + 1,
-						}
-
-						newLayers[index].type =
-							clickTypeList[result.sign === -1 ? nextIndex.neg : nextIndex.pos]
-					}
-				})
+			case 'wave':
+				newLayers[index].type = (newLayers[index].type + result) % 4
 				break
-			}
 
-			case 'beats': {
+			case 'beats':
 				newLayers[index].beats = result + 1
 				break
-			}
 
 			case 'freq':
 				newLayers[index].freq = result + 1
@@ -170,6 +158,16 @@ const App = (): JSX.Element => {
 				...prev,
 				fullscreen: false,
 			}))
+	}
+
+	const changeFullscreen = () => {
+		if (!moreSettings.fullscreen && document.fullscreenElement === null) {
+			document.body!.requestFullscreen()
+			setFullscreen(true)
+		} else if (document.fullscreenElement !== null) {
+			document.exitFullscreen()
+			setFullscreen(false)
+		}
 	}
 
 	const handleClasses = () => {
@@ -276,6 +274,7 @@ const App = (): JSX.Element => {
 				randomizeLayers={randomizeLayers}
 				toggleMetronome={toggleMetronome}
 				setMoreSettings={setMoreSettings}
+				changeFullscreen={changeFullscreen}
 				handleLayerChange={handleLayerChange}
 				moreSettings={moreSettingsRef.current}
 			></Keybindings>
@@ -284,10 +283,12 @@ const App = (): JSX.Element => {
 				easy={easy}
 				setEasy={setEasy}
 				tutoStage={tutoStage}
+				fullscreen={fullscreen}
 				moreSettings={moreSettings}
 				setTutoStage={setTutoStage}
 				setImport={setSettingsFromCode}
 				setMoreSettings={setMoreSettings}
+				changeFullscreen={changeFullscreen}
 			></Menu>
 
 			<main>

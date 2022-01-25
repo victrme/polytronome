@@ -14,7 +14,6 @@ import {
 	faHeadphones,
 	faFire,
 	faStar,
-	faBookOpen,
 	faCode,
 	faHandHoldingHeart,
 	faComment,
@@ -30,9 +29,10 @@ const Menu = ({
 	setImport,
 	tutoStage,
 	setTutoStage,
+	fullscreen,
+	changeFullscreen,
 }) => {
 	const [openedTheme, setOpenedTheme] = useState(false)
-	const [fullscreen, setFullscreen] = useState(false)
 	const [extended, setExtended] = useState(false)
 	const isOn = bool => (bool ? 'on' : '')
 
@@ -44,16 +44,6 @@ const Menu = ({
 			: appDOM.classList.add('performance')
 
 		setMoreSettings(prev => ({ ...prev, animations: !moreSettings.animations }))
-	}
-
-	const changeFullscreen = () => {
-		if (!moreSettings.fullscreen && document.fullscreenElement === null) {
-			document.body!.requestFullscreen()
-			setFullscreen(true)
-		} else if (document.fullscreenElement !== null) {
-			document.exitFullscreen()
-			setFullscreen(false)
-		}
 	}
 
 	const changeTheme = (index?: number) => {
@@ -81,7 +71,6 @@ const Menu = ({
 		setImport(importCode(createExportCode(80, defaultLayers, moreSettings, easy)))
 
 	const links = [
-		{ url: 'https://polytronome.com/docs', icon: faBookOpen, text: 'documentation' },
 		{ url: 'https://github.com/victrme/polytronome', icon: faCode, text: 'github' },
 		{ url: 'https://ko-fi.com/victr', icon: faHandHoldingHeart, text: 'donate' },
 		{ url: 'mailto:mail@victr.me', icon: faComment, text: 'contact' },
@@ -149,7 +138,7 @@ const Menu = ({
 			text: 'show tutorial',
 			title: 'show tutorial',
 			func: () => {
-				setTutoStage(easy ? 'intro' : 'showNotes')
+				setTutoStage(easy ? 'intro' : 'beatsAgain')
 				if (isMobileOnly) setExtended(false)
 			},
 			css: '',

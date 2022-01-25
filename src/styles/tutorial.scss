@@ -19,14 +19,16 @@
 }
 
 &.testLaunch {
+	.menu,
 	.tempo,
 	.clicks,
-	.layers-table-wrap {
+	.layers-table-wrap,
+	.bottom-buttons .randomize {
 		opacity: 0.1;
 		filter: grayscale(1);
 	}
 
-	.bottom-buttons {
+	.bottom-buttons .start {
 		opacity: 1;
 	}
 }
@@ -58,6 +60,18 @@
 }
 
 /* ADVANCED */
+
+&.beatsAgain {
+	aside,
+	.tempo,
+	.logo,
+	.clicks,
+	.bottom-buttons,
+	.layers-table .ls-row > div:not(:nth-child(1)) {
+		opacity: 0.1;
+		filter: grayscale(1);
+	}
+}
 
 &.showNotes {
 	aside,

@@ -25,25 +25,30 @@ You can:
 
 # Keybindings
 
-| Key                          | Function               |
-| ---------------------------- | ---------------------- |
-| `Space`                      | Start / Stop Metronome |
-| `NumpadMinus` `Minus`        | Tempo down             |
-| `NumpadPlus` `Equal`         | Tempo Up               |
-| `shift + Tempo up / down`    | +/-10 tempo            |
-| `V`                          | Change rythm view      |
-| `AltRight`                   | Shuffle rythms         |
-| `1` `2` `3` `4` `5`, `←` `→` | Select rythm           |
-| `Backspace`                  | Deselect rythm         |
+| Key                                  | Function               |
+| ------------------------------------ | ---------------------- |
+| `Space`                              | Start / Stop Metronome |
+| `NumpadMinus` `Minus`                | Tempo down             |
+| `NumpadPlus` `Equal`                 | Tempo Up               |
+| `shift + Tempo up / down`            | +/-10 tempo            |
+| `Digit0`                             | tempo tapping          |
+| `Digit9`                             | Change rythm view      |
+| `Digit8`                             | Fullscreeen            |
+| `AltRight`                           | Shuffle rythms         |
+| `1` `2` `3` `4` `5`, `←` `→` `↑` `↓` | Select rythm           |
+| `Backspace`                          | Deselect rythm         |
 
 | Key (with rythm selected)     | Function             |
 | ----------------------------- | -------------------- |
-| `↑` `↓`                       | Chage beats          |
-| `B`                           | Volume down          |
-| `N`                           | Volume up            |
+| `shift + ↑` `shift + ↓`       | Change beats         |
 | `M` (french iso: `?`)         | Volume mute          |
+| `,` (french iso: `;`)         | Volume down          |
+| `.` (french iso: `:`)         | Volume up            |
 | `Z` (french iso: `W`)         | Keyboard octave down |
 | `X`                           | Keyboard octave up   |
+| `C`                           | Change wave type     |
+| `V`                           | Change note duration |
+| `B`                           | Change note release  |
 | `A`                           | C                    |
 | `W`                           | C#                   |
 | `S`                           | D                    |
@@ -74,12 +79,11 @@ You can:
 
 -   [ ] import / export rythms
 -   [ ] tutorial translation
--   [ ] Mobile menu responsive
+-   [x] Mobile menu responsive
 -   [x] advanced tutorial
 -   [x] Tempo tapping keymapping
 -   [x] Better mute animation
 -   [x] Keymappings
--   [x] documentation
 
 ### Bugs
 

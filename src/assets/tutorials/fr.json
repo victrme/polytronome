@@ -33,8 +33,12 @@
 		"no": { "to": "removed", "text": "Non c'est bon" }
 	},
 	"startAdvanced": {
-		"text": "Ici tu a accès à toute les options possible. On a déjà vu pour les rythmes, alors voyons le reste.",
-		"yes": { "to": "showNotes", "text": "D'acc" }
+		"text": "Ici tu a accès à toute les options possible. ",
+		"yes": { "to": "beatsAgain", "text": "Ah oui d'accord" }
+	},
+	"beatsAgain": {
+		"text": "On a déjà vu pour les rythmes, alors voyons le reste.",
+		"yes": { "to": "showNotes", "text": "C'est vrai" }
 	},
 	"showNotes": {
 		"text": "Ici tu peux faire défiler les notes, de C0 jusqu'à F#5",
