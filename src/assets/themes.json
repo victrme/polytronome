@@ -34,15 +34,37 @@
 		"clicks-off": "#484f61"
 	},
 	{
-		"name": "silver",
-		"background": "#dae3f0",
-		"accent": "#666c6d",
-		"dim": "#a5b2c5",
-		"dimmer": "#d2dbe9",
-		"buttons": "#c9d6be",
-		"menu": "#f7f8fd",
-		"clicks-on": "#666c6d",
-		"clicks-off": "#a5b2c5"
+		"name": "pink",
+		"background": "#e56b6f",
+		"dim": "#a3565c",
+		"accent": "#fae1e1",
+		"dimmer": "#cc686f",
+		"buttons": "#b56576",
+		"menu": "#cc686f",
+		"clicks-on": "#ffd1b8",
+		"clicks-off": "#cc686f"
+	},
+	{
+		"name": "carpet",
+		"background": "#6b705c",
+		"dim": "#ab9077",
+		"accent": "#ffe8d6",
+		"dimmer": "#80846e",
+		"buttons": "#cb997e",
+		"menu": "#a5a58d",
+		"clicks-on": "#ffe8d6",
+		"clicks-off": "#a5a58d"
+	},
+	{
+		"name": "indus",
+		"background": "#e4dfd3",
+		"accent": "#504e47",
+		"dim": "#e4dfd3",
+		"dimmer": "#d9d1bf",
+		"buttons": "#c7c4ba",
+		"menu": "#f1efe9",
+		"clicks-on": "#e7a125",
+		"clicks-off": "#bab7ab"
 	},
 	{
 		"name": "cosy",
@@ -55,28 +77,16 @@
 		"clicks-on": "#b57e7d",
 		"clicks-off": "#8f99a3"
 	},
-
 	{
-		"name": "jungle",
-		"background": "#fbf6e5",
-		"accent": "#77936c",
-		"dim": "#e2d69d",
-		"dimmer": "#f3edce",
-		"buttons": "#e7dfac",
-		"menu": "#f3efd8",
-		"clicks-on": "#7e9060",
-		"clicks-off": "#e2d69d"
-	},
-	{
-		"name": "beach",
-		"background": "#fff9e9",
-		"accent": "#4b9ab4",
-		"dim": "#f6dbbc",
-		"dimmer": "#fcf0db",
-		"buttons": "#f6dbbc",
-		"menu": "#fdf3e0",
-		"clicks-on": "#527cad",
-		"clicks-off": "#f6dbbc"
+		"name": "silver",
+		"background": "#dae3f0",
+		"accent": "#666c6d",
+		"dim": "#a5b2c5",
+		"dimmer": "#d2dbe9",
+		"buttons": "#c9d6be",
+		"menu": "#f7f8fd",
+		"clicks-on": "#666c6d",
+		"clicks-off": "#a5b2c5"
 	},
 	{
 		"name": "coffee",
@@ -90,14 +100,14 @@
 		"clicks-off": "#d6b99f"
 	},
 	{
-		"name": "indus",
-		"background": "#e4dfd3",
-		"accent": "#504e47",
-		"dim": "#e4dfd3",
-		"dimmer": "#d9d1bf",
-		"buttons": "#c7c4ba",
-		"menu": "#f1efe9",
-		"clicks-on": "#e7a125",
-		"clicks-off": "#bab7ab"
+		"name": "jeans",
+		"background": "#f1f2f6",
+		"dim": "#f6d7c2",
+		"accent": "#758bfd",
+		"dimmer": "#e6e7f9",
+		"buttons": "#f6d7c2",
+		"menu": "#e6e7f9",
+		"clicks-on": "#ff8600",
+		"clicks-off": "#aeb8fe"
 	}
 ]

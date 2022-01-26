@@ -87,6 +87,7 @@ You can:
 
 ### Bugs
 
+-   [ ] Fix missing theme transition
 -   [x] No sound on safari
 -   [x] Tempo state always default on resize effect (during mount)
 -   [x] Tempo keyboard change doesn't reset metronome
