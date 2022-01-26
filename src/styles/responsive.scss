@@ -72,11 +72,9 @@
 
 @media screen and (max-height: 1100px), screen and (max-height: 780px) {
 	.polytronome {
-		main {
-			padding-top: 5vh;
-		}
+		main,
 		.menu {
-			padding-top: 1vh;
+			padding-top: 5vh;
 		}
 	}
 }

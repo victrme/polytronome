@@ -55,13 +55,14 @@ aside {
 		}
 
 		button {
+			font-size: inherit;
 			min-height: 44px;
 			text-align: left;
 			display: flex;
-			justify-content: space-between;
 			align-items: center;
-			font-size: inherit;
+			justify-content: space-between;
 			background-color: transparent;
+			overflow: hidden;
 
 			p {
 				margin: 0;

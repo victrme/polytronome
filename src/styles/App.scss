@@ -35,9 +35,8 @@ pre {
 }
 
 .polytronome {
-	display: flex;
-	position: relative;
-	align-items: flex-start;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
 	color: var(--accent);
 	user-select: none;
 	overflow: hidden;
@@ -50,7 +49,7 @@ pre {
 	@import 'tutorial';
 
 	.spacer {
-		min-width: 300px;
+		min-width: 200px;
 	}
 
 	main {
