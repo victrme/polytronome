@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
+		<title>Polytronome - train your polyrythms</title>
 		<meta charset="utf-8" />
 		<meta
 			name="viewport"
@@ -25,7 +26,12 @@
 		<link rel="shortcut icon" id="favicon" href="%PUBLIC_URL%/favicon.ico?v=4" />
 		<link rel="mask-icon" href="%PUBLIC_URL%/safari-pinned-tab.svg?v=4" color="#b57e7d" />
 
-		<title>Polytronome - train your polyrythms</title>
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-86MBBNQ7C2"></script>
+		<script
+			data-ad-client="ca-pub-4569265760991351"
+			async
+			src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+		></script>
 
 		<script>
 			const dark = window.matchMedia('(prefers-color-scheme: dark)').matches || false
@@ -41,10 +47,18 @@
 				.matchMedia('(prefers-color-scheme: dark)')
 				.addEventListener('change', e => switchIcon(e.matches))
 			switchIcon(dark)
+
+			window.dataLayer = window.dataLayer || []
+
+			function gtag() {
+				dataLayer.push(arguments)
+			}
+			gtag('js', new Date())
+			gtag('config', 'G-86MBBNQ7C2')
 		</script>
 	</head>
 	<body>
-		<noscript>2005 called</noscript>
+		<noscript>You need to enable javascript !</noscript>
 		<div id="app-content"></div>
 	</body>
 </html>
