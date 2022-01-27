@@ -16,7 +16,7 @@ export type Layer = {
 	beats: number
 	freq: number
 	release: number
-	duration: boolean
+	duration: number
 	type: number
 	volume: number
 	muted: boolean

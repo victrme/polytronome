@@ -80,7 +80,7 @@ export const importCode = (code: any[]) => {
 			beats: minified[0],
 			freq: minified[1],
 			type: minified[2],
-			duration: !!minified[3],
+			duration: minified[3],
 			release: minified[4],
 			volume: minified[5],
 			muted: !!minified[6],

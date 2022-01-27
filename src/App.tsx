@@ -86,6 +86,7 @@ const App = (): JSX.Element => {
 
 	const handleLayerChange = (cat: string, result: any, index: number) => {
 		let newLayers = [...layers]
+		const durationsList = [0.25, 0.33, 0.5, 0.75, 0.95]
 
 		switch (cat) {
 			case 'wave':
@@ -100,9 +101,11 @@ const App = (): JSX.Element => {
 				newLayers[index].freq = result + 1
 				break
 
-			case 'duration':
-				newLayers[index].duration = !newLayers[index].duration
+			case 'duration': {
+				const curr = durationsList.indexOf(result)
+				newLayers[index].duration = durationsList[(curr + 1) % durationsList.length]
 				break
+			}
 
 			case 'release':
 				newLayers[index].release = (newLayers[index].release + 1) % 3

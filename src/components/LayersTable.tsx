@@ -22,6 +22,13 @@ const LayersTable = ({ easy, layers, selected, handleLayerChange, tempoProps }) 
 		'M 10 10 L 30 2 V 18 L 50 10', // sawtooth
 		'M 10 2 H 30 V 18 H 50', // square
 	]
+	const durations = {
+		'0.25': '¼ note',
+		'0.33': '⅓ note',
+		'0.5': '½ note',
+		'0.75': '¾ note',
+		'0.95': 'full note',
+	}
 
 	const volumeIconControl = (volume: number, muted: boolean): IconDefinition => {
 		let icon = faVolumeUp
@@ -98,7 +105,9 @@ const LayersTable = ({ easy, layers, selected, handleLayerChange, tempoProps }) 
 							<div className="note-length">
 								<button
 									title="sound duration"
-									onClick={() => handleLayerChange('duration', null, i)}
+									onClick={() =>
+										handleLayerChange('duration', layer.duration, i)
+									}
 								>
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="1 1 10 6">
 										<path
@@ -109,7 +118,7 @@ const LayersTable = ({ easy, layers, selected, handleLayerChange, tempoProps }) 
 											fill="none"
 										/>
 									</svg>
-									{layer.duration ? '⅓ note' : '50ms'}
+									{durations[layer.duration]}
 								</button>
 								<button
 									title="sound release"

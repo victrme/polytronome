@@ -30,8 +30,7 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 	Pizzicato.volume = 0.3
 
 	function playSound(layerArray: Layer[]) {
-		const fixedMsSounds: Pizzicato[] = []
-		const relativeMsSounds: Pizzicato[] = []
+		const soundList: Pizzicato[] = []
 		const waveformsList = ['sine', 'triangle', 'sawtooth', 'square']
 
 		layerArray.forEach(layer => {
@@ -49,28 +48,19 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 				},
 			})
 
-			if (!layer.duration) fixedMsSounds.push(wave)
-			else
-				relativeMsSounds.push({
-					wave,
-					length: (24e4 / tempoRef.current / layer.beats) * 0.3,
-				})
+			soundList.push({
+				wave,
+				length: (24e4 / tempoRef.current / layer.beats) * layer.duration,
+			})
 		})
 
-		// group and play all fixed timed clicks
-		const group = new Pizzicato.Group(fixedMsSounds)
-		setTimeout(() => group.stop(), 50)
-		group.play()
-
-		// start and stop relatives one by one
-		if (relativeMsSounds.length > 0)
-			relativeMsSounds.forEach(({ wave, length }) => {
-				wave.play()
-				setTimeout(() => {
-					wave.stop()
-					// wave.disconnect()
-				}, length)
-			})
+		soundList.forEach(({ wave, length }) => {
+			wave.play()
+			setTimeout(() => {
+				wave.stop()
+				// wave.disconnect()
+			}, length)
+		})
 	}
 
 	function metronome(timings: Timings, runId: string) {
