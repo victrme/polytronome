@@ -122,9 +122,6 @@
 	}
 
 	.note-length {
-		width: 100%;
-		max-width: 120px;
-
 		svg {
 			width: 15px;
 			margin-right: 10px;
@@ -132,7 +129,8 @@
 
 		button {
 			margin: 4px 0;
-			padding: 3px 20px;
+			margin-right: 10px;
+			padding: 3px 10px;
 			text-align: left;
 			background-color: transparent;
 

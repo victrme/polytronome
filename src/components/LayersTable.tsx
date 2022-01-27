@@ -23,11 +23,11 @@ const LayersTable = ({ easy, layers, selected, handleLayerChange, tempoProps }) 
 		'M 10 2 H 30 V 18 H 50', // square
 	]
 	const durations = {
-		'0.25': '¼ note',
-		'0.33': '⅓ note',
-		'0.5': '½ note',
-		'0.75': '¾ note',
-		'0.95': 'full note',
+		'0.25': '1/4', //'¼ note',
+		'0.33': '1/3', //'⅓ note',
+		'0.5': 'half', //'½ note',
+		'0.75': '3/4', //'¾ note',
+		'0.97': 'full', //'full note',
 	}
 
 	const volumeIconControl = (volume: number, muted: boolean): IconDefinition => {

@@ -19,7 +19,7 @@ input {
 	-moz-osx-font-smoothing: grayscale;
 	font-family: 'Dosis', sans-serif;
 	line-height: 1em;
-	font-weight: 700;
+	font-weight: 600;
 	letter-spacing: 1.2px;
 }
 
@@ -70,10 +70,10 @@ pre {
 		border: 2px solid transparent;
 		border-radius: 2em;
 		font-size: 14px;
-		font-weight: 700;
-		cursor: pointer;
+		font-weight: 600;
 		white-space: pre;
 		outline: none;
+		cursor: pointer;
 		transition: background-color 0.3s, color 0.3s, border 0.1s;
 
 		svg {
