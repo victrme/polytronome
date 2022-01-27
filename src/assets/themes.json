@@ -45,7 +45,7 @@
 		"clicks-off": "#cc686f"
 	},
 	{
-		"name": "carpet",
+		"name": "army",
 		"background": "#6b705c",
 		"dim": "#ab9077",
 		"accent": "#ffe8d6",
@@ -100,7 +100,7 @@
 		"clicks-off": "#d6b99f"
 	},
 	{
-		"name": "jeans",
+		"name": "polo",
 		"background": "#f1f2f6",
 		"dim": "#f6d7c2",
 		"accent": "#758bfd",
