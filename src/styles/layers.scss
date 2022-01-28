@@ -87,14 +87,38 @@
 		}
 	}
 
-	.note-volume {
+	.ls-effects {
+		text-align: center;
+
+		svg {
+			width: 15px;
+			margin-right: 10px;
+		}
+
+		button {
+			margin: 4px 0;
+			margin-right: 10px;
+			padding: 3px 10px;
+			text-align: left;
+			background-color: transparent;
+
+			&:hover {
+				opacity: 1;
+				background-color: var(--buttons);
+				border-color: transparent;
+			}
+		}
+	}
+
+	.ls-volume {
 		display: flex;
 		align-items: center;
 
 		.mute {
-			border-radius: 5px;
-			padding: 5px 20px 5px 5px;
 			width: 20px;
+			padding: 5px;
+			padding-right: 20px;
+			border-radius: 5px;
 			cursor: pointer;
 		}
 
@@ -117,27 +141,6 @@
 			.inner-range {
 				background-color: var(--accent);
 				height: 20px;
-			}
-		}
-	}
-
-	.note-length {
-		svg {
-			width: 15px;
-			margin-right: 10px;
-		}
-
-		button {
-			margin: 4px 0;
-			margin-right: 10px;
-			padding: 3px 10px;
-			text-align: left;
-			background-color: transparent;
-
-			&:hover {
-				opacity: 1;
-				background-color: var(--buttons);
-				border-color: transparent;
 			}
 		}
 	}

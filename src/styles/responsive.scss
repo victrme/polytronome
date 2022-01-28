@@ -56,9 +56,6 @@
 		}
 
 		.menu {
-			> button {
-				margin-left: 20px;
-			}
 			aside {
 				margin: 20px;
 			}
@@ -123,7 +120,7 @@
 				}
 			}
 
-			.note-volume {
+			.ls-volume {
 				flex-direction: column;
 
 				.mute {
@@ -182,8 +179,28 @@
 			}
 
 			.clicks {
-				height: 130px;
+				height: auto;
 				width: 90vw;
+				margin: 20px;
+
+				.layers .click-row {
+					height: 30px;
+
+					.click {
+						margin: 2px;
+
+						&.off {
+							margin: 2px 0;
+						}
+					}
+				}
+
+				.segment {
+					.click-row .click {
+						height: 60px;
+						margin: 0 2px;
+					}
+				}
 			}
 
 			.immovable_wheel {
@@ -191,7 +208,7 @@
 				height: 30px;
 				line-height: 35px;
 				font-size: 30px;
-				min-width: 50px;
+				min-width: 45px;
 
 				pre {
 					margin-top: -2.5px;
@@ -203,29 +220,6 @@
 			}
 		}
 
-		.clicks {
-			margin: 20px;
-
-			.layers .click-row {
-				height: 30px;
-
-				.click {
-					margin: 2px;
-
-					&.off {
-						margin: 2px 0;
-					}
-				}
-			}
-
-			.segment {
-				.click-row .click {
-					height: 60px;
-					margin: 0 2px;
-				}
-			}
-		}
-
 		.layers-table-wrap {
 			.layers-table {
 				.ls-row {
@@ -233,12 +227,13 @@
 					padding-left: 10px;
 
 					> div {
-						margin: 5px 0;
+						margin: 6px;
 					}
 				}
 
 				.ls-type {
-					min-width: 70px;
+					min-width: auto;
+
 					svg {
 						height: 35px;
 						width: 35px;
@@ -246,16 +241,21 @@
 					}
 				}
 
-				.note-length button {
-					margin: 2px 0;
-					padding: 2px 5px;
+				.ls-effects {
+					text-align: left;
 
-					svg {
-						margin-right: 5px;
+					button {
+						margin: 0;
+						padding: 2px 5px;
+
+						svg {
+							width: 12px;
+							margin-right: 5px;
+						}
 					}
 				}
 
-				.note-volume {
+				.ls-volume {
 					.mute {
 						padding: 0;
 						margin-bottom: 10px;
@@ -286,10 +286,15 @@
 				width: 90vw;
 				margin: 0;
 				margin-bottom: 40px;
+				justify-content: space-around;
 
 				.ls-row .immovable_wheel {
 					width: auto;
 					min-width: 40px;
+				}
+
+				.ls-row > div {
+					margin: 0;
 				}
 			}
 
@@ -327,6 +332,7 @@ specific to .mobile render changes
 	}
 
 	.menu {
+		padding-top: 10px;
 		position: fixed;
 		top: 0;
 		left: 0;

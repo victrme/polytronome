@@ -76,10 +76,6 @@ pre {
 		cursor: pointer;
 		transition: background-color 0.3s, color 0.3s, border 0.1s;
 
-		svg {
-			width: 16px !important;
-		}
-
 		&:active,
 		&:focus,
 		&:hover {
@@ -222,40 +218,10 @@ pre {
 				background-color: transparent;
 				padding: 0px;
 
-				&.off {
-					display: flex;
-				}
-
 				.immovable_wheel {
 					width: 80px;
 					margin: 0;
 				}
-			}
-		}
-
-		.ls-add {
-			display: grid;
-			place-items: center;
-			width: 80px;
-			cursor: pointer;
-			border: 2px dashed transparent;
-			border-radius: 10px;
-
-			&:hover {
-				border-color: var(--accent);
-			}
-		}
-
-		.ls-buttons {
-			width: auto;
-			margin-left: 30px;
-			display: flex;
-			flex-direction: column;
-			justify-content: flex-end;
-			align-items: flex-end;
-
-			.randomize {
-				width: 120px;
 			}
 		}
 	}

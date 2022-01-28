@@ -11,6 +11,7 @@ import {
 import Tempo from './Tempo'
 import Wheel from './Wheel'
 import Range from './Range'
+import { Layer } from '../Types'
 
 const LayersTable = ({ easy, layers, selected, handleLayerChange, tempoProps }) => {
 	//
@@ -43,7 +44,7 @@ const LayersTable = ({ easy, layers, selected, handleLayerChange, tempoProps }) 
 	return (
 		<div className="layers-table-wrap">
 			<div className="layers-table">
-				{layers.map((layer, i) => (
+				{layers.map((layer: Layer, i: number) => (
 					<div
 						className={
 							'ls-row' +
@@ -52,11 +53,13 @@ const LayersTable = ({ easy, layers, selected, handleLayerChange, tempoProps }) 
 						}
 						key={layer.id}
 					>
-						<Wheel
-							type="beats"
-							state={layer.beats}
-							update={(res: number) => handleLayerChange('beats', res, i)}
-						></Wheel>
+						<div className="ls-beats">
+							<Wheel
+								type="beats"
+								state={layer.beats}
+								update={(res: number) => handleLayerChange('beats', res, i)}
+							></Wheel>
+						</div>
 
 						{easy ? (
 							''
@@ -79,7 +82,7 @@ const LayersTable = ({ easy, layers, selected, handleLayerChange, tempoProps }) 
 							''
 						) : (
 							<div
-								title={'sound type'}
+								title="sound type"
 								className="ls-type"
 								onClick={() => handleLayerChange('wave', 1, i)}
 							>
@@ -102,7 +105,7 @@ const LayersTable = ({ easy, layers, selected, handleLayerChange, tempoProps }) 
 						{easy ? (
 							''
 						) : (
-							<div className="note-length">
+							<div className="ls-effects">
 								<button
 									title="sound duration"
 									onClick={() =>
@@ -141,7 +144,7 @@ const LayersTable = ({ easy, layers, selected, handleLayerChange, tempoProps }) 
 						{easy ? (
 							''
 						) : (
-							<div title={'volume: ' + layer.volume} className="note-volume">
+							<div title={'volume: ' + layer.volume} className="ls-volume">
 								<span
 									title="mute"
 									className="mute"
