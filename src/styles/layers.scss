@@ -37,7 +37,14 @@
 
 		&.off {
 			opacity: 0.4;
-			filter: grayscale(0.6);
+
+			.ls-note,
+			.ls-type,
+			.ls-effects,
+			.ls-volume {
+				opacity: 0;
+				transition: opacity 0.4s;
+			}
 		}
 	}
 

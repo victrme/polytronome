@@ -1,136 +1,94 @@
-&.explainWheel {
-	.tempo,
-	.clicks,
-	.bottom-buttons,
-	.layers-table .ls-row > div:not(:first-child) {
-		opacity: 0.1;
-		filter: grayscale(1);
+@mixin dimUnfocused() {
+	opacity: 0.1;
+	filter: grayscale(1);
+}
+
+@mixin butShow($class: '') {
+	#{$class} {
+		opacity: 1;
 	}
 }
 
-&.testBeats {
+/* 
+ * EASY 
+ */
+
+&.testBeats,
+&.explainWheel {
+	.menu,
 	.tempo,
 	.clicks,
 	.bottom-buttons,
 	.layers-table .ls-row > div:not(:first-child) {
-		opacity: 0.1;
-		filter: grayscale(1);
+		@include dimUnfocused();
 	}
 }
 
 &.testLaunch {
+	@include butShow($class: '.start');
+
 	.menu,
 	.tempo,
 	.clicks,
-	.layers-table-wrap,
+	.layers-table,
 	.bottom-buttons .randomize {
-		opacity: 0.1;
-		filter: grayscale(1);
-	}
-
-	.bottom-buttons .start {
-		opacity: 1;
+		@include dimUnfocused();
 	}
 }
 
 &.showTempo {
-	.logo,
+	@include butShow($class: '.tempo');
+
+	.menu,
 	.clicks,
 	.bottom-buttons,
 	.layers-table {
-		opacity: 0.1;
-		filter: grayscale(1);
-	}
-
-	.tempo {
-		opacity: 1;
+		@include dimUnfocused();
 	}
 }
 
 &.clickMenu {
 	aside,
 	.tempo,
-	.logo,
 	.clicks,
 	.bottom-buttons,
-	.layers-table-wrap {
-		opacity: 0.1;
-		filter: grayscale(1);
+	.layers-table {
+		@include dimUnfocused();
 	}
 }
 
-/* ADVANCED */
+/* 
+ * ADVANCED 
+ */
 
-&.beatsAgain {
+$stages: (
+	'showNotes': 'ls-note',
+	'showWaveType': 'ls-type',
+	'beatsAgain': 'ls-beats',
+	'showDuration': 'ls-effects',
+	'showRelease': 'ls-effects',
+	'showVolume': 'ls-volume',
+);
+
+@mixin advancedStagesDim($focus: '') {
 	aside,
 	.tempo,
 	.logo,
 	.clicks,
 	.bottom-buttons,
-	.layers-table .ls-row > div:not(:nth-child(1)) {
-		opacity: 0.1;
-		filter: grayscale(1);
+	.layers-table .ls-row > div:not(#{$focus}) {
+		@include dimUnfocused();
 	}
 }
 
-&.showNotes {
-	aside,
-	.tempo,
-	.logo,
-	.clicks,
-	.bottom-buttons,
-	.layers-table .ls-row > div:not(:nth-child(2)) {
-		opacity: 0.1;
-		filter: grayscale(1);
+@each $stage, $class in $stages {
+	&.#{$stage} {
+		@include advancedStagesDim($focus: '.#{$class}');
 	}
 }
 
-&.showWaveType {
-	aside,
-	.tempo,
-	.logo,
-	.clicks,
-	.bottom-buttons,
-	.layers-table .ls-row > div:not(:nth-child(3)) {
-		opacity: 0.1;
-		filter: grayscale(1);
-	}
-}
-
-&.showDuration {
-	aside,
-	.tempo,
-	.logo,
-	.clicks,
-	.bottom-buttons,
-	.layers-table .ls-row > div:not(:nth-child(4)),
-	.layers-table .note-length button.release {
-		opacity: 0.1;
-		filter: grayscale(1);
-	}
-}
-
-&.showRelease {
-	aside,
-	.tempo,
-	.logo,
-	.clicks,
-	.bottom-buttons,
-	.layers-table .ls-row > div:not(:nth-child(4)),
-	.layers-table .note-length button.duration {
-		opacity: 0.1;
-		filter: grayscale(1);
-	}
-}
-
-&.showVolume {
-	aside,
-	.tempo,
-	.logo,
-	.clicks,
-	.bottom-buttons,
-	.layers-table .ls-row > div:not(:nth-child(5)) {
-		opacity: 0.1;
-		filter: grayscale(1);
-	}
+&.showDuration .ls-effects button:last-child,
+&.showRelease .ls-effects button:first-child {
+	opacity: 0.1;
+	filter: grayscale(1);
 }
