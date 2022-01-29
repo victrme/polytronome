@@ -15,23 +15,15 @@
 	}
 }
 
-@media only screen and (max-width: 1500px) {
+@media only screen and (min-height: 900px) and (max-width: 1500px) {
 	.polytronome {
 		.layers-table-wrap {
-			overflow: auto;
-
 			.layers-table {
 				width: auto;
 				flex-direction: column;
 
 				.ls-row {
 					flex-direction: row;
-					margin: 10px;
-					padding: 0 20px;
-
-					> div {
-						margin: 15px 0;
-					}
 				}
 			}
 		}
@@ -41,8 +33,6 @@
 				flex-wrap: wrap;
 				justify-content: flex-start;
 				justify-content: center;
-				width: 70vw;
-				margin: 60px 20px;
 
 				.ls-row {
 					padding: 0;
@@ -54,25 +44,18 @@
 		main {
 			padding-top: 5vh;
 		}
-
-		.menu {
-			aside {
-				margin: 20px;
-			}
-		}
-
-		aside.closed {
-			top: 15vh;
-		}
 	}
 }
 
-@media screen and (max-height: 1100px), screen and (max-height: 780px) {
-	.polytronome {
-		main,
-		.menu {
-			padding-top: 5vh;
-		}
+@media only screen and (max-height: 900px) and (max-width: 1440px) {
+	body {
+		font-size: 13px;
+	}
+
+	.polytronome.easy main,
+	.polytronome main,
+	.menu {
+		padding-top: 5vh;
 	}
 }
 
@@ -80,63 +63,15 @@
 	.polytronome {
 		.header {
 			flex-direction: column;
-			min-height: 160px;
-
-			.logo {
-				height: 60px;
-			}
-		}
-
-		.immovable_wheel {
-			@include Wheel(50px);
-			min-width: 60px;
-
-			.arrows {
-				height: 40px;
-
-				svg:first-child {
-					transform: rotate(180deg) translateY(-2px);
-				}
-			}
-		}
-
-		&.easy main {
-			padding-top: 5vh;
 		}
 
 		.layers-table-wrap .layers-table {
 			margin: 0;
-
-			.ls-row > div {
-				margin: 12px 0;
-			}
-
-			.ls-type {
-				min-width: 90px;
-				svg {
-					height: 50px;
-					width: 50px;
-					padding: 0 10px;
-				}
-			}
-
-			.ls-volume {
-				flex-direction: column;
-
-				.mute {
-					padding: 0;
-					margin-bottom: 10px;
-				}
-
-				.range-wrap {
-					height: 10px;
-					width: 60px;
-				}
-			}
 		}
 
 		.bottom-buttons {
-			margin-top: 20px;
+			margin-top: 1em;
+
 			.start {
 				width: 200px;
 			}
@@ -149,10 +84,6 @@
 		button {
 			padding: 5px 20px;
 			font-size: 11px;
-		}
-
-		.immovable_wheel {
-			@include Wheel(40px);
 		}
 
 		main {

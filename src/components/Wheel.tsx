@@ -37,7 +37,7 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 	const heightRef = useRef(bounds.height)
 	heightRef.current = bounds.height
 
-	const getHeight = () => (heightRef.current === 0 ? 50 : Math.round(heightRef.current))
+	const getHeight = () => (heightRef.current === 0 ? 50 : heightRef.current)
 	const offsetState = (state: number) => (type === 'tempo' ? state - 30 : state - 1)
 	const getClosest = (y: number) => Math.round(y / getHeight()) * getHeight()
 	const getUserVal = (y: number) => Math.round(y / getHeight()) + list.length - 1

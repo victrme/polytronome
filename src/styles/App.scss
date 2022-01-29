@@ -28,12 +28,6 @@ pre {
 	font-family: 'Source Code Pro', 'Courier New', Courier, monospace;
 }
 
-@mixin Wheel($size) {
-	line-height: $size;
-	font-size: $size;
-	height: $size;
-}
-
 .polytronome {
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
@@ -65,11 +59,11 @@ pre {
 		color: var(--accent);
 		background: var(--buttons);
 		width: auto;
-		margin: 5px 5px 0 0;
-		padding: 7px 30px;
+		margin: 0.2em;
+		padding: 0.5em 2em;
 		border: 2px solid transparent;
 		border-radius: 2em;
-		font-size: 14px;
+		font-size: 1em;
 		font-weight: 600;
 		white-space: pre;
 		outline: none;
@@ -86,29 +80,29 @@ pre {
 			opacity: 0.5;
 			cursor: initial;
 		}
-
-		&.suppr-btn {
-			background: 0;
-			border: 0;
-			color: var(--accent);
-			font-size: 1em;
-			padding: 10px;
-		}
 	}
 
 	.immovable_wheel {
 		position: relative;
 		overflow: hidden;
 		user-select: none;
-		min-width: 80px;
-		padding: 0 5px 0 30px;
-		border-radius: 10px;
+		padding-top: 0.1em;
+		padding-bottom: 0.1em;
+		padding-right: 0.2em;
+		padding-left: 0.8em;
+		border-radius: 0.3em;
 		transition: opacity 0.2s, background-color 0.2s;
 
-		@include Wheel(50px);
+		font-size: 3em;
+		line-height: 1.2em;
+		height: 1em;
 
 		&:hover {
 			background-color: var(--buttons);
+		}
+
+		pre {
+			margin-top: -0.1em;
 		}
 
 		.arrows {
@@ -116,13 +110,13 @@ pre {
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
-			margin-left: -25px;
-			height: 50px;
+			margin-left: -0.7em;
+			height: 1em;
 			z-index: 2;
 
 			svg {
-				width: 16px;
-				padding: 0 4px;
+				width: 0.35em;
+				padding: 0 0.1em;
 				text-align: center;
 				cursor: pointer;
 				opacity: 0.2;
@@ -209,7 +203,7 @@ pre {
 
 			.layers-table {
 				flex-direction: row;
-				margin: 60px 0;
+				margin: 4em 0;
 				margin-left: 0;
 				width: auto;
 			}

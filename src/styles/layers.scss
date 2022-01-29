@@ -2,17 +2,13 @@
 	display: flex;
 	align-items: center;
 	overflow: hidden;
-
-	.ls-buttons {
-		width: 100px;
-	}
 }
 
 .layers-table {
 	display: flex;
 	justify-content: center;
 	width: 100%;
-	margin: 40px 0;
+	margin: 2em 0;
 
 	.ls-row {
 		display: flex;
@@ -21,14 +17,13 @@
 		background-color: var(--dimmer);
 		border: 2px solid transparent;
 		justify-content: space-evenly;
-		max-width: 700px;
-		margin: 20px;
 		border-radius: 20px;
-		padding: 10px 30px;
+		padding: 1em;
+		margin: 1em;
 		transition: opacity 0.2s, filter 0.2s, background-color 0.3s;
 
 		> div {
-			margin: 20px 0;
+			margin: 0.6em;
 		}
 
 		&.selected {
@@ -53,12 +48,12 @@
 		text-align: center;
 
 		svg {
-			width: 60px;
-			height: 60px;
-			padding: 0 20px;
-			border-radius: 8px;
-			cursor: pointer;
+			width: 4em;
+			height: 4em;
+			padding: 0 1.2em;
+			border-radius: 12px;
 			transition: background-color 0.3s;
+			cursor: pointer;
 
 			path {
 				transition: stroke-dashoffset 1s;
@@ -77,10 +72,10 @@
 
 		pre.octave {
 			position: absolute;
-			right: -8px;
-			bottom: -4px;
-			padding: 2px 8px;
-			border-radius: 8px;
+			right: -0.5em;
+			bottom: -0.3em;
+			padding: 0.2em 0.5em;
+			border-radius: 0.5em;
 			background-color: transparent;
 			transition: background-color 0.2s;
 		}
@@ -98,14 +93,13 @@
 		text-align: center;
 
 		svg {
-			width: 15px;
-			margin-right: 10px;
+			width: 1em;
+			margin-right: 0.8em;
 		}
 
 		button {
-			margin: 4px 0;
-			margin-right: 10px;
-			padding: 3px 10px;
+			margin: 0.2em;
+			padding: 0.2em 1em;
 			text-align: left;
 			background-color: transparent;
 
@@ -122,23 +116,21 @@
 		align-items: center;
 
 		.mute {
-			width: 20px;
-			padding: 5px;
-			padding-right: 20px;
-			border-radius: 5px;
+			width: 1em;
+			padding-right: 0.8em;
 			cursor: pointer;
 		}
 
 		.range-wrap {
 			display: inline-block;
-			width: 100px;
-			height: 15px;
-			background-color: var(--dim);
+			width: 5em;
+			height: 0.8em;
 			border-radius: 5px;
 			overflow: hidden;
-			cursor: pointer;
-			user-select: none;
+			background-color: var(--dim);
 			transition: opacity 0.1s;
+			user-select: none;
+			cursor: pointer;
 
 			&.muted {
 				opacity: 0.1;
@@ -147,7 +139,7 @@
 
 			.inner-range {
 				background-color: var(--accent);
-				height: 20px;
+				height: 0.8em;
 			}
 		}
 	}

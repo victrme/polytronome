@@ -4,14 +4,13 @@
 	align-items: center;
 	justify-content: space-between;
 	align-items: center;
-	min-height: 100px;
+	min-height: 8em;
 	width: 100%;
 
 	.logo {
-		margin: 20px;
-		height: 100px;
 		display: flex;
 		align-items: center;
+		height: 4em;
 
 		svg {
 			transform: scale(0.8);
@@ -19,14 +18,14 @@
 		}
 
 		h1 {
-			font-size: 28px;
 			margin: 0;
-			margin-bottom: 5px;
+			font-size: 2.2em;
+			line-height: 1em;
 			color: var(--clicks-on);
 		}
 
 		p {
-			font-size: 14px;
+			font-size: 1em;
 			margin: 0;
 		}
 	}
@@ -68,8 +67,7 @@
 		z-index: 2;
 
 		.immovable_wheel {
-			margin-right: 10px;
-			padding-right: 15px;
+			margin-right: 0.5em;
 		}
 
 		.tap {

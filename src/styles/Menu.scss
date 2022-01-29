@@ -3,34 +3,41 @@
 }
 
 .menu > button {
-	margin: 40px;
+	margin-left: 2em;
+	margin-bottom: 2em;
 
 	span {
-		margin-left: 10px;
+		margin-left: 0.8em;
 	}
 }
 
 aside {
 	display: flex;
 	overflow: hidden;
-	margin-left: 40px;
+	margin-left: 2em;
 	transition: width 0.4s;
 
+	.option-icon {
+		display: inline-block;
+		width: 2em;
+		text-align: center;
+	}
+
 	> button {
-		margin: 40px auto;
+		margin: 2em auto;
 	}
 
 	.theme-list {
 		display: flex;
 		flex-direction: column;
-		margin: 20px;
+		margin: 2em;
 		transition: width 0.4s;
 
 		span {
 			width: auto;
-			margin: 3px;
-			font-size: 12px;
-			padding: 5px 15px;
+			margin: 0.2em;
+			font-size: 1em;
+			padding: 0.5em 1em;
 			border-radius: 15px;
 			cursor: pointer;
 			overflow: hidden;
@@ -43,7 +50,7 @@ aside {
 	}
 
 	.inner-menu {
-		width: 380px;
+		width: 26em;
 		display: flex;
 		flex-direction: column;
 		transition: width 0.4s 0s;
@@ -55,22 +62,23 @@ aside {
 		}
 
 		button {
-			font-size: inherit;
-			min-height: 44px;
-			text-align: left;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			background-color: transparent;
+			font-size: 1.2em;
+			text-align: left;
 			overflow: hidden;
+			background-color: transparent;
+			padding-left: 1em;
+			padding-right: 1em;
 
 			p {
 				margin: 0;
 			}
 
 			.optionState {
-				border-radius: 8px;
-				padding: 5px 10px;
+				border-radius: 0.5em;
+				padding: 0.3em 0.6em;
 				background-color: rgba(0, 0, 0, 0.04);
 			}
 
@@ -85,19 +93,31 @@ aside {
 	.links {
 		display: flex;
 		flex-direction: column;
-		margin-top: 60px;
+		margin-top: 2em;
+		padding-top: 1em;
+		border-top: 2px dashed var(--dimmer);
+		min-width: 8em;
+		width: 50%;
+
+		// 	    width: auto;
+		// margin: 0.2em;
+		// padding: 0.5em 2em;
+		// border: 2px solid transparent;
+		// border-radius: 2em;
+		// font-size: 1em;
 
 		a {
-			height: 36px;
-			line-height: 36px;
-			border: 2px solid transparent;
-			margin: 5px 5px 0 0;
-			white-space: pre;
+			font-size: 1.2em;
 			color: var(--accent);
+			border: 2px solid transparent;
 			text-decoration: none;
 			text-align: left;
-			border-radius: 30px;
-			padding: 0 30px;
+			padding: 0.5em 1em;
+			margin: 0.2em;
+			height: 2em;
+			line-height: 2em;
+			border-radius: 2em;
+			white-space: pre;
 
 			&:hover {
 				border-color: var(--dim);
@@ -107,7 +127,7 @@ aside {
 
 	&.closed {
 		.inner-menu {
-			width: 85px;
+			width: 5.6em;
 			opacity: 0.6;
 			transition: opacity 0.2s, width 0.4s 0.16s;
 
@@ -122,6 +142,7 @@ aside {
 		}
 
 		.links {
+			min-width: 5.6em;
 			padding-left: 0;
 		}
 

@@ -130,7 +130,7 @@ const Menu = ({
 			text: 'sound offset',
 			title: 'sound offset\nUseful for bluetooth devices with latency\n50ms increment, 500ms max',
 			func: changeOffset,
-			css: '',
+			css: isOn(moreSettings.offset > 0),
 			state: moreSettings.offset + 'ms',
 		},
 		{
@@ -192,7 +192,7 @@ const Menu = ({
 					{options.map(({ func, title, icon, css, text, state }) => (
 						<button key={text} title={title} onClick={func} className={css}>
 							<p>
-								<span>
+								<span className="option-icon">
 									<FontAwesomeIcon icon={icon} />
 								</span>
 								<span>{text}</span>
@@ -204,7 +204,7 @@ const Menu = ({
 					<div className="links">
 						{links.map(({ icon, text, url }) => (
 							<a key={text} href={url}>
-								<span>
+								<span className="option-icon">
 									<FontAwesomeIcon icon={icon} />
 								</span>
 								<span>{text}</span>

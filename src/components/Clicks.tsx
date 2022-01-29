@@ -291,9 +291,7 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 								key={i}
 								className={'click' + (offsetSegmentPos === i ? ' on' : '')}
 								style={{
-									width: `calc(${ratio * 100}% - ${
-										isMobileOnly ? '4px' : '10px'
-									})`,
+									width: `calc(${ratio * 100}% - .3em)`,
 								}}
 							/>
 						))}
