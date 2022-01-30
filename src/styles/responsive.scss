@@ -59,142 +59,107 @@
 	}
 }
 
-@media only screen and (max-width: 880px) {
+@media only screen and (max-height: 750px), (max-width: 1200px) {
+	body {
+		font-size: 11px;
+	}
+}
+
+// Width small but height is enough to make it in rows
+@media only screen and (max-width: 1000px) and (min-height: 780px) {
 	.polytronome {
-		.header {
+		.layers-table {
 			flex-direction: column;
-		}
-
-		.layers-table-wrap .layers-table {
-			margin: 0;
-		}
-
-		.bottom-buttons {
-			margin-top: 1em;
-
-			.start {
-				width: 200px;
+			.ls-row {
+				flex-direction: row;
+				margin: 0.5em;
+				padding: 0.5em 1em;
 			}
 		}
 	}
 }
 
-@media only screen and (max-width: 425px) {
-	.polytronome {
-		button {
-			padding: 5px 20px;
-			font-size: 11px;
-		}
+// Width too small for advanced, but height too small for ls-row as rows
+@media only screen and (max-width: 1000px) and (max-height: 780px) {
+	body {
+		font-size: 10px;
+	}
+}
 
+@media only screen and (max-width: 900px) {
+	.polytronome {
+		.header .tempo .tap {
+			width: 6em;
+		}
+	}
+}
+
+@media only screen and (max-width: 425px) {
+	body {
+		font-size: 9px;
+	}
+
+	.polytronome {
 		main {
 			padding-top: 5vh;
 			width: 100vw;
 
 			.header {
-				min-height: 90px;
-
 				.logo {
-					height: 50px;
+					width: 100%;
+					justify-content: center;
 
 					svg {
 						transform: scale(0.6);
-					}
-					h1 {
-						font-size: 20px;
-						margin: 0;
-					}
-					p {
-						font-size: 10px;
 					}
 				}
 			}
 
 			.clicks {
-				height: auto;
 				width: 90vw;
-				margin: 20px;
-
-				.layers .click-row {
-					height: 30px;
-
-					.click {
-						margin: 2px;
-
-						&.off {
-							margin: 2px 0;
-						}
-					}
-				}
-
-				.segment {
-					.click-row .click {
-						height: 60px;
-						margin: 0 2px;
-					}
-				}
+				margin: 2em;
 			}
+		}
 
-			.immovable_wheel {
-				padding: 2.5px 5px;
-				height: 30px;
-				line-height: 35px;
-				font-size: 30px;
-				min-width: 45px;
-
-				pre {
-					margin-top: -2.5px;
-				}
-
-				.arrows {
-					display: none;
-				}
+		.bottom-buttons {
+			flex-wrap: wrap;
+			.start {
+				width: 16em;
 			}
 		}
 
 		.layers-table-wrap {
 			.layers-table {
 				.ls-row {
-					margin: 8px 0;
-					padding-left: 10px;
-
-					> div {
-						margin: 6px;
-					}
+					padding: 0em 1em;
+					margin: 0.5em;
 				}
 
 				.ls-type {
-					min-width: auto;
+					min-width: 5em;
 
 					svg {
-						height: 35px;
-						width: 35px;
-						padding: 0 10px;
+						width: 3.4em;
+						height: 3.4em;
+						padding: 0 1em;
 					}
 				}
 
 				.ls-effects {
 					text-align: left;
-
-					button {
-						margin: 0;
-						padding: 2px 5px;
-
-						svg {
-							width: 12px;
-							margin-right: 5px;
-						}
-					}
+					flex-direction: column;
+					max-width: 7em;
 				}
 
 				.ls-volume {
+					flex-direction: column;
+
 					.mute {
 						padding: 0;
-						margin-bottom: 10px;
+						margin-bottom: 1em;
 					}
 
 					.range-wrap {
-						height: 6px;
-						width: 50px;
 					}
 				}
 			}
@@ -214,23 +179,15 @@
 
 		&.easy {
 			.layers-table-wrap .layers-table {
-				width: 90vw;
-				margin: 0;
-				margin-bottom: 40px;
+				width: 24em;
+				margin: 6em 0;
+				flex-wrap: wrap;
 				justify-content: space-around;
+				justify-content: flex-start;
 
-				.ls-row .immovable_wheel {
-					width: auto;
-					min-width: 40px;
-				}
-
-				.ls-row > div {
+				.ls-row {
 					margin: 0;
 				}
-			}
-
-			.tempo {
-				margin-top: 80px;
 			}
 		}
 	}
@@ -248,32 +205,48 @@ specific to .mobile render changes
 		padding: 0;
 	}
 
+	.layers-table-wrap,
+	.layers-table {
+		flex-direction: column;
+
+		.ls-row {
+			flex-direction: row;
+		}
+	}
+
 	.header {
 		.tutorial {
+			top: 0;
+			right: 0;
 			height: auto;
 			flex-direction: column;
-			padding: 1em;
-			margin-top: 1em;
+			padding: 2em;
+			margin: 2em;
 			z-index: 6;
 
 			.dialog {
 				margin: 0;
 			}
+
+			.interactions {
+				flex-direction: row;
+			}
 		}
 	}
 
 	.menu {
-		padding-top: 10px;
 		position: fixed;
 		top: 0;
 		left: 0;
-		z-index: 5;
 		margin: 0;
+		padding-top: 0;
+		font-size: 11px;
+		z-index: 5;
 
 		> button {
 			position: fixed;
-			margin: 20px;
-			padding: 8px 16px;
+			margin: 2em;
+			padding: 0.8em 2em;
 			z-index: 6;
 		}
 
@@ -305,18 +278,5 @@ specific to .mobile render changes
 				}
 			}
 		}
-	}
-
-	.layers-table-wrap {
-		flex-direction: column;
-
-		.layers-table {
-			align-items: center;
-			margin: 20px;
-		}
-	}
-
-	.bottom-buttons {
-		flex-wrap: wrap;
 	}
 }

@@ -176,7 +176,7 @@ const App = (): JSX.Element => {
 	const handleClasses = () => {
 		let result = 'polytronome'
 
-		// if (isMobileOnly) result += ' mobile'
+		if (isMobileOnly) result += ' mobile'
 		if (easy) result += ' easy'
 		if (tutoStage !== 'removed') result += ` ${tutoStage}`
 		if (moreSettings.animations) result += ' performance'
