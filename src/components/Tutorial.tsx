@@ -2,7 +2,7 @@ import Pizzicato from 'pizzicato'
 import { useEffect } from 'react'
 import { animated } from '@react-spring/web'
 
-import TutoFR from '../assets/tutorials/fr.json'
+import Dialog from '../assets/tutorials/en.json'
 import { Stage, Interaction } from '../Types'
 
 const Tutorial = ({ tutoStage, setTutoStage, styles }) => {
@@ -25,7 +25,7 @@ const Tutorial = ({ tutoStage, setTutoStage, styles }) => {
 	//
 	// Buttons logic
 
-	const stage: Stage = TutoFR[tutoStage] || { yes: '', no: '', text: '' }
+	const stage: Stage = Dialog[tutoStage] || { yes: '', no: '', text: '' }
 	const buttons: JSX.Element[] = []
 
 	const interactionButton = (choice: Interaction) => (

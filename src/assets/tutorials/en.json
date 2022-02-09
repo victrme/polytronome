@@ -1,0 +1,67 @@
+{
+	"intro": {
+		"text": "Hello 👋 Do you want a tour of polytronome ?",
+		"yes": { "to": "explainGoal", "text": "I'd like to" },
+		"no": { "to": "leaveIntro", "text": "That's ok" }
+	},
+	"leaveIntro": {
+		"text": "Alright, have fun ! !",
+		"yes": { "to": "removed", "text": "Thanks" }
+	},
+	"explainGoal": {
+		"text": "Polytronome helps you visualize multiple rythms at the same time",
+		"yes": { "to": "explainWheel", "text": "Alright" }
+	},
+	"explainWheel": {
+		"text": "You can change beats by moving the numbers below",
+		"yes": { "to": "testBeats", "text": "Understood" }
+	},
+	"testBeats": {
+		"text": "Let's try to create a 5 on 7"
+	},
+	"testLaunch": { "text": "Nice 😄 start the metronome !" },
+	"waitLaunch": { "text": "Stop whenever you want" },
+	"showTempo": {
+		"text": "You can also change the tempo, try it"
+	},
+	"clickMenu": {
+		"text": "Finally, you can access the menu by clicking here"
+	},
+	"endEasy": {
+		"text": "That's it for the basics ! Shall we move on to advanced settings ?",
+		"yes": { "to": "startAdvanced", "text": "Sure !" },
+		"no": { "to": "removed", "text": "That's alright" }
+	},
+	"startAdvanced": {
+		"text": "Here is all the options you can get",
+		"yes": { "to": "beatsAgain", "text": "Right" }
+	},
+	"beatsAgain": {
+		"text": "We already know about beats, let's see about the rest",
+		"yes": { "to": "showNotes", "text": "That's true" }
+	},
+	"showNotes": {
+		"text": "Here you can scroll through notes, from C0 through F#5",
+		"yes": { "to": "showWaveType", "text": "Ok" }
+	},
+	"showWaveType": {
+		"text": "That's the note tone, you can cycle through 4 different wave types",
+		"yes": { "to": "showDuration", "text": "Ok" }
+	},
+	"showDuration": {
+		"text": "Note duration. [1/4] is the shortest, [Full] is not silenced",
+		"yes": { "to": "showRelease", "text": "Ok" }
+	},
+	"showRelease": {
+		"text": "Note sustain. Sound lasts longer after note is played",
+		"yes": { "to": "showVolume", "text": "Ok" }
+	},
+	"showVolume": {
+		"text": "Finally volume, you can mute by clicking on the icon",
+		"yes": { "to": "aboutKeybindings", "text": "Alright" }
+	},
+	"aboutKeybindings": {
+		"text": "You can also use your computer keyboard to control all these options, look at the docs for more infos !",
+		"yes": { "to": "removed", "text": "Got it, thank you !" }
+	}
+}
