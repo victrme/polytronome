@@ -13,18 +13,53 @@
 
 aside {
 	display: flex;
+	flex-direction: column;
 	overflow: hidden;
-	margin-left: 2em;
+	margin: 0 6em 0 2em;
+	width: 25em;
 	transition: width 0.4s;
 
-	.option-icon {
-		display: inline-block;
-		width: 2em;
-		text-align: center;
+	a,
+	button {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		text-align: left;
+		overflow: hidden;
+		font-size: 1.1em;
+		padding-left: 1em;
+		padding-right: 1em;
+		text-decoration: none;
+		background-color: transparent;
+
+		.option-icon {
+			width: 2em;
+			display: inline-block;
+			text-align: center;
+			line-height: 1.8em;
+		}
+
+		.option-text {
+			margin-left: 0.5em;
+		}
+
+		p {
+			margin: 0;
+		}
 	}
 
-	> button {
-		margin: 2em auto;
+	button {
+		.optionState {
+			border-radius: 0.5em;
+			padding: 0.3em 0.6em;
+			background-color: rgba(0, 0, 0, 0.04);
+		}
+
+		&.on {
+			.optionState {
+				background-color: var(--buttons);
+			}
+		}
 	}
 
 	.theme-list {
@@ -49,108 +84,17 @@ aside {
 		}
 	}
 
-	.inner-menu {
-		width: 26em;
-		display: flex;
-		flex-direction: column;
-		transition: width 0.4s 0s;
-
-		a span:last-child,
-		button span:last-child {
-			margin-left: 20px;
-			transition: opacity 0.2s 0.2s;
-		}
-
-		button {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			font-size: 1.2em;
-			text-align: left;
-			overflow: hidden;
-			background-color: transparent;
-			padding-left: 1em;
-			padding-right: 1em;
-
-			p {
-				margin: 0;
-			}
-
-			.optionState {
-				border-radius: 0.5em;
-				padding: 0.3em 0.6em;
-				background-color: rgba(0, 0, 0, 0.04);
-			}
-
-			&.on {
-				.optionState {
-					background-color: var(--buttons);
-				}
-			}
-		}
-	}
-
-	.links {
-		display: flex;
-		flex-direction: column;
-		margin-top: 2em;
-		padding-top: 1em;
-		border-top: 2px dashed var(--dimmer);
-		min-width: 8em;
-		width: 50%;
-
-		// 	    width: auto;
-		// margin: 0.2em;
-		// padding: 0.5em 2em;
-		// border: 2px solid transparent;
-		// border-radius: 2em;
-		// font-size: 1em;
-
-		a {
-			font-size: 1.2em;
-			color: var(--accent);
-			border: 2px solid transparent;
-			text-decoration: none;
-			text-align: left;
-			padding: 0.5em 1em;
-			margin: 0.2em;
-			height: 2em;
-			line-height: 2em;
-			border-radius: 2em;
-			white-space: pre;
-
-			&:hover {
-				border-color: var(--dim);
-			}
-		}
-	}
-
 	&.closed {
-		.inner-menu {
-			width: 5.6em;
-			opacity: 0.6;
-			transition: opacity 0.2s, width 0.4s 0.16s;
+		width: 5.2em;
+		opacity: 0.6;
 
-			&:hover {
-				opacity: 1;
-			}
+		&:hover {
+			opacity: 1;
 		}
 
-		button.on {
-			background-color: var(--buttons);
-			transition: border 0.3s, color 0.3s, background-color 0.3s 0.2s;
-		}
-
-		.links {
-			min-width: 5.6em;
-			padding-left: 0;
-		}
-
-		a,
 		button {
-			span:last-child {
-				opacity: 0;
-				transition: opacity 0.2s 0s;
+			&.on {
+				background-color: var(--buttons);
 			}
 		}
 	}

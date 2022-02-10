@@ -21,6 +21,26 @@ import {
 	faChalkboardTeacher,
 } from '@fortawesome/free-solid-svg-icons'
 
+const MenuButton = ({ option, extended }) => {
+	const { text, title, func, css, icon, state } = option
+
+	return (
+		<button title={title} onClick={func} className={css}>
+			{extended ? (
+				<p>
+					<span className="option-icon">
+						<FontAwesomeIcon icon={icon} />
+					</span>
+					<span className="option-text">{text}</span>
+				</p>
+			) : (
+				<span className="option-icon">{<FontAwesomeIcon icon={icon} />}</span>
+			)}
+			{extended ? <span className="optionState">{state}</span> : ''}
+		</button>
+	)
+}
+
 const Menu = ({
 	moreSettings,
 	setMoreSettings,
@@ -71,7 +91,11 @@ const Menu = ({
 		setImport(importCode(createExportCode(80, defaultLayers, moreSettings, easy)))
 
 	const links = [
-		{ url: 'https://github.com/victrme/polytronome', icon: faCode, text: 'github' },
+		{
+			url: 'https://github.com/victrme/polytronome',
+			icon: faCode,
+			text: 'source & docs',
+		},
 		{ url: 'https://ko-fi.com/victr', icon: faHandHoldingHeart, text: 'donate' },
 		{ url: 'mailto:mail@victr.me', icon: faComment, text: 'contact' },
 	]
@@ -188,53 +212,59 @@ const Menu = ({
 			</button>
 
 			<aside className={extended ? 'extended' : 'closed'}>
-				<div className="inner-menu">
-					{options.map(({ func, title, icon, css, text, state }) => (
-						<button key={text} title={title} onClick={func} className={css}>
+				{options.map(option => (
+					<MenuButton
+						key={option.text}
+						option={option}
+						extended={extended}
+					></MenuButton>
+				))}
+
+				{extended ? (
+					<div className={'theme-list' + (openedTheme ? ' opened' : '')}>
+						{trail.map((styles, i) => (
+							<animated.span
+								key={i}
+								style={{
+									...styles,
+									backgroundColor: Themes[i].background,
+									color: Themes[i].accent,
+									visibility: styles.opacity.to(o =>
+										o === 0 ? 'hidden' : 'visible'
+									),
+								}}
+								onClick={e => {
+									e.stopPropagation()
+									e.nativeEvent.stopImmediatePropagation()
+									changeTheme(i)
+								}}
+							>
+								{Themes[i].name}
+							</animated.span>
+						))}
+					</div>
+				) : (
+					''
+				)}
+
+				<br />
+
+				{links.map(({ icon, text, url }) => (
+					<a key={text} href={url}>
+						{extended ? (
 							<p>
 								<span className="option-icon">
 									<FontAwesomeIcon icon={icon} />
 								</span>
-								<span>{text}</span>
+								<span className="option-text">{text}</span>
 							</p>
-							<span className="optionState">{state}</span>
-						</button>
-					))}
-
-					<div className="links">
-						{links.map(({ icon, text, url }) => (
-							<a key={text} href={url}>
-								<span className="option-icon">
-									<FontAwesomeIcon icon={icon} />
-								</span>
-								<span>{text}</span>
-							</a>
-						))}
-					</div>
-				</div>
-
-				<div className={'theme-list' + (openedTheme ? ' opened' : '')}>
-					{trail.map((styles, i) => (
-						<animated.span
-							key={i}
-							style={{
-								...styles,
-								backgroundColor: Themes[i].background,
-								color: Themes[i].accent,
-								visibility: styles.opacity.to(o =>
-									o === 0 ? 'hidden' : 'visible'
-								),
-							}}
-							onClick={e => {
-								e.stopPropagation()
-								e.nativeEvent.stopImmediatePropagation()
-								changeTheme(i)
-							}}
-						>
-							{Themes[i].name}
-						</animated.span>
-					))}
-				</div>
+						) : (
+							<span className="option-icon">
+								<FontAwesomeIcon icon={icon} />
+							</span>
+						)}
+					</a>
+				))}
 			</aside>
 		</div>
 	)

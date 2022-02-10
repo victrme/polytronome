@@ -20,6 +20,7 @@ input {
 	font-family: 'Dosis', sans-serif;
 	line-height: 1em;
 	font-weight: 600;
+	font-size: 15px;
 	letter-spacing: 1.2px;
 }
 
@@ -55,6 +56,7 @@ pre {
 		transition: padding 1s $easing;
 	}
 
+	a,
 	button {
 		color: var(--accent);
 		background: var(--buttons);
