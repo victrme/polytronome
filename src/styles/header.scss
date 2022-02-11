@@ -3,7 +3,6 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	align-items: center;
 	min-height: 8em;
 	width: 100%;
 
@@ -39,16 +38,18 @@
 		align-items: center;
 		justify-content: space-between;
 		font-weight: 600;
-		height: 100px;
+		height: 8em;
 		padding: 0 2em;
 		border-radius: 20px;
-		min-width: 300px;
+		min-width: 20em;
 		background-color: var(--menu);
 		z-index: 3;
 
 		.dialog {
-			margin-right: 40px;
-			max-width: 300px;
+			font-size: 1.2em;
+			line-height: 1.2em;
+			margin-right: 2em;
+			max-width: 20em;
 		}
 
 		.interactions {
