@@ -21,25 +21,11 @@ import {
 	faChalkboardTeacher,
 } from '@fortawesome/free-solid-svg-icons'
 
-const MenuButton = ({ option, extended }) => {
-	const { text, title, func, css, icon, state } = option
-
-	return (
-		<button title={title} onClick={func} className={css}>
-			{extended ? (
-				<p>
-					<span className="option-icon">
-						<FontAwesomeIcon icon={icon} />
-					</span>
-					<span className="option-text">{text}</span>
-				</p>
-			) : (
-				<span className="option-icon">{<FontAwesomeIcon icon={icon} />}</span>
-			)}
-			{extended ? <span className="optionState">{state}</span> : ''}
-		</button>
-	)
-}
+const OptionIcon = ({ icon }) => (
+	<span className="option-icon">
+		<FontAwesomeIcon icon={icon} />
+	</span>
+)
 
 const Menu = ({
 	moreSettings,
@@ -55,6 +41,10 @@ const Menu = ({
 	const [openedTheme, setOpenedTheme] = useState(false)
 	const [extended, setExtended] = useState(false)
 	const isOn = bool => (bool ? 'on' : '')
+
+	//
+	// Menu options functions
+	//
 
 	const changeAnimations = () => {
 		const appDOM = document.querySelector('.polytronome') as HTMLDivElement
@@ -89,6 +79,10 @@ const Menu = ({
 
 	const resetToDefault = () =>
 		setImport(importCode(createExportCode(80, defaultLayers, moreSettings, easy)))
+
+	//
+	//
+	//
 
 	const links = [
 		{
@@ -130,7 +124,7 @@ const Menu = ({
 			title: 'change theme\nCycles through themes when menu is closed,\nopens theme list when menu is open',
 			func: () =>
 				isMobileOnly || !extended ? changeTheme() : setOpenedTheme(!openedTheme),
-			css: '',
+			css: isOn(openedTheme),
 			state: Themes[moreSettings.theme].name,
 		},
 		{
@@ -178,24 +172,13 @@ const Menu = ({
 		},
 	]
 
-	const themeList = {
-		off: {
-			width: 0,
-			opacity: 0,
-		},
-		on: {
-			width: 60,
-			opacity: 1,
-		},
-	}
-
 	const [trail, api] = useTrail(Themes.length, () => ({
-		...themeList.off,
+		opacity: 0,
 		config: { mass: 0.1, friction: 8 },
 	}))
 
 	useEffect(() => {
-		api.start({ ...themeList[openedTheme ? 'on' : 'off'] })
+		api.start({ opacity: openedTheme ? 1 : 0 })
 		// eslint-disable-next-line
 	}, [openedTheme])
 
@@ -212,14 +195,6 @@ const Menu = ({
 			</button>
 
 			<aside className={extended ? 'extended' : 'closed'}>
-				{options.map(option => (
-					<MenuButton
-						key={option.text}
-						option={option}
-						extended={extended}
-					></MenuButton>
-				))}
-
 				{extended ? (
 					<div className={'theme-list' + (openedTheme ? ' opened' : '')}>
 						{trail.map((styles, i) => (
@@ -247,22 +222,28 @@ const Menu = ({
 					''
 				)}
 
-				<br />
+				{options.map(option => (
+					<button title={option.title} onClick={option.func} className={option.css}>
+						{extended ? (
+							<p>
+								<OptionIcon icon={option.icon} />
+								<span className="option-text">{option.text}</span>
+							</p>
+						) : (
+							<OptionIcon icon={option.icon} />
+						)}
+						{extended ? <span className="optionState">{option.state}</span> : ''}
+					</button>
+				))}
+
+				<hr />
 
 				{links.map(({ icon, text, url }) => (
 					<a key={text} href={url}>
-						{extended ? (
-							<p>
-								<span className="option-icon">
-									<FontAwesomeIcon icon={icon} />
-								</span>
-								<span className="option-text">{text}</span>
-							</p>
-						) : (
-							<span className="option-icon">
-								<FontAwesomeIcon icon={icon} />
-							</span>
-						)}
+						<p>
+							<OptionIcon icon={icon} />
+							<span className="option-text">{text}</span>
+						</p>
 					</a>
 				))}
 			</aside>

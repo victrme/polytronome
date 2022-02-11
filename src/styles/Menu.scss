@@ -17,7 +17,16 @@ aside {
 	overflow: hidden;
 	margin: 0 6em 0 2em;
 	width: 25em;
-	transition: width 0.4s;
+	transition: width 0.3s, opacity 0.3s;
+
+	hr {
+		opacity: 0;
+		height: 2em;
+	}
+
+	a {
+		transition: opacity 0.3s;
+	}
 
 	a,
 	button {
@@ -64,9 +73,11 @@ aside {
 
 	.theme-list {
 		display: flex;
-		flex-direction: column;
-		margin: 2em;
-		transition: width 0.4s;
+		flex-wrap: wrap;
+		max-height: 0;
+		margin: 0 2em;
+		overflow: hidden;
+		transition: width 0.3s, margin 0.3s, max-height 0.3s;
 
 		span {
 			width: auto;
@@ -76,11 +87,16 @@ aside {
 			border-radius: 15px;
 			cursor: pointer;
 			overflow: hidden;
-			transition: filter 0.1s, border-radius 0.4s;
+			transition: filter 0.1s, border-radius 0.3s;
 
 			&:hover {
 				filter: brightness(0.9);
 			}
+		}
+
+		&.opened {
+			max-height: 7em;
+			margin: 2em;
 		}
 	}
 
@@ -90,6 +106,12 @@ aside {
 
 		&:hover {
 			opacity: 1;
+		}
+
+		a {
+			opacity: 0;
+			cursor: default;
+			pointer-events: none;
 		}
 
 		button {

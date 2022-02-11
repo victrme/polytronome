@@ -38,6 +38,8 @@
 			.ls-effects,
 			.ls-volume {
 				opacity: 0;
+				cursor: default;
+				pointer-events: none;
 				transition: opacity 0.4s;
 			}
 		}
