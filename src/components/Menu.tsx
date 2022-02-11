@@ -122,8 +122,7 @@ const Menu = ({
 			icon: faPalette,
 			text: 'themes',
 			title: 'change theme\nCycles through themes when menu is closed,\nopens theme list when menu is open',
-			func: () =>
-				isMobileOnly || !extended ? changeTheme() : setOpenedTheme(!openedTheme),
+			func: () => (!extended ? changeTheme() : setOpenedTheme(!openedTheme)),
 			css: isOn(openedTheme),
 			state: Themes[moreSettings.theme].name,
 		},

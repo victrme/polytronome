@@ -28,9 +28,17 @@
 			}
 		}
 
+		.menu,
+		main {
+			padding-top: 5vh;
+		}
+
 		&.easy {
+			.menu {
+				padding-top: 10vh;
+			}
+
 			.layers-table-wrap .layers-table {
-				flex-wrap: wrap;
 				justify-content: flex-start;
 				justify-content: center;
 
@@ -38,11 +46,6 @@
 					padding: 0;
 				}
 			}
-		}
-
-		.menu,
-		main {
-			padding-top: 5vh;
 		}
 	}
 }
@@ -105,6 +108,8 @@
 			width: 100vw;
 
 			.header {
+				margin-top: 0.5em;
+
 				.logo {
 					width: 100%;
 					justify-content: center;
@@ -178,15 +183,31 @@
 		}
 
 		&.easy {
+			.header {
+				min-height: 8em;
+			}
+
 			.layers-table-wrap .layers-table {
-				width: 24em;
 				margin: 6em 0;
-				flex-wrap: wrap;
 				justify-content: space-around;
 				justify-content: flex-start;
 
 				.ls-row {
 					margin: 0;
+					padding: 0;
+
+					.ls-beats {
+						margin: 0 0.5em;
+
+						.immovable_wheel {
+							padding-right: 0;
+							padding-left: 0.5em;
+
+							.arrows {
+								margin-left: -0.5em;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -202,7 +223,13 @@ specific to .mobile render changes
 	overflow-y: auto;
 
 	main {
-		padding: 0;
+		padding-top: 0;
+	}
+
+	&.easy {
+		main {
+			padding-top: 10vh;
+		}
 	}
 
 	.layers-table-wrap,
@@ -267,10 +294,6 @@ specific to .mobile render changes
 				background-color: var(--background);
 				overflow-y: auto;
 				opacity: 1;
-
-				.theme-list {
-					display: none;
-				}
 			}
 		}
 	}
