@@ -2,6 +2,7 @@ import { useSpring, animated, config } from '@react-spring/web'
 import { ResizeObserver } from '@juggle/resize-observer'
 import { useDrag, useWheel } from '@use-gesture/react'
 import { useEffect, useRef, useState } from 'react'
+import { isSafari } from 'react-device-detect'
 import useMeasure from 'react-use-measure'
 import { inRange } from 'lodash'
 
@@ -34,16 +35,22 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 	const list: string[] = allLists[type]
 	const [dragRelease, setDragRelease] = useState(false)
 	const [wheelWrapRef, bounds] = useMeasure({ polyfill: ResizeObserver })
+
 	const heightRef = useRef(bounds.height)
 	heightRef.current = bounds.height
 
-	const getHeight = () => (heightRef.current === 0 ? 50 : heightRef.current)
+	// const test = parseInt(window.getComputedStyle(document.body).fontSize)
+
+	const getHeight = () => (isSafari ? Math.floor(heightRef.current) : heightRef.current)
 	const offsetState = (state: number) => (type === 'tempo' ? state - 30 : state - 1)
 	const getClosest = (y: number) => Math.round(y / getHeight()) * getHeight()
 	const getUserVal = (y: number) => Math.round(y / getHeight()) + list.length - 1
 
 	const getBottomPos = () => -(list.length - 1) * getHeight()
 	const getInitalPos = () => getBottomPos() + offsetState(state) * getHeight()
+
+	console.log(getHeight())
+	console.log(Math.floor(getHeight()))
 
 	// eslint-disable-next-line
 	const [{ y }, api] = useSpring(() => ({
