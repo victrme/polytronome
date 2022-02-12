@@ -2,6 +2,17 @@ import { useEffect, useRef, useState } from 'react'
 import Pizzicato from 'pizzicato'
 import { Layer } from '../Types'
 
+const mockSound = new Pizzicato.Sound({
+	source: 'wave',
+	options: {
+		type: 'square',
+		volume: 0.08,
+		frequency: 1,
+		attack: 0,
+		release: 0,
+	},
+})
+
 const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }) => {
 	function usePrevious(value) {
 		const ref = useRef()
@@ -16,6 +27,7 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 	const [offsetSegmentPos, setOffsetSegmentPos] = useState(0)
 	const [segmentPos, setSegmentPos] = useState(0)
 	const [segmentRatio, setSegmentRatio] = useState([0])
+	const [mockAmount, setMockAmount] = useState(0)
 
 	const timesRef = useRef(times)
 	const layersRef = useRef(layers)
@@ -177,11 +189,31 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 		setSegmentRatio(ratiosOnly)
 	}
 
+	const activateSound = () => {
+		// Fakes playing sounds 5 times before doing nothing
+		if (mockAmount < 5) {
+			var analyser = Pizzicato.context.createAnalyser()
+			mockSound.connect(analyser)
+			mockSound.play()
+
+			console.log(analyser)
+
+			setMockAmount(mockAmount + 1)
+			setTimeout(() => mockSound.stop(), 200)
+		} else mockSound.disconnect()
+	}
+
 	//
 	//
 	// EFFECTS
 	//
 	//
+
+	useEffect(() => {
+		document.body.addEventListener('click', () => activateSound())
+		return document.body.removeEventListener('click', () => activateSound())
+		// eslint-disable-next-line
+	}, [])
 
 	// Starting
 	useEffect(() => {

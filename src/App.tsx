@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
 import { isMobileOnly } from 'react-device-detect'
+import Pizzicato from 'pizzicato'
 import { clamp } from 'lodash'
 
 import defaultSettings from './assets/settings.json'
