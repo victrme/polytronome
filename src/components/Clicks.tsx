@@ -6,7 +6,7 @@ const mockSound = new Pizzicato.Sound({
 	source: 'wave',
 	options: {
 		type: 'square',
-		volume: 0.08,
+		volume: 0.01,
 		frequency: 1,
 		attack: 0,
 		release: 0,
@@ -30,9 +30,11 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 	const [mockAmount, setMockAmount] = useState(0)
 
 	const timesRef = useRef(times)
+	const mockRef = useRef(mockAmount)
 	const layersRef = useRef(layers)
 	const previousBeats = usePrevious(getBeats()) || [1, 1, 1, 1, 1]
 
+	mockRef.current = mockAmount
 	timesRef.current = times
 	layersRef.current = layers
 
@@ -190,15 +192,9 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 	}
 
 	const activateSound = () => {
-		// Fakes playing sounds 5 times before doing nothing
-		if (mockAmount < 5) {
-			var analyser = Pizzicato.context.createAnalyser()
-			mockSound.connect(analyser)
+		if (mockRef.current < 2) {
 			mockSound.play()
-
-			console.log(analyser)
-
-			setMockAmount(mockAmount + 1)
+			setMockAmount(mockRef.current + 1)
 			setTimeout(() => mockSound.stop(), 200)
 		} else mockSound.disconnect()
 	}
@@ -209,9 +205,15 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 	//
 	//
 
+	// Forces Safari to play sounds without "real" user gestures
 	useEffect(() => {
 		document.body.addEventListener('click', () => activateSound())
-		return document.body.removeEventListener('click', () => activateSound())
+		document.body.addEventListener('keypress', () => activateSound())
+
+		return () => {
+			document.body.removeEventListener('click', () => activateSound())
+			document.body.removeEventListener('keypress', () => activateSound())
+		}
 		// eslint-disable-next-line
 	}, [])
 
