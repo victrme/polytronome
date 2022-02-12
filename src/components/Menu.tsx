@@ -155,7 +155,7 @@ const Menu = ({
 			text: 'show tutorial',
 			title: 'show tutorial',
 			func: () => {
-				setTutoStage(easy ? 'intro' : 'beatsAgain')
+				setTutoStage(easy ? 'intro' : 'showBeats')
 				if (isMobileOnly) setExtended(false)
 			},
 			css: '',
@@ -222,7 +222,12 @@ const Menu = ({
 				)}
 
 				{options.map(option => (
-					<button title={option.title} onClick={option.func} className={option.css}>
+					<button
+						key={option.text}
+						title={option.title}
+						onClick={option.func}
+						className={option.css}
+					>
 						{extended ? (
 							<p>
 								<OptionIcon icon={option.icon} />

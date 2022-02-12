@@ -2,7 +2,7 @@
 	"intro": {
 		"text": "Hello 👋 Do you want a tour of polytronome ?",
 		"yes": { "to": "explainGoal", "text": "I'd like to" },
-		"no": { "to": "leaveIntro", "text": "That's ok" }
+		"no": { "to": "leaveIntro", "text": "No thanks" }
 	},
 	"leaveIntro": {
 		"text": "Alright, have fun ! !",
@@ -40,6 +40,10 @@
 		"text": "We already know about beats, let's see about the rest",
 		"yes": { "to": "showNotes", "text": "That's true" }
 	},
+	"showBeats": {
+		"text": "Use the numbers below to change beats, from 2 to 16 per measure",
+		"yes": { "to": "showNotes", "text": "Oki" }
+	},
 	"showNotes": {
 		"text": "Here you can scroll through notes, from C0 through F#5",
 		"yes": { "to": "showWaveType", "text": "Ok" }
@@ -61,7 +65,7 @@
 		"yes": { "to": "aboutKeybindings", "text": "Alright" }
 	},
 	"aboutKeybindings": {
-		"text": "You can also use your computer keyboard to control all these options, look at the docs for more infos !",
-		"yes": { "to": "removed", "text": "Got it, thank you !" }
+		"text": "You can also use your computer keyboard ! Look at the docs for more infos",
+		"yes": { "to": "removed", "text": "Got it, thanks" }
 	}
 }
