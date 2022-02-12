@@ -5,8 +5,8 @@
 		"no": { "to": "leaveIntro", "text": "No thanks" }
 	},
 	"leaveIntro": {
-		"text": "Alright, have fun ! !",
-		"yes": { "to": "removed", "text": "Thanks" }
+		"text": "Alright, have fun !",
+		"yes": { "to": "removed", "text": "Thank you" }
 	},
 	"explainGoal": {
 		"text": "Polytronome helps you visualize multiple rythms at the same time",

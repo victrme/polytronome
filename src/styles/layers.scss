@@ -64,6 +64,10 @@
 			&:hover {
 				background-color: var(--buttons);
 			}
+
+			&:active {
+				background-color: var(--dim);
+			}
 		}
 	}
 
@@ -106,9 +110,13 @@
 			background-color: transparent;
 
 			&:hover {
-				opacity: 1;
-				background-color: var(--buttons);
 				border-color: transparent;
+				background-color: var(--buttons);
+			}
+
+			&:active {
+				border-color: transparent;
+				background-color: var(--dim);
 			}
 		}
 	}

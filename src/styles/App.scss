@@ -70,17 +70,15 @@ pre {
 		white-space: pre;
 		outline: none;
 		cursor: pointer;
-		transition: background-color 0.3s, color 0.3s, border 0.1s;
+		transition: background-color 0.2s, color 0.3s, border 0.2s;
 
-		&:active,
-		&:focus,
-		&:hover {
-			border-color: var(--dim);
+		&:active {
+			background-color: var(--dim);
 		}
 
-		&.off {
-			opacity: 0.5;
-			cursor: initial;
+		&:hover,
+		&:focus {
+			outline: 2px solid var(--dim);
 		}
 	}
 
@@ -101,6 +99,10 @@ pre {
 
 		&:hover {
 			background-color: var(--buttons);
+		}
+
+		&:active {
+			background-color: var(--dim);
 		}
 
 		pre {

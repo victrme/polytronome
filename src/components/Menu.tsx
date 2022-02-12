@@ -182,6 +182,11 @@ const Menu = ({
 	}, [openedTheme])
 
 	useEffect(() => {
+		document.body.style.transitionDuration = moreSettings.animations ? '0s' : '1s'
+		// eslint-disable-next-line
+	}, [moreSettings.animations])
+
+	useEffect(() => {
 		if (tutoStage === 'clickMenu' && extended) setTutoStage('endEasy')
 		// eslint-disable-next-line
 	}, [extended])

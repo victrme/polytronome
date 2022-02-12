@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { isMobileOnly } from 'react-device-detect'
 import Pizzicato from 'pizzicato'
 import { Layer } from '../Types'
 
