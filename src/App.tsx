@@ -10,7 +10,7 @@ import Keybindings from './components/Keybindings'
 import Header from './components/Header'
 import Clicks from './components/Clicks'
 import Menu from './components/Menu'
-import { MoreSettings, Layer, Code } from './Types'
+import { MoreSettings, Layer, Code, Tap } from './Types'
 import { setRandomID, importCode, applyTheme, createExportCode } from './utils'
 import Buttons from './components/Buttons'
 
@@ -23,7 +23,7 @@ const App = (): JSX.Element => {
 
 	const [easy, setEasy] = useState(true)
 	const [tempo, setTempo] = useState(80)
-	const [tap, setTap] = useState([{ date: 0, wait: 600 }])
+	const [tap, setTap] = useState<Tap>([{ date: Date.now(), wait: 0 }])
 	const [selected, setSelected] = useState(-1)
 	const [isRunning, setIsRunning] = useState('')
 	const [tutoStage, setTutoStage] = useState('removed')
@@ -126,24 +126,25 @@ const App = (): JSX.Element => {
 
 	const tapTempo = () => {
 		const now = Date.now()
+		const taps = [...tapRef.current]
 
 		// Reset tap after 2s
-		if (now - tapRef.current[0].date > 2000) {
-			setTap([{ date: now, wait: 600 }])
-		}
-
-		// Wait is offset between two taps
+		if (now - taps[0].date > 2000) setTap([{ date: now, wait: 0 }])
 		else {
-			const tempTap = [...tapRef.current]
-			tempTap.unshift({ date: now, wait: now - tapRef.current[0].date })
+			//
+			// Adds current
+			taps.unshift({ date: now, wait: now - tapRef.current[0].date })
+
+			// if theres still default or too long, removes
+			if (taps[1].wait === 0 || taps.length > 6) taps.pop()
 
 			// Array of taps in milliseconds
-			const tappedMs: number[] = tempTap.map(tap => tap.wait).slice(0, 5)
+			const tappedMs: number[] = taps.map(tap => tap.wait)
 			const averageMs = tappedMs.reduce((a, b) => a + b) / tappedMs.length
 
-			setTap(tempTap)
 			setTempo(clamp(Math.floor(60000 / averageMs), 30, 300))
 			toggleMetronome(true)
+			setTap(taps)
 		}
 	}
 

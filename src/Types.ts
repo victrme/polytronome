@@ -22,6 +22,11 @@ export type Layer = {
 	muted: boolean
 }
 
+export type Tap = {
+	date: number
+	wait: number
+}[]
+
 export type Sounds = {
 	wood: [any]
 	drum: [any]
