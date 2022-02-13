@@ -20,7 +20,7 @@
 		border-radius: 20px;
 		padding: 1em;
 		margin: 1em;
-		transition: opacity 0.2s, filter 0.2s, background-color 0.3s;
+		transition: opacity 0.3s $easing, filter 0.3s $easing, background-color 0.3s $easing;
 
 		> div {
 			margin: 0.6em;
@@ -40,7 +40,7 @@
 				opacity: 0;
 				cursor: default;
 				pointer-events: none;
-				transition: opacity 0.4s;
+				transition: opacity 0.4s $easing;
 			}
 		}
 	}
@@ -83,7 +83,7 @@
 			padding: 0.2em 0.5em;
 			border-radius: 0.5em;
 			background-color: transparent;
-			transition: background-color 0.2s;
+			transition: background-color 0.2s $easing;
 		}
 
 		&:hover pre.octave {
@@ -138,7 +138,7 @@
 			border-radius: 5px;
 			overflow: hidden;
 			background-color: var(--dim);
-			transition: opacity 0.1s;
+			transition: opacity 0.1s $easing;
 			user-select: none;
 			cursor: pointer;
 

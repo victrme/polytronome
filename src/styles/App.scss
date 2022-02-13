@@ -5,11 +5,12 @@ $easing: cubic-bezier(0.19, 1, 0.22, 1);
 body {
 	margin: 0;
 	background-color: var(--background);
-	transition: background-color 1s $easing;
+	transition: background-color 1s;
 }
 body,
 body:fullscreen::backdrop {
 	background-color: var(--background);
+	transition: background-color 1s;
 }
 
 button,
@@ -70,7 +71,7 @@ pre {
 		white-space: pre;
 		outline: none;
 		cursor: pointer;
-		transition: background-color 0.2s, color 0.3s, border 0.2s;
+		transition: background-color 0.2s $easing, color 0.3s $easing, border 0.2s $easing;
 
 		&:active {
 			background-color: var(--dim);
@@ -91,7 +92,7 @@ pre {
 		padding-right: 0.2em;
 		padding-left: 0.8em;
 		border-radius: 0.3em;
-		transition: opacity 0.2s, background-color 0.2s;
+		transition: opacity 0.5s $easing, background-color 0.5s $easing;
 
 		font-size: 3em;
 		line-height: 1.2em;
@@ -99,10 +100,6 @@ pre {
 
 		&:hover {
 			background-color: var(--buttons);
-		}
-
-		&:active {
-			background-color: var(--dim);
 		}
 
 		pre {
@@ -124,7 +121,7 @@ pre {
 				text-align: center;
 				cursor: pointer;
 				opacity: 0.2;
-				transition: opacity 0.2s;
+				transition: opacity 0.5s $easing;
 
 				&:first-child {
 					transform: rotate(180deg);

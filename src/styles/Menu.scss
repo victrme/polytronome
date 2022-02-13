@@ -17,7 +17,7 @@ aside {
 	overflow: hidden;
 	margin: 0 6em 0 2em;
 	width: 25em;
-	transition: width 0.3s, opacity 0.3s;
+	transition: width 0.6s $easing, opacity 0.6s $easing;
 
 	hr {
 		opacity: 0;
@@ -25,7 +25,7 @@ aside {
 	}
 
 	a {
-		transition: opacity 0.3s;
+		transition: opacity 0.6s $easing;
 	}
 
 	a,

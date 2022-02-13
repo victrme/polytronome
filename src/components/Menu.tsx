@@ -57,9 +57,10 @@ const Menu = ({
 	}
 
 	const changeTheme = (index?: number) => {
+		document.body.style.transitionDuration = moreSettings.animations ? '0s' : '1s'
 		let nextTheme = index || 0
 
-		if (!extended || isMobileOnly) nextTheme = (moreSettings.theme + 1) % Themes.length
+		if (!extended) nextTheme = (moreSettings.theme + 1) % Themes.length
 
 		setMoreSettings(prev => ({ ...prev, theme: nextTheme }))
 		localStorage.theme = nextTheme
@@ -180,11 +181,6 @@ const Menu = ({
 		api.start({ opacity: openedTheme ? 1 : 0 })
 		// eslint-disable-next-line
 	}, [openedTheme])
-
-	useEffect(() => {
-		document.body.style.transitionDuration = moreSettings.animations ? '0s' : '1s'
-		// eslint-disable-next-line
-	}, [moreSettings.animations])
 
 	useEffect(() => {
 		if (tutoStage === 'clickMenu' && extended) setTutoStage('endEasy')

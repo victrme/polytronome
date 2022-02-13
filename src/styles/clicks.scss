@@ -15,7 +15,7 @@
 		width: 100%;
 		max-height: 2em;
 		overflow: hidden;
-		transition: max-height 0.6s;
+		transition: max-height 0.8s $easing;
 
 		&.off {
 			max-height: 0px;
@@ -28,7 +28,8 @@
 			border-radius: 0.6em;
 			background-color: var(--clicks-off);
 			will-change: transform;
-			transition: transform 0.1s, margin 0.2s, background-color 0.1s, width 0.3s;
+			transition: transform 0.25s $easing, margin 0.2s $easing,
+				background-color 0.25s $easing, width 0.3s;
 			transform: translate(0, 0) scaleY(0.6);
 
 			&.on {
