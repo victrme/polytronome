@@ -2,7 +2,6 @@ import { useSpring, animated, config } from '@react-spring/web'
 import { ResizeObserver } from '@juggle/resize-observer'
 import { useDrag, useWheel } from '@use-gesture/react'
 import { useEffect, useRef, useState } from 'react'
-import { isSafari } from 'react-device-detect'
 import useMeasure from 'react-use-measure'
 import { inRange } from 'lodash'
 

@@ -191,12 +191,12 @@ pre {
 	*/
 
 	&.easy {
-		.header {
-			min-height: 140px;
-		}
-
 		main {
 			padding-top: 15vh;
+		}
+
+		.header {
+			margin-bottom: 4em;
 		}
 
 		.layers-table-wrap {
