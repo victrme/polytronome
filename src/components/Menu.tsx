@@ -68,6 +68,7 @@ const Menu = ({
 	}
 
 	const toggleMenu = () => {
+		if (tutoStage !== 'removed') setTutoStage('removed')
 		setExtended(!extended)
 		setOpenedTheme(false)
 	}

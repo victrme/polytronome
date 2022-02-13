@@ -1,6 +1,7 @@
 @mixin dimUnfocused() {
 	opacity: 0.1;
 	filter: grayscale(1);
+	pointer-events: none;
 }
 
 @mixin butShow($class: '') {
