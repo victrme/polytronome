@@ -34,23 +34,15 @@ const Arrow = props => {
 const Wheel = ({ update, type, state }): JSX.Element => {
 	const list: string[] = allLists[type]
 	const [dragRelease, setDragRelease] = useState(false)
-	const [wheelWrapRef, bounds] = useMeasure({ polyfill: ResizeObserver })
+	const [preRef, preBounds] = useMeasure({ polyfill: ResizeObserver })
 
-	const heightRef = useRef(bounds.height)
-	heightRef.current = bounds.height
-
-	// const test = parseInt(window.getComputedStyle(document.body).fontSize)
-
-	const getHeight = () => (isSafari ? Math.floor(heightRef.current) : heightRef.current)
+	const getHeight = () => preBounds.height / allLists[type].length
 	const offsetState = (state: number) => (type === 'tempo' ? state - 30 : state - 1)
 	const getClosest = (y: number) => Math.round(y / getHeight()) * getHeight()
 	const getUserVal = (y: number) => Math.round(y / getHeight()) + list.length - 1
 
 	const getBottomPos = () => -(list.length - 1) * getHeight()
 	const getInitalPos = () => getBottomPos() + offsetState(state) * getHeight()
-
-	console.log(getHeight())
-	console.log(Math.floor(getHeight()))
 
 	// eslint-disable-next-line
 	const [{ y }, api] = useSpring(() => ({
@@ -80,7 +72,7 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 	useEffect(() => {
 		snapWheel()
 		// eslint-disable-next-line
-	}, [heightRef.current])
+	}, [preRef])
 
 	//
 	// Gestures
@@ -151,7 +143,7 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 	}
 
 	return (
-		<div className="immovable_wheel" ref={wheelWrapRef}>
+		<div className="immovable_wheel">
 			<div className="arrows">
 				<Arrow
 					className="up"
@@ -168,7 +160,7 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 				/>
 			</div>
 			<animated.div {...dragging()} {...wheeling()} className="wheel" style={{ y }}>
-				<pre>{list.join('\n')}</pre>
+				<pre ref={preRef}>{list.join('\n')}</pre>
 			</animated.div>
 		</div>
 	)
