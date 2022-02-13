@@ -54,6 +54,10 @@ const App = (): JSX.Element => {
 	const toggleMetronome = useCallback(
 		(restart?: boolean) => {
 			const start = () => {
+				if (layers.filter(l => l.beats > 1).length === 0) {
+					return false
+				}
+
 				setStartTime(Date.now())
 				setIsRunning(setRandomID())
 				if (tutoStage === 'testLaunch') setTutoStage('waitLaunch')
@@ -74,7 +78,7 @@ const App = (): JSX.Element => {
 			// Not restart, Normal toggle
 			else running ? stop() : start()
 		},
-		[tutoStage]
+		[tutoStage, layers]
 	)
 
 	const randomizeLayers = () => {
@@ -203,14 +207,19 @@ const App = (): JSX.Element => {
 		if (tutoStage === 'startAdvanced') setEasy(false)
 	}, [tutoStage])
 
-	// tutorial
 	useEffect(() => {
+		// tutorial
 		if (tutoStage === 'testBeats') {
 			const beats = layers.map(x => x.beats)
 			const reduced = beats.reduce((a, b) => a + b)
 
 			if (beats.includes(5) && beats.includes(7) && reduced === 15)
 				setTutoStage('testLaunch')
+		}
+
+		// stops metronome if empty
+		if (isRunning && layers.filter(l => l.beats > 1).length === 0) {
+			toggleMetronome()
 		}
 
 		// eslint-disable-next-line
