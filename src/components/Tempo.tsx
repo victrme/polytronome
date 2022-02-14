@@ -1,7 +1,7 @@
 import { clamp } from 'lodash'
 import Wheel from './Wheel'
 
-const Tempo = ({ tempo, setTempo, tapTempo, toggleMetronome }) => {
+const Tempo = ({ tempo, setTempo, tapTempo, toggleMetronome, moreSettings }) => {
 	const handleTempo = (res: number) => {
 		setTempo(clamp(res + 30, 30, 300))
 		toggleMetronome(true)
@@ -9,7 +9,12 @@ const Tempo = ({ tempo, setTempo, tapTempo, toggleMetronome }) => {
 
 	return (
 		<div className="tempo">
-			<Wheel type="tempo" state={tempo} update={res => handleTempo(res)}></Wheel>
+			<Wheel
+				type="tempo"
+				state={tempo}
+				noAnim={moreSettings.animations}
+				update={res => handleTempo(res)}
+			></Wheel>
 			<button className="tap" onClick={tapTempo}>
 				tap
 			</button>

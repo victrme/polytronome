@@ -191,6 +191,7 @@ const App = (): JSX.Element => {
 	}
 
 	const tempoProps = {
+		moreSettings,
 		tempo,
 		setTempo,
 		tapTempo,

@@ -1,4 +1,4 @@
-import { useSpring, animated, config } from '@react-spring/web'
+import { useSpring, animated } from '@react-spring/web'
 import { ResizeObserver } from '@juggle/resize-observer'
 import { useDrag, useWheel } from '@use-gesture/react'
 import { useEffect, useRef, useState } from 'react'
@@ -30,10 +30,11 @@ const Arrow = props => {
 	)
 }
 
-const Wheel = ({ update, type, state }): JSX.Element => {
+const Wheel = ({ update, type, state, noAnim }): JSX.Element => {
 	const list: string[] = allLists[type]
 	const [dragRelease, setDragRelease] = useState(false)
 	const [preRef, preBounds] = useMeasure({ polyfill: ResizeObserver })
+	const [animate, setAnimate] = useState(true)
 
 	const getHeight = () => preBounds.height / allLists[type].length
 	const offsetState = (state: number) => (type === 'tempo' ? state - 30 : state - 1)
@@ -43,25 +44,30 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 	const getBottomPos = () => -(list.length - 1) * getHeight()
 	const getInitalPos = () => getBottomPos() + offsetState(state) * getHeight()
 
+	// don't animate when tempo or reduced animations
+	const animateControl = !(type === 'tempo' || noAnim)
+
 	// eslint-disable-next-line
-	const [{ y }, api] = useSpring(() => ({
+	const [{ y }, spring] = useSpring(() => ({
 		x: 0,
 		y: getInitalPos(),
-		config: config.stiff,
+		config: { tension: 500, friction: 30, precision: 0.001 },
 	}))
 
 	// Update logic for wheel (for everywhere except drag)
-	const handleWheelMove = (sign: number, noUpdate?: boolean) => {
+	const handleWheelMove = (sign: number, tempoNoUpdate?: boolean) => {
 		const snapped = getClosest(y.get() + getHeight() * sign)
 
 		if (inRange(snapped, getHeight(), getBottomPos())) {
-			if (noUpdate) api.set({ y: snapped })
-			else update(getUserVal(snapped))
+			tempoNoUpdate ? spring.set({ y: snapped }) : update(getUserVal(snapped))
 		}
 	}
 
 	// Puts back wheel in place after drag move
-	const snapWheel = () => api.set({ y: getBottomPos() + offsetState(state) * getHeight() })
+	const snapWheel = () => {
+		const pos = getBottomPos() + offsetState(state) * getHeight()
+		animate ? spring.start({ y: pos }) : spring.set({ y: pos })
+	}
 
 	useEffect(() => {
 		!dragRelease ? snapWheel() : setDragRelease(false)
@@ -69,9 +75,15 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 	}, [state])
 
 	useEffect(() => {
+		// Snaps wheel into place on resize
 		snapWheel()
 		// eslint-disable-next-line
-	}, [preRef])
+	}, [preBounds.height])
+
+	useEffect(() => {
+		setAnimate(animateControl)
+		// eslint-disable-next-line
+	}, [noAnim])
 
 	//
 	// Gestures
@@ -79,11 +91,11 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 
 	const dragging = useDrag(
 		({ active, offset: [x, y] }) => {
-			api.start({ y })
+			spring.start({ y })
 
 			if (!active) {
 				setDragRelease(true)
-				api.start({ y: getClosest(y) })
+				spring.start({ y: getClosest(y) })
 				update(getUserVal(y))
 			}
 		},
@@ -97,7 +109,10 @@ const Wheel = ({ update, type, state }): JSX.Element => {
 	)
 
 	const wheeling = useWheel(({ wheeling, direction }) => {
-		if (wheeling) handleWheelMove(direction[1])
+		if (wheeling) {
+			setAnimate(false)
+			handleWheelMove(direction[1])
+		} else setAnimate(animateControl)
 	})
 
 	//

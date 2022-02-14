@@ -5,12 +5,12 @@ $easing: cubic-bezier(0.19, 1, 0.22, 1);
 body {
 	margin: 0;
 	background-color: var(--background);
-	transition: background-color 1s;
+	transition: background-color 1s $easing;
 }
 body,
 body:fullscreen::backdrop {
 	background-color: var(--background);
-	transition: background-color 1s;
+	transition: background-color 1s $easing;
 }
 
 button,

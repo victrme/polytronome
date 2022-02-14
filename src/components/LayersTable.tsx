@@ -15,6 +15,7 @@ import { Layer } from '../Types'
 
 const LayersTable = ({ easy, layers, selected, handleLayerChange, tempoProps }) => {
 	//
+	const anim = tempoProps.moreSettings.animations
 
 	const release = ['off', 'short', 'long']
 	const wavetypes = [
@@ -56,6 +57,7 @@ const LayersTable = ({ easy, layers, selected, handleLayerChange, tempoProps }) 
 						<div className="ls-beats">
 							<Wheel
 								type="beats"
+								noAnim={anim}
 								state={layer.beats}
 								update={(res: number) => handleLayerChange('beats', res, i)}
 							></Wheel>
@@ -68,6 +70,7 @@ const LayersTable = ({ easy, layers, selected, handleLayerChange, tempoProps }) 
 								<div className="notes-wrap">
 									<Wheel
 										type="freq"
+										noAnim={anim}
 										state={layer.freq}
 										update={res => handleLayerChange('freq', res, i)}
 									></Wheel>
