@@ -2,8 +2,8 @@ import Pizzicato from 'pizzicato'
 import { useEffect } from 'react'
 import { animated } from '@react-spring/web'
 
-import Dialog from '../assets/tutorials/en.json'
-import { Stage, Interaction } from '../Types'
+import Dialog from '../public/assets/tutorials/en.json'
+import { Stage, Interaction } from '../types/tutorial'
 
 const Tutorial = ({ tutoStage, setTutoStage, styles }) => {
 	const playNotifSound = (from: 'yes' | 'no' | 'test') => {

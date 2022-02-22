@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import Themes from '../assets/themes.json'
-import defaultLayers from '../assets/layers.json'
+import Themes from '../public/assets/themes.json'
+import defaultLayers from '../public/assets/layers.json'
 import { applyTheme, createExportCode, importCode } from '../utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useTrail, animated } from '@react-spring/web'

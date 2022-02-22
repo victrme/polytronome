@@ -1,7 +1,8 @@
-import Themes from './assets/themes.json'
-import defaultLayers from './assets/layers.json'
-import defaultSettings from './assets/settings.json'
-import { Layer, MoreSettings } from './Types'
+import Themes from '../public/assets/themes.json'
+import defaultLayers from '../public/assets/layers.json'
+import defaultSettings from '../public/assets/settings.json'
+import MoreSettings from '../types/moreSettings'
+import Layer from '../types/layer'
 
 export const applyTheme = (index: number) => {
 	const root = document.querySelector(':root')! as HTMLBodyElement

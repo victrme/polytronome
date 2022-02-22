@@ -1,19 +1,23 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
 import { isMobileOnly } from 'react-device-detect'
-import Pizzicato from 'pizzicato'
 import { clamp } from 'lodash'
 
-import defaultSettings from './assets/settings.json'
-import defaultLayers from './assets/layers.json'
-import LayersTable from './components/LayersTable'
-import Keybindings from './components/Keybindings'
-import Header from './components/Header'
-import Clicks from './components/Clicks'
-import Menu from './components/Menu'
-import { MoreSettings, Layer, Code, Tap } from './Types'
-import { setRandomID, importCode, applyTheme, createExportCode } from './utils'
-import Buttons from './components/Buttons'
+import { setRandomID, importCode, applyTheme, createExportCode } from '../lib/utils'
+
+import defaultSettings from '../public/assets/settings.json'
+import defaultLayers from '../public/assets/layers.json'
+import LayersTable from '../components/LayersTable'
+import Keybindings from '../components/Keybindings'
+import Buttons from '../components/Buttons'
+import Header from '../components/Header'
+import Clicks from '../components/Clicks'
+import Menu from '../components/Menu'
+
+import MoreSettings from '../types/moreSettings'
+import { Tap } from '../types/options'
+import Layer from '../types/layer'
+import Code from '../types/code'
 
 const App = (): JSX.Element => {
 	//

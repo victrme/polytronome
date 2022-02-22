@@ -11,7 +11,7 @@ import {
 import Tempo from './Tempo'
 import Wheel from './Wheel'
 import Range from './Range'
-import { Layer } from '../Types'
+import Layer from '../types/layer'
 
 const LayersTable = ({ easy, layers, selected, handleLayerChange, tempoProps }) => {
 	//
