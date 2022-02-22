@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Pizzicato from 'pizzicato'
-import { Layer } from '../Types'
+import Layer from '../types/layer'
 
 const mockSound = new Pizzicato.Sound({
 	source: 'wave',

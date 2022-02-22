@@ -13,6 +13,7 @@
 		"body-scroll-lock": "^4.0.0-beta.0",
 		"chokidar": "^3.5.2",
 		"lodash": "^4.17.21",
+		"next": "latest",
 		"pizzicato": "^0.6.4",
 		"react": "^17.0.1",
 		"react-beforeunload": "^2.5.2",
@@ -35,14 +36,12 @@
 		"jest-dom": "^4.0.0",
 		"nanoid": "^3.2.0",
 		"node-forge": ">=1.0.0",
-		"react-scripts": "^5.0.0",
 		"react-test-renderer": "^17.0.2"
 	},
 	"scripts": {
-		"start": "react-scripts start",
-		"build": "react-scripts build",
-		"test": "react-scripts test",
-		"eject": "react-scripts eject"
+		"start": "next start",
+		"build": "next build",
+		"dev": "next dev"
 	},
 	"eslintConfig": {
 		"extends": [

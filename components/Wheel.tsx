@@ -1,5 +1,5 @@
-import { useSpring, animated } from '@react-spring/web'
 import { ResizeObserver } from '@juggle/resize-observer'
+import { useSpring, animated } from '@react-spring/web'
 import { useDrag, useWheel } from '@use-gesture/react'
 import { useEffect, useRef, useState } from 'react'
 import useMeasure from 'react-use-measure'

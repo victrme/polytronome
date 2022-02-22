@@ -1,6 +1,7 @@
-import Tutorial from './Tutorial'
 import { useTransition, config } from '@react-spring/web'
 import { isMobileOnly } from 'react-device-detect'
+
+import Tutorial from './Tutorial'
 import Tempo from './Tempo'
 
 const Logo = () => {
