@@ -2,25 +2,15 @@ import { useEffect, useRef, useState } from 'react'
 import Pizzicato from 'pizzicato'
 import Layer from '../types/layer'
 
-const mockSound = new Pizzicato.Sound({
-	source: 'wave',
-	options: {
-		type: 'square',
-		volume: 0.01,
-		frequency: 1,
-		attack: 0,
-		release: 0,
-	},
-})
-
 const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }) => {
 	function usePrevious(value) {
 		const ref = useRef()
 		useEffect(() => (ref.current = value), [value])
 		return ref.current
 	}
+
 	const getBeats = () => layers.map((x: Layer) => x.beats)
-	const clicksRef = useRef(document.createElement('div'))
+	const clicksRef = useRef()
 
 	const [times, setTimes] = useState<number[]>([1, 1, 1, 1, 1])
 	const [offsetTimes, setOffsetTimes] = useState([1, 1, 1, 1, 1])
@@ -192,6 +182,17 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 	}
 
 	const activateSound = () => {
+		const mockSound = new Pizzicato.Sound({
+			source: 'wave',
+			options: {
+				type: 'square',
+				volume: 0.01,
+				frequency: 1,
+				attack: 0,
+				release: 0,
+			},
+		})
+
 		if (mockRef.current < 2) {
 			mockSound.play()
 			setMockAmount(mockRef.current + 1)

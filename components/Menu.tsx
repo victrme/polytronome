@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import Themes from '../public/assets/themes.json'
 import defaultLayers from '../public/assets/layers.json'
-import { applyTheme, createExportCode, importCode } from '../utils'
+import { applyTheme, createExportCode, importCode } from '../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useTrail, animated } from '@react-spring/web'
 import { isMobileOnly } from 'react-device-detect'
