@@ -10,7 +10,7 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 	}
 
 	const getBeats = () => layers.map((x: Layer) => x.beats)
-	const clicksRef = useRef()
+	const clicksRef = useRef<any>()
 
 	const [times, setTimes] = useState<number[]>([1, 1, 1, 1, 1])
 	const [offsetTimes, setOffsetTimes] = useState([1, 1, 1, 1, 1])
