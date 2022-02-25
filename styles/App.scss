@@ -73,6 +73,12 @@ pre {
 		cursor: pointer;
 		transition: background-color 0.2s $easing, color 0.3s $easing, border 0.2s $easing;
 
+		svg {
+			width: 1em;
+			height: 1em;
+			vertical-align: text-bottom;
+		}
+
 		&:active {
 			background-color: var(--dim);
 		}
@@ -102,8 +108,9 @@ pre {
 			background-color: var(--buttons);
 		}
 
-		pre {
-			margin-top: -0.1em;
+		p {
+			margin: 0;
+			font-family: 'Source Code Pro', 'Courier New', Courier, monospace;
 		}
 
 		.arrows {
@@ -142,14 +149,18 @@ pre {
 			touch-action: none;
 			text-align: center;
 			font-weight: 900;
+			margin-top: -0.1em;
 		}
 	}
 
-	.bottom-buttons {
+	.bottom-buttons,
+	.bottom-buttons button {
 		display: flex;
 		justify-content: center;
-		text-align: center;
+		align-items: center;
+	}
 
+	.bottom-buttons {
 		svg {
 			margin-right: 1em;
 		}

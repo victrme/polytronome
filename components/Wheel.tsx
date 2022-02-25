@@ -33,7 +33,7 @@ const Arrow = props => {
 const Wheel = ({ update, type, state, noAnim }): JSX.Element => {
 	const list: string[] = allLists[type]
 	const [dragRelease, setDragRelease] = useState(false)
-	const [preRef, preBounds] = useMeasure({ polyfill: ResizeObserver })
+	const [wheelRef, preBounds] = useMeasure({ polyfill: ResizeObserver })
 	const [animate, setAnimate] = useState(true)
 
 	const getHeight = () => preBounds.height / allLists[type].length
@@ -173,8 +173,17 @@ const Wheel = ({ update, type, state, noAnim }): JSX.Element => {
 					onMouseUp={() => handleArrow(-1, false)}
 				/>
 			</div>
-			<animated.div {...dragging()} {...wheeling()} className="wheel" style={{ y }}>
-				<pre ref={preRef}>{list.join('\n')}</pre>
+
+			<animated.div
+				{...dragging()}
+				{...wheeling()}
+				ref={wheelRef}
+				className="wheel"
+				style={{ y }}
+			>
+				{list.map((elem, i) => (
+					<p key={'wheelElem' + i}>{elem}</p>
+				))}
 			</animated.div>
 		</div>
 	)

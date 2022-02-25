@@ -192,7 +192,7 @@ const Menu = ({
 		<div className="menu">
 			<button onClick={toggleMenu}>
 				<FontAwesomeIcon icon={faBars} />
-				{!isMobileOnly ? <span>Menu</span> : ''}
+				{!isMobileOnly ? 'Menu' : ''}
 			</button>
 
 			<aside className={extended ? 'extended' : 'closed'}>

@@ -6,13 +6,13 @@ const Buttons = ({ isRunning, toggleMetronome, randomizeLayers }) => {
 		<div className="bottom-buttons">
 			<button className="start" onClick={() => toggleMetronome()}>
 				<FontAwesomeIcon icon={isRunning ? faStop : faPlay} />
-				<span>{isRunning ? 'stop' : 'start'}</span>
+				{isRunning ? 'stop' : 'start'}
 			</button>
 
 			<div>
 				<button className="randomize" onClick={randomizeLayers}>
 					<FontAwesomeIcon icon={faRandom} />
-					<span>shuffle</span>
+					shuffle
 				</button>
 			</div>
 		</div>
