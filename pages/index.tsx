@@ -234,12 +234,6 @@ const App = (): JSX.Element => {
 	}, [layers])
 
 	useEffect(() => {
-		if (tutoStage.startsWith('showTempo'))
-			setTutoStage(isMobileOnly ? 'endEasy' : 'clickMenu')
-		// eslint-disable-next-line
-	}, [tempo])
-
-	useEffect(() => {
 		// CSS classes control
 		setAppClasses(handleClasses())
 		return () => setAppClasses('polytronome easy')
@@ -250,6 +244,12 @@ const App = (): JSX.Element => {
 		setIsForMobile(isMobileOnly)
 		return () => setIsForMobile(false)
 	}, [isMobileOnly])
+
+	useEffect(() => {
+		if (tutoStage.startsWith('showTempo'))
+			setTutoStage(isForMobile ? 'endEasy' : 'clickMenu')
+		// eslint-disable-next-line
+	}, [tempo])
 
 	useEffect(() => {
 		// Profile save
@@ -265,11 +265,26 @@ const App = (): JSX.Element => {
 			applyTheme(moreSettings.theme)
 		}
 
-		setLoading(false)
+		// First time tutorial activation
+		let tutoWillStart = false
+		const activateTutorial = () => {
+			if (!localStorage.hadTutorial && !tutoWillStart && easy) {
+				tutoWillStart = true
+				setTimeout(() => {
+					setTutoStage('intro')
+					localStorage.hadTutorial = true
+				}, 8000)
+			}
+		}
 
 		// Window Events
+		window.addEventListener('click', activateTutorial)
 		window.addEventListener('fullscreenchange', handleFullscreen)
-		return () => window.removeEventListener('fullscreenchange', handleFullscreen)
+
+		return () => {
+			window.removeEventListener('click', activateTutorial)
+			window.removeEventListener('fullscreenchange', handleFullscreen)
+		}
 
 		// eslint-disable-next-line
 	}, [])
@@ -293,10 +308,7 @@ const App = (): JSX.Element => {
 		></Buttons>
 	)
 
-	const [loading, setLoading] = useState(true)
-
 	return (
-		// style={{ opacity: loading ? 0 : 1 }}
 		<div className={appClasses}>
 			<Keybindings
 				layers={layers}

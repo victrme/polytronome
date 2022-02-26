@@ -41,7 +41,7 @@ const Menu = ({
 }) => {
 	const [openedTheme, setOpenedTheme] = useState(false)
 	const [extended, setExtended] = useState(false)
-	const isOn = bool => (bool ? 'on' : '')
+	const isOn = (bool: boolean) => (bool ? 'on' : '')
 
 	//
 	// Menu options functions
@@ -69,7 +69,7 @@ const Menu = ({
 	}
 
 	const toggleMenu = () => {
-		if (tutoStage !== 'removed') setTutoStage('removed')
+		if (isForMobile && tutoStage !== 'removed') setTutoStage('removed')
 		setExtended(!extended)
 		setOpenedTheme(false)
 	}

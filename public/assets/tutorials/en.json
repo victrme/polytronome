@@ -1,6 +1,6 @@
 {
 	"intro": {
-		"text": "Hello 👋 Do you want a tour of polytronome ?",
+		"text": "Hello 👋\nDo you want a tour of polytronome ?",
 		"yes": { "to": "explainGoal", "text": "I'd like to" },
 		"no": { "to": "leaveIntro", "text": "No thanks" }
 	},
@@ -22,7 +22,7 @@
 	"testLaunch": { "text": "Nice 😄 start the metronome !" },
 	"waitLaunch": { "text": "Stop whenever you want" },
 	"showTempo": {
-		"text": "You can also change the tempo, try it"
+		"text": "You can also change the tempo"
 	},
 	"clickMenu": {
 		"text": "Finally, you can access the menu by clicking here"
