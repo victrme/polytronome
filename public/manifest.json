@@ -22,7 +22,7 @@
 			"src": "apple-touch-icon.png",
 			"type": "image/png",
 			"sizes": "192x192",
-			"purpose": "any maskable"
+			"purpose": "maskable"
 		}
 	],
 	"orientation": "portrait",

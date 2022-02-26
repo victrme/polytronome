@@ -28,14 +28,15 @@ const OptionIcon = ({ icon }) => (
 )
 
 const Menu = ({
-	moreSettings,
-	setMoreSettings,
 	easy,
 	setEasy,
 	setImport,
 	tutoStage,
-	setTutoStage,
 	fullscreen,
+	isForMobile,
+	setTutoStage,
+	moreSettings,
+	setMoreSettings,
 	changeFullscreen,
 }) => {
 	const [openedTheme, setOpenedTheme] = useState(false)
@@ -192,7 +193,7 @@ const Menu = ({
 		<div className="menu">
 			<button onClick={toggleMenu}>
 				<FontAwesomeIcon icon={faBars} />
-				{!isMobileOnly ? 'Menu' : ''}
+				{isForMobile ? '' : 'Menu'}
 			</button>
 
 			<aside className={extended ? 'extended' : 'closed'}>

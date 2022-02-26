@@ -1,4 +1,3 @@
-import { isMobileOnly } from 'react-device-detect'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
 	faVolumeMute,
@@ -8,12 +7,19 @@ import {
 	IconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
 
-import Tempo from './Tempo'
 import Wheel from './Wheel'
 import Range from './Range'
 import Layer from '../types/layer'
+import Tempo from './Tempo'
 
-const LayersTable = ({ easy, layers, selected, handleLayerChange, tempoProps }) => {
+const LayersTable = ({
+	easy,
+	layers,
+	selected,
+	handleLayerChange,
+	tempoProps,
+	isForMobile,
+}) => {
 	//
 	const anim = tempoProps.moreSettings.animations
 
@@ -168,7 +174,7 @@ const LayersTable = ({ easy, layers, selected, handleLayerChange, tempoProps }) 
 				))}
 			</div>
 
-			{isMobileOnly ? <Tempo {...tempoProps}></Tempo> : ''}
+			{isForMobile ? <Tempo {...tempoProps}></Tempo> : ''}
 		</div>
 	)
 }

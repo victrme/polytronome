@@ -37,6 +37,9 @@ const App = (): JSX.Element => {
 	const [moreSettings, setMoreSettings] = useState<MoreSettings>({ ...defaultSettings })
 	const [fullscreen, setFullscreen] = useState(false)
 
+	const [appClasses, setAppClasses] = useState('polytronome easy loading')
+	const [isForMobile, setIsForMobile] = useState(false)
+
 	const tempoRef = useRef(tempo)
 	const tapRef = useRef(tap)
 	const startTimeRef = useRef(startTime)
@@ -236,9 +239,19 @@ const App = (): JSX.Element => {
 		// eslint-disable-next-line
 	}, [tempo])
 
-	// Main
 	useEffect(() => {
-		//
+		// CSS classes control
+		setAppClasses(handleClasses())
+		return () => setAppClasses('polytronome easy')
+	}, [easy, moreSettings, tutoStage])
+
+	useEffect(() => {
+		// CSS classes control
+		setIsForMobile(isMobileOnly)
+		return () => setIsForMobile(false)
+	}, [isMobileOnly])
+
+	useEffect(() => {
 		// Profile save
 		sessionStorage.layers = JSON.stringify(layers)
 
@@ -252,17 +265,16 @@ const App = (): JSX.Element => {
 			applyTheme(moreSettings.theme)
 		}
 
-		//
-		// Window Events
+		setLoading(false)
 
-		const cleanupEvents = () =>
-			window.removeEventListener('fullscreenchange', handleFullscreen)
+		// Window Events
 		window.addEventListener('fullscreenchange', handleFullscreen)
-		return cleanupEvents
+		return () => window.removeEventListener('fullscreenchange', handleFullscreen)
 
 		// eslint-disable-next-line
 	}, [])
 
+	// Save profile
 	useBeforeunload(() => {
 		localStorage.sleep = JSON.stringify(createExportCode(tempo, layers, moreSettings, easy))
 	})
@@ -281,8 +293,11 @@ const App = (): JSX.Element => {
 		></Buttons>
 	)
 
+	const [loading, setLoading] = useState(true)
+
 	return (
-		<div className={handleClasses()}>
+		// style={{ opacity: loading ? 0 : 1 }}
+		<div className={appClasses}>
 			<Keybindings
 				layers={layers}
 				setTempo={setTempo}
@@ -303,6 +318,7 @@ const App = (): JSX.Element => {
 				setEasy={setEasy}
 				tutoStage={tutoStage}
 				fullscreen={fullscreen}
+				isForMobile={isForMobile}
 				moreSettings={moreSettings}
 				setTutoStage={setTutoStage}
 				setImport={setSettingsFromCode}
@@ -314,6 +330,7 @@ const App = (): JSX.Element => {
 				<Header
 					tutoStage={tutoStage}
 					tempoProps={tempoProps}
+					isForMobile={isForMobile}
 					setTutoStage={setTutoStage}
 				></Header>
 
@@ -326,17 +343,18 @@ const App = (): JSX.Element => {
 					clickType={moreSettings.clickType}
 				></Clicks>
 
-				{isMobileOnly ? <StartButtons /> : ''}
+				{isForMobile ? <StartButtons /> : ''}
 
 				<LayersTable
 					easy={easy}
 					layers={layers}
 					selected={selected}
 					tempoProps={tempoProps}
+					isForMobile={isForMobile}
 					handleLayerChange={handleLayerChange}
 				></LayersTable>
 
-				{!isMobileOnly ? <StartButtons /> : ''}
+				{isForMobile ? '' : <StartButtons />}
 			</main>
 
 			<div className="spacer"></div>

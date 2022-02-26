@@ -37,6 +37,7 @@ pre {
 	user-select: none;
 	overflow: hidden;
 	max-height: 100vh;
+	transition: opacity 1s 0s $easing;
 
 	@import 'header';
 	@import 'clicks';
@@ -54,7 +55,6 @@ pre {
 		align-items: center;
 		margin: 0 auto;
 		padding-top: 10vh;
-		transition: padding 1s $easing;
 	}
 
 	a,
