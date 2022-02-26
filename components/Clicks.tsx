@@ -53,7 +53,10 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 
 			soundList.push({
 				wave,
-				length: (24e4 / tempoRef.current / layer.beats) * layer.duration,
+				length:
+					layer.duration === 50
+						? 50
+						: (24e4 / tempoRef.current / layer.beats) * layer.duration,
 			})
 		})
 

@@ -98,7 +98,7 @@ const App = (): JSX.Element => {
 
 	const handleLayerChange = (cat: string, result: any, index: number) => {
 		let newLayers = [...layers]
-		const durationsList = [0.25, 0.33, 0.5, 0.75, 0.97]
+		const durationsList = [50, 0.25, 0.33, 0.5, 0.75, 0.97]
 
 		switch (cat) {
 			case 'wave':

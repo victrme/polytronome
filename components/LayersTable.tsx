@@ -31,6 +31,7 @@ const LayersTable = ({
 		'M 10 2 H 30 V 18 H 50', // square
 	]
 	const durations = {
+		'50': '50ms',
 		'0.25': '1/4',
 		'0.33': '1/3',
 		'0.5': 'half',
