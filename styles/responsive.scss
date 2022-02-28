@@ -15,7 +15,7 @@
 	}
 }
 
-@media only screen and (min-height: 900px) and (max-width: 1500px) {
+@media only screen and (min-height: 900px) and (max-width: 1300px) {
 	.polytronome {
 		.layers-table-wrap {
 			.layers-table {
@@ -62,9 +62,9 @@
 	}
 }
 
-@media only screen and (max-height: 750px), (max-width: 1200px) {
+@media only screen and (max-height: 750px) and (max-width: 1200px) {
 	body {
-		font-size: 11px;
+		font-size: 12px;
 	}
 }
 
@@ -89,7 +89,7 @@
 // Width too small for advanced, but height too small for ls-row as rows
 @media only screen and (max-width: 1000px) and (max-height: 780px) {
 	body {
-		font-size: 10px;
+		font-size: 11px;
 	}
 }
 
@@ -275,6 +275,10 @@ specific to .mobile render changes
 			margin: 2em;
 			padding: 0.8em 2em;
 			z-index: 6;
+
+			svg {
+				margin: 0;
+			}
 		}
 
 		aside {
