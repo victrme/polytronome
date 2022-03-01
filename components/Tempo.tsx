@@ -1,4 +1,4 @@
-import { clamp } from 'lodash'
+import clamp from 'lodash/clamp'
 import Wheel from './Wheel'
 
 const Tempo = ({ tempo, setTempo, tapTempo, toggleMetronome, moreSettings }) => {

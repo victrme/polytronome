@@ -3,7 +3,7 @@ import { useSpring, animated } from '@react-spring/web'
 import { useDrag, useWheel } from '@use-gesture/react'
 import { useEffect, useRef, useState } from 'react'
 import useMeasure from 'react-use-measure'
-import { inRange } from 'lodash'
+import inRange from 'lodash/inRange'
 
 const freqArr = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
@@ -176,7 +176,7 @@ const Wheel = ({ update, type, state, noAnim }): JSX.Element => {
 
 			<animated.div
 				{...dragging()}
-				{...wheeling()}
+				// {...wheeling()}
 				ref={wheelRef}
 				className="wheel"
 				style={{ y }}

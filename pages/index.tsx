@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
 import { isMobileOnly } from 'react-device-detect'
-import { clamp } from 'lodash'
+import clamp from 'lodash/clamp'
 
 import { setRandomID, importCode, applyTheme, createExportCode } from '../lib/utils'
 
@@ -215,8 +215,8 @@ const App = (): JSX.Element => {
 		if (tutoStage === 'startAdvanced') setEasy(false)
 	}, [tutoStage])
 
+	// Tutorial
 	useEffect(() => {
-		// tutorial
 		if (tutoStage === 'testBeats') {
 			const beats = layers.map(x => x.beats)
 			const reduced = beats.reduce((a, b) => a + b)
@@ -229,26 +229,24 @@ const App = (): JSX.Element => {
 		if (isRunning && layers.filter(l => l.beats > 1).length === 0) {
 			toggleMetronome()
 		}
-
-		// eslint-disable-next-line
 	}, [layers])
 
+	// CSS classes control
 	useEffect(() => {
-		// CSS classes control
 		setAppClasses(handleClasses())
 		return () => setAppClasses('polytronome easy')
 	}, [easy, moreSettings, tutoStage])
 
+	// Puts isMobileOnly in a state (for static site rendering)
 	useEffect(() => {
-		// CSS classes control
 		setIsForMobile(isMobileOnly)
 		return () => setIsForMobile(false)
 	}, [isMobileOnly])
 
+	//
 	useEffect(() => {
 		if (tutoStage.startsWith('showTempo'))
 			setTutoStage(isForMobile ? 'endEasy' : 'clickMenu')
-		// eslint-disable-next-line
 	}, [tempo])
 
 	useEffect(() => {
@@ -285,8 +283,6 @@ const App = (): JSX.Element => {
 			window.removeEventListener('click', activateTutorial)
 			window.removeEventListener('fullscreenchange', handleFullscreen)
 		}
-
-		// eslint-disable-next-line
 	}, [])
 
 	// Save profile

@@ -1,6 +1,6 @@
 import { useTransition, animated, config } from '@react-spring/web'
 import { useEffect, useState } from 'react'
-import { clamp } from 'lodash'
+import clamp from 'lodash/clamp'
 
 let tempoWait = setTimeout(() => {}, 0)
 
