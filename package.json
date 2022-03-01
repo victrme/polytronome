@@ -1,18 +1,18 @@
 {
 	"name": "polytronome",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"homepage": "/",
 	"private": true,
 	"dependencies": {
 		"@fortawesome/fontawesome-svg-core": "^1.2.36",
-		"@fortawesome/free-solid-svg-icons": "^5.15.4",
+		"@fortawesome/free-solid-svg-icons": "^6.0.0",
 		"@fortawesome/react-fontawesome": "^0.1.16",
 		"@juggle/resize-observer": "^3.3.1",
+		"@next/bundle-analyzer": "^12.1.0",
 		"@react-spring/web": "^9.3.0",
 		"@use-gesture/react": "^10.1.2",
-		"body-scroll-lock": "^4.0.0-beta.0",
 		"chokidar": "^3.5.2",
-		"lodash": "^4.17.21",
+		"cross-env": "^7.0.3",
 		"next": "latest",
 		"pizzicato": "^0.6.4",
 		"react": "^17.0.1",
@@ -21,8 +21,7 @@
 		"react-dom": "^17.0.1",
 		"react-use-measure": "^2.0.4",
 		"sass": "^1.43.4",
-		"typescript": "^4.4.4",
-		"web-vitals": "^2.1.2"
+		"typescript": "^4.4.4"
 	},
 	"devDependencies": {
 		"@testing-library/jest-dom": "^5.15.0",
@@ -31,16 +30,19 @@
 		"@types/lodash": "^4.14.178",
 		"@types/node": "^16.11.6",
 		"@types/react": "^17.0.34",
+		"@types/react-beforeunload": "^2.1.1",
 		"@types/react-dom": "^17.0.11",
+		"eslint": "^8.10.0",
 		"follow-redirects": ">=1.14.8",
 		"jest-dom": "^4.0.0",
+		"lodash": "^4.17.21",
 		"nanoid": "^3.2.0",
-		"node-forge": ">=1.0.0",
-		"react-test-renderer": "^17.0.2"
+		"node-forge": ">=1.0.0"
 	},
 	"scripts": {
-		"start": "next start",
+		"analyze": "cross-env ANALYZE=true next build",
 		"build": "next build && next export",
+		"start": "next start",
 		"dev": "next dev"
 	},
 	"eslintConfig": {
