@@ -1,16 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@500&family=Dosis:wght@600;700&display=swap');
-
 $easing: cubic-bezier(0.19, 1, 0.22, 1);
 
-body {
-	margin: 0;
-	background-color: var(--background);
-	transition: background-color 1s $easing;
-}
 body,
 body:fullscreen::backdrop {
+	margin: 0;
 	background-color: var(--background);
-	transition: background-color 1s $easing;
+	transition-timing-function: $easing;
+	// transition: background-color 1s $easing;
 }
 
 button,
@@ -25,11 +20,6 @@ input {
 	letter-spacing: 1.2px;
 }
 
-pre {
-	margin: 0;
-	font-family: 'Source Code Pro', 'Courier New', Courier, monospace;
-}
-
 .polytronome {
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
@@ -37,6 +27,7 @@ pre {
 	user-select: none;
 	overflow: hidden;
 	max-height: 100vh;
+	opacity: 1;
 	transition: opacity 1s 0s $easing;
 
 	@import 'header';
@@ -110,7 +101,8 @@ pre {
 
 		p {
 			margin: 0;
-			font-family: 'Source Code Pro', 'Courier New', Courier, monospace;
+			font-weight: 500;
+			font-family: 'Source Code Pro', Arial, Helvetica, sans-serif;
 		}
 
 		.arrows {
@@ -148,7 +140,6 @@ pre {
 			cursor: grab;
 			touch-action: none;
 			text-align: center;
-			font-weight: 900;
 			margin-top: -0.1em;
 		}
 	}
