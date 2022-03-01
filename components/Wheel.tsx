@@ -113,7 +113,7 @@ const Wheel = ({ update, type, state, noAnim }): JSX.Element => {
 			setAnimate(false)
 			handleWheelMove(direction[1])
 		} else setAnimate(animateControl)
-	})
+	}, {})
 
 	//
 	// Arrows
@@ -176,7 +176,7 @@ const Wheel = ({ update, type, state, noAnim }): JSX.Element => {
 
 			<animated.div
 				{...dragging()}
-				// {...wheeling()}
+				{...wheeling()}
 				ref={wheelRef}
 				className="wheel"
 				style={{ y }}
