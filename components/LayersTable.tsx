@@ -50,7 +50,7 @@ const LayersTable = ({
 	}
 
 	return (
-		<div className="layers-table-wrap">
+		<>
 			<div className="layers-table">
 				{layers.map((layer: Layer, i: number) => (
 					<div
@@ -176,7 +176,7 @@ const LayersTable = ({
 			</div>
 
 			{isForMobile ? <Tempo {...tempoProps}></Tempo> : ''}
-		</div>
+		</>
 	)
 }
 

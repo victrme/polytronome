@@ -17,14 +17,12 @@
 
 @media only screen and (min-height: 900px) and (max-width: 1300px) {
 	.polytronome {
-		.layers-table-wrap {
-			.layers-table {
-				width: auto;
-				flex-direction: column;
+		.layers-table {
+			width: auto;
+			flex-direction: column;
 
-				.ls-row {
-					flex-direction: row;
-				}
+			.ls-row {
+				flex-direction: row;
 			}
 		}
 
@@ -38,7 +36,7 @@
 				padding-top: 10vh;
 			}
 
-			.layers-table-wrap .layers-table {
+			.layers-table {
 				justify-content: flex-start;
 				justify-content: center;
 
@@ -129,57 +127,55 @@
 			}
 		}
 
-		.layers-table-wrap {
-			.layers-table {
-				.ls-row {
-					padding: 0em 1em;
-					margin: 0.5em;
-				}
+		.layers-table {
+			.ls-row {
+				padding: 0em 1em;
+				margin: 0.5em;
+			}
 
-				.ls-type {
-					min-width: 5em;
+			.ls-type {
+				min-width: 5em;
 
-					svg {
-						width: 3.4em;
-						height: 3.4em;
-						padding: 0 1em;
-					}
-				}
-
-				.ls-effects {
-					text-align: left;
-					flex-direction: column;
-					max-width: 7em;
-				}
-
-				.ls-volume {
-					flex-direction: column;
-
-					.mute {
-						padding: 0;
-						margin-bottom: 1em;
-					}
-
-					.range-wrap {
-					}
+				svg {
+					width: 3.4em;
+					height: 3.4em;
+					padding: 0 1em;
 				}
 			}
 
-			.tempo {
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				margin-bottom: 80px;
-				width: 100%;
+			.ls-effects {
+				text-align: left;
+				flex-direction: column;
+				max-width: 7em;
+			}
 
-				.tap {
-					margin-left: 10px;
+			.ls-volume {
+				flex-direction: column;
+
+				.mute {
+					padding: 0;
+					margin-bottom: 1em;
+				}
+
+				.range-wrap {
 				}
 			}
 		}
 
+		.tempo {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin-bottom: 80px;
+			width: 100%;
+
+			.tap {
+				margin-left: 10px;
+			}
+		}
+
 		&.easy {
-			.layers-table-wrap .layers-table {
+			.layers-table {
 				margin: 6em 0;
 				justify-content: space-around;
 				justify-content: flex-start;
@@ -228,7 +224,6 @@ specific to .mobile render changes
 		}
 	}
 
-	.layers-table-wrap,
 	.layers-table {
 		flex-direction: column;
 

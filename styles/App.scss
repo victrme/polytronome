@@ -13,7 +13,7 @@ body,
 input {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	font-family: 'Dosis', sans-serif;
+	font-family: 'Dosis', Arial, Helvetica, sans-serif;
 	line-height: 1em;
 	font-weight: 600;
 	font-size: 15px;
@@ -201,23 +201,19 @@ input {
 			margin-bottom: 4em;
 		}
 
-		.layers-table-wrap {
-			justify-content: center;
+		.layers-table {
+			flex-direction: row;
+			margin: 4em 0;
+			margin-left: 0;
+			width: auto;
+		}
 
-			.layers-table {
-				flex-direction: row;
-				margin: 4em 0;
-				margin-left: 0;
-				width: auto;
-			}
+		.ls-row {
+			background-color: transparent;
+			padding: 0px;
 
-			.ls-row {
-				background-color: transparent;
-				padding: 0px;
-
-				.immovable_wheel {
-					width: 1.6em;
-				}
+			.immovable_wheel {
+				width: 1.6em;
 			}
 		}
 	}

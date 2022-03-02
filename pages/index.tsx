@@ -1,6 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
-import { isMobileOnly } from 'react-device-detect'
 import clamp from 'lodash/clamp'
 
 import { setRandomID, importCode, applyTheme, createExportCode } from '../lib/utils'
@@ -19,7 +18,11 @@ import { Tap } from '../types/options'
 import Layer from '../types/layer'
 import Code from '../types/code'
 
-const App = (): JSX.Element => {
+const StartButtons = (props: any) => {
+	return <Buttons {...props}></Buttons>
+}
+
+const Main = (): JSX.Element => {
 	//
 	//
 	// States & Refs
@@ -189,7 +192,7 @@ const App = (): JSX.Element => {
 	const handleClasses = () => {
 		let result = 'polytronome'
 
-		if (isMobileOnly) result += ' mobile'
+		if (isForMobile) result += ' mobile'
 		if (easy) result += ' easy'
 		if (tutoStage !== 'removed') result += ` ${tutoStage}`
 		if (moreSettings.animations) result += ' performance'
@@ -235,15 +238,8 @@ const App = (): JSX.Element => {
 	useEffect(() => {
 		setAppClasses(handleClasses())
 		return () => setAppClasses('polytronome easy')
-	}, [easy, moreSettings, tutoStage])
+	}, [easy, moreSettings, tutoStage, isForMobile])
 
-	// Puts isMobileOnly in a state (for static site rendering)
-	useEffect(() => {
-		setIsForMobile(isMobileOnly)
-		return () => setIsForMobile(false)
-	}, [isMobileOnly])
-
-	//
 	useEffect(() => {
 		if (tutoStage.startsWith('showTempo'))
 			setTutoStage(isForMobile ? 'endEasy' : 'clickMenu')
@@ -275,13 +271,19 @@ const App = (): JSX.Element => {
 			}
 		}
 
+		const handleMobileView = () => {
+			setIsForMobile(window.visualViewport && window.visualViewport.width < 425)
+		}
+
 		// Window Events
 		window.addEventListener('click', activateTutorial)
 		window.addEventListener('fullscreenchange', handleFullscreen)
+		window.addEventListener('resize', handleMobileView)
 
 		return () => {
 			window.removeEventListener('click', activateTutorial)
 			window.removeEventListener('fullscreenchange', handleFullscreen)
+			window.addEventListener('resize', handleMobileView)
 		}
 	}, [])
 
@@ -295,14 +297,6 @@ const App = (): JSX.Element => {
 	// Render
 	//
 	//
-
-	const StartButtons = () => (
-		<Buttons
-			isRunning={isRunning}
-			randomizeLayers={randomizeLayers}
-			toggleMetronome={toggleMetronome}
-		></Buttons>
-	)
 
 	return (
 		<div className={appClasses}>
@@ -351,7 +345,13 @@ const App = (): JSX.Element => {
 					clickType={moreSettings.clickType}
 				></Clicks>
 
-				{isForMobile ? <StartButtons /> : ''}
+				{isForMobile ? (
+					<StartButtons
+						{...{ isRunning, randomizeLayers, toggleMetronome }}
+					></StartButtons>
+				) : (
+					''
+				)}
 
 				<LayersTable
 					easy={easy}
@@ -362,7 +362,13 @@ const App = (): JSX.Element => {
 					handleLayerChange={handleLayerChange}
 				></LayersTable>
 
-				{isForMobile ? '' : <StartButtons />}
+				{isForMobile ? (
+					''
+				) : (
+					<StartButtons
+						{...{ isRunning, randomizeLayers, toggleMetronome }}
+					></StartButtons>
+				)}
 			</main>
 
 			<div className="spacer"></div>
@@ -370,4 +376,4 @@ const App = (): JSX.Element => {
 	)
 }
 
-export default App
+export default Main

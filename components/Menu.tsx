@@ -4,7 +4,6 @@ import defaultLayers from '../public/assets/layers.json'
 import { applyTheme, createExportCode, importCode } from '../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useTrail, animated } from '@react-spring/web'
-import { isMobileOnly } from 'react-device-detect'
 
 import {
 	faBars,
@@ -159,7 +158,7 @@ const Menu = ({
 			title: 'show tutorial',
 			func: () => {
 				setTutoStage(easy ? 'intro' : 'showBeats')
-				if (isMobileOnly) setExtended(false)
+				if (isForMobile) setExtended(false)
 			},
 			css: '',
 			state: '',
@@ -181,12 +180,10 @@ const Menu = ({
 
 	useEffect(() => {
 		api.start({ opacity: openedTheme ? 1 : 0 })
-		// eslint-disable-next-line
 	}, [openedTheme])
 
 	useEffect(() => {
 		if (tutoStage === 'clickMenu' && extended) setTutoStage('endEasy')
-		// eslint-disable-next-line
 	}, [extended])
 
 	return (

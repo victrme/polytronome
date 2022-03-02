@@ -1,4 +1,3 @@
-import { ResizeObserver } from '@juggle/resize-observer'
 import { useSpring, animated } from '@react-spring/web'
 import { useDrag, useWheel } from '@use-gesture/react'
 import { useEffect, useRef, useState } from 'react'
@@ -33,7 +32,7 @@ const Arrow = props => {
 const Wheel = ({ update, type, state, noAnim }): JSX.Element => {
 	const list: string[] = allLists[type]
 	const [dragRelease, setDragRelease] = useState(false)
-	const [wheelRef, preBounds] = useMeasure({ polyfill: ResizeObserver })
+	const [wheelRef, preBounds] = useMeasure()
 	const [animate, setAnimate] = useState(true)
 
 	const getHeight = () => preBounds.height / allLists[type].length
@@ -47,7 +46,6 @@ const Wheel = ({ update, type, state, noAnim }): JSX.Element => {
 	// don't animate when tempo or reduced animations
 	const animateControl = !(type === 'tempo' || noAnim)
 
-	// eslint-disable-next-line
 	const [{ y }, spring] = useSpring(() => ({
 		x: 0,
 		y: getInitalPos(),
@@ -71,18 +69,15 @@ const Wheel = ({ update, type, state, noAnim }): JSX.Element => {
 
 	useEffect(() => {
 		!dragRelease ? snapWheel() : setDragRelease(false)
-		// eslint-disable-next-line
 	}, [state])
 
+	// Snaps wheel into place on resize
 	useEffect(() => {
-		// Snaps wheel into place on resize
 		snapWheel()
-		// eslint-disable-next-line
 	}, [preBounds.height])
 
 	useEffect(() => {
 		setAnimate(animateControl)
-		// eslint-disable-next-line
 	}, [noAnim])
 
 	//

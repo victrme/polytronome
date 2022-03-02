@@ -6,8 +6,7 @@
 	"dependencies": {
 		"@fortawesome/fontawesome-svg-core": "^1.2.36",
 		"@fortawesome/free-solid-svg-icons": "^6.0.0",
-		"@fortawesome/react-fontawesome": "^0.1.16",
-		"@juggle/resize-observer": "^3.3.1",
+		"@fortawesome/react-fontawesome": "^0.1.17",
 		"@next/bundle-analyzer": "^12.1.0",
 		"@react-spring/web": "^9.3.0",
 		"@use-gesture/react": "^10.1.2",
@@ -16,8 +15,6 @@
 		"next": "latest",
 		"pizzicato": "^0.6.4",
 		"react": "^17.0.1",
-		"react-beforeunload": "^2.5.2",
-		"react-device-detect": "^2.1.2",
 		"react-dom": "^17.0.1",
 		"react-use-measure": "^2.0.4",
 		"sass": "^1.43.4",
@@ -37,7 +34,8 @@
 		"jest-dom": "^4.0.0",
 		"lodash": "^4.17.21",
 		"nanoid": "^3.2.0",
-		"node-forge": ">=1.0.0"
+		"node-forge": ">=1.0.0",
+		"react-beforeunload": "^2.5.2"
 	},
 	"scripts": {
 		"analyze": "cross-env ANALYZE=true next build",
