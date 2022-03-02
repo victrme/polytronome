@@ -12,15 +12,12 @@ import Buttons from '../components/Buttons'
 import Header from '../components/Header'
 import Clicks from '../components/Clicks'
 import Menu from '../components/Menu'
+import Tempo from '../components/Tempo'
 
 import MoreSettings from '../types/moreSettings'
 import { Tap } from '../types/options'
 import Layer from '../types/layer'
 import Code from '../types/code'
-
-const StartButtons = (props: any) => {
-	return <Buttons {...props}></Buttons>
-}
 
 const Main = (): JSX.Element => {
 	//
@@ -200,14 +197,6 @@ const Main = (): JSX.Element => {
 		return result
 	}
 
-	const tempoProps = {
-		moreSettings,
-		tempo,
-		setTempo,
-		tapTempo,
-		toggleMetronome,
-	}
-
 	//
 	//
 	//	Effects
@@ -292,11 +281,15 @@ const Main = (): JSX.Element => {
 		localStorage.sleep = JSON.stringify(createExportCode(tempo, layers, moreSettings, easy))
 	})
 
-	//
-	//
-	// Render
-	//
-	//
+	const TempoElem = (
+		<Tempo
+			tempo={tempo}
+			moreSettings={moreSettings}
+			setTempo={setTempo}
+			tapTempo={tapTempo}
+			toggleMetronome={toggleMetronome}
+		/>
+	)
 
 	return (
 		<div className={appClasses}>
@@ -330,8 +323,8 @@ const Main = (): JSX.Element => {
 
 			<main>
 				<Header
+					Tempo={TempoElem}
 					tutoStage={tutoStage}
-					tempoProps={tempoProps}
 					isForMobile={isForMobile}
 					setTutoStage={setTutoStage}
 				></Header>
@@ -345,30 +338,28 @@ const Main = (): JSX.Element => {
 					clickType={moreSettings.clickType}
 				></Clicks>
 
-				{isForMobile ? (
-					<StartButtons
-						{...{ isRunning, randomizeLayers, toggleMetronome }}
-					></StartButtons>
-				) : (
-					''
-				)}
+				<Buttons
+					toggle={isForMobile}
+					isRunning={isRunning}
+					randomizeLayers={randomizeLayers}
+					toggleMetronome={toggleMetronome}
+				></Buttons>
 
 				<LayersTable
 					easy={easy}
 					layers={layers}
+					Tempo={TempoElem}
 					selected={selected}
-					tempoProps={tempoProps}
 					isForMobile={isForMobile}
 					handleLayerChange={handleLayerChange}
 				></LayersTable>
 
-				{isForMobile ? (
-					''
-				) : (
-					<StartButtons
-						{...{ isRunning, randomizeLayers, toggleMetronome }}
-					></StartButtons>
-				)}
+				<Buttons
+					toggle={!isForMobile}
+					isRunning={isRunning}
+					randomizeLayers={randomizeLayers}
+					toggleMetronome={toggleMetronome}
+				></Buttons>
 			</main>
 
 			<div className="spacer"></div>

@@ -1,8 +1,7 @@
 import { useTransition, config } from '@react-spring/web'
 import Tutorial from './Tutorial'
-import Tempo from './Tempo'
 
-const Header = ({ tempoProps, tutoStage, setTutoStage, isForMobile }) => {
+const Header = ({ tutoStage, Tempo, setTutoStage, isForMobile }) => {
 	const toggle = tutoStage !== 'removed'
 
 	const transition = useTransition(toggle, {
@@ -51,7 +50,7 @@ const Header = ({ tempoProps, tutoStage, setTutoStage, isForMobile }) => {
 
 			<div></div>
 
-			{isForMobile ? '' : <Tempo {...tempoProps}></Tempo>}
+			{isForMobile ? '' : Tempo}
 		</div>
 	)
 }

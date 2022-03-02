@@ -40,10 +40,6 @@ const Keymapping = ({
 			const incrSelect = () => (selected + 1) % 5
 			const decrSelect = () => (selected === 0 ? 4 : selected - 1)
 
-			// Mettre les nouveaux contrôles dans le readme
-			// Mettre shift + Arrow pour les beats
-			// Todo: accessibilité avec tab
-
 			const bindings = [
 				{
 					key: 'Backspace',

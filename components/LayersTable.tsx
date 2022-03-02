@@ -10,18 +10,11 @@ import {
 import Wheel from './Wheel'
 import Range from './Range'
 import Layer from '../types/layer'
-import Tempo from './Tempo'
 
-const LayersTable = ({
-	easy,
-	layers,
-	selected,
-	handleLayerChange,
-	tempoProps,
-	isForMobile,
-}) => {
-	//
-	const anim = tempoProps.moreSettings.animations
+const LayersTable = ({ easy, layers, selected, handleLayerChange, Tempo, isForMobile }) => {
+	// wth
+	// const anim = tempoProps.moreSettings.animations
+	const anim = true
 
 	const release = ['off', 'short', 'long']
 	const wavetypes = [
@@ -175,7 +168,7 @@ const LayersTable = ({
 				))}
 			</div>
 
-			{isForMobile ? <Tempo {...tempoProps}></Tempo> : ''}
+			{isForMobile ? Tempo : ''}
 		</>
 	)
 }
