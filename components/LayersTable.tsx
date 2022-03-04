@@ -11,11 +11,15 @@ import Wheel from './Wheel'
 import Range from './Range'
 import Layer from '../types/layer'
 
-const LayersTable = ({ easy, layers, selected, handleLayerChange, Tempo, isForMobile }) => {
-	// wth
-	// const anim = tempoProps.moreSettings.animations
-	const anim = true
-
+const LayersTable = ({
+	easy,
+	layers,
+	selected,
+	animations,
+	handleLayerChange,
+	Tempo,
+	isForMobile,
+}) => {
 	const release = ['off', 'short', 'long']
 	const wavetypes = [
 		'M 10 10 Q 20 -6 30 10 V 10 Q 40 26 50 10', // sine
@@ -57,7 +61,7 @@ const LayersTable = ({ easy, layers, selected, handleLayerChange, Tempo, isForMo
 						<div className="ls-beats">
 							<Wheel
 								type="beats"
-								noAnim={anim}
+								animations={animations}
 								state={layer.beats}
 								update={(res: number) => handleLayerChange('beats', res, i)}
 							></Wheel>
@@ -70,12 +74,12 @@ const LayersTable = ({ easy, layers, selected, handleLayerChange, Tempo, isForMo
 								<div className="notes-wrap">
 									<Wheel
 										type="freq"
-										noAnim={anim}
+										animations={animations}
 										state={layer.freq}
 										update={res => handleLayerChange('freq', res, i)}
 									></Wheel>
 									<pre className="octave">
-										{Math.floor((layer.freq - 1) / 12) + 1}
+										{Math.floor(layer.freq / 12) + 1}
 									</pre>
 								</div>
 							</div>

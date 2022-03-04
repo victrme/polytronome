@@ -80,7 +80,7 @@ const Menu = ({
 		setMoreSettings(prev => ({ ...prev, offset: (moreSettings.offset + 50) % 550 }))
 
 	const resetToDefault = () =>
-		setImport(importCode(createExportCode(80, defaultLayers, moreSettings, easy)))
+		setImport(importCode(createExportCode(21, defaultLayers, moreSettings, easy)))
 
 	//
 	//
@@ -98,8 +98,8 @@ const Menu = ({
 
 	const statesTexts = {
 		advanced: ['on', 'off'],
-		animations: ['on', 'reduced'],
 		fullscreen: ['off', 'on'],
+		animations: ['reduced', 'on'],
 		view: ['layers', 'segment', 'block'],
 	}
 
@@ -117,7 +117,7 @@ const Menu = ({
 			text: 'animations',
 			title: `toggle animations\nunchecking this option will improve performances`,
 			func: changeAnimations,
-			css: isOn(!moreSettings.animations),
+			css: isOn(moreSettings.animations),
 			state: statesTexts.animations[+moreSettings.animations],
 		},
 		{

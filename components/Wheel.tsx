@@ -4,16 +4,17 @@ import { useEffect, useRef, useState } from 'react'
 import useMeasure from 'react-use-measure'
 import inRange from 'lodash/inRange'
 
+import { tempoList } from '../lib/utils'
+
 const freqArr = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
 const allLists: {
 	beats: string[]
-	tempo: string[]
+	tempo: number[]
 	freq: string[]
-} = { beats: ['×'], tempo: [], freq: [] }
+} = { beats: ['×'], tempo: [...tempoList].reverse(), freq: [] }
 
 for (let i = 2; i <= 16; i++) allLists.beats.unshift(i.toString())
-for (let i = 30; i <= 300; i++) allLists.tempo.unshift(i.toString())
 for (let i = 0; i <= 54; i++) allLists.freq.unshift(freqArr[i % freqArr.length])
 
 const Arrow = props => {
@@ -29,22 +30,21 @@ const Arrow = props => {
 	)
 }
 
-const Wheel = ({ update, type, state, noAnim }): JSX.Element => {
+const Wheel = ({ update, type, state, animations }): JSX.Element => {
 	const list: string[] = allLists[type]
 	const [dragRelease, setDragRelease] = useState(false)
 	const [wheelRef, preBounds] = useMeasure()
 	const [animate, setAnimate] = useState(true)
 
+	// Beats are one-based, other wheel states zero-based
+	if (type === 'beats') state -= 1
+
 	const getHeight = () => preBounds.height / allLists[type].length
-	const offsetState = (state: number) => (type === 'tempo' ? state - 30 : state - 1)
 	const getClosest = (y: number) => Math.round(y / getHeight()) * getHeight()
 	const getUserVal = (y: number) => Math.round(y / getHeight()) + list.length - 1
 
 	const getBottomPos = () => -(list.length - 1) * getHeight()
-	const getInitalPos = () => getBottomPos() + offsetState(state) * getHeight()
-
-	// don't animate when tempo or reduced animations
-	const animateControl = !(type === 'tempo' || noAnim)
+	const getInitalPos = () => getBottomPos() + state * getHeight()
 
 	const [{ y }, spring] = useSpring(() => ({
 		x: 0,
@@ -53,17 +53,17 @@ const Wheel = ({ update, type, state, noAnim }): JSX.Element => {
 	}))
 
 	// Update logic for wheel (for everywhere except drag)
-	const handleWheelMove = (sign: number, tempoNoUpdate?: boolean) => {
+	const handleWheelMove = (sign: number) => {
 		const snapped = getClosest(y.get() + getHeight() * sign)
 
 		if (inRange(snapped, getHeight(), getBottomPos())) {
-			tempoNoUpdate ? spring.set({ y: snapped }) : update(getUserVal(snapped))
+			update(getUserVal(snapped))
 		}
 	}
 
 	// Puts back wheel in place after drag move
 	const snapWheel = () => {
-		const pos = getBottomPos() + offsetState(state) * getHeight()
+		const pos = getBottomPos() + state * getHeight()
 		animate ? spring.start({ y: pos }) : spring.set({ y: pos })
 	}
 
@@ -77,8 +77,8 @@ const Wheel = ({ update, type, state, noAnim }): JSX.Element => {
 	}, [preBounds.height])
 
 	useEffect(() => {
-		setAnimate(animateControl)
-	}, [noAnim])
+		setAnimate(animations)
+	}, [animations])
 
 	//
 	// Gestures
@@ -107,7 +107,7 @@ const Wheel = ({ update, type, state, noAnim }): JSX.Element => {
 		if (wheeling) {
 			setAnimate(false)
 			handleWheelMove(direction[1])
-		} else setAnimate(animateControl)
+		} else setAnimate(animations)
 	}, {})
 
 	//
@@ -116,34 +116,27 @@ const Wheel = ({ update, type, state, noAnim }): JSX.Element => {
 
 	const detectAutoTimeout = useRef(setTimeout(() => {}, 1))
 	const autoScrollTimeout = useRef(setTimeout(() => {}, 1))
-	const timeOfClick = useRef(0)
 
 	const handleArrow = (sign: number, enter: boolean) => {
 		//
-		function autoScrollRecursion(ms: number) {
+		function autoScroll() {
 			autoScrollTimeout.current = setTimeout(() => {
-				// dont update state if its tempo
-				handleWheelMove(sign, type === 'tempo')
-
-				// Increase speed if held
-				const timeScrolling = performance.now() - timeOfClick.current
-				if (timeScrolling > 1600) ms = 80
-				if (timeScrolling > 3200) ms = 40
-				if (timeScrolling > 4800) ms = 20
-
-				autoScrollRecursion(ms)
-			}, ms)
+				handleWheelMove(sign)
+				autoScroll()
+			}, 100)
 		}
 
+		// Starts clicking on arrow, activate once
+		// and start recursion after .4s
 		if (enter) {
-			timeOfClick.current = performance.now()
 			handleWheelMove(sign)
-
 			detectAutoTimeout.current = setTimeout(() => {
 				handleWheelMove(sign)
-				autoScrollRecursion(160)
+				autoScroll()
 			}, 400)
-		} else {
+		}
+		// MouseUp & MouseLeave, clear timeouts
+		else {
 			clearTimeout(detectAutoTimeout.current)
 			clearTimeout(autoScrollTimeout.current)
 		}

@@ -2,7 +2,7 @@ import { useRef, useState, useEffect, useCallback } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
 import clamp from 'lodash/clamp'
 
-import { setRandomID, importCode, applyTheme, createExportCode } from '../lib/utils'
+import { setRandomID, importCode, applyTheme, createExportCode, tempoList } from '../lib/utils'
 
 import defaultSettings from '../public/assets/settings.json'
 import defaultLayers from '../public/assets/layers.json'
@@ -27,7 +27,7 @@ const Main = (): JSX.Element => {
 	//
 
 	const [easy, setEasy] = useState(true)
-	const [tempo, setTempo] = useState(80)
+	const [tempo, setTempo] = useState(21)
 	const [tap, setTap] = useState<Tap>([{ date: Date.now(), wait: 0 }])
 	const [selected, setSelected] = useState(-1)
 	const [isRunning, setIsRunning] = useState('')
@@ -58,16 +58,20 @@ const Main = (): JSX.Element => {
 	//
 	//
 
+	const emptyLayers = (list: Layer[]) => {
+		return list.filter(l => l.beats > 0).length === 0
+	}
+
 	const toggleMetronome = useCallback(
 		(restart?: boolean) => {
 			const start = () => {
-				if (layers.filter(l => l.beats > 1).length === 0) {
+				if (emptyLayers(layers)) {
 					return false
+				} else {
+					setStartTime(Date.now())
+					setIsRunning(setRandomID())
+					if (tutoStage === 'testLaunch') setTutoStage('waitLaunch')
 				}
-
-				setStartTime(Date.now())
-				setIsRunning(setRandomID())
-				if (tutoStage === 'testLaunch') setTutoStage('waitLaunch')
 			}
 
 			const stop = () => {
@@ -88,14 +92,6 @@ const Main = (): JSX.Element => {
 		[tutoStage, layers]
 	)
 
-	const randomizeLayers = () => {
-		toggleMetronome(true)
-
-		// Only randomizes activated layers
-		const randBeats = () => +(Math.random() * (16 - 2) + 2).toFixed(0)
-		setLayers([...layers].map(l => (l.beats > 1 ? { ...l, beats: randBeats() } : { ...l })))
-	}
-
 	const handleLayerChange = (cat: string, result: any, index: number) => {
 		let newLayers = [...layers]
 		const durationsList = [50, 0.25, 0.33, 0.5, 0.75, 0.97]
@@ -110,7 +106,7 @@ const Main = (): JSX.Element => {
 				break
 
 			case 'freq':
-				newLayers[index].freq = result + 1
+				newLayers[index].freq = result
 				break
 
 			case 'duration': {
@@ -136,6 +132,14 @@ const Main = (): JSX.Element => {
 		if (cat === 'beats') toggleMetronome(true)
 	}
 
+	const randomizeLayers = () => {
+		toggleMetronome(true)
+
+		// Only randomizes activated layers
+		const randBeats = () => +(Math.random() * (16 - 2) + 2).toFixed(0)
+		setLayers([...layers].map(l => (l.beats > 1 ? { ...l, beats: randBeats() } : { ...l })))
+	}
+
 	const tapTempo = () => {
 		const now = Date.now()
 		const taps = [...tapRef.current]
@@ -154,7 +158,17 @@ const Main = (): JSX.Element => {
 			const tappedMs: number[] = taps.map(tap => tap.wait)
 			const averageMs = tappedMs.reduce((a, b) => a + b) / tappedMs.length
 
-			setTempo(clamp(Math.floor(60000 / averageMs), 30, 300))
+			const averageInBPM = clamp(
+				Math.floor(60000 / averageMs),
+				tempoList[0],
+				tempoList[tempoList.length - 1]
+			)
+
+			setTempo(
+				tempoList.reduce((a, b) =>
+					Math.abs(b - averageInBPM) < Math.abs(a - averageInBPM) ? b : a
+				)
+			)
 			toggleMetronome(true)
 			setTap(taps)
 		}
@@ -192,7 +206,7 @@ const Main = (): JSX.Element => {
 		if (isForMobile) result += ' mobile'
 		if (easy) result += ' easy'
 		if (tutoStage !== 'removed') result += ` ${tutoStage}`
-		if (moreSettings.animations) result += ' performance'
+		if (!moreSettings.animations) result += ' performance'
 
 		return result
 	}
@@ -218,7 +232,7 @@ const Main = (): JSX.Element => {
 		}
 
 		// stops metronome if empty
-		if (isRunning && layers.filter(l => l.beats > 1).length === 0) {
+		if (isRunning && emptyLayers(layers)) {
 			toggleMetronome()
 		}
 	}, [layers])
@@ -263,6 +277,8 @@ const Main = (): JSX.Element => {
 		const handleMobileView = () => {
 			setIsForMobile(window.visualViewport && window.visualViewport.width < 425)
 		}
+
+		handleMobileView()
 
 		// Window Events
 		window.addEventListener('click', activateTutorial)
@@ -351,6 +367,7 @@ const Main = (): JSX.Element => {
 					Tempo={TempoElem}
 					selected={selected}
 					isForMobile={isForMobile}
+					animations={moreSettings.animations}
 					handleLayerChange={handleLayerChange}
 				></LayersTable>
 

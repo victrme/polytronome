@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import Pizzicato from 'pizzicato'
 import Layer from '../types/layer'
 
+import { tempoList } from '../lib/utils'
+
 const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }) => {
 	function usePrevious(value) {
 		const ref = useRef()
@@ -56,7 +58,7 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 				length:
 					layer.duration === 50
 						? 50
-						: (24e4 / tempoRef.current / layer.beats) * layer.duration,
+						: (24e4 / tempoList[tempoRef.current] / layer.beats) * layer.duration,
 			})
 		})
 
@@ -138,7 +140,7 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 	}
 
 	function getMetronomeTimings() {
-		const mesureLength = 24e4 / tempoRef.current
+		const mesureLength = 24e4 / tempoList[tempoRef.current]
 		const result: Timings = []
 		const division: any[] = []
 		let rawTimings: any[] = []
@@ -180,7 +182,9 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 		const timings = getMetronomeTimings()
 		const ratiosOnly: number[] = []
 
-		timings.forEach(click => ratiosOnly.push(click[0] / (24e4 / tempoRef.current)))
+		timings.forEach(click =>
+			ratiosOnly.push(click[0] / (24e4 / tempoList[tempoRef.current]))
+		)
 		setSegmentRatio(ratiosOnly)
 	}
 

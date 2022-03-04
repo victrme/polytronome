@@ -4,7 +4,7 @@
 		"beats": 4,
 		"freq": 12,
 		"release": 0,
-		"duration": 0.25,
+		"duration": 50,
 		"type": 1,
 		"volume": 0.4,
 		"muted": false
@@ -14,7 +14,7 @@
 		"beats": 5,
 		"freq": 17,
 		"release": 0,
-		"duration": 0.25,
+		"duration": 50,
 		"type": 1,
 		"volume": 0.4,
 		"muted": false
@@ -24,7 +24,7 @@
 		"beats": 1,
 		"freq": 21,
 		"release": 0,
-		"duration": 0.25,
+		"duration": 50,
 		"type": 1,
 		"volume": 0.4,
 		"muted": false
@@ -34,7 +34,7 @@
 		"beats": 1,
 		"freq": 24,
 		"release": 0,
-		"duration": 0.25,
+		"duration": 50,
 		"type": 1,
 		"volume": 0.4,
 		"muted": false
@@ -44,7 +44,7 @@
 		"beats": 1,
 		"freq": 29,
 		"release": 0,
-		"duration": 0.25,
+		"duration": 50,
 		"type": 1,
 		"volume": 0.4,
 		"muted": false
