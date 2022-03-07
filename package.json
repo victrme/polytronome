@@ -13,6 +13,7 @@
 		"chokidar": "^3.5.2",
 		"cross-env": "^7.0.3",
 		"next": "latest",
+		"next-pwa": "^5.4.5",
 		"pizzicato": "^0.6.4",
 		"react": "^17.0.1",
 		"react-dom": "^17.0.1",

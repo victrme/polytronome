@@ -12,5 +12,7 @@ node_modules
 npm-debug.log
 
 .DS_Store
+
 .next
 out
+/public/*.js
