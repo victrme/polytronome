@@ -99,8 +99,6 @@ const Main = (): JSX.Element => {
 
 				newLayers[index].beats = result + 1
 
-				console.log(beatsTotal, result)
-
 				break
 			}
 
