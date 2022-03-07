@@ -5,7 +5,7 @@ body:fullscreen::backdrop {
 	margin: 0;
 	background-color: var(--background);
 	transition-timing-function: $easing;
-	// transition: background-color 1s $easing;
+	transition: background-color 1s $easing;
 }
 
 button,
@@ -28,7 +28,7 @@ input {
 	overflow: hidden;
 	max-height: 100vh;
 	opacity: 1;
-	transition: opacity 1s 0s $easing;
+	transition: opacity 1s 0s $easing, color 1s $easing;
 
 	@import 'header';
 	@import 'clicks';
@@ -133,6 +133,10 @@ input {
 				&:active {
 					opacity: 1;
 				}
+
+				path {
+					transition: stroke 1s $easing;
+				}
 			}
 		}
 
@@ -222,6 +226,7 @@ input {
 	PERFORMANCE
 	*/
 
+	&.performance,
 	&.performance * {
 		transition: none !important;
 	}

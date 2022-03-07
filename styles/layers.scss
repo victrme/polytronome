@@ -14,7 +14,7 @@
 		border-radius: 20px;
 		padding: 1em;
 		margin: 1em;
-		transition: opacity 0.3s $easing, filter 0.3s $easing, background-color 0.3s $easing;
+		transition: opacity 1s $easing, filter 1s $easing, background-color 1s $easing;
 
 		> div {
 			margin: 0.6em;
@@ -52,7 +52,8 @@
 			cursor: pointer;
 
 			path {
-				transition: stroke-dashoffset 1s;
+				stroke: var(--accent);
+				transition: stroke 1s $easing;
 			}
 
 			&:hover {
@@ -137,10 +138,10 @@
 			height: 0.8em;
 			border-radius: 5px;
 			overflow: hidden;
-			background-color: var(--dim);
-			transition: opacity 0.1s $easing;
 			user-select: none;
 			cursor: pointer;
+			background-color: var(--dim);
+			transition: opacity 0.3s $easing, background-color 1s $easing;
 
 			&.muted {
 				opacity: 0.1;
@@ -148,8 +149,9 @@
 			}
 
 			.inner-range {
-				background-color: var(--accent);
 				height: 0.8em;
+				background-color: var(--accent);
+				transition: background-color 1s $easing;
 			}
 		}
 	}

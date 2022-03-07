@@ -57,7 +57,7 @@ const Menu = ({
 	}
 
 	const changeTheme = (index?: number) => {
-		document.body.style.transitionDuration = moreSettings.animations ? '0s' : '1s'
+		document.body.style.transitionDuration = moreSettings.animations ? '1s' : '0s'
 		let nextTheme = index || 0
 
 		if (!extended) nextTheme = (moreSettings.theme + 1) % Themes.length
