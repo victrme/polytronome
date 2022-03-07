@@ -91,9 +91,9 @@
 	}
 }
 
-@media only screen and (max-width: 425px) {
+@media only screen and (max-width: 450px) {
 	body {
-		font-size: 9px;
+		font-size: 11px;
 	}
 
 	.polytronome {
@@ -102,11 +102,12 @@
 			width: 100vw;
 
 			.header {
-				margin-top: 0.5em;
+				margin-bottom: 0;
 
 				.logo {
 					width: 100%;
 					justify-content: center;
+					transform: translateX(-10px);
 
 					svg {
 						transform: scale(0.6);
@@ -128,9 +129,15 @@
 		}
 
 		.layers-table {
+			font-size: 11px;
+
 			.ls-row {
-				padding: 0em 1em;
-				margin: 0.5em;
+				padding: 0em 1.5em;
+				margin: 0.5em 1em;
+
+				> div {
+					margin: 0.5em 0;
+				}
 			}
 
 			.ls-type {
@@ -175,6 +182,10 @@
 		}
 
 		&.easy {
+			.header {
+				margin-bottom: 0;
+			}
+
 			.layers-table {
 				margin: 6em 0;
 				justify-content: space-around;
@@ -202,6 +213,14 @@
 	}
 }
 
+@media only screen and (max-width: 400px) {
+	.polytronome {
+		.layers-table {
+			font-size: 10px;
+		}
+	}
+}
+
 /*
 MOBILE responsive with class
 specific to .mobile render changes
@@ -211,12 +230,20 @@ specific to .mobile render changes
 	overflow-y: auto;
 
 	main {
-		padding-top: 0;
+		padding-top: 10vh;
 	}
 
 	&.easy {
 		main {
 			padding-top: 10vh;
+
+			.layers-table {
+				flex-direction: row;
+
+				.ls-beats {
+					margin: 0;
+				}
+			}
 		}
 
 		.header .tutorial {
@@ -226,15 +253,12 @@ specific to .mobile render changes
 
 	.layers-table {
 		flex-direction: column;
-
 		.ls-row {
 			flex-direction: row;
 		}
 	}
 
 	.header {
-		margin: 3em 0;
-
 		.tutorial {
 			top: 0;
 			position: absolute;
@@ -262,13 +286,13 @@ specific to .mobile render changes
 		left: 0;
 		margin: 0;
 		padding-top: 0;
-		font-size: 11px;
+		font-size: 13px;
 		z-index: 5;
 
 		> button {
 			position: fixed;
 			margin: 2em;
-			padding: 0.8em 2em;
+			padding: 0.6em 1.6em;
 			z-index: 6;
 
 			svg {
@@ -284,6 +308,10 @@ specific to .mobile render changes
 			top: 0;
 			left: 0;
 			padding: 8vh 0;
+
+			.theme-list.opened {
+				max-height: 10em;
+			}
 
 			&.extended {
 				display: flex;
