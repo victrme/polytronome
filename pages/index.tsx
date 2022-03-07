@@ -58,31 +58,30 @@ const Main = (): JSX.Element => {
 	//
 	//
 
-	const toggleMetronome = useCallback(
-		(restart?: boolean) => {
-			const start = () => {
-				setStartTime(Date.now())
-				setIsRunning(setRandomID())
-				if (tutoStage === 'testLaunch') setTutoStage('waitLaunch')
-			}
+	const toggleMetronome = (restart?: boolean) => {
+		const start = () => {
+			setStartTime(Date.now())
+			setIsRunning(setRandomID())
+			if (tutoStage === 'testLaunch') setTutoStage('waitLaunch')
+		}
 
-			const stop = () => {
-				setIsRunning('')
-				setStartTime(0)
-				if (tutoStage === 'waitLaunch') setTutoStage('showTempo')
-			}
+		const stop = () => {
+			setIsRunning('')
+			setStartTime(0)
+			if (tutoStage === 'waitLaunch') setTutoStage('showTempo')
+		}
 
-			const running = isRunningRef.current !== ''
+		const running = isRunningRef.current !== ''
+		const beatsCounts = layers.map(l => l.beats).reduce((a, b) => a + b) - 5
 
-			// If not restart, Normal toggle
-			if (restart) {
-				if (running) start()
-			} else {
-				running ? stop() : start()
-			}
-		},
-		[tutoStage, layers]
-	)
+		// No beats, only stops
+		// Restart, start on top of previous
+		// Not restart, simple toggle
+
+		if (beatsCounts === 0) stop()
+		else if (restart && running) start()
+		else if (!restart) running ? stop() : start()
+	}
 
 	const handleLayerChange = (cat: string, result: any, index: number) => {
 		let newLayers = [...layers]
@@ -93,14 +92,9 @@ const Main = (): JSX.Element => {
 				newLayers[index].type = (newLayers[index].type + result) % 4
 				break
 
-			case 'beats': {
-				const beatsTotal = newLayers.map(l => l.beats).reduce((a, b) => a + b) - 5
-				if (result === 0 && beatsTotal === 1) return false
-
+			case 'beats':
 				newLayers[index].beats = result + 1
-
 				break
-			}
 
 			case 'freq':
 				newLayers[index].freq = result
@@ -228,9 +222,6 @@ const Main = (): JSX.Element => {
 			if (beats.includes(5) && beats.includes(7) && reduced === 15)
 				setTutoStage('testLaunch')
 		}
-
-		// stops metronome if empty
-		if (isRunning) toggleMetronome()
 	}, [layers])
 
 	// Moves tempo for tutorial
