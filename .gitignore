@@ -16,3 +16,4 @@ npm-debug.log
 .next
 out
 /public/*.js
+/public/*.map
