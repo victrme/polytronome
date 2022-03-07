@@ -2,8 +2,6 @@ import { useRef, useState, useEffect, useCallback } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
 import clamp from 'lodash/clamp'
 
-import { setRandomID, importCode, applyTheme, createExportCode, tempoList } from '../lib/utils'
-
 import defaultSettings from '../public/assets/settings.json'
 import defaultLayers from '../public/assets/layers.json'
 import LayersTable from '../components/LayersTable'
@@ -18,6 +16,8 @@ import MoreSettings from '../types/moreSettings'
 import { Tap } from '../types/options'
 import Layer from '../types/layer'
 import Code from '../types/code'
+
+import { tempoList, importCode, applyTheme, setRandomID, createExportCode } from '../lib/utils'
 
 const Main = (): JSX.Element => {
 	//
@@ -58,20 +58,12 @@ const Main = (): JSX.Element => {
 	//
 	//
 
-	const emptyLayers = (list: Layer[]) => {
-		return list.filter(l => l.beats > 0).length === 0
-	}
-
 	const toggleMetronome = useCallback(
 		(restart?: boolean) => {
 			const start = () => {
-				if (emptyLayers(layers)) {
-					return false
-				} else {
-					setStartTime(Date.now())
-					setIsRunning(setRandomID())
-					if (tutoStage === 'testLaunch') setTutoStage('waitLaunch')
-				}
+				setStartTime(Date.now())
+				setIsRunning(setRandomID())
+				if (tutoStage === 'testLaunch') setTutoStage('waitLaunch')
 			}
 
 			const stop = () => {
@@ -82,12 +74,12 @@ const Main = (): JSX.Element => {
 
 			const running = isRunningRef.current !== ''
 
+			// If not restart, Normal toggle
 			if (restart) {
 				if (running) start()
+			} else {
+				running ? stop() : start()
 			}
-
-			// Not restart, Normal toggle
-			else running ? stop() : start()
 		},
 		[tutoStage, layers]
 	)
@@ -101,9 +93,16 @@ const Main = (): JSX.Element => {
 				newLayers[index].type = (newLayers[index].type + result) % 4
 				break
 
-			case 'beats':
+			case 'beats': {
+				const beatsTotal = newLayers.map(l => l.beats).reduce((a, b) => a + b) - 5
+				if (result === 0 && beatsTotal === 1) return false
+
 				newLayers[index].beats = result + 1
+
+				console.log(beatsTotal, result)
+
 				break
+			}
 
 			case 'freq':
 				newLayers[index].freq = result
@@ -233,9 +232,7 @@ const Main = (): JSX.Element => {
 		}
 
 		// stops metronome if empty
-		if (isRunning && emptyLayers(layers)) {
-			toggleMetronome()
-		}
+		if (isRunning) toggleMetronome()
 	}, [layers])
 
 	// Moves tempo for tutorial
@@ -282,7 +279,7 @@ const Main = (): JSX.Element => {
 
 		// Changes mobile view
 		const handleMobileView = () => {
-			setIsForMobile(window.visualViewport && window.visualViewport.width < 425)
+			setIsForMobile(window.visualViewport && window.visualViewport.width < 450)
 		}
 
 		handleMobileView()

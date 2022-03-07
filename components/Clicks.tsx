@@ -222,13 +222,11 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 			document.body.removeEventListener('click', () => activateSound())
 			document.body.removeEventListener('keypress', () => activateSound())
 		}
-		// eslint-disable-next-line
 	}, [])
 
 	// Starting
 	useEffect(() => {
 		if (isRunning.length > 0) metronome(getMetronomeTimings(), isRunningRef.current)
-		// eslint-disable-next-line
 	}, [isRunning])
 
 	useEffect(() => {
@@ -254,13 +252,10 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 		let changeClicks = false
 		getBeats().forEach((beat, i) => (beat !== previousBeats[i] ? (changeClicks = !0) : ''))
 		if (changeClicks) averageClicks()
-
-		// eslint-disable-next-line
 	}, [layers])
 
 	useEffect(() => {
 		initSegment()
-		// eslint-disable-next-line
 	}, [clickType])
 
 	useEffect(() => {
