@@ -217,11 +217,12 @@ const Main = (): JSX.Element => {
 	//
 	//
 
+	// Change mode after following second tutorial
 	useEffect(() => {
 		if (tutoStage === 'startAdvanced') setEasy(false)
 	}, [tutoStage])
 
-	// Tutorial
+	// Select beats for tutorial
 	useEffect(() => {
 		if (tutoStage === 'testBeats') {
 			const beats = layers.map(x => x.beats)
@@ -237,17 +238,19 @@ const Main = (): JSX.Element => {
 		}
 	}, [layers])
 
+	// Moves tempo for tutorial
+	useEffect(() => {
+		if (tutoStage.startsWith('showTempo'))
+			setTutoStage(isForMobile ? 'endEasy' : 'clickMenu')
+	}, [tempo])
+
 	// CSS classes control
 	useEffect(() => {
 		setAppClasses(handleClasses())
 		return () => setAppClasses('polytronome easy')
 	}, [easy, moreSettings, tutoStage, isForMobile])
 
-	useEffect(() => {
-		if (tutoStage.startsWith('showTempo'))
-			setTutoStage(isForMobile ? 'endEasy' : 'clickMenu')
-	}, [tempo])
-
+	// componentDidMount
 	useEffect(() => {
 		// Profile save
 		sessionStorage.layers = JSON.stringify(layers)
@@ -270,10 +273,14 @@ const Main = (): JSX.Element => {
 				setTimeout(() => {
 					setTutoStage('intro')
 					localStorage.hadTutorial = true
-				}, 8000)
+				}, 10000)
 			}
 		}
 
+		// Displays app when loaded ( ugly ? )
+		document.querySelector('.polytronome').setAttribute('style', 'opacity: 1')
+
+		// Changes mobile view
 		const handleMobileView = () => {
 			setIsForMobile(window.visualViewport && window.visualViewport.width < 425)
 		}
