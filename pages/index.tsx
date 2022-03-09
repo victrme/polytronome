@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
 import clamp from 'lodash/clamp'
+import mean from 'lodash/mean'
 
 import defaultSettings from '../public/assets/settings.json'
 import defaultLayers from '../public/assets/layers.json'
@@ -136,32 +137,27 @@ const Main = (): JSX.Element => {
 		const taps = [...tapRef.current]
 
 		// Reset tap after 2s
-		if (now - taps[0].date > 2000) setTap([{ date: now, wait: 0 }])
-		else {
-			//
+		if (now - taps[0].date > 2000) {
+			setTap([{ date: now, wait: 0 }])
+		} else {
 			// Adds current
 			taps.unshift({ date: now, wait: now - tapRef.current[0].date })
 
 			// if theres still default or too long, removes
 			if (taps[1].wait === 0 || taps.length > 6) taps.pop()
 
-			// Array of taps in milliseconds
+			// Array of taps in milliseconds, transform to BPM
 			const tappedMs: number[] = taps.map(tap => tap.wait)
-			const averageMs = tappedMs.reduce((a, b) => a + b) / tappedMs.length
+			const averageBPM = clamp(Math.floor(60000 / mean(tappedMs)), 30, 252)
 
-			const averageInBPM = clamp(
-				Math.floor(60000 / averageMs),
-				tempoList[0],
-				tempoList[tempoList.length - 1]
-			)
+			// Stops index search to nearest BPM in list
+			let closestIndex = 0
+			while (tempoList[closestIndex] < averageBPM) closestIndex++
 
-			setTempo(
-				tempoList.reduce((a, b) =>
-					Math.abs(b - averageInBPM) < Math.abs(a - averageInBPM) ? b : a
-				)
-			)
-			toggleMetronome(true)
+			// Saves
 			setTap(taps)
+			setTempo(closestIndex)
+			toggleMetronome(true)
 		}
 	}
 
