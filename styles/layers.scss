@@ -8,7 +8,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		background-color: var(--dimmer);
+		background-color: var(--layers);
 		border: 2px solid transparent;
 		justify-content: space-evenly;
 		border-radius: 20px;
@@ -83,7 +83,7 @@
 		}
 
 		&:hover pre.octave {
-			background-color: var(--dimmer);
+			background-color: var(--layers);
 		}
 
 		.immovable_wheel {
@@ -140,7 +140,7 @@
 			overflow: hidden;
 			user-select: none;
 			cursor: pointer;
-			background-color: var(--dim);
+			background-color: var(--buttons);
 			transition: opacity 0.3s $easing, background-color 1s $easing;
 
 			&.muted {

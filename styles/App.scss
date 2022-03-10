@@ -71,12 +71,12 @@ input {
 		}
 
 		&:active {
-			background-color: var(--dim);
+			background-color: var(--clicks-off);
 		}
 
 		&:hover,
 		&:focus {
-			border: 2px solid var(--dim);
+			border: 2px solid var(--clicks-off);
 		}
 	}
 

@@ -5,7 +5,7 @@ import Layer from '../types/layer'
 import { tempoList } from '../lib/utils'
 
 const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }) => {
-	function usePrevious(value) {
+	function usePrevious(value: any) {
 		const ref = useRef()
 		useEffect(() => (ref.current = value), [value])
 		return ref.current

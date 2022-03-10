@@ -4,7 +4,6 @@ import {
 	faVolumeUp,
 	faVolumeDown,
 	faVolumeOff,
-	IconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
 
 import Wheel from './Wheel'
@@ -34,16 +33,6 @@ const LayersTable = ({
 		'0.5': 'half',
 		'0.75': '3/4',
 		'0.97': 'full',
-	}
-
-	const volumeIconControl = (volume: number, muted: boolean): IconDefinition => {
-		let icon = faVolumeUp
-
-		if (muted) icon = faVolumeMute
-		else if (volume < 0.2) icon = faVolumeOff
-		else if (volume < 0.6) icon = faVolumeDown
-
-		return icon
 	}
 
 	return (
@@ -158,7 +147,15 @@ const LayersTable = ({
 									onClick={() => handleLayerChange('mute', null, i)}
 								>
 									<FontAwesomeIcon
-										icon={volumeIconControl(layer.volume, layer.muted)}
+										icon={
+											layer.muted
+												? faVolumeMute
+												: layer.volume < 0.2
+												? faVolumeOff
+												: layer.volume < 0.6
+												? faVolumeDown
+												: faVolumeUp
+										}
 									/>
 								</span>
 								<Range
