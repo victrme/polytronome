@@ -16,17 +16,9 @@ function App({ Component }: AppProps) {
 
 				<meta name="theme-color" content="#EAEBEA" />
 
-				<link
-					id="android"
-					rel="android-chrome-192x192"
-					sizes="180x180"
-					href="/android-chrome-192x192.png?v=4"
-				/>
-
+				<link rel="icon" id="favicon" href="/favicon.png" />
 				<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 				<link rel="manifest" href="/manifest.json" />
-				<link rel="shortcut icon" id="favicon" href="/favicon.ico?v=4" />
-				<link rel="mask-icon" href="/safari-pinned-tab.svg?v=4" color="#b57e7d" />
 			</Head>
 			<Component />
 		</>

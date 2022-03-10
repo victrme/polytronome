@@ -2,32 +2,75 @@
 	"short_name": "Polytronome",
 	"name": "Polytronome",
 	"description": "Polytronome helps you visualize polyrythms by layering multiple metronomes. Use it to discover new rythms, challenge yourself to play along difficult beats, or simply enjoy the melodies you created !",
+	"lang": "en",
+	"start_url": "/",
+	"display": "standalone",
+	"orientation": "portrait",
+	"background_color": "#fafafa",
+	"theme_color": "#b57e7d",
+	"categories": ["entertainment", "education", "music"],
+	"prefer_related_applications": false,
+	"related_applications": [],
 	"icons": [
 		{
-			"src": "favicon.ico",
-			"sizes": "48x48",
-			"type": "image/x-icon"
+			"src": "favicon.png",
+			"sizes": "16x16",
+			"type": "image/png"
 		},
 		{
-			"src": "android-chrome-192x192.png",
+			"src": "icon-48.png",
+			"sizes": "48x48",
+			"type": "image/png"
+		},
+		{
+			"src": "icon-96.png",
+			"sizes": "96x96",
+			"type": "image/png"
+		},
+		{
+			"src": "icon-192.png",
 			"type": "image/png",
 			"sizes": "192x192"
 		},
 		{
-			"src": "android-chrome-512x512.png",
+			"src": "icon-512.png",
 			"type": "image/png",
 			"sizes": "512x512"
 		},
 		{
+			"src": "icon-512m.png",
+			"type": "image/png",
+			"sizes": "512x512",
+			"purpose": "maskable"
+		},
+		{
 			"src": "apple-touch-icon.png",
 			"type": "image/png",
-			"sizes": "192x192",
+			"sizes": "180x180",
 			"purpose": "maskable"
 		}
 	],
-	"orientation": "portrait",
-	"start_url": "/polytronome",
-	"display": "standalone",
-	"theme_color": "#b57e7d",
-	"background_color": "#EAEBEA"
+	"screenshots": [
+		{
+			"src": "/screenshots/screen-1.webp",
+			"sizes": "420x880",
+			"type": "image/webp",
+			"platform": "narrow",
+			"label": "Easy mode for polytronome"
+		},
+		{
+			"src": "/screenshots/screen-2.webp",
+			"sizes": "420x880",
+			"type": "image/webp",
+			"platform": "narrow",
+			"label": "Advanced settings with different theme"
+		},
+		{
+			"src": "/screenshots/screen-3.webp",
+			"sizes": "420x880",
+			"type": "image/webp",
+			"platform": "narrow",
+			"label": "Some more settings and theme"
+		}
+	]
 }
