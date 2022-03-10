@@ -62,13 +62,14 @@
 	},
 	{
 		"name": "cosy",
-		"background": "#eaebea",
+		"background": "#fafafa",
 		"accent": "#717b83",
-		"layers": "#e4dedc",
-		"buttons": "#d9c5bf",
-		"menu": "#e2e4e3",
-		"clicks-on": "#b57e7d",
-		"clicks-off": "#8f99a3"
+		"dim": "#c7ccd1",
+		"layers": "#f0e9e7",
+		"buttons": "#e6c5bc",
+		"menu": "#eff0f0",
+		"clicks-on": "#cc8988",
+		"clicks-off": "#93a1b0"
 	},
 	{
 		"name": "silver",
