@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://polytronome.com">
-    <img src="public/android-chrome-512x512.png" alt="Logo" width="90" height="90">
+    <img src="public/icon-192.png" alt="Logo" width="90" height="90">
   </a>
   
   <h3 align="center">Polytronome</h3>
