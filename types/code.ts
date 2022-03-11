@@ -1,11 +1,10 @@
 import Layer from './layer'
-import MoreSettings from './moreSettings'
+import Settings from './settings'
 
 export type Code = {
-	easy: boolean
 	tempo: number
 	layers: Layer[]
-	moreSettings: MoreSettings
+	moreSettings: Settings
 }
 
 export default Code

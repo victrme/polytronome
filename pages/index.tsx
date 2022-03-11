@@ -13,7 +13,7 @@ import Clicks from '../components/Clicks'
 import Menu from '../components/Menu'
 import Tempo from '../components/Tempo'
 
-import MoreSettings from '../types/moreSettings'
+import Settings from '../types/settings'
 import { Tap } from '../types/options'
 import Layer from '../types/layer'
 import Code from '../types/code'
@@ -27,7 +27,6 @@ const Main = (): JSX.Element => {
 	//
 	//
 
-	const [easy, setEasy] = useState(true)
 	const [tempo, setTempo] = useState(21)
 	const [tap, setTap] = useState<Tap>([{ date: Date.now(), wait: 0 }])
 	const [selected, setSelected] = useState(-1)
@@ -35,7 +34,7 @@ const Main = (): JSX.Element => {
 	const [tutoStage, setTutoStage] = useState('removed')
 	const [startTime, setStartTime] = useState(Date.now)
 	const [layers, setLayers] = useState<Layer[]>([...defaultLayers])
-	const [moreSettings, setMoreSettings] = useState<MoreSettings>({ ...defaultSettings })
+	const [moreSettings, setMoreSettings] = useState<Settings>({ ...defaultSettings })
 	const [fullscreen, setFullscreen] = useState(false)
 
 	const [appClasses, setAppClasses] = useState('polytronome easy loading')
@@ -165,7 +164,6 @@ const Main = (): JSX.Element => {
 		setMoreSettings({ ...code.moreSettings })
 		setLayers([...code.layers])
 		setTempo(code.tempo)
-		setEasy(code.easy)
 		applyTheme(code.moreSettings.theme)
 	}, [])
 
@@ -188,14 +186,19 @@ const Main = (): JSX.Element => {
 	}
 
 	const handleClasses = () => {
-		let result = 'polytronome'
+		const conditions = [
+			[isForMobile, 'mobile'],
+			[moreSettings.easy, 'easy'],
+			[tutoStage !== 'removed', tutoStage],
+			[!moreSettings.animations, 'performance'],
+		]
 
-		if (isForMobile) result += ' mobile'
-		if (easy) result += ' easy'
-		if (tutoStage !== 'removed') result += ` ${tutoStage}`
-		if (!moreSettings.animations) result += ' performance'
+		let res = 'polytronome'
+		conditions.forEach(([condition, str]) => {
+			if (condition) res += ` ${str}`
+		})
 
-		return result
+		return res
 	}
 
 	//
@@ -206,7 +209,7 @@ const Main = (): JSX.Element => {
 
 	// Change mode after following second tutorial
 	useEffect(() => {
-		if (tutoStage === 'startAdvanced') setEasy(false)
+		if (tutoStage === 'startAdvanced') setMoreSettings(prev => ({ ...prev, easy: false }))
 	}, [tutoStage])
 
 	// Select beats for tutorial
@@ -222,35 +225,33 @@ const Main = (): JSX.Element => {
 
 	// Moves tempo for tutorial
 	useEffect(() => {
-		if (tutoStage.startsWith('showTempo'))
+		if (tutoStage.startsWith('showTempo')) {
 			setTutoStage(isForMobile ? 'endEasy' : 'clickMenu')
+		}
 	}, [tempo])
 
 	// CSS classes control
 	useEffect(() => {
 		setAppClasses(handleClasses())
 		return () => setAppClasses('polytronome easy')
-	}, [easy, moreSettings, tutoStage, isForMobile])
+	}, [moreSettings, tutoStage, isForMobile])
 
-	// componentDidMount
+	// On mount
 	useEffect(() => {
-		// Profile save
-		sessionStorage.layers = JSON.stringify(layers)
-
 		// Apply saved settings
 		try {
 			if (localStorage.sleep)
 				setSettingsFromCode(importCode(JSON.parse(localStorage.sleep)))
 			else applyTheme(moreSettings.theme)
 		} catch (error) {
-			localStorage.removeItem('sleep')
-			applyTheme(moreSettings.theme)
+			console.error(error)
+			applyTheme(localStorage.theme)
 		}
 
 		// First time tutorial activation
 		let tutoWillStart = false
 		const activateTutorial = () => {
-			if (!localStorage.hadTutorial && !tutoWillStart && easy) {
+			if (!localStorage.hadTutorial && !tutoWillStart && moreSettings.easy) {
 				tutoWillStart = true
 				setTimeout(() => {
 					setTutoStage('intro')
@@ -283,7 +284,7 @@ const Main = (): JSX.Element => {
 
 	// Save profile
 	useBeforeunload(() => {
-		localStorage.sleep = JSON.stringify(createExportCode(tempo, layers, moreSettings, easy))
+		localStorage.sleep = JSON.stringify(createExportCode(tempo, layers, moreSettings))
 	})
 
 	const TempoElem = (
@@ -314,8 +315,6 @@ const Main = (): JSX.Element => {
 			></Keybindings>
 
 			<Menu
-				easy={easy}
-				setEasy={setEasy}
 				tutoStage={tutoStage}
 				fullscreen={fullscreen}
 				isForMobile={isForMobile}
@@ -343,29 +342,31 @@ const Main = (): JSX.Element => {
 					clickType={moreSettings.clickType}
 				></Clicks>
 
-				<Buttons
-					toggle={isForMobile}
-					isRunning={isRunning}
-					randomizeLayers={randomizeLayers}
-					toggleMetronome={toggleMetronome}
-				></Buttons>
+				{isForMobile && (
+					<Buttons
+						isRunning={isRunning}
+						randomizeLayers={randomizeLayers}
+						toggleMetronome={toggleMetronome}
+					></Buttons>
+				)}
 
 				<LayersTable
-					easy={easy}
 					layers={layers}
 					Tempo={TempoElem}
 					selected={selected}
+					easy={moreSettings.easy}
 					isForMobile={isForMobile}
 					animations={moreSettings.animations}
 					handleLayerChange={handleLayerChange}
 				></LayersTable>
 
-				<Buttons
-					toggle={!isForMobile}
-					isRunning={isRunning}
-					randomizeLayers={randomizeLayers}
-					toggleMetronome={toggleMetronome}
-				></Buttons>
+				{!isForMobile && (
+					<Buttons
+						isRunning={isRunning}
+						randomizeLayers={randomizeLayers}
+						toggleMetronome={toggleMetronome}
+					></Buttons>
+				)}
 			</main>
 
 			<div className="spacer"></div>

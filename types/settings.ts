@@ -1,4 +1,5 @@
-export type MoreSettings = {
+export type Settings = {
+	easy: boolean
 	theme: number
 	fullscreen: boolean
 	animations: boolean
@@ -6,4 +7,4 @@ export type MoreSettings = {
 	offset: number
 }
 
-export default MoreSettings
+export default Settings

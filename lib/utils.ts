@@ -1,7 +1,7 @@
 import Themes from '../public/assets/themes.json'
 import defaultLayers from '../public/assets/layers.json'
 import defaultSettings from '../public/assets/settings.json'
-import MoreSettings from '../types/moreSettings'
+import Settings from '../types/settings'
 import Layer from '../types/layer'
 
 export const tempoList = [
@@ -35,12 +35,7 @@ export const setRandomID = () => {
 //
 //
 
-export const createExportCode = (
-	tempo: number,
-	layers: Layer[],
-	moreSettings: MoreSettings,
-	easy: boolean
-) => {
+export const createExportCode = (tempo: number, layers: Layer[], moreSettings: Settings) => {
 	const minifiedLayers: Number[][] = []
 	const minifiedSettings: Number[] = []
 
@@ -60,20 +55,20 @@ export const createExportCode = (
 		minifiedSettings.push(+setting)
 	})
 
-	return [+easy, tempo, minifiedLayers, minifiedSettings]
+	return [tempo, minifiedLayers, minifiedSettings]
 }
 
 export const importCode = (code: any[]) => {
 	if (code.length === 0)
 		return {
-			easy: true,
-			tempo: 80,
+			tempo: 21,
 			layers: defaultLayers,
 			moreSettings: defaultSettings,
 		}
 
 	const parsedLayers: Layer[] = []
-	const parsedSettings: MoreSettings = {
+	const parsedSettings: Settings = {
+		easy: true,
 		theme: 0,
 		fullscreen: false,
 		animations: false,
@@ -81,7 +76,9 @@ export const importCode = (code: any[]) => {
 		offset: 0,
 	}
 
-	code[2].forEach((minified: number[]) => {
+	const [tempo, layers, settings] = code
+
+	layers.forEach((minified: number[]) => {
 		parsedLayers.push({
 			id: setRandomID(),
 			beats: minified[0],
@@ -95,12 +92,11 @@ export const importCode = (code: any[]) => {
 	})
 
 	Object.keys(parsedSettings).forEach((key: string, i: number) => {
-		parsedSettings[key] = code[3][i]
+		parsedSettings[key] = settings[i]
 	})
 
 	return {
-		easy: !!code[0],
-		tempo: code[1],
+		tempo,
 		layers: parsedLayers,
 		moreSettings: parsedSettings,
 	}

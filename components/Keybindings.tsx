@@ -2,6 +2,8 @@ import { useTransition, animated, config } from '@react-spring/web'
 import { useEffect, useState } from 'react'
 import clamp from 'lodash/clamp'
 
+import bindingsList from '../lib/keybindings'
+
 let tempoWait = setTimeout(() => {}, 0)
 
 const Keymapping = ({
@@ -37,177 +39,8 @@ const Keymapping = ({
 				el.blur()
 			}
 
-			const incrSelect = () => (selected + 1) % 5
-			const decrSelect = () => (selected === 0 ? 4 : selected - 1)
-
-			const bindings = [
-				{
-					key: 'Backspace',
-					cat: 'select',
-					desc: 'deselect rythm',
-					val: -1,
-					selected: false,
-				},
-				{
-					key: 'Digit1',
-					cat: 'select',
-					desc: 'select 1st rythm',
-					val: 0,
-					selected: false,
-				},
-				{
-					key: 'Digit2',
-					cat: 'select',
-					desc: 'select 2nd rythm',
-					val: 1,
-					selected: false,
-				},
-				{
-					key: 'Digit3',
-					cat: 'select',
-					desc: 'select 3rd rythm',
-					val: 2,
-					selected: false,
-				},
-				{
-					key: 'Digit4',
-					cat: 'select',
-					desc: 'select 4th rythm',
-					val: 3,
-					selected: false,
-				},
-				{
-					key: 'Digit5',
-					cat: 'select',
-					desc: 'select 5th rythm',
-					val: 4,
-					selected: false,
-				},
-				{
-					key: 'ArrowRight',
-					cat: 'select',
-					desc: 'select next rythm',
-					val: incrSelect(),
-					selected: false,
-				},
-				{
-					key: 'ArrowDown',
-					cat: 'select',
-					desc: 'select next rythm',
-					val: incrSelect(),
-					selected: false,
-				},
-				{
-					key: 'ArrowLeft',
-					cat: 'select',
-					desc: 'select previous rythm',
-					val: decrSelect(),
-					selected: false,
-				},
-				{
-					key: 'ArrowUp',
-					cat: 'select',
-					desc: 'select previous rythm',
-					val: decrSelect(),
-					selected: false,
-				},
-				{ key: 'ArrowUp', cat: 'beats', desc: 'beats up', val: 1, selected: true },
-				{ key: 'ArrowDown', cat: 'beats', desc: 'beats down', val: -1, selected: true },
-				{ key: 'KeyA', cat: 'freq', desc: 'note C', val: 0, selected: true },
-				{ key: 'KeyW', cat: 'freq', desc: 'note C#', val: 1, selected: true },
-				{ key: 'KeyS', cat: 'freq', desc: 'note D', val: 2, selected: true },
-				{ key: 'KeyE', cat: 'freq', desc: 'note D#', val: 3, selected: true },
-				{ key: 'KeyD', cat: 'freq', desc: 'note E', val: 4, selected: true },
-				{ key: 'KeyF', cat: 'freq', desc: 'note F', val: 5, selected: true },
-				{ key: 'KeyT', cat: 'freq', desc: 'note F#', val: 6, selected: true },
-				{ key: 'KeyG', cat: 'freq', desc: 'note G', val: 7, selected: true },
-				{ key: 'KeyY', cat: 'freq', desc: 'note G#', val: 8, selected: true },
-				{ key: 'KeyH', cat: 'freq', desc: 'note A', val: 9, selected: true },
-				{ key: 'KeyU', cat: 'freq', desc: 'note A#', val: 10, selected: true },
-				{ key: 'KeyJ', cat: 'freq', desc: 'note B', val: 11, selected: true },
-				{ key: 'KeyK', cat: 'freq', desc: 'note C', val: 12, selected: true },
-				{ key: 'KeyO', cat: 'freq', desc: 'note C#', val: 13, selected: true },
-				{ key: 'KeyL', cat: 'freq', desc: 'note D', val: 14, selected: true },
-				{ key: 'KeyP', cat: 'freq', desc: 'note D#', val: 15, selected: true },
-				{ key: 'Semicolon', cat: 'freq', desc: 'note E', val: 16, selected: true },
-				{ key: 'Quote', cat: 'freq', desc: 'note F', val: 17, selected: true },
-				{ key: 'KeyZ', cat: 'octave', desc: 'octave down', val: -1, selected: false },
-				{ key: 'KeyX', cat: 'octave', desc: 'octave up', val: 1, selected: false },
-				{ key: 'KeyC', cat: 'wave', desc: 'change wavetype', val: 1, selected: true },
-				{
-					key: 'KeyV',
-					cat: 'duration',
-					desc: 'change note duration',
-					val: 1,
-					selected: true,
-				},
-				{
-					key: 'KeyB',
-					cat: 'release',
-					desc: 'change note release',
-					val: 1,
-					selected: true,
-				},
-				{ key: 'KeyM', cat: 'mute', desc: 'volume muted', val: 1, selected: true },
-				{
-					key: 'Comma',
-					cat: 'vol',
-					desc: 'volume down 10%',
-					val: -0.1,
-					selected: true,
-				},
-				{ key: 'Period', cat: 'vol', desc: 'volume up 10%', val: 0.1, selected: true },
-				{
-					key: 'AltRight',
-					cat: 'shuffle',
-					desc: 'shuffle beats',
-					val: 1,
-					selected: false,
-				},
-				{ key: 'NumpadAdd', cat: 'tempo', desc: 'tempo up', val: 1, selected: false },
-				{
-					key: 'NumpadSubtract',
-					cat: 'tempo',
-					desc: 'tempo down',
-					val: -1,
-					selected: false,
-				},
-				{ key: 'Minus', cat: 'tempo', desc: 'tempo down', val: -1, selected: false },
-				{ key: 'Equal', cat: 'tempo', desc: 'tempo up', val: 1, selected: false },
-				{ key: 'Digit0', cat: 'tempoTap', desc: 'tempo tap', val: 1, selected: false },
-
-				{
-					key: 'Digit9',
-					cat: 'view',
-					desc: 'change rythm view',
-					val: 1,
-					selected: false,
-				},
-				{
-					key: 'Digit8',
-					cat: 'fullscreen',
-					desc: 'change fullscreen',
-					val: 1,
-					selected: false,
-				},
-				{
-					key: 'Space',
-					cat: 'metronome',
-					desc: 'start / stop metronome',
-					val: 1,
-					selected: false,
-				},
-				{
-					key: 'Enter',
-					cat: 'metronome',
-					desc: 'start / stop metronome',
-					val: 1,
-					selected: false,
-				},
-			]
-
 			// Finds corresponding key
-			const hitArray = bindings.filter(elem => elem.key === e.code)
+			const hitArray = bindingsList.filter(elem => elem.key === e.code)
 			let hitKey = hitArray[0]
 
 			// Arrow special control (because of shift (ugly))
@@ -240,7 +73,7 @@ const Keymapping = ({
 					const updateTempo = () => {
 						const updatedTempo =
 							tempoRef.current + hitKey.val * (e.shiftKey ? 10 : 1)
-						setTempo(clamp(updatedTempo, 30, 300))
+						setTempo(clamp(updatedTempo, 0, 48))
 
 						clearTimeout(tempoWait)
 						tempoWait = setTimeout(() => {
@@ -248,14 +81,25 @@ const Keymapping = ({
 						}, 400)
 					}
 
+					const incrSelect = () => (selected + 1) % 5
+					const decrSelect = () => (selected === 0 ? 4 : selected - 1)
+
 					const actions = {
 						tempoTap: () => tapTempo(),
 						tempo: () => updateTempo(),
 						view: () => toggleClickView(),
 						shuffle: () => randomizeLayers(),
 						fullscreen: () => changeFullscreen(),
-						select: () => setSelected(hitKey.val),
 						octave: () => setOctave(clamp(octave + hitKey.val, 0, 3)),
+						select: () => {
+							setSelected(
+								hitKey.val === -2
+									? false
+									: hitKey.val === 1
+									? incrSelect()
+									: decrSelect()
+							)
+						},
 						metronome: () => {
 							toggleMetronome()
 							e.preventDefault()
@@ -269,10 +113,8 @@ const Keymapping = ({
 			}
 		}
 
-		// Retire event when effect dies
-		const removeEvent = () => window.removeEventListener('keydown', handleKeyMapping)
 		window.addEventListener('keydown', handleKeyMapping)
-		return removeEvent
+		return () => window.removeEventListener('keydown', handleKeyMapping)
 
 		// eslint-disable-next-line
 	}, [selected, layers, moreSettings, octave])

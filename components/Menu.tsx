@@ -27,8 +27,6 @@ const OptionIcon = ({ icon }) => (
 )
 
 const Menu = ({
-	easy,
-	setEasy,
 	setImport,
 	tutoStage,
 	fullscreen,
@@ -80,7 +78,7 @@ const Menu = ({
 		setMoreSettings(prev => ({ ...prev, offset: (moreSettings.offset + 50) % 550 }))
 
 	const resetToDefault = () =>
-		setImport(importCode(createExportCode(21, defaultLayers, moreSettings, easy)))
+		setImport(importCode(createExportCode(21, defaultLayers, moreSettings)))
 
 	//
 	//
@@ -108,9 +106,9 @@ const Menu = ({
 			icon: faSlidersH,
 			text: 'advanced mode',
 			title: `toggle advanced mode\nAdds note, wave type, note time, release & volume control`,
-			func: () => setEasy(!easy),
-			css: isOn(!easy),
-			state: statesTexts.advanced[+easy],
+			func: () => setMoreSettings(prev => ({ ...prev, easy: !moreSettings.easy })),
+			css: isOn(!moreSettings.easy),
+			state: statesTexts.advanced[+moreSettings.easy],
 		},
 		{
 			icon: faStar,
@@ -157,7 +155,7 @@ const Menu = ({
 			text: 'show tutorial',
 			title: 'show tutorial',
 			func: () => {
-				setTutoStage(easy ? 'intro' : 'showBeats')
+				setTutoStage(moreSettings.easy ? 'intro' : 'showBeats')
 				if (isForMobile) setExtended(false)
 			},
 			css: '',
