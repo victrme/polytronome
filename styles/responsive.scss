@@ -53,10 +53,10 @@
 		font-size: 13px;
 	}
 
-	.polytronome.easy main,
-	.polytronome main,
-	.menu {
-		padding-top: 5vh;
+	.polytronome {
+		&.easy {
+			padding-top: 10vh;
+		}
 	}
 }
 
