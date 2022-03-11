@@ -10,8 +10,10 @@ export const tempoList = [
 	200, 208, 216, 224, 232, 240, 252,
 ]
 
-export const applyTheme = (index: number) => {
+export const applyTheme = (index: number, anim: boolean) => {
 	const root = document.querySelector(':root')! as HTMLBodyElement
+
+	document.body.style.transitionDuration = anim ? '1s' : '0s'
 
 	if (index >= 0 && index < Themes.length) {
 		Object.entries(Themes[index]).forEach(([key, val]) =>

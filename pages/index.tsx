@@ -3,6 +3,7 @@ import { useBeforeunload } from 'react-beforeunload'
 import clamp from 'lodash/clamp'
 import mean from 'lodash/mean'
 
+import Themes from '../public/assets/themes.json'
 import defaultSettings from '../public/assets/settings.json'
 import defaultLayers from '../public/assets/layers.json'
 import LayersTable from '../components/LayersTable'
@@ -83,25 +84,25 @@ const Main = (): JSX.Element => {
 		else if (!restart) running ? stop() : start()
 	}
 
-	const handleLayerChange = (cat: string, result: any, index: number) => {
+	const updateLayers = (cat: string, val: any, index: number) => {
 		let newLayers = [...layers]
 		const durationsList = [50, 0.25, 0.33, 0.5, 0.75, 0.97]
 
 		switch (cat) {
 			case 'wave':
-				newLayers[index].type = (newLayers[index].type + result) % 4
+				newLayers[index].type = (newLayers[index].type + val) % 4
 				break
 
 			case 'beats':
-				newLayers[index].beats = result + 1
+				newLayers[index].beats = val + 1
 				break
 
 			case 'freq':
-				newLayers[index].freq = result
+				newLayers[index].freq = val
 				break
 
 			case 'duration': {
-				const curr = durationsList.indexOf(result)
+				const curr = durationsList.indexOf(val)
 				newLayers[index].duration = durationsList[(curr + 1) % durationsList.length]
 				break
 			}
@@ -115,7 +116,7 @@ const Main = (): JSX.Element => {
 				break
 
 			case 'vol':
-				newLayers[index].volume = result
+				newLayers[index].volume = val
 				break
 		}
 
@@ -124,11 +125,11 @@ const Main = (): JSX.Element => {
 	}
 
 	const randomizeLayers = () => {
-		toggleMetronome(true)
-
 		// Only randomizes activated layers
 		const randBeats = () => +(Math.random() * (16 - 2) + 2).toFixed(0)
 		setLayers([...layers].map(l => (l.beats > 1 ? { ...l, beats: randBeats() } : { ...l })))
+
+		toggleMetronome(true)
 	}
 
 	const tapTempo = () => {
@@ -160,14 +161,13 @@ const Main = (): JSX.Element => {
 		}
 	}
 
-	const setSettingsFromCode = useCallback((code: Code) => {
+	const setSettingsFromCode = (code: Code) => {
 		setMoreSettings({ ...code.moreSettings })
 		setLayers([...code.layers])
 		setTempo(code.tempo)
-		applyTheme(code.moreSettings.theme)
-	}, [])
+	}
 
-	const handleFullscreen = () => {
+	const exitFullscreenOnResize = () => {
 		if (document.fullscreenElement === null)
 			setMoreSettings(prev => ({
 				...prev,
@@ -230,22 +230,26 @@ const Main = (): JSX.Element => {
 		}
 	}, [tempo])
 
+	// Update theme
+	useEffect(() => {
+		applyTheme(moreSettings.theme, moreSettings.animations)
+	}, [moreSettings.theme])
+
 	// CSS classes control
 	useEffect(() => {
 		setAppClasses(handleClasses())
-		return () => setAppClasses('polytronome easy')
 	}, [moreSettings, tutoStage, isForMobile])
 
 	// On mount
 	useEffect(() => {
-		// Apply saved settings
 		try {
-			if (localStorage.sleep)
+			// Apply saved settings
+			if (localStorage.sleep) {
 				setSettingsFromCode(importCode(JSON.parse(localStorage.sleep)))
-			else applyTheme(moreSettings.theme)
+				applyTheme(moreSettings.theme, false)
+			}
 		} catch (error) {
 			console.error(error)
-			applyTheme(localStorage.theme)
 		}
 
 		// First time tutorial activation
@@ -272,12 +276,12 @@ const Main = (): JSX.Element => {
 
 		// Window Events
 		window.addEventListener('click', activateTutorial)
-		window.addEventListener('fullscreenchange', handleFullscreen)
+		window.addEventListener('fullscreenchange', exitFullscreenOnResize)
 		window.addEventListener('resize', handleMobileView)
 
 		return () => {
 			window.removeEventListener('click', activateTutorial)
-			window.removeEventListener('fullscreenchange', handleFullscreen)
+			window.removeEventListener('fullscreenchange', exitFullscreenOnResize)
 			window.addEventListener('resize', handleMobileView)
 		}
 	}, [])
@@ -290,9 +294,9 @@ const Main = (): JSX.Element => {
 	const TempoElem = (
 		<Tempo
 			tempo={tempo}
-			moreSettings={moreSettings}
 			setTempo={setTempo}
 			tapTempo={tapTempo}
+			moreSettings={moreSettings}
 			toggleMetronome={toggleMetronome}
 		/>
 	)
@@ -306,11 +310,11 @@ const Main = (): JSX.Element => {
 				selected={selected}
 				tempoRef={tempoRef}
 				setSelected={setSelected}
+				updateLayers={updateLayers}
 				randomizeLayers={randomizeLayers}
 				toggleMetronome={toggleMetronome}
 				setMoreSettings={setMoreSettings}
 				changeFullscreen={changeFullscreen}
-				handleLayerChange={handleLayerChange}
 				moreSettings={moreSettingsRef.current}
 			></Keybindings>
 
@@ -338,8 +342,7 @@ const Main = (): JSX.Element => {
 					tempoRef={tempoRef}
 					isRunning={isRunning}
 					isRunningRef={isRunningRef}
-					offset={moreSettings.offset}
-					clickType={moreSettings.clickType}
+					moreSettings={moreSettings}
 				></Clicks>
 
 				{isForMobile && (
@@ -354,10 +357,9 @@ const Main = (): JSX.Element => {
 					layers={layers}
 					Tempo={TempoElem}
 					selected={selected}
-					easy={moreSettings.easy}
 					isForMobile={isForMobile}
-					animations={moreSettings.animations}
-					handleLayerChange={handleLayerChange}
+					moreSettings={moreSettings}
+					updateLayers={updateLayers}
 				></LayersTable>
 
 				{!isForMobile && (

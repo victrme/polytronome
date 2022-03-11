@@ -10,15 +10,8 @@ import Wheel from './Wheel'
 import Range from './Range'
 import Layer from '../types/layer'
 
-const LayersTable = ({
-	easy,
-	layers,
-	selected,
-	animations,
-	handleLayerChange,
-	Tempo,
-	isForMobile,
-}) => {
+const LayersTable = ({ Tempo, layers, selected, isForMobile, updateLayers, moreSettings }) => {
+	const { easy, animations } = moreSettings
 	const release = ['off', 'short', 'long']
 	const wavetypes = [
 		'M 10 10 Q 20 -6 30 10 V 10 Q 40 26 50 10', // sine
@@ -52,20 +45,18 @@ const LayersTable = ({
 								type="beats"
 								animations={animations}
 								state={layer.beats}
-								update={(res: number) => handleLayerChange('beats', res, i)}
+								update={(res: number) => updateLayers('beats', res, i)}
 							></Wheel>
 						</div>
 
-						{easy ? (
-							''
-						) : (
+						{!easy && (
 							<div className="ls-note">
 								<div className="notes-wrap">
 									<Wheel
 										type="freq"
 										animations={animations}
 										state={layer.freq}
-										update={res => handleLayerChange('freq', res, i)}
+										update={res => updateLayers('freq', res, i)}
 									></Wheel>
 									<pre className="octave">
 										{Math.floor(layer.freq / 12) + 1}
@@ -74,13 +65,11 @@ const LayersTable = ({
 							</div>
 						)}
 
-						{easy ? (
-							''
-						) : (
+						{!easy && (
 							<div
 								title="sound type"
 								className="ls-type"
-								onClick={() => handleLayerChange('wave', 1, i)}
+								onClick={() => updateLayers('wave', 1, i)}
 							>
 								<svg
 									type="svg"
@@ -98,15 +87,11 @@ const LayersTable = ({
 							</div>
 						)}
 
-						{easy ? (
-							''
-						) : (
+						{!easy && (
 							<div className="ls-effects">
 								<button
 									title="sound duration"
-									onClick={() =>
-										handleLayerChange('duration', layer.duration, i)
-									}
+									onClick={() => updateLayers('duration', layer.duration, i)}
 								>
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="1 1 10 6">
 										<path
@@ -121,7 +106,7 @@ const LayersTable = ({
 								</button>
 								<button
 									title="sound release"
-									onClick={() => handleLayerChange('release', null, i)}
+									onClick={() => updateLayers('release', null, i)}
 								>
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="1 1 8 6">
 										<path
@@ -137,14 +122,12 @@ const LayersTable = ({
 							</div>
 						)}
 
-						{easy ? (
-							''
-						) : (
+						{!easy && (
 							<div title={'volume: ' + layer.volume} className="ls-volume">
 								<span
 									title="mute"
 									className="mute"
-									onClick={() => handleLayerChange('mute', null, i)}
+									onClick={() => updateLayers('mute', null, i)}
 								>
 									<FontAwesomeIcon
 										icon={
@@ -161,7 +144,7 @@ const LayersTable = ({
 								<Range
 									volume={layer.volume}
 									muted={layer.muted}
-									update={(res: number) => handleLayerChange('vol', res, i)}
+									update={(res: number) => updateLayers('vol', res, i)}
 								></Range>
 							</div>
 						)}
@@ -169,7 +152,7 @@ const LayersTable = ({
 				))}
 			</div>
 
-			{isForMobile ? Tempo : ''}
+			{isForMobile && Tempo}
 		</>
 	)
 }

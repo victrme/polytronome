@@ -14,11 +14,11 @@ const Keymapping = ({
 	selected,
 	setSelected,
 	moreSettings,
+	updateLayers,
 	toggleMetronome,
 	randomizeLayers,
 	setMoreSettings,
 	changeFullscreen,
-	handleLayerChange,
 }) => {
 	const [octave, setOctave] = useState(0)
 	const [keylog, setKeylog] = useState({ key: '', desc: '' })
@@ -63,7 +63,7 @@ const Keymapping = ({
 					}
 
 					if (cat === 'select') e.preventDefault()
-					handleLayerChange(cat, filteredVals[cat], selected)
+					updateLayers(cat, filteredVals[cat], selected)
 					setKeylog({ key: e.code, desc: hitKey.desc })
 					setDisplayKeylog(true)
 				}

@@ -4,14 +4,14 @@ import Layer from '../types/layer'
 
 import { tempoList } from '../lib/utils'
 
-const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }) => {
+const Clicks = ({ layers, tempoRef, isRunning, isRunningRef, moreSettings }) => {
 	function usePrevious(value: any) {
 		const ref = useRef()
 		useEffect(() => (ref.current = value), [value])
 		return ref.current
 	}
 
-	const getBeats = () => layers.map((x: Layer) => x.beats)
+	const getBeats = (): number[] => layers.map((x: Layer) => x.beats)
 	const clicksRef = useRef<any>()
 
 	const [times, setTimes] = useState<number[]>([1, 1, 1, 1, 1])
@@ -29,6 +29,8 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 	mockRef.current = mockAmount
 	timesRef.current = times
 	layersRef.current = layers
+
+	const { offset, clickType } = moreSettings
 
 	type Timings = [number, number[]][]
 
@@ -188,8 +190,12 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 		setSegmentRatio(ratiosOnly)
 	}
 
-	const activateSound = () => {
-		const mockSound = new Pizzicato.Sound({
+	//
+	// Force sound on input
+	//
+
+	const playSilentSound = () => {
+		const silentSound = new Pizzicato.Sound({
 			source: 'wave',
 			options: {
 				type: 'square',
@@ -201,66 +207,70 @@ const Clicks = ({ isRunning, clickType, layers, tempoRef, isRunningRef, offset }
 		})
 
 		if (mockRef.current < 2) {
-			mockSound.play()
+			silentSound.play()
 			setMockAmount(mockRef.current + 1)
-			setTimeout(() => mockSound.stop(), 200)
-		} else mockSound.disconnect()
+			setTimeout(() => silentSound.stop(), 200)
+		} else silentSound.disconnect()
 	}
-
-	//
-	//
-	// EFFECTS
-	//
-	//
 
 	// Forces Safari to play sounds without "real" user gestures
 	useEffect(() => {
-		document.body.addEventListener('click', () => activateSound())
-		document.body.addEventListener('keypress', () => activateSound())
+		document.body.addEventListener('click', () => playSilentSound())
+		document.body.addEventListener('keypress', () => playSilentSound())
 
 		return () => {
-			document.body.removeEventListener('click', () => activateSound())
-			document.body.removeEventListener('keypress', () => activateSound())
+			document.body.removeEventListener('click', () => playSilentSound())
+			document.body.removeEventListener('keypress', () => playSilentSound())
 		}
 	}, [])
 
-	// Starting
 	useEffect(() => {
-		if (isRunning.length > 0) metronome(getMetronomeTimings(), isRunningRef.current)
+		//
+		// Start Metronome
+		if (isRunning.length > 0) {
+			metronome(getMetronomeTimings(), isRunningRef.current)
+		}
 	}, [isRunning])
 
 	useEffect(() => {
-		if (clickType === 1) initSegment()
+		if (clickType === 0) {
+			//
+			// This averages clicks on beat change
+			// to prevent skipping beats on restart
+			//
 
-		// This averages clicks on beat change
-		// to prevent skipping beats on restart
-		function averageClicks() {
-			const tempTimes = [...times]
-			const concatdTimes = times.reduce((a, b) => a + b)
-			const maxTime = layers.map(a => a.beats).reduce((a, b) => a + b)
-			const percent = concatdTimes / maxTime
-			let rounded = 1
+			// Only updates clicks if beats are changed
+			let changeClicks = false
+			getBeats().forEach((beat, i) =>
+				beat !== previousBeats[i] ? (changeClicks = !0) : ''
+			)
 
-			for (let i = 0; i < times.length; i++) {
-				rounded = Math.round(layers[i].beats * percent)
-				tempTimes[i] = rounded === 0 ? 1 : rounded
+			if (changeClicks) {
+				const tempTimes = [...times]
+				const concatdTimes = times.reduce((a, b) => a + b)
+				const maxTime = layers.map(a => a.beats).reduce((a, b) => a + b)
+				const percent = concatdTimes / maxTime
+				let rounded = 1
+
+				for (let i = 0; i < times.length; i++) {
+					rounded = Math.round(layers[i].beats * percent)
+					tempTimes[i] = rounded === 0 ? 1 : rounded
+				}
+
+				setTimes([...tempTimes])
 			}
-
-			setTimes([...tempTimes])
+		} else if (clickType === 1) {
+			initSegment()
 		}
-
-		let changeClicks = false
-		getBeats().forEach((beat, i) => (beat !== previousBeats[i] ? (changeClicks = !0) : ''))
-		if (changeClicks) averageClicks()
-	}, [layers])
+	}, [layers, clickType])
 
 	useEffect(() => {
-		initSegment()
-	}, [clickType])
+		//
+		// Sound latency
+		// assign times to another identical state
+		// after a setTimeout (if not zero)
+		//
 
-	useEffect(() => {
-		// Sound latency works by
-		// assigning times to another identical state after a setTimeout (if not zero)
 		const updateTimes = () => {
 			!clickType ? setOffsetTimes([...times]) : setOffsetSegmentPos(segmentPos)
 		}

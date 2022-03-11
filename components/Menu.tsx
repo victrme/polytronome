@@ -55,14 +55,13 @@ const Menu = ({
 	}
 
 	const changeTheme = (index?: number) => {
-		document.body.style.transitionDuration = moreSettings.animations ? '1s' : '0s'
 		let nextTheme = index || 0
 
 		if (!extended) nextTheme = (moreSettings.theme + 1) % Themes.length
 
 		setMoreSettings(prev => ({ ...prev, theme: nextTheme }))
+		applyTheme(nextTheme, moreSettings.animations)
 		localStorage.theme = nextTheme
-		applyTheme(nextTheme)
 	}
 
 	const toggleMenu = () => {
@@ -177,7 +176,8 @@ const Menu = ({
 	}))
 
 	useEffect(() => {
-		api.start({ opacity: openedTheme ? 1 : 0 })
+		const style = { opacity: openedTheme ? 1 : 0 }
+		moreSettings.animations ? api.start(style) : api.set(style)
 	}, [openedTheme])
 
 	useEffect(() => {
