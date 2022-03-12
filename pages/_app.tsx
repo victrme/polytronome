@@ -8,17 +8,25 @@ function App({ Component }: AppProps) {
 			<Head>
 				<title>Polytronome - train your polyrythms</title>
 				<meta charSet="utf-8" />
+				<meta name="theme-color" content="#EAEBEA" />
 
 				<meta
 					name="description"
-					content="Train your polyrythms by playing multiple metronome simultaneously"
+					content="Polytronome helps you visualize polyrythms by layering multiple metronomes !"
 				/>
-
-				<meta name="theme-color" content="#EAEBEA" />
 
 				<link rel="icon" id="favicon" href="/favicon.png" />
 				<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 				<link rel="manifest" href="/manifest.json" />
+
+				<meta property="og:url" content="https://polytronome.com/" />
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content="Polytronome - train your polyrythms" />
+				<meta property="og:image" content="\screenshots\screen-4.webp" />
+				<meta
+					property="og:description"
+					content="You can visualize polyrythms by layering multiple metronomes !"
+				/>
 			</Head>
 			<Component />
 		</>
