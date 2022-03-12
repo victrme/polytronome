@@ -52,12 +52,6 @@
 	body {
 		font-size: 13px;
 	}
-
-	.polytronome {
-		&.easy {
-			padding-top: 10vh;
-		}
-	}
 }
 
 @media only screen and (max-height: 750px) and (max-width: 1200px) {
@@ -199,11 +193,11 @@
 						margin: 0 0.5em;
 
 						.immovable_wheel {
+							padding-left: 0.5em;
 							padding-right: 0;
-							padding-left: 0;
 
 							.arrows {
-								display: none;
+								margin-left: -0.5em;
 							}
 						}
 					}
