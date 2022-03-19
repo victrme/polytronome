@@ -13,5 +13,6 @@ module.exports = withPWA(
 		},
 		reactStrictMode: true,
 		basePath: '',
+		productionBrowserSourceMaps: true,
 	})
 )
