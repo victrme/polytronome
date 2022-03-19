@@ -20,7 +20,7 @@ export default class MyDocument extends Document {
 							window.dataLayer = window.dataLayer || [];
 							function gtag(){dataLayer.push(arguments);}
 							gtag('js', new Date());
-							gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}'});
+							gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}');
 						`,
 						}}
 					></script>
