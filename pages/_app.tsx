@@ -1,4 +1,5 @@
 import type { AppProps } from 'next/app'
+import Script from 'next/script'
 import Head from 'next/head'
 import '../styles/App.scss'
 
@@ -37,6 +38,21 @@ function App({ Component }: AppProps) {
 					content="An easy way to visualize polyrythms. Use it to discover new rythms, challenge yourself to play along, or simply enjoy the sounds you created !"
 				/>
 				<meta name="twitter:image" content="https://polytronome.com/preview.webp" />
+
+				<Script
+					async
+					src="https://www.googletagmanager.com/gtag/js?id=G-6DMK8FJVX9"
+				></Script>
+				<Script
+					dangerouslySetInnerHTML={{
+						__html: `
+							window.dataLayer = window.dataLayer || [];
+							function gtag(){dataLayer.push(arguments);}
+							gtag('js', new Date());
+							gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}'});
+						`,
+					}}
+				></Script>
 			</Head>
 			<Component />
 		</>

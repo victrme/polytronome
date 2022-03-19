@@ -17,3 +17,4 @@ npm-debug.log
 out
 /public/*.js
 /public/*.map
+.env.local
