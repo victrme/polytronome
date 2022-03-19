@@ -38,7 +38,7 @@ const Main = (): JSX.Element => {
 	const [moreSettings, setMoreSettings] = useState<Settings>({ ...defaultSettings })
 	const [fullscreen, setFullscreen] = useState(false)
 
-	const [appClasses, setAppClasses] = useState('polytronome easy loading')
+	const [appClasses, setAppClasses] = useState('polytronome easy')
 	const [isForMobile, setIsForMobile] = useState(false)
 
 	const tempoRef = useRef(tempo)
@@ -47,6 +47,7 @@ const Main = (): JSX.Element => {
 	const isRunningRef = useRef(isRunning)
 	const moreSettingsRef = useRef(moreSettings)
 
+	let loadtimeout
 	tapRef.current = tap
 	tempoRef.current = tempo
 	startTimeRef.current = startTime
@@ -245,7 +246,20 @@ const Main = (): JSX.Element => {
 		try {
 			// Apply saved settings
 			if (localStorage.sleep) {
-				setSettingsFromCode(importCode(JSON.parse(localStorage.sleep)))
+				let code = importCode(JSON.parse(localStorage.sleep))
+				let temp = code.moreSettings.animations
+
+				// Disable animation on load
+				code.moreSettings.animations = false
+				setSettingsFromCode(code)
+
+				// timeout to reenable anims to preference
+				clearTimeout(loadtimeout)
+				loadtimeout = setTimeout(() => {
+					code.moreSettings.animations = temp
+					setSettingsFromCode(code)
+				}, 100)
+
 				applyTheme(moreSettings.theme, false)
 			}
 		} catch (error) {

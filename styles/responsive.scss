@@ -201,7 +201,7 @@
 							padding-right: 0;
 
 							.arrows {
-								margin-left: -0.5em;
+								margin-left: -0.3em;
 							}
 						}
 					}
@@ -229,6 +229,10 @@ specific to .mobile render changes
 
 	main {
 		padding-top: 10vh;
+
+		.ls-row {
+			background-color: transparent;
+		}
 	}
 
 	&.easy {
@@ -313,8 +317,8 @@ specific to .mobile render changes
 
 			&.extended {
 				display: flex;
-				width: calc(100vw - 8em);
-				padding: 8em 4em 0 4em;
+				width: calc(100vw - 4em);
+				padding: 8em 2em 0 2em;
 				height: 100vh;
 				background-color: var(--background);
 				overflow-y: auto;

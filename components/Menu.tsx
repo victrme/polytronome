@@ -191,7 +191,7 @@ const Menu = ({
 
 	return (
 		<div className="menu">
-			<button onClick={toggleMenu} title="Menu Button">
+			<button onClick={toggleMenu} title={(extended ? 'close' : 'open') + ' menu'}>
 				<FontAwesomeIcon icon={faBars} />
 				{isForMobile ? '' : 'Menu'}
 			</button>
