@@ -31,14 +31,6 @@ const Keymapping = ({
 
 	useEffect(() => {
 		function handleKeyMapping(e: KeyboardEvent) {
-			// Lose focus before firing, (like a preventDefault)
-			// Not preventDefault, because it would prevent
-			// Browser accessibility keybindings
-			if (document.activeElement) {
-				const el = document.activeElement as HTMLButtonElement
-				el.blur()
-			}
-
 			// Finds corresponding key
 			const hitArray = bindingsList.filter(elem => elem.key === e.code)
 			let hitKey = hitArray[0]

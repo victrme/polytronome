@@ -132,33 +132,37 @@
 				> div {
 					margin: 0.5em 0;
 				}
-			}
 
-			.ls-type {
-				min-width: 5em;
-
-				svg {
-					width: 3.4em;
-					height: 3.4em;
-					padding: 0 1em;
-				}
-			}
-
-			.ls-effects {
-				text-align: left;
-				flex-direction: column;
-				max-width: 7em;
-			}
-
-			.ls-volume {
-				flex-direction: column;
-
-				.mute {
-					padding: 0;
-					margin-bottom: 1em;
+				.arrows {
+					margin-left: -0.5em;
 				}
 
-				.range-wrap {
+				.ls-type {
+					padding: 0 0.5em;
+
+					svg {
+						width: 3.2em;
+						height: 3.2em;
+						padding: 0;
+					}
+				}
+
+				.ls-effects {
+					text-align: left;
+					flex-direction: column;
+					max-width: 7em;
+				}
+
+				.ls-volume {
+					flex-direction: column;
+
+					.mute {
+						padding: 0;
+						margin-bottom: 1em;
+					}
+
+					.range-wrap {
+					}
 				}
 			}
 		}

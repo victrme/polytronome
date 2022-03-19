@@ -5,7 +5,7 @@ body:fullscreen::backdrop {
 	margin: 0;
 	background-color: var(--background);
 	transition-timing-function: $easing;
-	transition: background-color 1s $easing;
+	transition: background-color 0.2s $easing;
 }
 
 button,
@@ -28,7 +28,7 @@ input {
 	overflow: hidden;
 	max-height: 100vh;
 	opacity: 0;
-	transition: opacity 1s $easing, color 1s $easing;
+	transition: opacity 0.2s $easing, color 1s $easing;
 
 	@import 'header';
 	@import 'clicks';
@@ -60,7 +60,6 @@ input {
 		font-size: 1em;
 		font-weight: 600;
 		white-space: pre;
-		outline: none;
 		cursor: pointer;
 		transition: background-color 0.2s $easing, color 0.3s $easing, border 0.2s $easing;
 
@@ -74,8 +73,7 @@ input {
 			background-color: var(--clicks-off);
 		}
 
-		&:hover,
-		&:focus {
+		&:hover {
 			border: 2px solid var(--clicks-off);
 		}
 	}
@@ -83,7 +81,6 @@ input {
 	.immovable_wheel {
 		position: relative;
 		overflow: hidden;
-		user-select: none;
 		padding-top: 0.1em;
 		padding-bottom: 0.1em;
 		padding-right: 0.2em;
@@ -114,9 +111,9 @@ input {
 			height: 1em;
 			z-index: 2;
 
-			svg {
+			div {
+				display: flex;
 				width: 0.35em;
-				padding: 0 0.1em;
 				text-align: center;
 				cursor: pointer;
 				opacity: 0.2;
@@ -130,12 +127,15 @@ input {
 					opacity: 0.5;
 				}
 
+				&:focus,
 				&:active {
 					opacity: 1;
 				}
 
-				path {
-					transition: stroke 1s $easing;
+				svg {
+					path {
+						transition: stroke 1s $easing;
+					}
 				}
 			}
 		}

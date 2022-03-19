@@ -1,13 +1,13 @@
 [
 	{
 		"name": "night",
-		"background": "#0d1117",
-		"accent": "#a9b59e",
-		"layers": "#161b22",
-		"buttons": "#2b323b",
-		"menu": "#161b22",
-		"clicks-on": "#a9b59e",
-		"clicks-off": "#2b323b"
+		"background": "#22272e",
+		"accent": "#ccd6c2",
+		"layers": "#393f46",
+		"buttons": "#414b58",
+		"menu": "#2b3440",
+		"clicks-on": "#ccd6c2",
+		"clicks-off": "#454c54"
 	},
 	{
 		"name": "rosa",

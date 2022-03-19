@@ -28,8 +28,8 @@
 			border-radius: 0.6em;
 			background-color: var(--clicks-off);
 			will-change: transform;
-			transition: transform 0.25s $easing, margin 0.2s $easing,
-				background-color 0.25s $easing, width 0.3s;
+			transition: transform 0.15s $easing, margin 0.2s $easing,
+				background-color 0.15s $easing, width 0.3s;
 			transform: translate(0, 0) scaleY(0.6);
 
 			&.on {

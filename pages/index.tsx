@@ -264,6 +264,11 @@ const Main = (): JSX.Element => {
 			}
 		}
 
+		// First time theme selection
+		if (!localStorage.sleep && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+			setMoreSettings(prev => ({ ...prev, theme: 0 }))
+		}
+
 		// Displays app when loaded ( ugly ? )
 		document.querySelector('.polytronome').setAttribute('style', 'opacity: 1')
 

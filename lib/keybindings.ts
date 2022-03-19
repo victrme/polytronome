@@ -162,13 +162,6 @@ const bindingsList = [
 		val: 1,
 		selected: false,
 	},
-	{
-		key: 'Enter',
-		cat: 'metronome',
-		desc: 'start / stop metronome',
-		val: 1,
-		selected: false,
-	},
 ]
 
 export default bindingsList

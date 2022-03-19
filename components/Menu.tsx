@@ -15,7 +15,7 @@ import {
 	faStar,
 	faCode,
 	faHandHoldingHeart,
-	faComment,
+	faHandPeace,
 	faSlidersH,
 	faChalkboardTeacher,
 } from '@fortawesome/free-solid-svg-icons'
@@ -86,11 +86,16 @@ const Menu = ({
 	const links = [
 		{
 			url: 'https://github.com/victrme/polytronome',
+			title: 'Source code on github',
 			icon: faCode,
 			text: 'source & docs',
 		},
-		{ url: 'https://ko-fi.com/victr', icon: faHandHoldingHeart, text: 'donate' },
-		{ url: 'mailto:mail@victr.me', icon: faComment, text: 'contact' },
+		{
+			url: 'https://victr.me',
+			title: 'created by victr !',
+			icon: faHandPeace,
+			text: 'by victr',
+		},
 	]
 
 	const statesTexts = {
@@ -186,7 +191,7 @@ const Menu = ({
 
 	return (
 		<div className="menu">
-			<button onClick={toggleMenu}>
+			<button onClick={toggleMenu} title="Menu Button">
 				<FontAwesomeIcon icon={faBars} />
 				{isForMobile ? '' : 'Menu'}
 			</button>
@@ -240,8 +245,8 @@ const Menu = ({
 
 				<hr />
 
-				{links.map(({ icon, text, url }) => (
-					<a key={text} href={url}>
+				{links.map(({ icon, text, url, title }) => (
+					<a key={text} href={url} title={title}>
 						<p>
 							<OptionIcon icon={icon} />
 							<span className="option-text">{text}</span>

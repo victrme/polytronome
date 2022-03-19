@@ -16,6 +16,23 @@
 		margin: 1em;
 		transition: opacity 1s $easing, filter 1s $easing, background-color 1s $easing;
 
+		button {
+			margin: 0.2em;
+			padding: 0.2em 1em;
+			text-align: left;
+			background-color: transparent;
+
+			&:hover {
+				border-color: transparent;
+				background-color: var(--buttons);
+			}
+
+			&:active {
+				border-color: transparent;
+				background-color: var(--dim);
+			}
+		}
+
 		> div {
 			margin: 0.6em;
 		}
@@ -35,33 +52,6 @@
 				cursor: default;
 				pointer-events: none;
 				transition: opacity 0.4s $easing;
-			}
-		}
-	}
-
-	.ls-type {
-		min-width: 8em;
-		text-align: center;
-
-		svg {
-			width: 4em;
-			height: 4em;
-			padding: 0 1.2em;
-			border-radius: 12px;
-			transition: background-color 0.3s;
-			cursor: pointer;
-
-			path {
-				stroke: var(--accent);
-				transition: stroke 1s $easing;
-			}
-
-			&:hover {
-				background-color: var(--buttons);
-			}
-
-			&:active {
-				background-color: var(--dim);
 			}
 		}
 	}
@@ -91,6 +81,23 @@
 		}
 	}
 
+	.ls-type {
+		text-align: center;
+		background-color: transparent;
+		border-radius: 1em;
+
+		svg {
+			width: 4em;
+			height: 4em;
+			cursor: pointer;
+
+			path {
+				stroke: var(--accent);
+				transition: stroke 1s $easing;
+			}
+		}
+	}
+
 	.ls-effects {
 		text-align: center;
 
@@ -100,20 +107,9 @@
 		}
 
 		button {
+			min-width: 7em;
 			margin: 0.2em;
 			padding: 0.2em 1em;
-			text-align: left;
-			background-color: transparent;
-
-			&:hover {
-				border-color: transparent;
-				background-color: var(--buttons);
-			}
-
-			&:active {
-				border-color: transparent;
-				background-color: var(--dim);
-			}
 		}
 	}
 

@@ -17,7 +17,7 @@ const Tempo = ({ tempo, setTempo, tapTempo, toggleMetronome, moreSettings }) => 
 				animations={moreSettings.animations}
 				update={res => handleTempo(res)}
 			></Wheel>
-			<button className="tap" onClick={tapTempo}>
+			<button className="tap" onClick={tapTempo} title="tap tempo">
 				tap
 			</button>
 		</div>

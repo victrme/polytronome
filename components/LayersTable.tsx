@@ -12,6 +12,7 @@ import Layer from '../types/layer'
 
 const LayersTable = ({ Tempo, layers, selected, isForMobile, updateLayers, moreSettings }) => {
 	const { easy, animations } = moreSettings
+	const ordinals = ['1st', '2nd', '3rd', '4th', '5th']
 	const release = ['off', 'short', 'long']
 	const wavetypes = [
 		'M 10 10 Q 20 -6 30 10 V 10 Q 40 26 50 10', // sine
@@ -66,9 +67,9 @@ const LayersTable = ({ Tempo, layers, selected, isForMobile, updateLayers, moreS
 						)}
 
 						{!easy && (
-							<div
-								title="sound type"
+							<button
 								className="ls-type"
+								title={`${ordinals[i]} sound type`}
 								onClick={() => updateLayers('wave', 1, i)}
 							>
 								<svg
@@ -84,13 +85,13 @@ const LayersTable = ({ Tempo, layers, selected, isForMobile, updateLayers, moreS
 										strokeLinecap="round"
 									/>
 								</svg>
-							</div>
+							</button>
 						)}
 
 						{!easy && (
 							<div className="ls-effects">
 								<button
-									title="sound duration"
+									title={`${ordinals[i]} sound duration`}
 									onClick={() => updateLayers('duration', layer.duration, i)}
 								>
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="1 1 10 6">
@@ -105,7 +106,7 @@ const LayersTable = ({ Tempo, layers, selected, isForMobile, updateLayers, moreS
 									{durations[layer.duration]}
 								</button>
 								<button
-									title="sound release"
+									title={`${ordinals[i]} sound release`}
 									onClick={() => updateLayers('release', null, i)}
 								>
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="1 1 8 6">
@@ -125,7 +126,9 @@ const LayersTable = ({ Tempo, layers, selected, isForMobile, updateLayers, moreS
 						{!easy && (
 							<div title={'volume: ' + layer.volume} className="ls-volume">
 								<span
-									title="mute"
+									tabIndex={0}
+									role="button"
+									title={`mute ${ordinals[i]} rythm`}
 									className="mute"
 									onClick={() => updateLayers('mute', null, i)}
 								>
