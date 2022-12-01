@@ -1,8 +1,10 @@
 import { useTransition, config } from '@react-spring/web'
+import useIsMobile from '../hooks/useIsMobile'
 import Tutorial from './Tutorial'
 
-const Header = ({ tutoStage, Tempo, setTutoStage, isForMobile }) => {
+const Header = ({ tutoStage, Tempo, setTutoStage }) => {
 	const toggle = tutoStage !== 'removed'
+	const [isMobile] = useIsMobile()
 
 	const transition = useTransition(toggle, {
 		from: { scale: 0.9, opacity: 0 },
@@ -44,7 +46,7 @@ const Header = ({ tutoStage, Tempo, setTutoStage, isForMobile }) => {
 
 			<div></div>
 
-			{isForMobile ? '' : Tempo}
+			{!isMobile && Tempo}
 		</div>
 	)
 }

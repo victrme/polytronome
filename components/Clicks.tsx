@@ -4,7 +4,7 @@ import Layer from '../types/layer'
 
 import { tempoList } from '../lib/utils'
 
-const Clicks = ({ layers, tempoRef, isRunning, isRunningRef, moreSettings }) => {
+const Clicks = ({ layers, tempoRef, isRunning, moreSettings }) => {
 	function usePrevious(value: any) {
 		const ref = useRef()
 		useEffect(() => (ref.current = value), [value])
@@ -24,11 +24,13 @@ const Clicks = ({ layers, tempoRef, isRunning, isRunningRef, moreSettings }) => 
 	const timesRef = useRef(times)
 	const mockRef = useRef(mockAmount)
 	const layersRef = useRef(layers)
+	const isRunningRef = useRef(isRunning)
 	const previousBeats = usePrevious(getBeats()) || [1, 1, 1, 1, 1]
 
 	mockRef.current = mockAmount
 	timesRef.current = times
 	layersRef.current = layers
+	isRunningRef.current = isRunning
 
 	const { offset, clickType } = moreSettings
 

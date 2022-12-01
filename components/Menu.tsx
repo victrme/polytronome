@@ -19,6 +19,8 @@ import {
 	faSlidersH,
 	faChalkboardTeacher,
 } from '@fortawesome/free-solid-svg-icons'
+import useTest from '../hooks/test'
+import useIsMobile from '../hooks/useIsMobile'
 
 const OptionIcon = ({ icon }) => (
 	<span className="option-icon">
@@ -30,7 +32,6 @@ const Menu = ({
 	setImport,
 	tutoStage,
 	fullscreen,
-	isForMobile,
 	setTutoStage,
 	moreSettings,
 	setMoreSettings,
@@ -38,6 +39,7 @@ const Menu = ({
 }) => {
 	const [openedTheme, setOpenedTheme] = useState(false)
 	const [extended, setExtended] = useState(false)
+	const [isMobile] = useIsMobile()
 	const isOn = (bool: boolean) => (bool ? 'on' : '')
 
 	//
@@ -65,7 +67,7 @@ const Menu = ({
 	}
 
 	const toggleMenu = () => {
-		if (isForMobile && tutoStage !== 'removed') setTutoStage('removed')
+		if (isMobile && tutoStage !== 'removed') setTutoStage('removed')
 		setExtended(!extended)
 		setOpenedTheme(false)
 	}
@@ -160,7 +162,7 @@ const Menu = ({
 			title: 'show tutorial',
 			func: () => {
 				setTutoStage(moreSettings.easy ? 'intro' : 'showBeats')
-				if (isForMobile) setExtended(false)
+				if (isMobile) setExtended(false)
 			},
 			css: '',
 			state: '',
@@ -193,7 +195,7 @@ const Menu = ({
 		<div className="menu">
 			<button onClick={toggleMenu} title={(extended ? 'close' : 'open') + ' menu'}>
 				<FontAwesomeIcon icon={faBars} />
-				{isForMobile ? '' : 'Menu'}
+				{isMobile ? '' : 'Menu'}
 			</button>
 
 			<aside className={extended ? 'extended' : 'closed'}>

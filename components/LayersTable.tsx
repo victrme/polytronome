@@ -9,8 +9,23 @@ import {
 import Wheel from './Wheel'
 import Range from './Range'
 import Layer from '../types/layer'
+import Settings from '../types/settings'
+import useIsMobile from '../hooks/useIsMobile'
 
-const LayersTable = ({ Tempo, layers, selected, isForMobile, updateLayers, moreSettings }) => {
+const LayersTable = ({
+	Tempo,
+	layers,
+	selected,
+	moreSettings,
+	handleLayerUpdate,
+}: {
+	Tempo: JSX.Element
+	layers: Layer[]
+	selected: number
+	moreSettings: Settings
+	handleLayerUpdate: (cat: string, i: number, val: number) => void
+}) => {
+	const [isMobile] = useIsMobile()
 	const { easy, animations } = moreSettings
 	const ordinals = ['1st', '2nd', '3rd', '4th', '5th']
 	const release = ['off', 'short', 'long']
@@ -46,7 +61,7 @@ const LayersTable = ({ Tempo, layers, selected, isForMobile, updateLayers, moreS
 								type="beats"
 								animations={animations}
 								state={layer.beats}
-								update={(res: number) => updateLayers('beats', res, i)}
+								update={(res: number) => handleLayerUpdate('beats', i, res)}
 							></Wheel>
 						</div>
 
@@ -57,7 +72,7 @@ const LayersTable = ({ Tempo, layers, selected, isForMobile, updateLayers, moreS
 										type="freq"
 										animations={animations}
 										state={layer.freq}
-										update={res => updateLayers('freq', res, i)}
+										update={res => handleLayerUpdate('freq', i, res)}
 									></Wheel>
 									<pre className="octave">
 										{Math.floor(layer.freq / 12) + 1}
@@ -70,7 +85,7 @@ const LayersTable = ({ Tempo, layers, selected, isForMobile, updateLayers, moreS
 							<button
 								className="ls-type"
 								title={`${ordinals[i]} sound type`}
-								onClick={() => updateLayers('wave', 1, i)}
+								onClick={() => handleLayerUpdate('wave', i, 1)}
 							>
 								<svg
 									type="svg"
@@ -92,7 +107,9 @@ const LayersTable = ({ Tempo, layers, selected, isForMobile, updateLayers, moreS
 							<div className="ls-effects">
 								<button
 									title={`${ordinals[i]} sound duration`}
-									onClick={() => updateLayers('duration', layer.duration, i)}
+									onClick={() =>
+										handleLayerUpdate('duration', i, layer.duration)
+									}
 								>
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="1 1 10 6">
 										<path
@@ -107,7 +124,7 @@ const LayersTable = ({ Tempo, layers, selected, isForMobile, updateLayers, moreS
 								</button>
 								<button
 									title={`${ordinals[i]} sound release`}
-									onClick={() => updateLayers('release', null, i)}
+									onClick={() => handleLayerUpdate('release', i, null)}
 								>
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="1 1 8 6">
 										<path
@@ -130,7 +147,7 @@ const LayersTable = ({ Tempo, layers, selected, isForMobile, updateLayers, moreS
 									role="button"
 									title={`mute ${ordinals[i]} rythm`}
 									className="mute"
-									onClick={() => updateLayers('mute', null, i)}
+									onClick={() => handleLayerUpdate('mute', i, null)}
 								>
 									<FontAwesomeIcon
 										icon={
@@ -147,7 +164,7 @@ const LayersTable = ({ Tempo, layers, selected, isForMobile, updateLayers, moreS
 								<Range
 									volume={layer.volume}
 									muted={layer.muted}
-									update={(res: number) => updateLayers('vol', res, i)}
+									update={(res: number) => handleLayerUpdate('vol', i, res)}
 								></Range>
 							</div>
 						)}
@@ -155,7 +172,7 @@ const LayersTable = ({ Tempo, layers, selected, isForMobile, updateLayers, moreS
 				))}
 			</div>
 
-			{isForMobile && Tempo}
+			{isMobile && Tempo}
 		</>
 	)
 }

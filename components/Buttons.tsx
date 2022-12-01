@@ -1,19 +1,31 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlay, faStop, faRandom } from '@fortawesome/free-solid-svg-icons'
 
-const Buttons = ({ isRunning, toggleMetronome, randomizeLayers }) => {
+const Buttons = ({
+	isRunning,
+	handleMetronomeToggle,
+	handleRandomizedLayers,
+}: {
+	isRunning: string
+	handleMetronomeToggle: Function
+	handleRandomizedLayers: Function
+}) => {
 	return (
 		<div className="bottom-buttons">
 			<button
 				className="start"
-				onClick={() => toggleMetronome()}
+				onClick={() => handleMetronomeToggle()}
 				title={(isRunning ? 'stop' : 'start') + ' metronome'}
 			>
 				<FontAwesomeIcon icon={isRunning ? faStop : faPlay} />
 				{isRunning ? 'stop' : 'start'}
 			</button>
 
-			<button className="randomize" onClick={randomizeLayers} title="shuffle metronome">
+			<button
+				className="randomize"
+				title="shuffle metronome"
+				onClick={() => handleRandomizedLayers()}
+			>
 				<FontAwesomeIcon icon={faRandom} />
 				shuffle
 			</button>
