@@ -1,5 +1,6 @@
-import { useRef, useState, useEffect, useCallback } from 'react'
+import { useRef, useState, useEffect, useCallback, useLayoutEffect } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
+import clamp from 'lodash/clamp'
 
 import Themes from '../public/assets/themes.json'
 import defaultSettings from '../public/assets/settings.json'
@@ -11,16 +12,20 @@ import Header from '../components/Header'
 import Clicks from '../components/Clicks'
 import Menu from '../components/Menu'
 import Tempo from '../components/Tempo'
+import Tutorial from '../components/Tutorial'
 
 import Settings from '../types/settings'
 import Layer from '../types/layer'
 import Code from '../types/code'
 
-import { importCode, applyTheme, createExportCode } from '../lib/utils'
+import { tempoList, importCode, applyTheme, createExportCode } from '../lib/utils'
 import toggleMetronome from '../lib/toggleMetronome'
 import useIsMobile from '../hooks/useIsMobile'
 import randomizeLayers from '../lib/randomizeLayers'
 import updateLayers from '../lib/updateLayers'
+import useEnableBrowserSound from '../hooks/useEnableBrowserSound'
+import useTestCounter from '../hooks/useTestCounter'
+import updateMoreSettings from '../lib/updateMoreSettings'
 
 const Main = (): JSX.Element => {
 	//
@@ -33,22 +38,21 @@ const Main = (): JSX.Element => {
 	const [selected, setSelected] = useState(-1)
 	const [isRunning, setIsRunning] = useState('')
 	const [tutoStage, setTutoStage] = useState('removed')
-	const [isForMobile] = useIsMobile()
-
 	const [layers, setLayers] = useState<Layer[]>([...defaultLayers])
 	const [moreSettings, setMoreSettings] = useState<Settings>({ ...defaultSettings })
-	const [fullscreen, setFullscreen] = useState(false)
-
 	const [appClasses, setAppClasses] = useState('polytronome easy')
+	const [isForMobile] = useIsMobile()
 
 	const tempoRef = useRef(tempo)
 	const isRunningRef = useRef(isRunning)
 	const moreSettingsRef = useRef(moreSettings)
 
-	let loadtimeout
+	let loadtimeout = setTimeout(() => {})
 	tempoRef.current = tempo
 	isRunningRef.current = isRunning
 	moreSettingsRef.current = moreSettings
+
+	const [testCounter, setTestCounter] = useTestCounter({ layers, tempo })
 
 	//
 	//
@@ -70,31 +74,22 @@ const Main = (): JSX.Element => {
 	}
 
 	const handleLayerUpdate = (cat: string, index: number, val: number) => {
-		setLayers(updateLayers({ layers, cat, index, val }))
+		setLayers([...updateLayers({ layers, cat, index, val })])
+	}
+
+	const handleMoreSettings = ({ cat, theme }: { cat: keyof Settings; theme?: number }) => {
+		setMoreSettings({ ...updateMoreSettings({ moreSettings, cat, theme }) })
+	}
+
+	const handleTempo = (tempo: number) => {
+		setTempo(clamp(tempo, 0, tempoList.length))
+		restartMetronome()
 	}
 
 	const setSettingsFromCode = (code: Code) => {
 		setMoreSettings({ ...code.moreSettings })
 		setLayers([...code.layers])
 		setTempo(code.tempo)
-	}
-
-	const exitFullscreenOnResize = () => {
-		if (document.fullscreenElement === null)
-			setMoreSettings(prev => ({
-				...prev,
-				fullscreen: false,
-			}))
-	}
-
-	const changeFullscreen = () => {
-		if (!moreSettings.fullscreen && document.fullscreenElement === null) {
-			document.body!.requestFullscreen()
-			setFullscreen(true)
-		} else if (document.fullscreenElement !== null) {
-			document.exitFullscreen()
-			setFullscreen(false)
-		}
 	}
 
 	const handleClasses = () => {
@@ -113,11 +108,48 @@ const Main = (): JSX.Element => {
 		return res
 	}
 
+	function applySavedSettings() {
+		try {
+			// Apply saved settings
+			if (localStorage.sleep) {
+				let code = importCode(JSON.parse(localStorage.sleep))
+				let temp = code.moreSettings.animations
+
+				// Disable animation on load
+				code.moreSettings.animations = false
+				setSettingsFromCode(code)
+
+				// timeout to reenable anims to preference
+				clearTimeout(loadtimeout)
+				loadtimeout = setTimeout(() => {
+					code.moreSettings.animations = temp
+					setSettingsFromCode(code)
+				}, 100)
+
+				applyTheme(moreSettings.theme, false)
+			}
+		} catch (error) {
+			console.error(error)
+		}
+	}
+
+	function firstTimeThemeSelection() {
+		if (!localStorage.sleep && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+			setMoreSettings(prev => ({ ...prev, theme: 0 }))
+		}
+	}
+
 	//
 	//
 	//	Effects
 	//
 	//
+
+	useEnableBrowserSound()
+
+	useEffect(() => {
+		console.log(testCounter)
+	}, [testCounter])
 
 	// Change mode after following second tutorial
 	useEffect(() => {
@@ -154,57 +186,9 @@ const Main = (): JSX.Element => {
 
 	// On mount
 	useEffect(() => {
-		try {
-			// Apply saved settings
-			if (localStorage.sleep) {
-				let code = importCode(JSON.parse(localStorage.sleep))
-				let temp = code.moreSettings.animations
-
-				// Disable animation on load
-				code.moreSettings.animations = false
-				setSettingsFromCode(code)
-
-				// timeout to reenable anims to preference
-				clearTimeout(loadtimeout)
-				loadtimeout = setTimeout(() => {
-					code.moreSettings.animations = temp
-					setSettingsFromCode(code)
-				}, 100)
-
-				applyTheme(moreSettings.theme, false)
-			}
-		} catch (error) {
-			console.error(error)
-		}
-
-		// First time tutorial activation
-		let tutoWillStart = false
-		const activateTutorial = () => {
-			if (!localStorage.hadTutorial && !tutoWillStart && moreSettings.easy) {
-				tutoWillStart = true
-				setTimeout(() => {
-					setTutoStage('intro')
-					localStorage.hadTutorial = true
-				}, 10000)
-			}
-		}
-
-		// First time theme selection
-		if (!localStorage.sleep && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-			setMoreSettings(prev => ({ ...prev, theme: 0 }))
-		}
-
-		// Displays app when loaded ( ugly ? )
-		document.querySelector('.polytronome').setAttribute('style', 'opacity: 1')
-
-		// Window Events
-		window.addEventListener('click', activateTutorial)
-		window.addEventListener('fullscreenchange', exitFullscreenOnResize)
-
-		return () => {
-			window.removeEventListener('click', activateTutorial)
-			window.removeEventListener('fullscreenchange', exitFullscreenOnResize)
-		}
+		applySavedSettings()
+		firstTimeThemeSelection()
+		document.querySelector('.polytronome').setAttribute('style', 'opacity: 1') // Displays app when loaded ( ugly ? )
 	}, [])
 
 	// Save profile
@@ -215,7 +199,7 @@ const Main = (): JSX.Element => {
 	const TempoElem = (
 		<Tempo
 			tempo={tempo}
-			setTempo={setTempo}
+			handleTempo={handleTempo}
 			moreSettings={moreSettings}
 			restartMetronome={restartMetronome}
 		/>
@@ -231,7 +215,7 @@ const Main = (): JSX.Element => {
 
 	return (
 		<div className={appClasses}>
-			<Keybindings
+			{/* <Keybindings
 				layers={layers}
 				setTempo={setTempo}
 				selected={selected}
@@ -239,26 +223,25 @@ const Main = (): JSX.Element => {
 				setSelected={setSelected}
 				updateLayers={updateLayers}
 				setMoreSettings={setMoreSettings}
-				changeFullscreen={changeFullscreen}
+				toggleFullscreen={toggleFullscreen}
 				moreSettings={moreSettingsRef.current}
-			></Keybindings>
+			></Keybindings> */}
 
 			<Menu
-				tutoStage={tutoStage}
-				fullscreen={fullscreen}
-				moreSettings={moreSettings}
-				setTutoStage={setTutoStage}
-				setImport={setSettingsFromCode}
-				setMoreSettings={setMoreSettings}
-				changeFullscreen={changeFullscreen}
+				{...{
+					tutoStage,
+					setTutoStage,
+					moreSettings,
+					setSettingsFromCode,
+					handleMoreSettings,
+				}}
 			></Menu>
 
 			<main>
-				<Header
-					Tempo={TempoElem}
-					tutoStage={tutoStage}
-					setTutoStage={setTutoStage}
-				></Header>
+				<Header>
+					<Tutorial {...{ tutoStage, setTutoStage }} />
+					{!isForMobile && TempoElem}
+				</Header>
 
 				<Clicks
 					layers={layers}
@@ -267,7 +250,7 @@ const Main = (): JSX.Element => {
 					moreSettings={moreSettings}
 				></Clicks>
 
-				{isForMobile && ButtonElem}
+				{isForMobile === true && ButtonElem}
 
 				<LayersTable
 					layers={layers}
@@ -277,7 +260,7 @@ const Main = (): JSX.Element => {
 					handleLayerUpdate={handleLayerUpdate}
 				></LayersTable>
 
-				{!isForMobile && ButtonElem}
+				{isForMobile === false && ButtonElem}
 			</main>
 
 			<div className="spacer"></div>

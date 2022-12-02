@@ -226,7 +226,10 @@ input {
 	PERFORMANCE
 	*/
 
-	&.performance,
+	&.performance {
+		transition: opacity 1s;
+	}
+
 	&.performance * {
 		transition: none !important;
 	}

@@ -72,7 +72,6 @@ export const importCode = (code: any[]) => {
 	const parsedSettings: Settings = {
 		easy: true,
 		theme: 0,
-		fullscreen: false,
 		animations: false,
 		clickType: 0,
 		offset: 0,

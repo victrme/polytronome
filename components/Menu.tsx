@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react'
-import Themes from '../public/assets/themes.json'
-import defaultLayers from '../public/assets/layers.json'
-import { applyTheme, createExportCode, importCode } from '../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useTrail, animated } from '@react-spring/web'
+
+import { applyTheme, createExportCode, importCode } from '../lib/utils'
+import defaultLayers from '../public/assets/layers.json'
+import Themes from '../public/assets/themes.json'
+import useIsMobile from '../hooks/useIsMobile'
+import useFullscreen from '../hooks/useFullscreen'
+import Settings from '../types/settings'
 
 import {
 	faBars,
@@ -14,13 +18,10 @@ import {
 	faFire,
 	faStar,
 	faCode,
-	faHandHoldingHeart,
 	faHandPeace,
 	faSlidersH,
 	faChalkboardTeacher,
 } from '@fortawesome/free-solid-svg-icons'
-import useTest from '../hooks/test'
-import useIsMobile from '../hooks/useIsMobile'
 
 const OptionIcon = ({ icon }) => (
 	<span className="option-icon">
@@ -29,17 +30,22 @@ const OptionIcon = ({ icon }) => (
 )
 
 const Menu = ({
-	setImport,
 	tutoStage,
-	fullscreen,
 	setTutoStage,
 	moreSettings,
-	setMoreSettings,
-	changeFullscreen,
+	setSettingsFromCode,
+	handleMoreSettings,
+}: {
+	setSettingsFromCode: Function
+	setTutoStage: Function
+	tutoStage: string
+	moreSettings: Settings
+	handleMoreSettings: ({ cat, theme }: { cat: keyof Settings; theme?: number }) => void
 }) => {
 	const [openedTheme, setOpenedTheme] = useState(false)
 	const [extended, setExtended] = useState(false)
 	const [isMobile] = useIsMobile()
+	const [fullscreen, toggleFullscreen] = useFullscreen()
 	const isOn = (bool: boolean) => (bool ? 'on' : '')
 
 	//
@@ -53,7 +59,7 @@ const Menu = ({
 			? appDOM.classList.remove('performance')
 			: appDOM.classList.add('performance')
 
-		setMoreSettings(prev => ({ ...prev, animations: !moreSettings.animations }))
+		handleMoreSettings({ cat: 'animations' })
 	}
 
 	const changeTheme = (index?: number) => {
@@ -61,7 +67,7 @@ const Menu = ({
 
 		if (!extended) nextTheme = (moreSettings.theme + 1) % Themes.length
 
-		setMoreSettings(prev => ({ ...prev, theme: nextTheme }))
+		handleMoreSettings({ cat: 'theme', theme: index })
 		applyTheme(nextTheme, moreSettings.animations)
 		localStorage.theme = nextTheme
 	}
@@ -72,14 +78,14 @@ const Menu = ({
 		setOpenedTheme(false)
 	}
 
-	const changeClickType = () =>
-		setMoreSettings(prev => ({ ...prev, clickType: (moreSettings.clickType + 1) % 3 }))
+	const toggleTutorial = () => {
+		setTutoStage(moreSettings.easy ? 'intro' : 'showBeats')
+		if (isMobile) setExtended(false)
+	}
 
-	const changeOffset = () =>
-		setMoreSettings(prev => ({ ...prev, offset: (moreSettings.offset + 50) % 550 }))
-
-	const resetToDefault = () =>
-		setImport(importCode(createExportCode(21, defaultLayers, moreSettings)))
+	const resetToDefault = () => {
+		setSettingsFromCode(importCode(createExportCode(21, defaultLayers, moreSettings)))
+	}
 
 	//
 	//
@@ -112,7 +118,7 @@ const Menu = ({
 			icon: faSlidersH,
 			text: 'advanced mode',
 			title: `toggle advanced mode\nAdds note, wave type, note time, release & volume control`,
-			func: () => setMoreSettings(prev => ({ ...prev, easy: !moreSettings.easy })),
+			func: () => handleMoreSettings({ cat: 'easy' }),
 			css: isOn(!moreSettings.easy),
 			state: statesTexts.advanced[+moreSettings.easy],
 		},
@@ -136,7 +142,7 @@ const Menu = ({
 			icon: faEye,
 			text: 'click view',
 			title: `change click view\nCycles through layers, segment & block`,
-			func: changeClickType,
+			func: () => handleMoreSettings({ cat: 'clickType' }),
 			css: '',
 			state: statesTexts.view[moreSettings.clickType],
 		},
@@ -144,7 +150,7 @@ const Menu = ({
 			icon: faExpand,
 			text: 'fullscreen',
 			title: 'toggle fullscreen',
-			func: changeFullscreen,
+			func: toggleFullscreen,
 			css: isOn(fullscreen),
 			state: statesTexts.fullscreen[+fullscreen],
 		},
@@ -152,7 +158,7 @@ const Menu = ({
 			icon: faHeadphones,
 			text: 'sound offset',
 			title: 'sound offset\nUseful for bluetooth devices with latency\n50ms increment, 500ms max',
-			func: changeOffset,
+			func: () => handleMoreSettings({ cat: 'offset' }),
 			css: isOn(moreSettings.offset > 0),
 			state: moreSettings.offset + 'ms',
 		},
@@ -160,10 +166,7 @@ const Menu = ({
 			icon: faChalkboardTeacher,
 			text: 'show tutorial',
 			title: 'show tutorial',
-			func: () => {
-				setTutoStage(moreSettings.easy ? 'intro' : 'showBeats')
-				if (isMobile) setExtended(false)
-			},
+			func: toggleTutorial,
 			css: '',
 			state: '',
 		},

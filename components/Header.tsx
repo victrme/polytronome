@@ -1,19 +1,4 @@
-import { useTransition, config } from '@react-spring/web'
-import useIsMobile from '../hooks/useIsMobile'
-import Tutorial from './Tutorial'
-
-const Header = ({ tutoStage, Tempo, setTutoStage }) => {
-	const toggle = tutoStage !== 'removed'
-	const [isMobile] = useIsMobile()
-
-	const transition = useTransition(toggle, {
-		from: { scale: 0.9, opacity: 0 },
-		enter: { scale: 1, opacity: 1 },
-		leave: { scale: 0.9, opacity: 0 },
-		reverse: toggle,
-		config: config.stiff,
-	})
-
+const Header = ({ children }) => {
 	return (
 		<div className="header">
 			<div className="logo">
@@ -33,20 +18,8 @@ const Header = ({ tutoStage, Tempo, setTutoStage }) => {
 					<p>train your polytrythms</p>
 				</div>
 			</div>
-			{transition(
-				(styles, item) =>
-					item && (
-						<Tutorial
-							styles={styles}
-							tutoStage={tutoStage}
-							setTutoStage={setTutoStage}
-						></Tutorial>
-					)
-			)}
 
-			<div></div>
-
-			{!isMobile && Tempo}
+			{children}
 		</div>
 	)
 }
