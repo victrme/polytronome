@@ -23,6 +23,8 @@
 
 			.ls-row {
 				flex-direction: row;
+				margin: 0.5em;
+				padding: 0.5em 1em;
 			}
 		}
 
@@ -60,24 +62,6 @@
 	}
 }
 
-// Width small but height is enough to make it in rows
-@media only screen and (max-width: 1000px) and (min-height: 780px) {
-	.polytronome {
-		.layers-table {
-			flex-direction: column;
-			.ls-row {
-				flex-direction: row;
-				margin: 0.5em;
-				padding: 0.5em 1em;
-			}
-		}
-
-		.header .tempo .tap {
-			width: 6em;
-		}
-	}
-}
-
 // Width too small for advanced, but height too small for ls-row as rows
 @media only screen and (max-width: 1000px) and (max-height: 780px) {
 	body {
@@ -85,7 +69,7 @@
 	}
 }
 
-@media only screen and (max-width: 450px) {
+@media only screen and (max-width: 500px) {
 	body {
 		font-size: 11px;
 	}
@@ -229,6 +213,7 @@ specific to .mobile render changes
 
 	main {
 		padding-top: 10vh;
+		grid-template-areas: 'header' 'clicks' 'buttons' 'layers' 'tempo';
 
 		.ls-row {
 			background-color: transparent;

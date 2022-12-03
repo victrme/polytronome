@@ -196,23 +196,6 @@ const Main = (): JSX.Element => {
 		localStorage.sleep = JSON.stringify(createExportCode(tempo, layers, moreSettings))
 	})
 
-	const TempoElem = (
-		<Tempo
-			tempo={tempo}
-			handleTempo={handleTempo}
-			moreSettings={moreSettings}
-			restartMetronome={restartMetronome}
-		/>
-	)
-
-	const ButtonElem = (
-		<Buttons
-			isRunning={isRunning}
-			handleMetronomeToggle={handleMetronomeToggle}
-			handleRandomizedLayers={handleRandomizedLayers}
-		></Buttons>
-	)
-
 	return (
 		<div className={appClasses}>
 			{/* <Keybindings
@@ -228,39 +211,44 @@ const Main = (): JSX.Element => {
 			></Keybindings> */}
 
 			<Menu
-				{...{
-					tutoStage,
-					setTutoStage,
-					moreSettings,
-					setSettingsFromCode,
-					handleMoreSettings,
-				}}
-			></Menu>
+				tutoStage={tutoStage}
+				setTutoStage={setTutoStage}
+				moreSettings={moreSettings}
+				setSettingsFromCode={setSettingsFromCode}
+				handleMoreSettings={handleMoreSettings}
+			/>
 
 			<main>
 				<Header>
-					<Tutorial {...{ tutoStage, setTutoStage }} />
-					{!isForMobile && TempoElem}
+					<Tutorial tutoStage={tutoStage} setTutoStage={setTutoStage} />
 				</Header>
+
+				<Tempo
+					tempo={tempo}
+					moreSettings={moreSettings}
+					handleTempo={handleTempo}
+					restartMetronome={restartMetronome}
+				/>
 
 				<Clicks
 					layers={layers}
 					tempoRef={tempoRef}
 					isRunning={isRunning}
 					moreSettings={moreSettings}
-				></Clicks>
-
-				{isForMobile === true && ButtonElem}
+				/>
 
 				<LayersTable
 					layers={layers}
-					Tempo={TempoElem}
 					selected={selected}
 					moreSettings={moreSettings}
 					handleLayerUpdate={handleLayerUpdate}
-				></LayersTable>
+				/>
 
-				{isForMobile === false && ButtonElem}
+				<Buttons
+					isRunning={isRunning}
+					handleMetronomeToggle={handleMetronomeToggle}
+					handleRandomizedLayers={handleRandomizedLayers}
+				/>
 			</main>
 
 			<div className="spacer"></div>
