@@ -20,7 +20,7 @@ export default function updateMoreSettings({ moreSettings, cat, theme }: UpdateM
 			break
 
 		case 'theme':
-			moreSettings.theme = theme ? theme : (moreSettings.theme + 1) % Themes.length
+			moreSettings.theme = isNaN(theme) ? (moreSettings.theme + 1) % Themes.length : theme
 			break
 
 		case 'clickType':

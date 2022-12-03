@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useTrail, animated } from '@react-spring/web'
 
-import { applyTheme, createExportCode, importCode } from '../lib/utils'
+import importCode from '../lib/codeImport'
+import exportCode from '../lib/codeExport'
 import defaultLayers from '../public/assets/layers.json'
 import Themes from '../public/assets/themes.json'
+import useTheme from '../hooks/useTheme'
 import useIsMobile from '../hooks/useIsMobile'
 import useFullscreen from '../hooks/useFullscreen'
 import Settings from '../types/settings'
@@ -46,6 +48,7 @@ const Menu = ({
 	const [extended, setExtended] = useState(false)
 	const [isMobile] = useIsMobile()
 	const [fullscreen, toggleFullscreen] = useFullscreen()
+	const [theme, applyTheme] = useTheme()
 	const isOn = (bool: boolean) => (bool ? 'on' : '')
 
 	//
@@ -63,13 +66,7 @@ const Menu = ({
 	}
 
 	const changeTheme = (index?: number) => {
-		let nextTheme = index || 0
-
-		if (!extended) nextTheme = (moreSettings.theme + 1) % Themes.length
-
-		handleMoreSettings({ cat: 'theme', theme: index })
-		applyTheme(nextTheme, moreSettings.animations)
-		localStorage.theme = nextTheme
+		applyTheme(!extended ? (moreSettings.theme + 1) % Themes.length : index || 0)
 	}
 
 	const toggleMenu = () => {
@@ -84,7 +81,7 @@ const Menu = ({
 	}
 
 	const resetToDefault = () => {
-		setSettingsFromCode(importCode(createExportCode(21, defaultLayers, moreSettings)))
+		setSettingsFromCode(importCode(exportCode(21, defaultLayers, moreSettings)))
 	}
 
 	//
@@ -193,6 +190,10 @@ const Menu = ({
 	useEffect(() => {
 		if (tutoStage === 'clickMenu' && extended) setTutoStage('endEasy')
 	}, [extended])
+
+	useEffect(() => {
+		handleMoreSettings({ cat: 'theme', theme })
+	}, [theme])
 
 	return (
 		<div className="menu">

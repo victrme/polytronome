@@ -2,9 +2,6 @@ import { useRef, useState, useEffect, useCallback, useLayoutEffect } from 'react
 import { useBeforeunload } from 'react-beforeunload'
 import clamp from 'lodash/clamp'
 
-import Themes from '../public/assets/themes.json'
-import defaultSettings from '../public/assets/settings.json'
-import defaultLayers from '../public/assets/layers.json'
 import LayersTable from '../components/LayersTable'
 import Keybindings from '../components/Keybindings'
 import Buttons from '../components/Buttons'
@@ -14,17 +11,21 @@ import Menu from '../components/Menu'
 import Tempo from '../components/Tempo'
 import Tutorial from '../components/Tutorial'
 
+import defaultSettings from '../public/assets/settings.json'
+import defaultLayers from '../public/assets/layers.json'
 import Settings from '../types/settings'
 import Layer from '../types/layer'
 import Code from '../types/code'
 
-import { tempoList, importCode, applyTheme, createExportCode } from '../lib/utils'
-import toggleMetronome from '../lib/toggleMetronome'
-import useIsMobile from '../hooks/useIsMobile'
-import randomizeLayers from '../lib/randomizeLayers'
-import updateLayers from '../lib/updateLayers'
 import useEnableBrowserSound from '../hooks/useEnableBrowserSound'
-import useTestCounter from '../hooks/useTestCounter'
+import useIsMobile from '../hooks/useIsMobile'
+
+import { tempoList } from '../lib/utils'
+import importCode from '../lib/codeImport'
+import exportCode from '../lib/codeExport'
+import updateLayers from '../lib/updateLayers'
+import randomizeLayers from '../lib/randomizeLayers'
+import toggleMetronome from '../lib/toggleMetronome'
 import updateMoreSettings from '../lib/updateMoreSettings'
 
 const Main = (): JSX.Element => {
@@ -47,12 +48,9 @@ const Main = (): JSX.Element => {
 	const isRunningRef = useRef(isRunning)
 	const moreSettingsRef = useRef(moreSettings)
 
-	let loadtimeout = setTimeout(() => {})
 	tempoRef.current = tempo
 	isRunningRef.current = isRunning
 	moreSettingsRef.current = moreSettings
-
-	const [testCounter, setTestCounter] = useTestCounter({ layers, tempo })
 
 	//
 	//
@@ -100,42 +98,31 @@ const Main = (): JSX.Element => {
 			[!moreSettings.animations, 'performance'],
 		]
 
-		let res = 'polytronome'
-		conditions.forEach(([condition, str]) => {
-			if (condition) res += ` ${str}`
-		})
-
-		return res
+		return 'polytronome' + conditions.map(([c, str]) => (c ? ` ${str}` : '')).join('')
 	}
+
+	let loadtimeout = setTimeout(() => {})
 
 	function applySavedSettings() {
 		try {
 			// Apply saved settings
 			if (localStorage.sleep) {
 				let code = importCode(JSON.parse(localStorage.sleep))
-				let temp = code.moreSettings.animations
 
 				// Disable animation on load
+				let tempAnim = code.moreSettings.animations
 				code.moreSettings.animations = false
+
 				setSettingsFromCode(code)
 
 				// timeout to reenable anims to preference
 				clearTimeout(loadtimeout)
 				loadtimeout = setTimeout(() => {
-					code.moreSettings.animations = temp
-					setSettingsFromCode(code)
+					if (tempAnim === true) handleMoreSettings({ cat: 'animations' })
 				}, 100)
-
-				applyTheme(moreSettings.theme, false)
 			}
 		} catch (error) {
 			console.error(error)
-		}
-	}
-
-	function firstTimeThemeSelection() {
-		if (!localStorage.sleep && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-			setMoreSettings(prev => ({ ...prev, theme: 0 }))
 		}
 	}
 
@@ -147,17 +134,17 @@ const Main = (): JSX.Element => {
 
 	useEnableBrowserSound()
 
-	useEffect(() => {
-		console.log(testCounter)
-	}, [testCounter])
+	//
+	// Tutorial
+	//
 
-	// Change mode after following second tutorial
 	useEffect(() => {
+		// Change mode after following second tutorial
 		if (tutoStage === 'startAdvanced') setMoreSettings(prev => ({ ...prev, easy: false }))
 	}, [tutoStage])
 
-	// Select beats for tutorial
 	useEffect(() => {
+		// Select beats for tutorial
 		if (tutoStage === 'testBeats') {
 			const beats = layers.map(x => x.beats)
 			const reduced = beats.reduce((a, b) => a + b)
@@ -167,33 +154,34 @@ const Main = (): JSX.Element => {
 		}
 	}, [layers])
 
-	// Moves tempo for tutorial
 	useEffect(() => {
+		// Moves tempo for tutorial
 		if (tutoStage.startsWith('showTempo')) {
 			setTutoStage(isForMobile ? 'endEasy' : 'clickMenu')
 		}
 	}, [tempo])
 
-	// Update theme
-	useEffect(() => {
-		applyTheme(moreSettings.theme, moreSettings.animations)
-	}, [moreSettings.theme])
+	//
+	// Classes
+	//
 
-	// CSS classes control
-	useEffect(() => {
-		setAppClasses(handleClasses())
-	}, [moreSettings, tutoStage, isForMobile])
+	useEffect(() => setAppClasses(handleClasses()), [moreSettings, tutoStage, isForMobile])
 
-	// On mount
+	//
+	// Startup
+	//
+
 	useEffect(() => {
 		applySavedSettings()
-		firstTimeThemeSelection()
 		document.querySelector('.polytronome').setAttribute('style', 'opacity: 1') // Displays app when loaded ( ugly ? )
 	}, [])
 
-	// Save profile
+	//
+	// Settings persistence
+	//
+
 	useBeforeunload(() => {
-		localStorage.sleep = JSON.stringify(createExportCode(tempo, layers, moreSettings))
+		localStorage.sleep = JSON.stringify(exportCode(tempo, layers, moreSettings))
 	})
 
 	return (
