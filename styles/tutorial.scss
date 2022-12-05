@@ -78,7 +78,8 @@ $stages: (
 	.logo,
 	.clicks,
 	.bottom-buttons,
-	.layers-table .ls-row > div:not(#{$focus}) {
+	.layers-table .ls-row > div:not(#{$focus}),
+	.layers-table .ls-row > button:not(#{$focus}) {
 		@include dimUnfocused();
 	}
 }

@@ -50,16 +50,8 @@ const Tutorial = ({ tutoStage, setTutoStage }) => {
 	//
 	// Effects
 
-	// Play sound & remove tuto if necessary
-	useEffect(() => {
-		if (tutoStage === 'explainOk') setTimeout(() => setTutoStage('removed'), 1000)
-		playNotifSound('test')
-	}, [tutoStage, setTutoStage])
-
-	// Only show tutorial if first time polytronoming
-	useEffect(() => {
-		if (!localStorage.sleep) setTimeout(() => setTutoStage('intro'), 1000)
-	}, [])
+	// Play sound
+	useEffect(() => playNotifSound('test'), [tutoStage])
 
 	return transition(
 		(styles, item) =>

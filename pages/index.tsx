@@ -21,12 +21,13 @@ import useEnableBrowserSound from '../hooks/useEnableBrowserSound'
 import useIsMobile from '../hooks/useIsMobile'
 
 import { tempoList } from '../lib/utils'
-import importCode from '../lib/codeImport'
 import exportCode from '../lib/codeExport'
 import updateLayers from '../lib/updateLayers'
 import randomizeLayers from '../lib/randomizeLayers'
 import toggleMetronome from '../lib/toggleMetronome'
 import updateMoreSettings from '../lib/updateMoreSettings'
+import useLoadStorageSettings from '../hooks/useLoadStorageSettings'
+import useTutorial from '../hooks/useTutorial'
 
 const Main = (): JSX.Element => {
 	//
@@ -38,11 +39,17 @@ const Main = (): JSX.Element => {
 	const [tempo, setTempo] = useState(21)
 	const [selected, setSelected] = useState(-1)
 	const [isRunning, setIsRunning] = useState('')
-	const [tutoStage, setTutoStage] = useState('removed')
 	const [layers, setLayers] = useState<Layer[]>([...defaultLayers])
 	const [moreSettings, setMoreSettings] = useState<Settings>({ ...defaultSettings })
 	const [appClasses, setAppClasses] = useState('polytronome easy')
 	const [isForMobile] = useIsMobile()
+
+	const [tutoStage, setTutoStage] = useTutorial({
+		layers,
+		tempo,
+		isRunning,
+		isForMobile,
+	})
 
 	const tempoRef = useRef(tempo)
 	const isRunningRef = useRef(isRunning)
@@ -84,13 +91,13 @@ const Main = (): JSX.Element => {
 		restartMetronome()
 	}
 
-	const setSettingsFromCode = (code: Code) => {
+	const handleStorageImport = (code: Code) => {
 		setMoreSettings({ ...code.moreSettings })
 		setLayers([...code.layers])
 		setTempo(code.tempo)
 	}
 
-	const handleClasses = () => {
+	const updateAppClassName = () => {
 		const conditions = [
 			[isForMobile, 'mobile'],
 			[moreSettings.easy, 'easy'],
@@ -101,31 +108,6 @@ const Main = (): JSX.Element => {
 		return 'polytronome' + conditions.map(([c, str]) => (c ? ` ${str}` : '')).join('')
 	}
 
-	let loadtimeout = setTimeout(() => {})
-
-	function applySavedSettings() {
-		try {
-			// Apply saved settings
-			if (localStorage.sleep) {
-				let code = importCode(JSON.parse(localStorage.sleep))
-
-				// Disable animation on load
-				let tempAnim = code.moreSettings.animations
-				code.moreSettings.animations = false
-
-				setSettingsFromCode(code)
-
-				// timeout to reenable anims to preference
-				clearTimeout(loadtimeout)
-				loadtimeout = setTimeout(() => {
-					if (tempAnim === true) handleMoreSettings({ cat: 'animations' })
-				}, 100)
-			}
-		} catch (error) {
-			console.error(error)
-		}
-	}
-
 	//
 	//
 	//	Effects
@@ -133,47 +115,14 @@ const Main = (): JSX.Element => {
 	//
 
 	useEnableBrowserSound()
-
-	//
-	// Tutorial
-	//
+	useLoadStorageSettings({ handleStorageImport })
 
 	useEffect(() => {
-		// Change mode after following second tutorial
-		if (tutoStage === 'startAdvanced') setMoreSettings(prev => ({ ...prev, easy: false }))
-	}, [tutoStage])
+		setAppClasses(updateAppClassName())
+	}, [moreSettings, tutoStage, isForMobile])
 
 	useEffect(() => {
-		// Select beats for tutorial
-		if (tutoStage === 'testBeats') {
-			const beats = layers.map(x => x.beats)
-			const reduced = beats.reduce((a, b) => a + b)
-
-			if (beats.includes(5) && beats.includes(7) && reduced === 15)
-				setTutoStage('testLaunch')
-		}
-	}, [layers])
-
-	useEffect(() => {
-		// Moves tempo for tutorial
-		if (tutoStage.startsWith('showTempo')) {
-			setTutoStage(isForMobile ? 'endEasy' : 'clickMenu')
-		}
-	}, [tempo])
-
-	//
-	// Classes
-	//
-
-	useEffect(() => setAppClasses(handleClasses()), [moreSettings, tutoStage, isForMobile])
-
-	//
-	// Startup
-	//
-
-	useEffect(() => {
-		applySavedSettings()
-		document.querySelector('.polytronome').setAttribute('style', 'opacity: 1') // Displays app when loaded ( ugly ? )
+		document.querySelector('.polytronome').setAttribute('style', 'opacity: 1')
 	}, [])
 
 	//
@@ -200,10 +149,10 @@ const Main = (): JSX.Element => {
 
 			<Menu
 				tutoStage={tutoStage}
-				setTutoStage={setTutoStage}
 				moreSettings={moreSettings}
-				setSettingsFromCode={setSettingsFromCode}
+				setTutoStage={setTutoStage}
 				handleMoreSettings={handleMoreSettings}
+				handleStorageImport={handleStorageImport}
 			/>
 
 			<main>

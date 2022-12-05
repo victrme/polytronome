@@ -13,13 +13,6 @@ export default function importCode(code: any[]) {
 		}
 
 	const parsedLayers: Layer[] = []
-	const parsedSettings: Settings = {
-		easy: true,
-		theme: 0,
-		animations: false,
-		clickType: 0,
-		offset: 0,
-	}
 
 	const [tempo, layers, settings] = code
 
@@ -36,9 +29,16 @@ export default function importCode(code: any[]) {
 		})
 	})
 
-	Object.keys(parsedSettings).forEach((key: string, i: number) => {
-		parsedSettings[key] = settings[i]
-	})
+	// array destructuring must be in this order !
+	const [easy, animations, theme, clickType, offset] = settings
+
+	const parsedSettings: Settings = {
+		easy: !!easy || false,
+		animations: !!animations || false,
+		theme: theme || 0,
+		clickType: clickType || 0,
+		offset: offset || 0,
+	}
 
 	return {
 		tempo,

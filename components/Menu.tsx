@@ -6,7 +6,6 @@ import importCode from '../lib/codeImport'
 import exportCode from '../lib/codeExport'
 import defaultLayers from '../public/assets/layers.json'
 import Themes from '../public/assets/themes.json'
-import useTheme from '../hooks/useTheme'
 import useIsMobile from '../hooks/useIsMobile'
 import useFullscreen from '../hooks/useFullscreen'
 import Settings from '../types/settings'
@@ -24,6 +23,7 @@ import {
 	faSlidersH,
 	faChalkboardTeacher,
 } from '@fortawesome/free-solid-svg-icons'
+import applyTheme from '../lib/applyTheme'
 
 const OptionIcon = ({ icon }) => (
 	<span className="option-icon">
@@ -35,10 +35,10 @@ const Menu = ({
 	tutoStage,
 	setTutoStage,
 	moreSettings,
-	setSettingsFromCode,
+	handleStorageImport,
 	handleMoreSettings,
 }: {
-	setSettingsFromCode: Function
+	handleStorageImport: Function
 	setTutoStage: Function
 	tutoStage: string
 	moreSettings: Settings
@@ -48,7 +48,6 @@ const Menu = ({
 	const [extended, setExtended] = useState(false)
 	const [isMobile] = useIsMobile()
 	const [fullscreen, toggleFullscreen] = useFullscreen()
-	const [theme, applyTheme] = useTheme()
 	const isOn = (bool: boolean) => (bool ? 'on' : '')
 
 	//
@@ -57,7 +56,6 @@ const Menu = ({
 
 	const changeAnimations = () => {
 		const appDOM = document.querySelector('.polytronome') as HTMLDivElement
-
 		moreSettings.animations
 			? appDOM.classList.remove('performance')
 			: appDOM.classList.add('performance')
@@ -66,7 +64,10 @@ const Menu = ({
 	}
 
 	const changeTheme = (index?: number) => {
-		applyTheme(!extended ? (moreSettings.theme + 1) % Themes.length : index || 0)
+		handleMoreSettings({
+			cat: 'theme',
+			theme: !extended ? (moreSettings.theme + 1) % Themes.length : index || 0,
+		})
 	}
 
 	const toggleMenu = () => {
@@ -81,7 +82,7 @@ const Menu = ({
 	}
 
 	const resetToDefault = () => {
-		setSettingsFromCode(importCode(exportCode(21, defaultLayers, moreSettings)))
+		handleStorageImport(importCode(exportCode(21, defaultLayers, moreSettings)))
 	}
 
 	//
@@ -182,18 +183,43 @@ const Menu = ({
 		config: { mass: 0.1, friction: 8 },
 	}))
 
+	//
+	// Theme effects
+	//
+
 	useEffect(() => {
 		const style = { opacity: openedTheme ? 1 : 0 }
 		moreSettings.animations ? api.start(style) : api.set(style)
 	}, [openedTheme])
 
 	useEffect(() => {
+		applyTheme(moreSettings.theme)
+	}, [moreSettings.theme])
+
+	useEffect(function firstStartupColorScheme() {
+		if (!localStorage.sleep && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+			handleMoreSettings({ cat: 'theme', theme: 0 })
+			applyTheme(0)
+		}
+	}, [])
+
+	//
+	// Tutorial effects
+	//
+
+	useEffect(() => {
 		if (tutoStage === 'clickMenu' && extended) setTutoStage('endEasy')
 	}, [extended])
 
 	useEffect(() => {
-		handleMoreSettings({ cat: 'theme', theme })
-	}, [theme])
+		if (tutoStage === 'startAdvanced') handleMoreSettings({ cat: 'easy' }) // Change mode after following second tutorial
+	}, [tutoStage])
+
+	//
+	//
+	// Render
+	//
+	//
 
 	return (
 		<div className="menu">

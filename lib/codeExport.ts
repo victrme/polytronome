@@ -3,7 +3,6 @@ import Layer from '../types/layer'
 
 export default function exportCode(tempo: number, layers: Layer[], moreSettings: Settings) {
 	const minifiedLayers: Number[][] = []
-	const minifiedSettings: Number[] = []
 
 	layers.forEach(layer => {
 		minifiedLayers.push([
@@ -17,9 +16,13 @@ export default function exportCode(tempo: number, layers: Layer[], moreSettings:
 		])
 	})
 
-	Object.values(moreSettings).forEach(setting => {
-		minifiedSettings.push(+setting)
-	})
+	const minifiedSettings: Number[] = [
+		+moreSettings.easy,
+		+moreSettings.animations,
+		+moreSettings.theme,
+		+moreSettings.clickType,
+		+moreSettings.offset,
+	]
 
 	return [tempo, minifiedLayers, minifiedSettings]
 }

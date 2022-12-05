@@ -10,15 +10,6 @@ export default function toggleMetronome({
 	isRunning: string
 	restart?: boolean
 }) {
-	// const start = () => {
-	// setIsRunning(setRandomID())
-	// if (tutoStage === 'testLaunch') setTutoStage('waitLaunch')
-	// }
-
-	// const stop = () => {
-	// if (tutoStage === 'waitLaunch') setTutoStage('showTempo')
-	// }
-
 	const beatsCounts = layers.map(l => l.beats).reduce((a, b) => a + b) - 5
 
 	// No beats, only stops
@@ -26,6 +17,7 @@ export default function toggleMetronome({
 
 	// Restart, start on top of previous
 	if (restart && isRunning) return setRandomID()
+	if (restart && !isRunning) return ''
 
 	// Simple toggle
 	return isRunning === '' ? setRandomID() : ''
