@@ -89,21 +89,6 @@ const Menu = ({
 	//
 	//
 
-	const links = [
-		{
-			url: 'https://github.com/victrme/polytronome',
-			title: 'Source code on github',
-			icon: faCode,
-			text: 'source & docs',
-		},
-		{
-			url: 'https://victr.me',
-			title: 'created by victr !',
-			icon: faHandPeace,
-			text: 'by victr',
-		},
-	]
-
 	const statesTexts = {
 		advanced: ['on', 'off'],
 		fullscreen: ['off', 'on'],
