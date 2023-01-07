@@ -2,7 +2,7 @@ import { animated, useTransition, config } from '@react-spring/web'
 import { useEffect } from 'react'
 import Pizzicato from 'pizzicato'
 
-import Dialog from '../public/assets/tutorials/en.json'
+import Dialog from '../assets/tutorials/en.json'
 import { Stage, Interaction } from '../types/tutorial'
 
 const Tutorial = ({ tutoStage, setTutoStage }) => {

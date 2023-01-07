@@ -1,4 +1,4 @@
-import Themes from '../public/assets/themes.json'
+import Themes from '../assets/themes.json'
 
 export default function applyTheme(index: number) {
 	if (index < 0 && index >= Themes.length) {

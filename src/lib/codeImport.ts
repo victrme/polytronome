@@ -1,5 +1,5 @@
-import defaultLayers from '../public/assets/layers.json'
-import defaultSettings from '../public/assets/settings.json'
+import defaultLayers from '../assets/layers.json'
+import defaultSettings from '../assets/settings.json'
 import Settings from '../types/settings'
 import Layer from '../types/layer'
 import { setRandomID } from './utils'

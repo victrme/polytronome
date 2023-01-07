@@ -1,5 +1,5 @@
 import Settings from '../types/settings'
-import Themes from '../public/assets/themes.json'
+import Themes from '../assets/themes.json'
 
 type UpdateMoreSettings = {
 	moreSettings: Settings

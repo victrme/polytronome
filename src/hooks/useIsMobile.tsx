@@ -5,7 +5,7 @@ export default function useIsMobile() {
 
 	// Changes mobile view
 	const handleMobileView = () => {
-		setIsForMobile(window.visualViewport && window.visualViewport.width < 500)
+		setIsForMobile((window.visualViewport && window?.visualViewport?.width < 500) || false)
 	}
 
 	useEffect(() => {
