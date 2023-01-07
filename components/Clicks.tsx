@@ -3,8 +3,19 @@ import Pizzicato from 'pizzicato'
 import Layer from '../types/layer'
 
 import { tempoList } from '../lib/utils'
+import getMetronomeTimings from '../lib/getMetronomeTimings'
 
-const Clicks = ({ layers, tempoRef, isRunning, isRunningRef, moreSettings }) => {
+import Settings from '../types/settings'
+import Timings from '../types/timings'
+
+type ClicksProps = {
+	layers: Layer[]
+	isRunning: string
+	moreSettings: Settings
+	tempoRef: { current: number }
+}
+
+const Clicks = ({ layers, tempoRef, isRunning, moreSettings }: ClicksProps) => {
 	function usePrevious(value: any) {
 		const ref = useRef()
 		useEffect(() => (ref.current = value), [value])
@@ -19,26 +30,23 @@ const Clicks = ({ layers, tempoRef, isRunning, isRunningRef, moreSettings }) => 
 	const [offsetSegmentPos, setOffsetSegmentPos] = useState(0)
 	const [segmentPos, setSegmentPos] = useState(0)
 	const [segmentRatio, setSegmentRatio] = useState([0])
-	const [mockAmount, setMockAmount] = useState(0)
 
 	const timesRef = useRef(times)
-	const mockRef = useRef(mockAmount)
 	const layersRef = useRef(layers)
+	const isRunningRef = useRef(isRunning)
 	const previousBeats = usePrevious(getBeats()) || [1, 1, 1, 1, 1]
 
-	mockRef.current = mockAmount
 	timesRef.current = times
 	layersRef.current = layers
+	isRunningRef.current = isRunning
 
 	const { offset, clickType } = moreSettings
-
-	type Timings = [number, number[]][]
 
 	Pizzicato.volume = 0.3
 
 	function playSound(layerArray: Layer[]) {
-		const soundList: Pizzicato[] = []
-		const waveformsList = ['sine', 'triangle', 'sawtooth', 'square']
+		const soundList = []
+		const waveformsList = ['sine', 'triangle', 'sawtooth', 'square'] as Pizzicato.WaveType[]
 
 		layerArray.forEach(layer => {
 			const vol = layer.type >= 2 ? layer.volume * 0.6 : layer.volume
@@ -141,47 +149,8 @@ const Clicks = ({ layers, tempoRef, isRunning, isRunningRef, moreSettings }) => 
 		runRecursion(timings[lastPos][0], lastPos)
 	}
 
-	function getMetronomeTimings() {
-		const mesureLength = 24e4 / tempoList[tempoRef.current]
-		const result: Timings = []
-		const division: any[] = []
-		let rawTimings: any[] = []
-
-		// Fill with all layers divisions
-		layers.forEach((layer, index) => {
-			for (let beat = 1; beat < layer.beats; beat++) {
-				division.push({ ratio: beat / layer.beats, layer: index })
-			}
-		})
-
-		// Sort: slower latency first, regardless of layer
-		division.sort((a, b) => a.ratio - b.ratio)
-
-		// Substract time from last click to get click interval
-		let lastClickLength = 0
-		division.forEach(elem => {
-			const clickLength = mesureLength * elem.ratio
-			const interval = clickLength - lastClickLength
-
-			rawTimings.push([interval, elem.layer])
-			lastClickLength = clickLength
-		})
-
-		// Subsctract from last click
-		rawTimings.push([mesureLength - lastClickLength, rawTimings[rawTimings.length - 1][1]])
-
-		// Add 0 timed layer index to last timing
-		// Or push a new timing
-		rawTimings.forEach(([time, layer]) => {
-			if (time === 0) result[result.length - 1][1].push(layer)
-			else result.push([time, [layer]])
-		})
-
-		return result
-	}
-
 	const initSegment = () => {
-		const timings = getMetronomeTimings()
+		const timings = getMetronomeTimings({ layers, tempo: tempoRef.current })
 		const ratiosOnly: number[] = []
 
 		timings.forEach(click =>
@@ -190,45 +159,14 @@ const Clicks = ({ layers, tempoRef, isRunning, isRunningRef, moreSettings }) => 
 		setSegmentRatio(ratiosOnly)
 	}
 
-	//
-	// Force sound on input
-	//
-
-	const playSilentSound = () => {
-		const silentSound = new Pizzicato.Sound({
-			source: 'wave',
-			options: {
-				type: 'square',
-				volume: 0.01,
-				frequency: 1,
-				attack: 0,
-				release: 0,
-			},
-		})
-
-		if (mockRef.current < 2) {
-			silentSound.play()
-			setMockAmount(mockRef.current + 1)
-			setTimeout(() => silentSound.stop(), 200)
-		} else silentSound.disconnect()
-	}
-
-	// Forces Safari to play sounds without "real" user gestures
-	useEffect(() => {
-		document.body.addEventListener('click', () => playSilentSound())
-		document.body.addEventListener('keypress', () => playSilentSound())
-
-		return () => {
-			document.body.removeEventListener('click', () => playSilentSound())
-			document.body.removeEventListener('keypress', () => playSilentSound())
-		}
-	}, [])
-
 	useEffect(() => {
 		//
 		// Start Metronome
 		if (isRunning.length > 0) {
-			metronome(getMetronomeTimings(), isRunningRef.current)
+			metronome(
+				getMetronomeTimings({ layers, tempo: tempoRef.current }),
+				isRunningRef.current
+			)
 		}
 	}, [isRunning])
 

@@ -1,13 +1,16 @@
-import clamp from 'lodash/clamp'
 import Wheel from './Wheel'
+import useTempoTap from '../hooks/useTempoTap'
+import { useEffect } from 'react'
 
-import { tempoList } from '../lib/utils'
+const Tempo = ({ tempo, handleTempo, moreSettings, restartMetronome }) => {
+	const [tappedTempo, setTappedTempo] = useTempoTap()
 
-const Tempo = ({ tempo, setTempo, tapTempo, toggleMetronome, moreSettings }) => {
-	const handleTempo = (res: number) => {
-		setTempo(clamp(res, 0, tempoList.length))
-		toggleMetronome(true)
-	}
+	useEffect(() => {
+		if (tappedTempo) {
+			handleTempo(tappedTempo)
+			restartMetronome()
+		}
+	}, [tappedTempo])
 
 	return (
 		<div className="tempo">
@@ -17,7 +20,7 @@ const Tempo = ({ tempo, setTempo, tapTempo, toggleMetronome, moreSettings }) => 
 				animations={moreSettings.animations}
 				update={res => handleTempo(res)}
 			></Wheel>
-			<button className="tap" onClick={tapTempo} title="tap tempo">
+			<button className="tap" onClick={() => setTappedTempo()} title="tap tempo">
 				tap
 			</button>
 		</div>

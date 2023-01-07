@@ -58,27 +58,4 @@
 			flex-direction: column;
 		}
 	}
-
-	/*
-	TEMPO
-	*/
-
-	.tempo {
-		display: flex;
-		align-items: center;
-		z-index: 2;
-
-		.immovable_wheel {
-			margin-right: 0.5em;
-		}
-
-		.tap {
-			width: 120px;
-			margin: 0%;
-		}
-
-		.tempo-buttons {
-			display: flex;
-		}
-	}
 }

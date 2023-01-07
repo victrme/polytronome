@@ -1,9 +1,14 @@
 import { useEffect, useState } from 'react'
-import Themes from '../public/assets/themes.json'
-import defaultLayers from '../public/assets/layers.json'
-import { applyTheme, createExportCode, importCode } from '../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useTrail, animated } from '@react-spring/web'
+
+import importCode from '../lib/codeImport'
+import exportCode from '../lib/codeExport'
+import defaultLayers from '../public/assets/layers.json'
+import Themes from '../public/assets/themes.json'
+import useIsMobile from '../hooks/useIsMobile'
+import useFullscreen from '../hooks/useFullscreen'
+import Settings from '../types/settings'
 
 import {
 	faBars,
@@ -14,11 +19,11 @@ import {
 	faFire,
 	faStar,
 	faCode,
-	faHandHoldingHeart,
 	faHandPeace,
 	faSlidersH,
 	faChalkboardTeacher,
 } from '@fortawesome/free-solid-svg-icons'
+import applyTheme from '../lib/applyTheme'
 
 const OptionIcon = ({ icon }) => (
 	<span className="option-icon">
@@ -27,17 +32,22 @@ const OptionIcon = ({ icon }) => (
 )
 
 const Menu = ({
-	setImport,
 	tutoStage,
-	fullscreen,
-	isForMobile,
 	setTutoStage,
 	moreSettings,
-	setMoreSettings,
-	changeFullscreen,
+	handleStorageImport,
+	handleMoreSettings,
+}: {
+	handleStorageImport: Function
+	setTutoStage: Function
+	tutoStage: string
+	moreSettings: Settings
+	handleMoreSettings: ({ cat, theme }: { cat: keyof Settings; theme?: number }) => void
 }) => {
 	const [openedTheme, setOpenedTheme] = useState(false)
 	const [extended, setExtended] = useState(false)
+	const [isMobile] = useIsMobile()
+	const [fullscreen, toggleFullscreen] = useFullscreen()
 	const isOn = (bool: boolean) => (bool ? 'on' : '')
 
 	//
@@ -46,57 +56,38 @@ const Menu = ({
 
 	const changeAnimations = () => {
 		const appDOM = document.querySelector('.polytronome') as HTMLDivElement
-
 		moreSettings.animations
 			? appDOM.classList.remove('performance')
 			: appDOM.classList.add('performance')
 
-		setMoreSettings(prev => ({ ...prev, animations: !moreSettings.animations }))
+		handleMoreSettings({ cat: 'animations' })
 	}
 
 	const changeTheme = (index?: number) => {
-		let nextTheme = index || 0
-
-		if (!extended) nextTheme = (moreSettings.theme + 1) % Themes.length
-
-		setMoreSettings(prev => ({ ...prev, theme: nextTheme }))
-		applyTheme(nextTheme, moreSettings.animations)
-		localStorage.theme = nextTheme
+		handleMoreSettings({
+			cat: 'theme',
+			theme: !extended ? (moreSettings.theme + 1) % Themes.length : index || 0,
+		})
 	}
 
 	const toggleMenu = () => {
-		if (isForMobile && tutoStage !== 'removed') setTutoStage('removed')
+		if (isMobile && tutoStage !== 'removed') setTutoStage('removed')
 		setExtended(!extended)
 		setOpenedTheme(false)
 	}
 
-	const changeClickType = () =>
-		setMoreSettings(prev => ({ ...prev, clickType: (moreSettings.clickType + 1) % 3 }))
+	const toggleTutorial = () => {
+		setTutoStage(moreSettings.easy ? 'intro' : 'showBeats')
+		if (isMobile) setExtended(false)
+	}
 
-	const changeOffset = () =>
-		setMoreSettings(prev => ({ ...prev, offset: (moreSettings.offset + 50) % 550 }))
-
-	const resetToDefault = () =>
-		setImport(importCode(createExportCode(21, defaultLayers, moreSettings)))
+	const resetToDefault = () => {
+		handleStorageImport(importCode(exportCode(21, defaultLayers, moreSettings)))
+	}
 
 	//
 	//
 	//
-
-	const links = [
-		{
-			url: 'https://github.com/victrme/polytronome',
-			title: 'Source code on github',
-			icon: faCode,
-			text: 'source & docs',
-		},
-		{
-			url: 'https://victr.me',
-			title: 'created by victr !',
-			icon: faHandPeace,
-			text: 'by victr',
-		},
-	]
 
 	const statesTexts = {
 		advanced: ['on', 'off'],
@@ -110,7 +101,7 @@ const Menu = ({
 			icon: faSlidersH,
 			text: 'advanced mode',
 			title: `toggle advanced mode\nAdds note, wave type, note time, release & volume control`,
-			func: () => setMoreSettings(prev => ({ ...prev, easy: !moreSettings.easy })),
+			func: () => handleMoreSettings({ cat: 'easy' }),
 			css: isOn(!moreSettings.easy),
 			state: statesTexts.advanced[+moreSettings.easy],
 		},
@@ -134,7 +125,7 @@ const Menu = ({
 			icon: faEye,
 			text: 'click view',
 			title: `change click view\nCycles through layers, segment & block`,
-			func: changeClickType,
+			func: () => handleMoreSettings({ cat: 'clickType' }),
 			css: '',
 			state: statesTexts.view[moreSettings.clickType],
 		},
@@ -142,7 +133,7 @@ const Menu = ({
 			icon: faExpand,
 			text: 'fullscreen',
 			title: 'toggle fullscreen',
-			func: changeFullscreen,
+			func: toggleFullscreen,
 			css: isOn(fullscreen),
 			state: statesTexts.fullscreen[+fullscreen],
 		},
@@ -150,7 +141,7 @@ const Menu = ({
 			icon: faHeadphones,
 			text: 'sound offset',
 			title: 'sound offset\nUseful for bluetooth devices with latency\n50ms increment, 500ms max',
-			func: changeOffset,
+			func: () => handleMoreSettings({ cat: 'offset' }),
 			css: isOn(moreSettings.offset > 0),
 			state: moreSettings.offset + 'ms',
 		},
@@ -158,10 +149,7 @@ const Menu = ({
 			icon: faChalkboardTeacher,
 			text: 'show tutorial',
 			title: 'show tutorial',
-			func: () => {
-				setTutoStage(moreSettings.easy ? 'intro' : 'showBeats')
-				if (isForMobile) setExtended(false)
-			},
+			func: toggleTutorial,
 			css: '',
 			state: '',
 		},
@@ -180,79 +168,123 @@ const Menu = ({
 		config: { mass: 0.1, friction: 8 },
 	}))
 
+	//
+	// Theme effects
+	//
+
 	useEffect(() => {
 		const style = { opacity: openedTheme ? 1 : 0 }
 		moreSettings.animations ? api.start(style) : api.set(style)
 	}, [openedTheme])
 
 	useEffect(() => {
+		applyTheme(moreSettings.theme)
+	}, [moreSettings.theme])
+
+	useEffect(function firstStartupColorScheme() {
+		if (!localStorage.sleep && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+			handleMoreSettings({ cat: 'theme', theme: 0 })
+			applyTheme(0)
+		}
+	}, [])
+
+	//
+	// Tutorial effects
+	//
+
+	useEffect(() => {
 		if (tutoStage === 'clickMenu' && extended) setTutoStage('endEasy')
 	}, [extended])
+
+	useEffect(() => {
+		if (tutoStage === 'startAdvanced') handleMoreSettings({ cat: 'easy' }) // Change mode after following second tutorial
+	}, [tutoStage])
+
+	//
+	//
+	// Render
+	//
+	//
+
+	const ThemeList = () => {
+		if (!extended) return <></>
+
+		return (
+			<div className={'theme-list' + (openedTheme ? ' opened' : '')}>
+				{trail.map((styles, i) => (
+					<animated.span
+						key={i}
+						style={{
+							...styles,
+							backgroundColor: Themes[i].background,
+							color: Themes[i].accent,
+							visibility: styles.opacity.to(o =>
+								o === 0 ? 'hidden' : 'visible'
+							),
+						}}
+						onClick={e => {
+							e.stopPropagation()
+							e.nativeEvent.stopImmediatePropagation()
+							changeTheme(i)
+						}}
+					>
+						{Themes[i].name}
+					</animated.span>
+				))}
+			</div>
+		)
+	}
+
+	const MenuOptions = () => (
+		<>
+			{options.map(option => (
+				<button
+					key={option.text}
+					title={option.title}
+					onClick={option.func}
+					className={option.css}
+				>
+					{extended ? (
+						<p>
+							<OptionIcon icon={option.icon} />
+							<span className="option-text">{option.text}</span>
+						</p>
+					) : (
+						<OptionIcon icon={option.icon} />
+					)}
+					{extended && <span className="optionState">{option.state}</span>}
+				</button>
+			))}
+		</>
+	)
 
 	return (
 		<div className="menu">
 			<button onClick={toggleMenu} title={(extended ? 'close' : 'open') + ' menu'}>
 				<FontAwesomeIcon icon={faBars} />
-				{isForMobile ? '' : 'Menu'}
+				{isMobile ? '' : 'Menu'}
 			</button>
 
 			<aside className={extended ? 'extended' : 'closed'}>
-				{extended ? (
-					<div className={'theme-list' + (openedTheme ? ' opened' : '')}>
-						{trail.map((styles, i) => (
-							<animated.span
-								key={i}
-								style={{
-									...styles,
-									backgroundColor: Themes[i].background,
-									color: Themes[i].accent,
-									visibility: styles.opacity.to(o =>
-										o === 0 ? 'hidden' : 'visible'
-									),
-								}}
-								onClick={e => {
-									e.stopPropagation()
-									e.nativeEvent.stopImmediatePropagation()
-									changeTheme(i)
-								}}
-							>
-								{Themes[i].name}
-							</animated.span>
-						))}
-					</div>
-				) : (
-					''
-				)}
+				<ThemeList />
 
-				{options.map(option => (
-					<button
-						key={option.text}
-						title={option.title}
-						onClick={option.func}
-						className={option.css}
-					>
-						{extended ? (
-							<p>
-								<OptionIcon icon={option.icon} />
-								<span className="option-text">{option.text}</span>
-							</p>
-						) : (
-							<OptionIcon icon={option.icon} />
-						)}
-						{extended ? <span className="optionState">{option.state}</span> : ''}
-					</button>
-				))}
+				<MenuOptions />
 
 				<hr />
 
-				{links.map(({ icon, text, url, title }) => (
-					<a key={text} href={url} title={title}>
-						<p>
-							<OptionIcon icon={icon} />
-							<span className="option-text">{text}</span>
-						</p>
-					</a>
-				))}
+				<a href="https://github.com/victrme/polytronome" title="Source code on github">
+					<p>
+						<OptionIcon icon={faCode} />
+						<span className="option-text">source code</span>
+					</p>
+				</a>
+
+				<a href="https://victr.me" title="created by victr !">
+					<p>
+						<OptionIcon icon={faHandPeace} />
+						<span className="option-text">by victr</span>
+					</p>
+				</a>
 			</aside>
 		</div>
 	)

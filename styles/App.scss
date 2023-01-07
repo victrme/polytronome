@@ -33,6 +33,7 @@ input {
 	@import 'header';
 	@import 'clicks';
 	@import 'layers';
+	@import 'tempo';
 	@import 'menu';
 	@import 'tutorial';
 
@@ -41,11 +42,32 @@ input {
 	}
 
 	main {
-		display: flex;
+		display: grid;
+		grid-template-areas: 'header tempo' 'clicks clicks' 'layers layers' 'buttons buttons';
 		flex-direction: column;
 		align-items: center;
 		margin: 0 auto;
 		padding-top: 10vh;
+	}
+
+	.header {
+		grid-area: header;
+	}
+
+	.tempo {
+		grid-area: tempo;
+	}
+
+	.clicks {
+		grid-area: clicks;
+	}
+
+	.layers-table {
+		grid-area: layers;
+	}
+
+	.bottom-buttons {
+		grid-area: buttons;
 	}
 
 	a,
@@ -226,7 +248,10 @@ input {
 	PERFORMANCE
 	*/
 
-	&.performance,
+	&.performance {
+		transition: opacity 1s;
+	}
+
 	&.performance * {
 		transition: none !important;
 	}
