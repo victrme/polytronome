@@ -23,7 +23,7 @@ You can:
 -   Use the keyboard as a MIDI controller
 -   Toggle between different views
 
-# Keybindings
+# Keybindings ( not working )
 
 | Key                                  | Function               |
 | ------------------------------------ | ---------------------- |
