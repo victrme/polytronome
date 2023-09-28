@@ -23,6 +23,8 @@ You can:
 -   Use the keyboard as a MIDI controller
 -   Toggle between different views
 
+<!--
+
 # Keybindings ( not working )
 
 | Key                                  | Function               |
@@ -67,6 +69,8 @@ You can:
 | `P`                           | D#+1                 |
 | `Quote` (french iso: `M`)     | E+1                  |
 | `Semicolon` (french iso: `ù`) | F+1                  |
+
+-->
 
 # Contact
 

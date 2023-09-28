@@ -1,33 +1,33 @@
-import { useRef, useState, useEffect, useCallback, useLayoutEffect } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
 import clamp from 'lodash/clamp'
 
-import LayersTable from '../components/LayersTable'
-import Keybindings from '../components/Keybindings'
-import Buttons from '../components/Buttons'
-import Header from '../components/Header'
-import Clicks from '../components/Clicks'
-import Menu from '../components/Menu'
-import Tempo from '../components/Tempo'
-import Tutorial from '../components/Tutorial'
+import LayersTable from './components/LayersTable'
+import Keybindings from './components/Keybindings'
+import Buttons from './components/Buttons'
+import Header from './components/Header'
+import Clicks from './components/Clicks'
+import Menu from './components/Menu'
+import Tempo from './components/Tempo'
+import Tutorial from './components/Tutorial'
 
-import defaultSettings from '../public/assets/settings.json'
-import defaultLayers from '../public/assets/layers.json'
-import Settings from '../types/settings'
-import Layer from '../types/layer'
-import Code from '../types/code'
+import defaultSettings from './assets/settings.json'
+import defaultLayers from './assets/layers.json'
+import Settings from './types/settings'
+import Layer from './types/layer'
+import Code from './types/code'
 
-import useEnableBrowserSound from '../hooks/useEnableBrowserSound'
-import useIsMobile from '../hooks/useIsMobile'
+import useEnableBrowserSound from './hooks/useEnableBrowserSound'
+import useIsMobile from './hooks/useIsMobile'
 
-import { tempoList } from '../lib/utils'
-import exportCode from '../lib/codeExport'
-import updateLayers from '../lib/updateLayers'
-import randomizeLayers from '../lib/randomizeLayers'
-import toggleMetronome from '../lib/toggleMetronome'
-import updateMoreSettings from '../lib/updateMoreSettings'
-import useLoadStorageSettings from '../hooks/useLoadStorageSettings'
-import useTutorial from '../hooks/useTutorial'
+import { tempoList } from './lib/utils'
+import exportCode from './lib/codeExport'
+import updateLayers from './lib/updateLayers'
+import randomizeLayers from './lib/randomizeLayers'
+import toggleMetronome from './lib/toggleMetronome'
+import updateMoreSettings from './lib/updateMoreSettings'
+import useLoadStorageSettings from './hooks/useLoadStorageSettings'
+import useTutorial from './hooks/useTutorial'
 
 const Main = (): JSX.Element => {
 	//
@@ -123,7 +123,7 @@ const Main = (): JSX.Element => {
 	}, [moreSettings, tutoStage, isForMobile])
 
 	useEffect(() => {
-		document.querySelector('.polytronome').setAttribute('style', 'opacity: 1')
+		document.querySelector('.polytronome')?.setAttribute('style', 'opacity: 1')
 	}, [])
 
 	//
