@@ -5,8 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
-		"build": "vite build",
-		"preview": "vite preview"
+		"build": "vite build --base=/polytronome/",
+		"preview": "vite build && vite preview"
 	},
 	"dependencies": {
 		"@fortawesome/fontawesome-svg-core": "^6.4.2",
