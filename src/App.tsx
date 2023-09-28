@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useCallback, useLayoutEffect } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
 import clamp from 'lodash/clamp'
 
