@@ -2,14 +2,11 @@ import Wheel from './Wheel'
 import useTempoTap from '../hooks/useTempoTap'
 import { useEffect } from 'react'
 
-const Tempo = ({ tempo, handleTempo, moreSettings, restartMetronome }) => {
+const Tempo = ({ tempo, handleTempo, moreSettings }) => {
 	const [tappedTempo, setTappedTempo] = useTempoTap()
 
 	useEffect(() => {
-		if (tappedTempo) {
-			handleTempo(tappedTempo)
-			restartMetronome()
-		}
+		if (tappedTempo) handleTempo(tappedTempo)
 	}, [tappedTempo])
 
 	return (

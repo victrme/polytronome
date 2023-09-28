@@ -25,7 +25,7 @@ You can:
 
 <!--
 
-# Keybindings
+# Keybindings ( not working )
 
 | Key                                  | Function               |
 | ------------------------------------ | ---------------------- |

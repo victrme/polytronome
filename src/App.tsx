@@ -75,15 +75,16 @@ const Main = (): JSX.Element => {
 
 	const handleRandomizedLayers = () => {
 		setLayers(randomizeLayers({ layers }))
-		restartMetronome()
 	}
 
 	const handleLayerUpdate = (cat: string, index: number, val: number) => {
 		setLayers([...updateLayers({ layers, cat, index, val })])
+		if (cat === 'beats') restartMetronome()
 	}
 
 	const handleMoreSettings = ({ cat, theme }: { cat: keyof Settings; theme?: number }) => {
 		setMoreSettings({ ...updateMoreSettings({ moreSettings, cat, theme }) })
+		if (cat === 'clickType') restartMetronome()
 	}
 
 	const handleTempo = (tempo: number) => {
@@ -160,12 +161,7 @@ const Main = (): JSX.Element => {
 					<Tutorial tutoStage={tutoStage} setTutoStage={setTutoStage} />
 				</Header>
 
-				<Tempo
-					tempo={tempo}
-					moreSettings={moreSettings}
-					handleTempo={handleTempo}
-					restartMetronome={restartMetronome}
-				/>
+				<Tempo tempo={tempo} moreSettings={moreSettings} handleTempo={handleTempo} />
 
 				<Clicks
 					layers={layers}
