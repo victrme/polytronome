@@ -5,6 +5,12 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@fontsource-variable/dosis':
+    specifier: ^5.0.17
+    version: 5.0.17
+  '@fontsource-variable/source-code-pro':
+    specifier: ^5.0.16
+    version: 5.0.16
   '@fortawesome/fontawesome-svg-core':
     specifier: ^6.5.0
     version: 6.5.0
@@ -494,6 +500,14 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@fontsource-variable/dosis@5.0.17:
+    resolution: {integrity: sha512-zmwMkWEKwgbA55wgpLelaqI2VyVW8hVFITvqMdxxCMuhT+ZBN0yHCMuAoLqORPnvDv54yYNxDgWcf3oyTtU88g==}
+    dev: false
+
+  /@fontsource-variable/source-code-pro@5.0.16:
+    resolution: {integrity: sha512-vwAiB53UOEW+7Vbo/e87b87TIAkdPNui+tZaQ4NDAmkQCcQAz6ptwM85A5/iJi0JXICBoZJrUbEtpX+odNJZeg==}
+    dev: false
 
   /@fortawesome/fontawesome-common-types@6.5.0:
     resolution: {integrity: sha512-vYC8oN2l8meu05sRi1j3Iie/HNFAeIxpitYFhsUrBc11TxiMken9QdXnSQ0q16FYsOSt/6soxs5ghdk+VYGiog==}

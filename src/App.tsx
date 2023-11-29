@@ -29,6 +29,9 @@ import updateMoreSettings from './lib/updateMoreSettings'
 import useLoadStorageSettings from './hooks/useLoadStorageSettings'
 import useTutorial from './hooks/useTutorial'
 
+import '@fontsource-variable/source-code-pro'
+import '@fontsource-variable/dosis'
+
 const Main = (): JSX.Element => {
 	//
 	//

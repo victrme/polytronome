@@ -7,6 +7,8 @@
 		"preview": "vite build && vite preview"
 	},
 	"dependencies": {
+		"@fontsource-variable/dosis": "^5.0.17",
+		"@fontsource-variable/source-code-pro": "^5.0.16",
 		"@fortawesome/fontawesome-svg-core": "^6.5.0",
 		"@fortawesome/free-solid-svg-icons": "^6.5.0",
 		"@fortawesome/react-fontawesome": "^0.2.0",
