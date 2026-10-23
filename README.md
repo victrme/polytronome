@@ -14,6 +14,8 @@
 
 # About
 
+[![Launch on PicoRunner](https://picorunner.com/badges/launch.svg)](https://picorunner.com/launch/?repository=https%3A%2F%2Fgithub.com%2Fvictrme%2Fpolytronome)
+
 Polytronome helps you visualize polyrythms by layering multiple metronomes. Use it to discover new rythms, challenge yourself to play along difficult beats, or simply enjoy the melodies you created !
 
 You can:
